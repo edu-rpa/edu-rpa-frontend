@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import React from 'react';
-import SVGIcon from '../Icon/SVGIcon';
+import SVGIcon from '../Icons/SVGIcon';
 import GoogleIcon from '@/assets/svgs/google-icon.svg';
 
 export default function LoginForm() {
