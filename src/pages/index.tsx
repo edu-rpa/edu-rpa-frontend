@@ -7,23 +7,11 @@ export default function Home() {
   return (
     <div>
       <p className="text-[red]">Home Page</p>
-      <Button
-        colorScheme="teal"
-        size="md"
-        onClick={() => {
-          router.push('/auth/login');
-        }}>
-        Login
+      <Button colorScheme="teal" variant="solid">
+        Button
       </Button>
-      <Button
-        colorScheme="blue"
-        variant="outline"
-        size="md"
-        className="ml-[20px]"
-        onClick={() => {
-          router.push('/auth/sign-up');
-        }}>
-        Sign up
+      <Button colorScheme="teal" variant="outline">
+        Button
       </Button>
     </div>
   );
