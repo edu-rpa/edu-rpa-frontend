@@ -6,7 +6,7 @@ interface Props {
 
 export default function BaseForm({ children }: Props) {
   return (
-    <div className="bg-[#fff] w-3/5 rounded-xl p-[30px] mr-[100px] shadow-custom-1">
+    <div className="bg-[#fff] w-full rounded-xl p-[30px] shadow-custom-1">
       {children}
     </div>
   );

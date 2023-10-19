@@ -5,10 +5,16 @@ import RPA from '@/assets/images/RPA.png';
 
 export default function Login() {
   return (
-    <div className="mt-[80px]">
-      <div className="flex justify-between w-4/5 m-auto">
+    <div className="flex flex-col justify-center items-center h-screen">
+      <div className="flex justify-between w-5/6 m-auto">
         <LoginForm />
-        <Image src={RPA} width={650} height={650} alt="RPA" />
+        <Image
+          className="ml-[30px] w-80"
+          src={RPA}
+          width={500}
+          height={500}
+          alt="RPA"
+        />
       </div>
     </div>
   );

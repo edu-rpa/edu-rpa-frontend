@@ -16,8 +16,11 @@ import React from 'react';
 import SVGIcon from '../Icons/SVGIcon';
 import GoogleIcon from '@/assets/svgs/google-icon.svg';
 import BaseForm from './BaseForm';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function LoginForm() {
+  const router = useRouter();
   const [isVisible, setIsVisible] = React.useState(false);
   const [user, setUser] = React.useState({
     email: '',
@@ -57,12 +60,16 @@ export default function LoginForm() {
           </InputRightElement>
         </InputGroup>
         <FormHelperText>
-          <a className="text-primary" href="/">
+          <Link className="text-primary" href="/auth/forget-password">
             Forgot password ?
-          </a>
+          </Link>
         </FormHelperText>
         {/* Sign In Button */}
-        <Button className="w-full mt-[20px]" colorScheme="teal" variant="solid">
+        <Button
+          className="w-full mt-[20px]"
+          colorScheme="teal"
+          variant="solid"
+          onClick={() => router.push('/')}>
           Sign in
         </Button>
         <Box position="relative" padding="5">

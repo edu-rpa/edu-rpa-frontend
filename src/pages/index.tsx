@@ -6,9 +6,5 @@ export default function Home() {
   useEffect(() => {
     router.push('/auth/login');
   }, []);
-  return (
-    <div>
-      <p className="text-[red]">Home Page</p>
-    </div>
-  );
+  return <div></div>;
 }
