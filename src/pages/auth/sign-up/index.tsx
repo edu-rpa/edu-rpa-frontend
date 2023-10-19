@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function SignUp() {
-  return <div className="text-[blue]">Sign Up Page</div>;
+  return <div className="flex justify-center items-center">Sign Up Page</div>;
 }

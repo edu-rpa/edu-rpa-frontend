@@ -11,10 +11,16 @@ export default function Header() {
       <div className="w-11/12 m-auto py-[20px] flex justify-between">
         <Image src={logo} width={150} height={150} alt="Logo" />
         <div className="flex justify-between items-center w-[200px]">
-          <Button colorScheme="teal" variant="outline">
+          <Button
+            colorScheme="teal"
+            variant="outline"
+            onClick={() => router.push('/auth/sign-up')}>
             Sign up
           </Button>
-          <Button colorScheme="teal" variant="solid">
+          <Button
+            colorScheme="teal"
+            variant="solid"
+            onClick={() => router.push('/auth/login')}>
             Sign in
           </Button>
         </div>

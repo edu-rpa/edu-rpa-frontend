@@ -15,6 +15,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import React from 'react';
 import SVGIcon from '../Icons/SVGIcon';
 import GoogleIcon from '@/assets/svgs/google-icon.svg';
+import BaseForm from './BaseForm';
 
 export default function LoginForm() {
   const [isVisible, setIsVisible] = React.useState(false);
@@ -23,7 +24,7 @@ export default function LoginForm() {
     password: '',
   });
   return (
-    <div className="bg-[#fff] w-3/5 rounded-xl p-[30px] mr-[100px] shadow-custom-1">
+    <BaseForm>
       <FormControl>
         <h1 className="text-primary font-bold text-3xl">Welcome</h1>
         <p className="text-secondary font-bold text-[15px] my-[20px]">
@@ -55,14 +56,21 @@ export default function LoginForm() {
             )}
           </InputRightElement>
         </InputGroup>
+        <FormHelperText>
+          <a className="text-primary" href="/">
+            Forgot password ?
+          </a>
+        </FormHelperText>
         {/* Sign In Button */}
         <Button className="w-full mt-[20px]" colorScheme="teal" variant="solid">
           Sign in
         </Button>
         <Box position="relative" padding="5">
           <Divider />
-          <AbsoluteCenter px="4" className="text-[14px] text-secondary">
-            or log in with google
+          <AbsoluteCenter
+            px="4"
+            className="text-[14px] text-secondary bg-[#fff]">
+            or log in with Google
           </AbsoluteCenter>
         </Box>
         {/* Google Button  */}
@@ -74,6 +82,6 @@ export default function LoginForm() {
           Sign in with Google
         </Button>
       </FormControl>
-    </div>
+    </BaseForm>
   );
 }
