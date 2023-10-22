@@ -20,12 +20,6 @@ export default function VerityOTPForm() {
   });
   return (
     <div className="w-30">
-      <h1 className="text-primary font-bold text-3xl text-center">
-        Verify OTP
-      </h1>
-      <p className="text-secondary text-[14px] my-[20px] text-center">
-        Please ensure OTP sent to your email
-      </p>
       <BaseForm>
         <FormControl>
           <h1 className="text-primary font-bold text-2xl text-center mb-[30px]">

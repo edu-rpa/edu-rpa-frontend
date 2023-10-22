@@ -100,7 +100,7 @@ export default function LoginForm() {
             <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
           )}
           <FormHelperText>
-            <Link as="a" href="/auth/forget-password">
+            <Link href="/auth/forget-password">
               <p className="text-primary">Forgot password?</p>
             </Link>
           </FormHelperText>

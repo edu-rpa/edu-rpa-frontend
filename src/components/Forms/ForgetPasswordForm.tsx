@@ -7,27 +7,35 @@ import {
   InputGroup,
   InputRightElement,
   Button,
-  Box,
-  Divider,
-  AbsoluteCenter,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import React from 'react';
-import SVGIcon from '../Icons/SVGIcon';
-import GoogleIcon from '@/assets/svgs/google-icon.svg';
 import BaseForm from './BaseForm';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 export default function ForgetPasswordForm() {
   const router = useRouter();
   const [isVisible, setIsVisible] = React.useState({
     newPassword: false,
     confirmPassword: false,
   });
-  const [user, setUser] = React.useState({
-    newPassword: '',
-    confirmPassword: '',
+  const formik = useFormik({
+    initialValues: {
+      newPassword: '',
+      confirmPassword: '',
+    },
+    validationSchema: Yup.object({
+      newPassword: Yup.string()
+        .min(6, 'Password must be at least 6 characters')
+        .required('New password is required'),
+      confirmPassword: Yup.string()
+        .min(6, 'Password must be at least 6 characters')
+        .required('Confirm password is required'),
+    }),
+    onSubmit: (values, actions) => {
+      actions.resetForm();
+    },
   });
   return (
     <div className="w-40">
@@ -38,69 +46,95 @@ export default function ForgetPasswordForm() {
         Regain Access to Your Account
       </p>
       <BaseForm>
-        <FormControl>
+        <form onSubmit={formik.handleSubmit}>
           <h1 className="text-primary font-bold text-2xl text-center mb-[30px]">
             Reset password
           </h1>
-          {/* New Password */}
-          <FormLabel>New Password</FormLabel>
-          <InputGroup>
-            <Input
-              placeholder="Your new password"
-              type={isVisible.newPassword ? 'text' : 'password'}
-            />
-            <InputRightElement
-              onClick={() =>
-                setIsVisible((prevState) => ({
-                  ...prevState,
-                  newPassword: !prevState.newPassword,
-                }))
-              }>
-              {isVisible.newPassword ? (
-                <ViewIcon
-                  color="gray.400"
-                  boxSize={5}
-                  className="hover:opacity-50 hover:cursor-pointer"
-                />
-              ) : (
-                <ViewOffIcon
-                  color="gray.400"
-                  boxSize={5}
-                  className="hover:opacity-50 hover:cursor-pointer"
-                />
+          <FormControl
+            isInvalid={
+              formik.touched.newPassword && !!formik.errors.newPassword
+            }>
+            {/* New Password */}
+            <FormLabel>New Password</FormLabel>
+            <InputGroup>
+              <Input
+                placeholder="Your new password"
+                id="newPassword"
+                name="newPassword"
+                value={formik.values.newPassword}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                type={isVisible.newPassword ? 'text' : 'password'}
+              />
+              <InputRightElement
+                onClick={() =>
+                  setIsVisible((prevState) => ({
+                    ...prevState,
+                    newPassword: !prevState.newPassword,
+                  }))
+                }>
+                {isVisible.newPassword ? (
+                  <ViewIcon
+                    color="gray.400"
+                    boxSize={5}
+                    className="hover:opacity-50 hover:cursor-pointer"
+                  />
+                ) : (
+                  <ViewOffIcon
+                    color="gray.400"
+                    boxSize={5}
+                    className="hover:opacity-50 hover:cursor-pointer"
+                  />
+                )}
+              </InputRightElement>
+            </InputGroup>
+            {formik.touched.newPassword && formik.errors.newPassword && (
+              <FormErrorMessage>{formik.errors.newPassword}</FormErrorMessage>
+            )}
+          </FormControl>
+          <FormControl
+            isInvalid={
+              formik.touched.confirmPassword && !!formik.errors.confirmPassword
+            }>
+            <FormLabel>Confirm Password</FormLabel>
+            <InputGroup>
+              <Input
+                placeholder="Confirm password"
+                id="confirmPassword"
+                name="confirmPassword"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                type={isVisible.confirmPassword ? 'text' : 'password'}
+              />
+              <InputRightElement
+                onClick={() =>
+                  setIsVisible((prevState) => ({
+                    ...prevState,
+                    confirmPassword: !prevState.confirmPassword,
+                  }))
+                }>
+                {isVisible.confirmPassword ? (
+                  <ViewIcon
+                    color="gray.400"
+                    boxSize={5}
+                    className="hover:opacity-50 hover:cursor-pointer"
+                  />
+                ) : (
+                  <ViewOffIcon
+                    color="gray.400"
+                    boxSize={5}
+                    className="hover:opacity-50 hover:cursor-pointer"
+                  />
+                )}
+              </InputRightElement>
+            </InputGroup>
+            {formik.touched.confirmPassword &&
+              formik.errors.confirmPassword && (
+                <FormErrorMessage>
+                  {formik.errors.confirmPassword}
+                </FormErrorMessage>
               )}
-            </InputRightElement>
-          </InputGroup>
-          {/* Confirm Password */}
-          <FormLabel>Confirm Password</FormLabel>
-          <InputGroup>
-            <Input
-              placeholder="Confirm password"
-              type={isVisible.confirmPassword ? 'text' : 'password'}
-            />
-            <InputRightElement
-              onClick={() =>
-                setIsVisible((prevState) => ({
-                  ...prevState,
-                  confirmPassword: !prevState.confirmPassword,
-                }))
-              }>
-              {isVisible.confirmPassword ? (
-                <ViewIcon
-                  color="gray.400"
-                  boxSize={5}
-                  className="hover:opacity-50 hover:cursor-pointer"
-                />
-              ) : (
-                <ViewOffIcon
-                  color="gray.400"
-                  boxSize={5}
-                  className="hover:opacity-50 hover:cursor-pointer"
-                />
-              )}
-            </InputRightElement>
-          </InputGroup>
-          {/* Sign In Button */}
+          </FormControl>
           <Button
             className="w-full mt-[20px]"
             colorScheme="teal"
@@ -108,7 +142,7 @@ export default function ForgetPasswordForm() {
             onClick={() => router.push('/auth/login')}>
             Save
           </Button>
-        </FormControl>
+        </form>
       </BaseForm>
     </div>
   );
