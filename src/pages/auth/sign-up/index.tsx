@@ -24,7 +24,11 @@ export default function SignUp() {
         />
       </div>
       <div className="flex justify-center items-center mt-[50px] mb-[20px]">
-        {activeStep == 1 ? <SignUpForm /> : <VerityOTPForm />}
+        {activeStep == 1 ? (
+          <SignUpForm setActiveStep={setActiveStep} />
+        ) : (
+          <VerityOTPForm />
+        )}
       </div>
     </div>
   );

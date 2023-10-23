@@ -17,21 +17,28 @@ import SVGIcon from '../Icons/SVGIcon';
 import GoogleIcon from '@/assets/svgs/google-icon.svg';
 import BaseForm from './BaseForm';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useMutation } from '@tanstack/react-query';
+import { SignUpDto } from '@/dto/authDto';
+import { useToast } from '@chakra-ui/react';
+import authApi from '@/apis/auth';
 
-export default function SignUpForm() {
-  const router = useRouter();
+interface SignUpFormProps {
+  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export default function SignUpForm(props: SignUpFormProps) {
   const [isVisible, setIsVisible] = React.useState(false);
+  const toast = useToast();
   const formik = useFormik({
     initialValues: {
-      fullname: '',
+      name: '',
       email: '',
       password: '',
     },
     validationSchema: Yup.object({
-      fullname: Yup.string().required('Fullname is required'),
+      name: Yup.string().required('Fullname is required'),
       email: Yup.string()
         .email('Invalid email address')
         .required('Email is required'),
@@ -43,6 +50,31 @@ export default function SignUpForm() {
       actions.resetForm();
     },
   });
+  const handleSignUp = useMutation({
+    mutationFn: async (payload: SignUpDto) => {
+      return await authApi.signUp(payload);
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Fill the confirm successfully !',
+        status: 'success',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+      props.setActiveStep(2);
+    },
+    onError: () => {
+      toast({
+        title: 'There are some errors in form. Please check carefully !',
+        status: 'error',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+    },
+  });
+
   return (
     <div className="w-40">
       <BaseForm>
@@ -67,20 +99,19 @@ export default function SignUpForm() {
               or fill in the form
             </AbsoluteCenter>
           </Box>
-          <FormControl
-            isInvalid={formik.touched.fullname && !!formik.errors.fullname}>
-            <FormLabel htmlFor="fullname">Full Name</FormLabel>
+          <FormControl isInvalid={formik.touched.name && !!formik.errors.name}>
+            <FormLabel htmlFor="name">Full Name</FormLabel>
             <Input
               placeholder="Your full name"
-              id="fullname"
-              name="fullname"
+              id="name"
+              name="name"
               type="text"
-              value={formik.values.fullname}
+              value={formik.values.name}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
-            {formik.touched.fullname && formik.errors.fullname && (
-              <FormErrorMessage>{formik.errors.fullname}</FormErrorMessage>
+            {formik.touched.name && formik.errors.name && (
+              <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
             )}
           </FormControl>
           <FormControl
@@ -138,7 +169,9 @@ export default function SignUpForm() {
             className="w-full mt-[20px]"
             colorScheme="teal"
             variant="solid"
-            onClick={() => router.push('/auth/confirm-email')}>
+            onClick={() => {
+              handleSignUp.mutate(formik.values);
+            }}>
             Sign up
           </Button>
           <div className="text-center mt-[10px]">
