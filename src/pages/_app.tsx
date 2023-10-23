@@ -5,6 +5,7 @@ import React from 'react';
 import '@/styles/global.css';
 import theme from '@/utils/theme';
 import Layout from '@/components/Layouts/Layout';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (_page: React.ReactElement) => React.ReactNode;
@@ -16,10 +17,13 @@ type AppPropsWithLayout = AppProps & {
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>);
+  const queryClient = new QueryClient();
   return (
-    <ChakraProvider theme={theme}>
-      {getLayout(<Component {...pageProps} />)}
-    </ChakraProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider theme={theme}>
+        {getLayout(<Component {...pageProps} />)}
+      </ChakraProvider>
+    </QueryClientProvider>
   );
 }
 
