@@ -20,9 +20,12 @@ import Link from 'next/link';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
-import { SignUpDto } from '@/dto/authDto';
+import { SignUpDto } from '@/dtos/authDto';
 import { useToast } from '@chakra-ui/react';
 import authApi from '@/apis/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateInfo } from '@/redux/slice/authSlice';
+import { authSelector } from '@/redux/selector';
 
 interface SignUpFormProps {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
@@ -30,6 +33,8 @@ interface SignUpFormProps {
 
 export default function SignUpForm(props: SignUpFormProps) {
   const [isVisible, setIsVisible] = React.useState(false);
+  const authPayload = useSelector(authSelector);
+  const dispatch = useDispatch();
   const toast = useToast();
   const formik = useFormik({
     initialValues: {
@@ -46,9 +51,7 @@ export default function SignUpForm(props: SignUpFormProps) {
         .min(6, 'Password must be at least 6 characters')
         .required('Password is required'),
     }),
-    onSubmit: (values, actions) => {
-      actions.resetForm();
-    },
+    onSubmit: (values, actions) => {},
   });
   const handleSignUp = useMutation({
     mutationFn: async (payload: SignUpDto) => {
@@ -62,6 +65,7 @@ export default function SignUpForm(props: SignUpFormProps) {
         duration: 1000,
         isClosable: true,
       });
+      dispatch(updateInfo(formik.values));
       props.setActiveStep(2);
     },
     onError: () => {
@@ -74,7 +78,12 @@ export default function SignUpForm(props: SignUpFormProps) {
       });
     },
   });
-
+  React.useEffect(() => {
+    const { email, password, name } = authPayload;
+    if (email && password && name) {
+      formik.setValues({ email, password, name });
+    }
+  }, []);
   return (
     <div className="w-40">
       <BaseForm>
@@ -169,6 +178,7 @@ export default function SignUpForm(props: SignUpFormProps) {
             className="w-full mt-[20px]"
             colorScheme="teal"
             variant="solid"
+            isLoading={handleSignUp.isPending}
             onClick={() => {
               handleSignUp.mutate(formik.values);
             }}>
