@@ -1,3 +1,3 @@
 import { RootState } from './store';
 
-export const emailSelector = (state: RootState) => state.email;
+export const authSelector = (state: RootState) => state.auth;

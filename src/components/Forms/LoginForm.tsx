@@ -12,6 +12,7 @@ import {
   AbsoluteCenter,
   Link,
   FormHelperText,
+  useToast,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
@@ -20,9 +21,14 @@ import SVGIcon from '../Icons/SVGIcon';
 import GoogleIcon from '@/assets/svgs/google-icon.svg';
 import BaseForm from './BaseForm';
 import { useRouter } from 'next/router';
+import { useMutation } from '@tanstack/react-query';
+import { LoginDto } from '@/dtos/authDto';
+import authApi from '@/apis/auth';
+import { localStorageService } from '@/utils/localStorageService';
 
 export default function LoginForm() {
   const router = useRouter();
+  const toast = useToast();
   const [isVisible, setIsVisible] = useState(false);
 
   const formik = useFormik({
@@ -38,8 +44,32 @@ export default function LoginForm() {
         .min(6, 'Password must be at least 6 characters')
         .required('Password is required'),
     }),
-    onSubmit: (values, actions) => {
-      actions.resetForm();
+    onSubmit: (values, actions) => {},
+  });
+
+  const handleLogin = useMutation({
+    mutationFn: async (payload: LoginDto) => {
+      return await authApi.login(payload);
+    },
+    onSuccess: (data) => {
+      toast({
+        title: 'Login successfully !',
+        status: 'success',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+      localStorageService.setProfile(data);
+      router.push('/');
+    },
+    onError: () => {
+      toast({
+        title: 'There are some errors in form. Please check carefully !',
+        status: 'error',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
     },
   });
 
@@ -111,7 +141,8 @@ export default function LoginForm() {
           className="w-full mt-[20px]"
           colorScheme="teal"
           variant="solid"
-          onClick={() => router.push('/')}>
+          isLoading={handleLogin.isPending}
+          onClick={() => handleLogin.mutate(formik.values)}>
           Sign in
         </Button>
 

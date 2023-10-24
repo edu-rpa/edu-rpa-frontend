@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getProfileFromLocalStorage } from './authentication';
 import { localStorageService } from '@/utils/localStorageService';
 
 const apiBase = axios.create();

@@ -33,9 +33,7 @@ export default function ForgetPasswordForm() {
         .min(6, 'Password must be at least 6 characters')
         .required('Confirm password is required'),
     }),
-    onSubmit: (values, actions) => {
-      actions.resetForm();
-    },
+    onSubmit: (values, actions) => {},
   });
   return (
     <div className="w-40">
