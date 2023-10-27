@@ -1,1 +1,1 @@
-export * from './bpmn-parser.util'
+export * from './bpmn-json-parser.util'

@@ -29,22 +29,26 @@ export type BPMNElement = {
 }
 
 export type PurpleAttributes = {
-    xmlns:           string;
-    "xmlns:bpmndi":  string;
-    "xmlns:omgdi":   string;
-    "xmlns:omgdc":   string;
-    "xmlns:xsi":     string;
+    xmlns?:           string;
+    "xmlns:bpmndi"?:  string;
+    "xmlns:bpmndc"?:  string;
+    "xmlns:bpmn"?:    string;
+    "xmlns:omgdi"?:   string;
+    "xmlns:omgdc"?:   string;
+    "xmlns:dc"?:   string;
+    "xmlns:di"?:   string;
+    "xmlns:xsi"?:     string;
     id:              string;
-    targetNamespace: string;
-    exporter:        string;
-    exporterVersion: string;
+    targetNamespace?: string;
+    exporter?:        string;
+    exporterVersion?: string;
 }
 
 export type PurpleElement = {
     type:       Type;
     name:       string;
     attributes: FluffyAttributes;
-    elements:   BpmnElement[];
+    elements:   FluffyElement[];
 }
 
 export type FluffyAttributes = {
@@ -52,15 +56,14 @@ export type FluffyAttributes = {
     isExecutable?: string;
 }
 
-export type BpmnElement = {
+export type FluffyElement = {
     type:       Type;
     name:       string;
-    text?:       string;
-    attributes: BpmnComponentAttributes;
-    elements:   BpmnElement[];
+    attributes: TentacledAttributes;
+    elements:   TentacledElement[];
 }
 
-export type BpmnComponentAttributes = {
+export type TentacledAttributes = {
     id:           string;
     processRef?:  string;
     name?:        string;
@@ -69,8 +72,14 @@ export type BpmnComponentAttributes = {
     bpmnElement?: string;
 }
 
+export type TentacledElement = {
+    type:        Type;
+    name:        string;
+    elements:    StickyElement[];
+    attributes?: StickyAttributes;
+}
 
-export type BpmnShapeAttributes = {
+export type StickyAttributes = {
     id:               string;
     sourceRef?:       string;
     targetRef?:       string;
@@ -78,13 +87,14 @@ export type BpmnShapeAttributes = {
     isHorizontal?:    string;
     isMarkerVisible?: string;
     isExpanded?:      string;
+    "xmlns:dc"?:      string;
 }
 
-export type BpmnShapeElement = {
+export type StickyElement = {
     type:        Type;
-    text:       string;
+    text?:       string;
     name?:       Name;
-    elements?:   BpmnShapeElement[];
+    elements?:   StickyElement[];
     attributes?: IndigoAttributes;
 }
 
@@ -97,12 +107,14 @@ export type IndigoAttributes = {
 }
 
 export enum Name {
-    BpmndiBPMNLabel = "bpmndi:BPMNLabel",
     Incoming = "incoming",
     OmgdcBounds = "omgdc:Bounds",
     OmgdiWaypoint = "omgdi:waypoint",
     Outgoing = "outgoing",
     StartEvent = "startEvent",
+    BpmndiBPMNLabel = "bpmndi:BPMNLabel",
+    DcBounds = "dc:Bounds",
+    DiWaypoint = "di:waypoint",
 }
 
 export enum Type {
@@ -293,33 +305,37 @@ const typeMap: any = {
         { json: "elements", js: "elements", typ: a(r("PurpleElement")) },
     ], false),
     "PurpleAttributes": o([
-        { json: "xmlns", js: "xmlns", typ: "" },
-        { json: "xmlns:bpmndi", js: "xmlns:bpmndi", typ: "" },
-        { json: "xmlns:omgdi", js: "xmlns:omgdi", typ: "" },
-        { json: "xmlns:omgdc", js: "xmlns:omgdc", typ: "" },
-        { json: "xmlns:xsi", js: "xmlns:xsi", typ: "" },
+        { json: "xmlns", js: "xmlns", typ: u(undefined, "") },
+        { json: "xmlns:bpmndi", js: "xmlns:bpmndi", typ: u(undefined, "") },
+        { json: "xmlns:bpmndc", js: "xmlns:bpmndc", typ: u(undefined, "") },
+        { json: "xmlns:bpmn", js: "xmlns:bpmn", typ: u(undefined, "") },
+        { json: "xmlns:omgdi", js: "xmlns:omgdi", typ: u(undefined, "") },
+        { json: "xmlns:omgdc", js: "xmlns:omgdc", typ: u(undefined, "") },
+        { json: "xmlns:di", js: "xmlns:di", typ: u(undefined, "") },
+        { json: "xmlns:dc", js: "xmlns:dc", typ: u(undefined, "") },
+        { json: "xmlns:xsi", js: "xmlns:xsi", typ: u(undefined, "") },
         { json: "id", js: "id", typ: "" },
-        { json: "targetNamespace", js: "targetNamespace", typ: "" },
-        { json: "exporter", js: "exporter", typ: "" },
-        { json: "exporterVersion", js: "exporterVersion", typ: "" },
+        { json: "targetNamespace", js: "targetNamespace", typ: u(undefined, "") },
+        { json: "exporter", js: "exporter",typ: u(undefined, "") },
+        { json: "exporterVersion", js: "exporterVersion", typ: u(undefined, "") },
     ], false),
     "PurpleElement": o([
         { json: "type", js: "type", typ: r("Type") },
         { json: "name", js: "name", typ: "" },
         { json: "attributes", js: "attributes", typ: r("FluffyAttributes") },
-        { json: "elements", js: "elements", typ: a(r("BpmnElement")) },
+        { json: "elements", js: "elements", typ: a(r("FluffyElement")) },
     ], false),
     "FluffyAttributes": o([
         { json: "id", js: "id", typ: "" },
         { json: "isExecutable", js: "isExecutable", typ: u(undefined, "") },
     ], false),
-    "BpmnElement": o([
+    "FluffyElement": o([
         { json: "type", js: "type", typ: r("Type") },
         { json: "name", js: "name", typ: "" },
-        { json: "attributes", js: "attributes", typ: r("BpmnComponentAttributes") },
-        { json: "elements", js: "elements", typ: a(r("BpmnComponentElement")) },
+        { json: "attributes", js: "attributes", typ: r("TentacledAttributes") },
+        { json: "elements", js: "elements", typ: a(r("TentacledElement")) },
     ], false),
-    "BpmnComponentAttributes": o([
+    "TentacledAttributes": o([
         { json: "id", js: "id", typ: "" },
         { json: "processRef", js: "processRef", typ: u(undefined, "") },
         { json: "name", js: "name", typ: u(undefined, "") },
@@ -327,13 +343,13 @@ const typeMap: any = {
         { json: "targetRef", js: "targetRef", typ: u(undefined, "") },
         { json: "bpmnElement", js: "bpmnElement", typ: u(undefined, "") },
     ], false),
-    "BpmnComponentElement": o([
+    "TentacledElement": o([
         { json: "type", js: "type", typ: r("Type") },
         { json: "name", js: "name", typ: "" },
-        { json: "elements", js: "elements", typ: a(r("BpmnShapeElement")) },
-        { json: "attributes", js: "attributes", typ: u(undefined, r("BpmnShapeAttributes")) },
+        { json: "elements", js: "elements", typ: a(r("StickyElement")) },
+        { json: "attributes", js: "attributes", typ: u(undefined, r("StickyAttributes")) },
     ], false),
-    "BpmnShapeAttributes": o([
+    "StickyAttributes": o([
         { json: "id", js: "id", typ: "" },
         { json: "sourceRef", js: "sourceRef", typ: u(undefined, "") },
         { json: "targetRef", js: "targetRef", typ: u(undefined, "") },
@@ -342,11 +358,11 @@ const typeMap: any = {
         { json: "isMarkerVisible", js: "isMarkerVisible", typ: u(undefined, "") },
         { json: "isExpanded", js: "isExpanded", typ: u(undefined, "") },
     ], false),
-    "BpmnShapeElement": o([
+    "StickyElement": o([
         { json: "type", js: "type", typ: r("Type") },
         { json: "text", js: "text", typ: u(undefined, "") },
         { json: "name", js: "name", typ: u(undefined, r("Name")) },
-        { json: "elements", js: "elements", typ: u(undefined, a(r("BpmnShapeElement"))) },
+        { json: "elements", js: "elements", typ: u(undefined, a(r("StickyElement"))) },
         { json: "attributes", js: "attributes", typ: u(undefined, r("IndigoAttributes")) },
     ], false),
     "IndigoAttributes": o([
@@ -363,6 +379,9 @@ const typeMap: any = {
         "omgdi:waypoint",
         "outgoing",
         "startEvent",
+        "bpmndi:BPMNLabel",
+        "dc:Bounds",
+        "di:waypoint",
     ],
     "Type": [
         "element",
