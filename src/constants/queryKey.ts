@@ -1,0 +1,5 @@
+export enum QUERY_KEY_AUTH {
+  LOGIN = 'LOGIN',
+  SIGN_UP = 'SIGN_UP',
+  VERIFY_OTP = 'VERIFY_OTP',
+}
