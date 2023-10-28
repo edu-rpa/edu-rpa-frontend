@@ -2,11 +2,10 @@ import { BpmnParseError } from "../error";
 import { BpmnElement } from "./bpmn.dto";
 
 export class BpmnNode {
-
+    id: string = ""
 }
 
 export class BpmnStartEvent extends BpmnNode{
-    id: string = ""
     outgoing: string[] = []
     public constructor(element:BpmnElement) {
         super();
@@ -55,7 +54,7 @@ export class BpmnExclusiveGateway extends BpmnNode{
 
 export class BpmnProcess {
     elements: {[key: string]: BpmnNode} = {};
-    flows: {[key: string]: any} = {};
+    flows: {[key: string]: BpmnFlow} = {};
     body : BpmnNode[] = []
     constructor(
         public name: string,
