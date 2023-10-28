@@ -1,3 +1,5 @@
+import { BpmnProcess } from "./bpmn"
+
 class BpmnComponent {
   id = ""
   name = ""

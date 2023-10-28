@@ -1,0 +1,131 @@
+{
+  "block": [
+    {
+      "id": "Activity_0pkjxtm",
+      "name": "Open Browser",
+      "incomming": [
+        "Flow_12ctyks"
+      ],
+      "outgoing": [
+        "Flow_1ufgvsl"
+      ]
+    },
+    {
+      "id": "Activity_1536xo5",
+      "name": "Get Title Assign to ${title}",
+      "incomming": [
+        "Flow_1ufgvsl"
+      ],
+      "outgoing": [
+        "Flow_0c0pvmq"
+      ]
+    },
+    {
+      "start": "Gateway_0sc92or",
+      "braches": [
+        {
+          "block": [
+            {
+              "id": "Activity_1gusysf",
+              "name": "Log Screen",
+              "incomming": [
+                "Flow_1u5v65y"
+              ],
+              "outgoing": [
+                "Flow_0acg68n"
+              ]
+            },
+            {
+              "id": "Activity_173a9c7",
+              "name": "Click \"Dịch vụ Internet\"",
+              "incomming": [
+                "Flow_0acg68n"
+              ],
+              "outgoing": [
+                "Flow_1r4gg47"
+              ]
+            }
+          ]
+        },
+        {
+          "block": [
+            {
+              "id": "Activity_0m9hqf4",
+              "name": "Log Screen",
+              "incomming": [
+                "Flow_0q637w1"
+              ],
+              "outgoing": [
+                "Flow_0xd1c08"
+              ]
+            },
+            {
+              "start": "Gateway_12fobzq",
+              "braches": [
+                {
+                  "block": [
+                    {
+                      "id": "Activity_0p2itoz",
+                      "name": "Click \"Thảo luận\"",
+                      "incomming": [
+                        "Flow_1m11vkb"
+                      ],
+                      "outgoing": [
+                        "Flow_08g2s7f"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "block": [
+                    {
+                      "id": "Activity_072vuzz",
+                      "name": "Break",
+                      "incomming": [
+                        "Flow_1eahtb9"
+                      ],
+                      "outgoing": [
+                        "Flow_16hyvza"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "Activity_1az9oha",
+              "name": "Click \"Thảo luận\"",
+              "incomming": [
+                "Flow_08g2s7f",
+                "Flow_16hyvza"
+              ],
+              "outgoing": [
+                "Flow_19945vu"
+              ]
+            },
+            {
+              "id": "Activity_1juwgjw",
+              "name": "Break",
+              "incomming": [
+                "Flow_19945vu"
+              ],
+              "outgoing": [
+                "Flow_03hvnx5"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Activity_1juwgjw",
+      "name": "Break",
+      "incomming": [
+        "Flow_19945vu"
+      ],
+      "outgoing": [
+        "Flow_03hvnx5"
+      ]
+    }
+  ]
+}
