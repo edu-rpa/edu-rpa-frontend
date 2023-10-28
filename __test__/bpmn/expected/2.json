@@ -1,93 +1,59 @@
 {
-  "name": "Tasks",
-  "doc": "Playwright template.",
-  "source": "D:\\DACN\\Robot Experiment\\RobotPlaywright\\tasks.robot",
-  "rpa": true,
-  "tests": [
+  "block": [
     {
-      "name": "Minimal task",
-      "lineno": 10,
-      "body": [
+      "id": "Activity_0pkjxtm",
+      "name": "Open Browser",
+      "incomming": ["Flow_12ctyks"],
+      "outgoing": ["Flow_1ufgvsl"]
+    },
+    {
+      "id": "Activity_1536xo5",
+      "name": "Get Title Assign to ${title}",
+      "incomming": ["Flow_1ufgvsl"],
+      "outgoing": ["Flow_0c0pvmq"]
+    },
+    {
+      "start": "Gateway_0sc92or",
+      "braches": [
         {
-          "name": "Open Browser",
-          "args": ["https://vi.wikipedia.org/wiki/Blog", "chromium"],
-          "lineno": 11
-        },
-        {
-          "name": "Get Title",
-          "assign": ["${title} ="],
-          "lineno": 12
-        },
-        {
-          "name": "Log",
-          "args": ["${title}"],
-          "lineno": 13
-        },
-        {
-          "type": "IF/ELSE ROOT",
-          "body": [
+          "block": [
             {
-              "type": "IF",
-              "condition": "'Example' in '${title}'",
-              "body": [
-                {
-                  "name": "Log",
-                  "args": ["The page title contains 'Example'"],
-                  "lineno": 15
-                },
-                {
-                  "name": "Click",
-                  "args": [
-                    "//*[@id=\"mw-content-text\"]/div[1]/table[1]/tbody/tr[2]/th/a"
-                  ],
-                  "lineno": 16
-                }
-              ],
-              "lineno": 14
+              "id": "Activity_1gusysf",
+              "name": "Log Screen",
+              "incomming": ["Flow_1u5v65y"],
+              "outgoing": ["Flow_0acg68n"]
             },
             {
-              "type": "ELSE",
-              "body": [
-                {
-                  "name": "Log",
-                  "args": ["The page title does not contain 'Example'"],
-                  "lineno": 18
-                },
-                {
-                  "name": "Click",
-                  "args": ["//*[@id=\"ca-talk\"]/a"],
-                  "lineno": 19
-                }
-              ],
-              "lineno": 17
+              "id": "Activity_173a9c7",
+              "name": "Click \"Dịch vụ Internet\"",
+              "incomming": ["Flow_0acg68n"],
+              "outgoing": ["Flow_1r4gg47"]
             }
-          ],
-          "lineno": 14
+          ]
         },
         {
-          "name": "Close Browser",
-          "lineno": 21
+          "block": [
+            {
+              "id": "Activity_0m9hqf4",
+              "name": "Log Screen",
+              "incomming": ["Flow_0q637w1"],
+              "outgoing": ["Flow_0dumw2x"]
+            },
+            {
+              "id": "Activity_0p2itoz",
+              "name": "Click \"Thảo luận\"",
+              "incomming": ["Flow_0dumw2x"],
+              "outgoing": ["Flow_0d7t0oh"]
+            }
+          ]
         }
       ]
+    },
+    {
+      "id": "Activity_012ckfs",
+      "name": "Close Browser",
+      "incomming": ["Flow_0acsgi9"],
+      "outgoing": ["Flow_0piu48d"]
     }
-  ],
-  "resource": {
-    "imports": [
-      {
-        "type": "LIBRARY",
-        "name": "RPA.Browser.Playwright",
-        "lineno": 4
-      },
-      {
-        "type": "LIBRARY",
-        "name": "RPA.FTP",
-        "lineno": 5
-      },
-      {
-        "type": "LIBRARY",
-        "name": "RPA.Smartsheet",
-        "lineno": 6
-      }
-    ]
-  }
+  ]
 }

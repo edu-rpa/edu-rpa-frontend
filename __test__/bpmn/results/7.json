@@ -1,0 +1,47 @@
+{
+  "block": [
+    {
+      "start": "Gateway_0uqg7tr",
+      "braches": [
+        {
+          "block": []
+        },
+        {
+          "block": [
+            {
+              "id": "Activity_0pkjxtm",
+              "name": "Open Browser",
+              "incomming": [
+                "Flow_0haw5vn"
+              ],
+              "outgoing": [
+                "Flow_0a8x10v"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Activity_1536xo5",
+      "name": "Get Title Assign to ${title}",
+      "incomming": [
+        "Flow_19fnu56",
+        "Flow_0a8x10v"
+      ],
+      "outgoing": [
+        "Flow_0vxkb6m"
+      ]
+    },
+    {
+      "id": "Activity_012ckfs",
+      "name": "Close Browser",
+      "incomming": [
+        "Flow_0vxkb6m"
+      ],
+      "outgoing": [
+        "Flow_0piu48d"
+      ]
+    }
+  ]
+}

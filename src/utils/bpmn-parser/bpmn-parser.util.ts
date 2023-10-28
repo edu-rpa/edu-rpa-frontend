@@ -12,10 +12,12 @@ import {
 } from "./model/bpmn";
 
 import { DirectedAcyclicGraph } from "typescript-graph";
-import { log } from "console";
-import { BpmnParseError } from "./error";
+import { BpmnParseError, BpmnParseErrorCode } from "./error";
 import { CustomGraph } from "./visitor/graph";
 import { Edge } from "typescript-graph/dist/types/graph";
+import { Block, Branch, Sequence } from "./visitor/BasicBlock";
+import { join } from "path";
+
 var convert = require("xml-js");
 var fs = require("fs");
 var options = { ignoreComment: true, alwaysChildren: true };
@@ -23,7 +25,7 @@ var options = { ignoreComment: true, alwaysChildren: true };
 export class BpmnParser {
   constructor() {}
 
-  public parse(fileName: string): BpmnProcess {
+  public parse(fileName: string) {
     // Convert XML to JSON Format
     let xml = fs.readFileSync(fileName, "utf8");
     let result = convert.xml2js(xml, options);
@@ -41,9 +43,14 @@ export class BpmnParser {
 
     // Component Analyze: Detect control sequence If Branch
     let g = new GraphVisitor(bpmnProcess);
-    g.buildGraph();
-
-    return bpmnProcess;
+    let block = g.buildGraph().buildBasicBlock();
+    fs.writeFile(
+      `__test__/bpmn/results/${fileName.split("/").at(-1)?.split(".")[0]}.json`,
+      JSON.stringify(block, null, 2),
+      "utf8",
+      () => {}
+    );
+    return block;
   }
 
   private parseElement(elements: BpmnElement[], process: BpmnProcess) {
@@ -126,6 +133,7 @@ class GraphVisitor {
 
     this.nodes = this.graph.getNodesMap();
     this.adjacency = this.graph.getAdjacency();
+    this.haveCycle = !this.graph.isAcyclic();
 
     // Check Graph Condition
     this.check();
@@ -139,112 +147,95 @@ class GraphVisitor {
       .getNodes()
       .map((node) => node.id)
       .filter((nodeid) => this.graph.indegreeOfNode(nodeid) > 1);
-    console.log("Split:", this.splitNode);
-    console.log("Join:", this.joinNode);
-
-    this.haveCycle = !this.graph.isAcyclic();
-
-    if (!this.haveCycle) {
-      const topoSortArray = DirectedAcyclicGraph.fromDirectedGraph(
-        this.graph
-      ).topologicallySortedNodes();
-      /**
-       * Split: 1 in - many out
-       * Join:  many in - 1 out
-       */
-      if (
-        !(topoSortArray[0] instanceof BpmnStartEvent) &&
-        !(topoSortArray[topoSortArray.length - 1] instanceof BpmnEndEvent)
-      ) {
-        throw new BpmnParseError("Invalid Struture - Flow Must Follow From End To Start", this.process.id);
-      }
-
-      let str = "";
-      let indent = "";
-      for (let node of topoSortArray) {
-        let nodeId = node.id;
-
-        if (node instanceof BpmnTask) {
-          if (this.joinNode.includes(nodeId)) {
-            indent = indent.slice(1);
-            str += indent + `END ${nodeId}\n`;
-          }
-          str += indent + `${nodeId}\n`;
-        } else if (node instanceof BpmnExclusiveGateway) {
-          if (
-            this.splitNode.includes(nodeId) &&
-            this.joinNode.includes(nodeId)
-          ) {
-            throw new BpmnParseError("Both a split node and a join node", nodeId)
-          } else if (this.splitNode.includes(nodeId)) {
-            this.ifStart.push(nodeId);
-            str += indent + `IF ${nodeId}\n`;
-            indent += "\t";
-          } else if (this.joinNode.includes(nodeId)) {
-            indent = indent.slice(1);
-            str += indent + `END ${nodeId}\n`;
-          }
-        }
-      } 
-
-      console.log(str);
-    }else {
-      throw new BpmnParseError("Detected Loop in Process - Unsupported", this.process.id)
-    }
     return this;
   }
 
+
   private check() {
+    if (this.haveCycle) {
+      throw new BpmnParseError(
+        BpmnParseErrorCode["Detected Loop in Process - Unsupported"],
+        this.process.id
+      );
+    }
+
+    // Source and Sink must connect
     if (!this.graph.canReachFrom(this.source, this.sink)) {
       throw new BpmnParseError(
-        "Invalid Workflow - start and end event not connect",
+        BpmnParseErrorCode[
+          "Invalid Workflow - start and end event not connect"
+        ],
+        this.process.id
+      );
+    }
+    // Check if start is StartEvent and end is EndEvent
+    const topoSortArray = DirectedAcyclicGraph.fromDirectedGraph(
+      this.graph
+    ).topologicallySortedNodes();
+    if (
+      !(topoSortArray[0] instanceof BpmnStartEvent) &&
+      !(topoSortArray[topoSortArray.length - 1] instanceof BpmnEndEvent)
+    ) {
+      throw new BpmnParseError(
+        BpmnParseErrorCode[
+          "Invalid Struture - Flow Must Follow From End To Start"
+        ],
         this.process.id
       );
     }
   }
+  buildBasicBlock() {
+    let sequence = this.dfs(this.source);
+    return sequence;
+  }
 
-  vistit(nodeId: string) {
-    if (this.visited.includes(nodeId)) return;
+  visit(
+    nodeId: string,
+    sequence: Sequence
+  ): { sequence: Sequence; joinNodeId: string } {
+    if (this.visited.includes(nodeId)) return { sequence, joinNodeId: nodeId };
     this.visited.push(nodeId);
-    let nodeIdentities = Array.from(this.nodes.keys());
-    let indexOfNode = nodeIdentities.indexOf(nodeId);
-    let adjacent = this.adjacency[indexOfNode].map((i) => nodeIdentities[i]);
-    for (let node of adjacent) {
-      if (!this.visited.includes(node)) this.vistit(node);
+    let adjacent = this.graph.getAdjacent(nodeId);
+    let node = this.graph.getNode(nodeId);
+
+    if (node instanceof BpmnTask) {
+      if (
+        this.joinNode.includes(nodeId) &&
+        !(sequence.block.at(-1) instanceof Branch)
+      ) {
+        return { sequence, joinNodeId: nodeId };
+      }
+      sequence.block.push(node);
+      return this.visit(adjacent[0], sequence);
+    } else if (node instanceof BpmnExclusiveGateway) {
+      if (this.splitNode.includes(nodeId)) {
+        let curBlock = new Branch(nodeId);
+        let joinNodeId: string = "";
+        for (let n of adjacent) {
+          let { sequence: branchSequence, joinNodeId: branchJoinNodeId } =
+            this.visit(n, new Sequence());
+          curBlock.braches.push(branchSequence);
+          joinNodeId = branchJoinNodeId;
+        }
+        this.visited = this.visited.filter((e) => e != joinNodeId);
+        sequence.block.push(curBlock);
+        this.visit(joinNodeId, sequence); // May be affected by for loop ?
+        let joinNodeAdjacent = this.graph.getAdjacent(joinNodeId);
+        return this.visit(joinNodeAdjacent[0], sequence);
+      } else if (this.joinNode.includes(nodeId)) {
+        return { sequence, joinNodeId: nodeId };
+      }
+    } else if (node instanceof BpmnEndEvent) {
+      return { sequence, joinNodeId: nodeId };
     }
+    return this.visit(adjacent[0], sequence);
   }
 
   dfs(nodeId: string) {
-    this.visited.push(nodeId);
-    let nodeIdentities = Array.from(this.nodes.keys());
-    let indexOfNode = nodeIdentities.indexOf(nodeId);
-    let adjacent = this.adjacency[indexOfNode].map((i) => nodeIdentities[i]);
-    for (let node of adjacent) {
-      this.vistit(node);
-    }
-  }
+    let sequence: Sequence = new Sequence();
+    this.visited = []; // Reset the visited array for each traversal.
+    this.visit(nodeId, sequence); // Start the traversal from the initial node.
 
-  private nhap() {
-    // DFS
-    // Directed Graph - 1 sink and 1 source
-    let stack = [this.source];
-    let traverseStr = "";
-
-    while (stack.length) {
-      let nodeId = stack.pop();
-      if (!nodeId) break;
-      if (this.visited.includes(nodeId)) continue;
-      this.visited.push(nodeId);
-      traverseStr += nodeId?.toString() + "\n";
-
-      let nodeIdentities = Array.from(this.nodes.keys());
-      let indexOfNode = nodeIdentities.indexOf(nodeId);
-      let adjacent = this.adjacency[indexOfNode]
-        .map((value, index) => (value ? index : -1))
-        .filter((i) => i != -1)
-        .map((i) => nodeIdentities[i]);
-      stack = stack.concat(adjacent);
-    }
-    console.log(traverseStr);
+    return sequence;
   }
 }
