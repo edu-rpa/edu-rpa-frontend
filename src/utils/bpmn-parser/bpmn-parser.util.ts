@@ -14,6 +14,7 @@ var convert = require("xml-js");
 var fs = require("fs");
 var options = { ignoreComment: true, alwaysChildren: true };
 
+
 export class BpmnParser {
 
   constructor() {}
@@ -28,13 +29,14 @@ export class BpmnParser {
       e.name.includes("process")
     )[0];
 
+    console.log(process)
+
     const process_name = process.name;
     const process_attributes = process.attributes;
 
-    let bpmnProcess = new BpmnProcess();
+    let bpmnProcess = new BpmnProcess(process_name, process_attributes.id);
     this.parseElement(process.elements as BpmnElement[], bpmnProcess);
-    bpmnProcess.check();
-
+    bpmnProcess.check()
     return bpmnProcess;
   }
 

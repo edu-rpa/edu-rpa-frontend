@@ -54,12 +54,13 @@ export class BpmnExclusiveGateway extends BpmnNode{
 }
 
 export class BpmnProcess {
-    id: string = ""
-    name: string = ""
     elements: {[key: string]: BpmnNode} = {};
     flows: {[key: string]: any} = {};
     body : BpmnNode[] = []
-    
+    constructor(
+        public name: string,
+        public id : string,
+    ) {}
     public check() {
         let startEventId = Object.keys(this.elements).find(key => this.elements[key] instanceof BpmnStartEvent);
         if(!startEventId)
@@ -76,9 +77,7 @@ export class BpmnSubprocess extends BpmnProcess{
     outgoing: string[] = []
     body : BpmnNode[] = []
     public constructor(element: BpmnElement) {
-        super();
-        this.id = element.attributes.id
-        this.name = element.attributes.name || ""
+        super(element.attributes.name || "",element.attributes.id);
         this.incomming = element.elements.filter(e => e.name === "bpmn:incoming").map((e) => e.elements[0].text || "")
         this.outgoing = element.elements.filter(e => e.name === "bpmn:outgoing").map((e) => e.elements[0].text || "")
     }

@@ -13,24 +13,4 @@ describe("BPMN Test", () => {
         console.log(process)
     })
 
-    it("Test", () => {
-        let properties = {
-            "startEvent_123": {
-                templateId: "",
-                displayName: "",
-                description: "",
-                iconCode: "",     // used to display activity template's icon dynamically at FE
-                type: "",          // activity / subprocess / branch
-                arguments: {
-                    
-                },
-                return: {
-
-                }
-            }
-        }
-        let process = new BpmnParser().parse("__test__/bpmn/2.xml")
-        let rbt = new Bpmn2RbtParser().parse(process)
-        console.log(process)
-    })
 })
