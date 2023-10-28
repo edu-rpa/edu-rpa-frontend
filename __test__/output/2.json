@@ -1,0 +1,179 @@
+{
+  "name": "bpmn:process",
+  "id": "Process_04og7m0",
+  "elements": {
+    "StartEvent_1mxxylx": {
+      "id": "StartEvent_1mxxylx",
+      "outgoing": [
+        "Flow_12ctyks"
+      ]
+    },
+    "Activity_0pkjxtm": {
+      "id": "Activity_0pkjxtm",
+      "name": "Open Browser",
+      "incomming": [
+        "Flow_12ctyks"
+      ],
+      "outgoing": [
+        "Flow_1ufgvsl"
+      ]
+    },
+    "Activity_1536xo5": {
+      "id": "Activity_1536xo5",
+      "name": "Get Title Assign to ${title}",
+      "incomming": [
+        "Flow_1ufgvsl"
+      ],
+      "outgoing": [
+        "Flow_0c0pvmq"
+      ]
+    },
+    "Gateway_0sc92or": {
+      "id": "Gateway_0sc92or",
+      "name": "",
+      "incomming": [
+        "Flow_0c0pvmq"
+      ],
+      "outgoing": [
+        "Flow_1u5v65y",
+        "Flow_0q637w1"
+      ]
+    },
+    "Activity_1gusysf": {
+      "id": "Activity_1gusysf",
+      "name": "Log Screen",
+      "incomming": [
+        "Flow_1u5v65y"
+      ],
+      "outgoing": [
+        "Flow_0acg68n"
+      ]
+    },
+    "Activity_0m9hqf4": {
+      "id": "Activity_0m9hqf4",
+      "name": "Log Screen",
+      "incomming": [
+        "Flow_0q637w1"
+      ],
+      "outgoing": [
+        "Flow_0dumw2x"
+      ]
+    },
+    "Gateway_1w9pebz": {
+      "id": "Gateway_1w9pebz",
+      "name": "",
+      "incomming": [
+        "Flow_1r4gg47",
+        "Flow_0d7t0oh"
+      ],
+      "outgoing": [
+        "Flow_0acsgi9"
+      ]
+    },
+    "Activity_012ckfs": {
+      "id": "Activity_012ckfs",
+      "name": "Close Browser",
+      "incomming": [
+        "Flow_0acsgi9"
+      ],
+      "outgoing": [
+        "Flow_0piu48d"
+      ]
+    },
+    "Event_10jy91v": {
+      "id": "Event_10jy91v",
+      "incomming": [
+        "Flow_0piu48d"
+      ]
+    },
+    "Activity_173a9c7": {
+      "id": "Activity_173a9c7",
+      "name": "Click \"Dịch vụ Internet\"",
+      "incomming": [
+        "Flow_0acg68n"
+      ],
+      "outgoing": [
+        "Flow_1r4gg47"
+      ]
+    },
+    "Activity_0p2itoz": {
+      "id": "Activity_0p2itoz",
+      "name": "Click \"Thảo luận\"",
+      "incomming": [
+        "Flow_0dumw2x"
+      ],
+      "outgoing": [
+        "Flow_0d7t0oh"
+      ]
+    }
+  },
+  "flows": {
+    "Flow_12ctyks": {
+      "id": "Flow_12ctyks",
+      "source": "StartEvent_1mxxylx",
+      "target": "Activity_0pkjxtm",
+      "name": ""
+    },
+    "Flow_1ufgvsl": {
+      "id": "Flow_1ufgvsl",
+      "source": "Activity_0pkjxtm",
+      "target": "Activity_1536xo5",
+      "name": ""
+    },
+    "Flow_0c0pvmq": {
+      "id": "Flow_0c0pvmq",
+      "source": "Activity_1536xo5",
+      "target": "Gateway_0sc92or",
+      "name": ""
+    },
+    "Flow_1u5v65y": {
+      "id": "Flow_1u5v65y",
+      "source": "Gateway_0sc92or",
+      "target": "Activity_1gusysf",
+      "name": "'Element' in ${title}"
+    },
+    "Flow_0q637w1": {
+      "id": "Flow_0q637w1",
+      "source": "Gateway_0sc92or",
+      "target": "Activity_0m9hqf4",
+      "name": "else"
+    },
+    "Flow_0acg68n": {
+      "id": "Flow_0acg68n",
+      "source": "Activity_1gusysf",
+      "target": "Activity_173a9c7",
+      "name": ""
+    },
+    "Flow_0dumw2x": {
+      "id": "Flow_0dumw2x",
+      "source": "Activity_0m9hqf4",
+      "target": "Activity_0p2itoz",
+      "name": ""
+    },
+    "Flow_0acsgi9": {
+      "id": "Flow_0acsgi9",
+      "source": "Gateway_1w9pebz",
+      "target": "Activity_012ckfs",
+      "name": ""
+    },
+    "Flow_0piu48d": {
+      "id": "Flow_0piu48d",
+      "source": "Activity_012ckfs",
+      "target": "Event_10jy91v",
+      "name": ""
+    },
+    "Flow_1r4gg47": {
+      "id": "Flow_1r4gg47",
+      "source": "Activity_173a9c7",
+      "target": "Gateway_1w9pebz",
+      "name": ""
+    },
+    "Flow_0d7t0oh": {
+      "id": "Flow_0d7t0oh",
+      "source": "Activity_0p2itoz",
+      "target": "Gateway_1w9pebz",
+      "name": ""
+    }
+  },
+  "body": []
+}

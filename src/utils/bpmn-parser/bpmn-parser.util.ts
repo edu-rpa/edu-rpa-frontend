@@ -1,5 +1,5 @@
-import { Bpmn, Convert } from ".";
-import { BpmnElement } from "./model/bpmn.dto";
+import { Bpmn, Convert } from '.';
+import { BpmnElement } from './model/bpmn.dto';
 import {
   BpmnEndEvent,
   BpmnExclusiveGateway,
@@ -33,7 +33,7 @@ export class BpmnParser {
 
     // Conver JSON To BpmnObject
     let process = bpmn.elements[0].elements.filter((e) =>
-      e.name.includes("process")
+      e.name.includes('process')
     )[0];
     const process_name = process.name;
     const process_attributes = process.attributes;
@@ -56,28 +56,28 @@ export class BpmnParser {
   private parseElement(elements: BpmnElement[], process: BpmnProcess) {
     elements.forEach((element) => {
       switch (true) {
-        case element.name.includes("startEvent"):
+        case element.name.includes('startEvent'):
           let startEvent = new BpmnStartEvent(element);
           process.elements[startEvent.id] = startEvent;
           break;
-        case element.name.includes("endEvent"):
+        case element.name.includes('endEvent'):
           let endEvent = new BpmnEndEvent(element);
           process.elements[endEvent.id] = endEvent;
           break;
-        case element.name.includes("task"):
+        case element.name.includes('task'):
           let bpmnTask: BpmnTask = new BpmnTask(element);
           process.elements[bpmnTask.id] = bpmnTask;
           break;
-        case element.name.includes("exclusiveGateway"):
+        case element.name.includes('exclusiveGateway'):
           let bpmnExclusiveGateway: BpmnExclusiveGateway =
             new BpmnExclusiveGateway(element);
           process.elements[bpmnExclusiveGateway.id] = bpmnExclusiveGateway;
           break;
-        case element.name.includes("sequenceFlow"):
+        case element.name.includes('sequenceFlow'):
           let bpmnFlow: BpmnFlow = new BpmnFlow(element);
           process.flows[bpmnFlow.id] = bpmnFlow;
           break;
-        case element.name.includes("subProcess"):
+        case element.name.includes('subProcess'):
           let bpmnSubprocess: BpmnSubprocess = new BpmnSubprocess(element);
           process.elements[bpmnSubprocess.id] = bpmnSubprocess;
           this.parseElement(element.elements, bpmnSubprocess);
