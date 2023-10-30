@@ -13,10 +13,11 @@ import {
 
 import { DirectedAcyclicGraph } from "typescript-graph";
 import { BpmnParseError, BpmnParseErrorCode } from "./error";
-import { CustomGraph } from "./visitor/graph";
+import { CustomGraph, GraphVisitor } from "./visitor/graph";
 import { Edge } from "typescript-graph/dist/types/graph";
 import { Block, Branch, Sequence } from "./visitor/BasicBlock";
 import { join } from "path";
+import { createScopedAnimate } from 'framer-motion/dom';
 
 var convert = require("xml-js");
 var fs = require("fs");
@@ -42,15 +43,9 @@ export class BpmnParser {
     bpmnProcess.check();
 
     // Component Analyze: Detect control sequence If Branch
-    let g = new GraphVisitor(bpmnProcess);
-    let block = g.buildGraph().buildBasicBlock();
-    fs.writeFile(
-      `__test__/bpmn/results/${fileName.split("/").at(-1)?.split(".")[0]}.json`,
-      JSON.stringify(block, null, 2),
-      "utf8",
-      () => {}
-    );
-    return block;
+    let g = new ConcreteGraphVisitor(bpmnProcess);
+    let sequence = g.buildGraph().buildBasicBlock();
+    return sequence;
   }
 
   private parseElement(elements: BpmnElement[], process: BpmnProcess) {
@@ -89,36 +84,33 @@ export class BpmnParser {
   }
 }
 
-class GraphVisitor {
+class ConcreteGraphVisitor extends GraphVisitor {
   graph: CustomGraph<BpmnNode>;
   haveCycle: boolean;
   splitNode: string[];
   joinNode: string[];
-  ifStart: string[];
   visited: string[];
-  nodes: Map<string, BpmnNode>;
-  adjacency: Edge[][];
   source: string;
   sink: string;
 
   constructor(public process: BpmnProcess) {
+    super();
     this.graph = new CustomGraph<BpmnNode>((n: BpmnNode) => n.id);
     this.haveCycle = false;
     this.splitNode = [];
     this.joinNode = [];
-    this.ifStart = [];
     this.visited = [];
-    this.nodes = new Map();
-    this.adjacency = [[]];
     this.source = "";
     this.sink = "";
   }
+
   buildGraph() {
     let nodes = this.process.elements;
     let edges = this.process.flows;
     this.source =
       Object.values(nodes).find((node) => node instanceof BpmnStartEvent)?.id ||
       "";
+
     this.sink =
       Object.values(nodes).find((node) => node instanceof BpmnEndEvent)?.id ||
       "";
@@ -131,8 +123,6 @@ class GraphVisitor {
       this.graph.addEdge(edge.source, edge.target)
     );
 
-    this.nodes = this.graph.getNodesMap();
-    this.adjacency = this.graph.getAdjacency();
     this.haveCycle = !this.graph.isAcyclic();
 
     // Check Graph Condition
@@ -149,7 +139,6 @@ class GraphVisitor {
       .filter((nodeid) => this.graph.indegreeOfNode(nodeid) > 1);
     return this;
   }
-
 
   private check() {
     if (this.haveCycle) {
@@ -184,58 +173,67 @@ class GraphVisitor {
       );
     }
   }
+
   buildBasicBlock() {
     let sequence = this.dfs(this.source);
     return sequence;
   }
 
-  visit(
-    nodeId: string,
-    sequence: Sequence
-  ): { sequence: Sequence; joinNodeId: string } {
-    if (this.visited.includes(nodeId)) return { sequence, joinNodeId: nodeId };
-    this.visited.push(nodeId);
+  visitBpmnTask(node: BpmnTask, sequence: Sequence) {
+    let nodeId = node.id
     let adjacent = this.graph.getAdjacent(nodeId);
-    let node = this.graph.getNode(nodeId);
 
-    if (node instanceof BpmnTask) {
-      if (
-        this.joinNode.includes(nodeId) &&
-        !(sequence.block.at(-1) instanceof Branch)
-      ) {
-        return { sequence, joinNodeId: nodeId };
-      }
-      sequence.block.push(node);
-      return this.visit(adjacent[0], sequence);
-    } else if (node instanceof BpmnExclusiveGateway) {
-      if (this.splitNode.includes(nodeId)) {
-        let curBlock = new Branch(nodeId);
-        let joinNodeId: string = "";
-        for (let n of adjacent) {
-          let { sequence: branchSequence, joinNodeId: branchJoinNodeId } =
-            this.visit(n, new Sequence());
-          curBlock.braches.push(branchSequence);
-          joinNodeId = branchJoinNodeId;
-        }
-        this.visited = this.visited.filter((e) => e != joinNodeId);
-        sequence.block.push(curBlock);
-        this.visit(joinNodeId, sequence); // May be affected by for loop ?
-        let joinNodeAdjacent = this.graph.getAdjacent(joinNodeId);
-        return this.visit(joinNodeAdjacent[0], sequence);
-      } else if (this.joinNode.includes(nodeId)) {
-        return { sequence, joinNodeId: nodeId };
-      }
-    } else if (node instanceof BpmnEndEvent) {
+    if (
+      this.joinNode.includes(nodeId) &&
+      !(sequence.scope && sequence.scope instanceof Branch)
+    ) {
       return { sequence, joinNodeId: nodeId };
     }
-    return this.visit(adjacent[0], sequence);
+    sequence.block.push(node);
+    return this.visit(this.graph.getNode(adjacent[0]), sequence);
+  }
+
+  visitBpmnExclusiveGateway(node: BpmnExclusiveGateway, sequence: Sequence) {
+    let nodeId = node.id
+    let adjacent = this.graph.getAdjacent(nodeId);
+
+    if (this.splitNode.includes(nodeId)) {
+      let curBlock = new Branch(nodeId);
+      let joinNodeId: string = "";
+
+      for (let n of adjacent) {
+        let { sequence: branchSequence, joinNodeId: branchJoinNodeId } =
+          this.visit(this.graph.getNode(n), new Sequence([], curBlock));
+        curBlock.braches.push(branchSequence);
+        joinNodeId = branchJoinNodeId;
+      }
+
+      this.visited = this.visited.filter((e) => e != joinNodeId);
+      sequence.block.push(curBlock);
+      this.visit(this.graph.getNode(joinNodeId), sequence); // May be affected by for loop ?
+      let joinNodeAdjacent = this.graph.getAdjacent(joinNodeId);
+
+      return this.visit(this.graph.getNode(joinNodeAdjacent[0]), sequence);
+    } else if (this.joinNode.includes(nodeId)) {
+      return { sequence, joinNodeId: nodeId };
+    }
+  }
+
+  visitBpmnEndEvent(node: BpmnEndEvent, sequence: Sequence) {
+    let nodeId = node.id
+    return { sequence, joinNodeId: nodeId };
+  }
+
+  visitBpmnStartEvent(node: BpmnStartEvent, sequence: Sequence) {
+    let nodeId = node.id
+    let adjacent = this.graph.getAdjacent(nodeId);
+    return this.visit(this.graph.getNode(adjacent[0]), sequence)
   }
 
   dfs(nodeId: string) {
     let sequence: Sequence = new Sequence();
     this.visited = []; // Reset the visited array for each traversal.
-    this.visit(nodeId, sequence); // Start the traversal from the initial node.
-
+    this.visit(this.graph.getNode(nodeId), sequence); // Start the traversal from the initial node.
     return sequence;
   }
 }
