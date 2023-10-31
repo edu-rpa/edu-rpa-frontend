@@ -1,23 +1,23 @@
-import { BpmnProcess } from "./bpmn"
+import { BpmnProcess } from './bpmn';
 
 class BpmnComponent {
-  id = ""
-  name = ""
-  incomming: BpmnComponent[] = []
-  outgoing: BpmnComponent[] = []
+  id = '';
+  name = '';
+  incomming: BpmnComponent[] = [];
+  outgoing: BpmnComponent[] = [];
 
   constructor() {}
 
-  addIncommingTask(){}
-  removeIncommingTask(){}
-  addOutgoingTask(){}
-  removeOutgoingTask(){}
-  toString(){}
+  addIncommingTask() {}
+  removeIncommingTask() {}
+  addOutgoingTask() {}
+  removeOutgoingTask() {}
+  toString() {}
 }
 
 class BpmnTask extends BpmnComponent {
   constructor() {
-    super()
+    super();
   }
   toString() {
     console.log(`ID: ${this.id}, Name: ${this.name}`);
@@ -26,7 +26,7 @@ class BpmnTask extends BpmnComponent {
 
 class BpmnSubProcess extends BpmnComponent {
   constructor(id: string, name: string) {
-    super()
+    super();
   }
 
   toString() {
@@ -35,15 +35,15 @@ class BpmnSubProcess extends BpmnComponent {
 }
 
 class BpmnExclusiveGateWay {
-  id : string;
+  id: string;
   defaultOption: string;
   constructor(id: string, defaultOption: string) {
-    this.id = id
-    this.defaultOption = defaultOption
+    this.id = id;
+    this.defaultOption = defaultOption;
   }
 
   toString() {
-    console.log(`ID: ${this.id}, Name: ${this.name}`);
+    console.log(`ID: ${this.id}`);
   }
 }
 

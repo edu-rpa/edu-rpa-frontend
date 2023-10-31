@@ -1,0 +1,8 @@
+
+IF: Gateway_0uqg7tr
+	Activity_1536xo5 - Get Title Assign to ${title}
+	Activity_012ckfs - Close Browser
+ELSE:
+	Activity_0pkjxtm - Open Browser
+	Activity_1536xo5 - Get Title Assign to ${title}
+	Activity_012ckfs - Close Browser

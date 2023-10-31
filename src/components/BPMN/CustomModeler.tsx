@@ -2,9 +2,14 @@ import { useBpmnJsReact } from '@/hooks/useBPMN';
 import { BpmnJsReactHandle } from '@/interfaces/bpmnJsReact.interface';
 import { useRef, useState } from 'react';
 import BpmnJsReact from './BpmnJsReact';
+import { Button, useDisclosure } from '@chakra-ui/react';
+// import ModelerSideBar from './ModelerSidebar';
+import PropertiesSideBar from '../PropertiesSideBar/PropertiesSideBar';
+import ModelerSideBar from './ModelerSidebar';
 
 function CustomModeler() {
   const ref = useRef<BpmnJsReactHandle>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [elements, setElements] = useState<any>([]);
 
@@ -16,9 +21,23 @@ function CustomModeler() {
         mode="edit"
         useBpmnJsReact={bpmnReactJs}
         ref={ref}
-        click={(e: any) => setElements([e.element])}
+        // click={(e: any) => setElements([e.element])}
       />
-      <button
+      {bpmnReactJs.bpmnModeler && (
+        <div>
+          <Button colorScheme="teal" onClick={onOpen}>
+            Open
+          </Button>
+          <ModelerSideBar
+            isOpen={isOpen}
+            onClose={onClose}
+            modeler={bpmnReactJs.bpmnModeler}
+          />
+        </div>
+      )}
+      <Button
+        colorScheme="teal"
+        size="md"
         onClick={async () => {
           const res = await bpmnReactJs.bpmnModeler.saveXML(
             { format: true },
@@ -33,9 +52,9 @@ function CustomModeler() {
           console.log(res.xml);
         }}>
         Save
-      </button>
+      </Button>
 
-      <button
+      {/* <button
         onClick={() => {
           console.log(elements);
           console.log(
@@ -105,7 +124,7 @@ function CustomModeler() {
           console.log(outgoing);
         }}>
         get outgoing
-      </button>
+      </button> */}
       <br />
     </div>
   );
