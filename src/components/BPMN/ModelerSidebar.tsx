@@ -4,18 +4,27 @@ import PropertiesSideBar from '../PropertiesSideBar/PropertiesSideBar';
 interface ModelerSideBarProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpen: () => void;
   modeler: any;
 }
 
 export default function ModelerSideBar(props: ModelerSideBarProps) {
   const [activityItem, setActivityItem] = React.useState({
-    processId: undefined,
-    activityId: undefined,
-    activityName: undefined,
-    activityType: undefined,
-    incoming: undefined,
-    outgoing: undefined,
+    processId: '',
+    activityId: '',
+    activityName: '',
+    activityType: '',
+    incoming: [],
+    outgoing: [],
   });
+  const getFlowInfo = (flowArray: any) => {
+    return (
+      flowArray?.map((item: any) => {
+        return { flowId: item.id, name: item?.name };
+      }) || []
+    );
+  };
+
   React.useEffect(() => {
     props.modeler.on('selection.changed', (event: any) => {
       if (!event.newSelection[0]) return;
@@ -24,18 +33,21 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
         activityId: event.newSelection[0].businessObject.id,
         activityName: event.newSelection[0].businessObject.name,
         activityType: event.newSelection[0].businessObject.$type,
-        incoming: event.newSelection[0].businessObject.incoming,
-        outgoing: event.newSelection[0].businessObject.outgoing,
+        incoming: getFlowInfo(event.newSelection[0].businessObject.incoming),
+        outgoing: getFlowInfo(event.newSelection[0].businessObject.outgoing),
       };
       setActivityItem(currentActivity);
+      props.onOpen();
     });
   }, [props.modeler, activityItem]);
 
-  console.log(activityItem);
-
   return (
     <div>
-      <PropertiesSideBar isOpen={props.isOpen} onClose={props.onClose} />
+      <PropertiesSideBar
+        isOpen={props.isOpen}
+        onClose={props.onClose}
+        activityItem={activityItem}
+      />
     </div>
   );
 }
