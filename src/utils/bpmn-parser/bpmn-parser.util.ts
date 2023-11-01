@@ -20,8 +20,12 @@ import { join } from 'path';
 import { createScopedAnimate } from 'framer-motion/dom';
 
 var convert = require('xml-js');
-var fs = require('fs');
 var options = { ignoreComment: true, alwaysChildren: true };
+let fs: any;
+if (typeof window === 'undefined') {
+  // The code is running in a Node.js environment
+  fs = require('fs');
+}
 
 export class BpmnParser {
   constructor() {}

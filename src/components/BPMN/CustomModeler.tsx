@@ -4,11 +4,32 @@ import { useRef, useState } from 'react';
 import BpmnJsReact from './BpmnJsReact';
 import { Button, useDisclosure } from '@chakra-ui/react';
 import ModelerSideBar from './ModelerSidebar';
+import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
+//@ts-ignore
+import { saveAs } from 'file-saver';
 
 function CustomModeler() {
   const ref = useRef<BpmnJsReactHandle>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const bpmnReactJs = useBpmnJsReact();
+
+  const exportFile = (content: string, fileName: string) => {
+    var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    saveAs(blob, fileName);
+  };
+
+  const stringifyCyclicObject = (content: any) => {
+    const seen: any = [];
+    return JSON.stringify(content, function (key, val) {
+      if (val != null && typeof val == 'object') {
+        if (seen.indexOf(val) >= 0) {
+          return;
+        }
+        seen.push(val);
+      }
+      return val;
+    });
+  };
 
   return (
     <div className="mt-[100px]">
@@ -28,7 +49,7 @@ function CustomModeler() {
         size="md"
         onClick={async () => {
           const res = await bpmnReactJs.bpmnModeler.saveXML({ format: true });
-          console.log(res.xml);
+          exportFile(res.xml, 'test.xml');
         }}>
         Save XML
       </Button>
@@ -38,7 +59,11 @@ function CustomModeler() {
         className="ml-[10px]"
         onClick={async () => {
           const res = await bpmnReactJs.bpmnModeler.saveXML({ format: true });
-          console.log(res.xml);
+          const bpmnParser = new BpmnParser();
+          const jsonProcess = stringifyCyclicObject(
+            bpmnParser.parseXML(res.xml)
+          );
+          exportFile(jsonProcess, 'test.json');
         }}>
         Save JSON
       </Button>
