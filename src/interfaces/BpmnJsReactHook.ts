@@ -20,7 +20,6 @@ export type BpmnJsReactHook = () => {
     callback: (err: any, xml: string) => void,
     options?: SaveXMLOptions
   ) => void;
-  saveXmlAsync: (options?: SaveXMLOptions) => Promise<SaveXMLResult>;
   getElementById: (id: string) => any;
 
   zoomIn: (step?: number) => void;

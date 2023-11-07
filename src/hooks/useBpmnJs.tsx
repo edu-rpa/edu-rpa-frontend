@@ -3,7 +3,6 @@ import {
   ImportXMLResult,
   ModdleElement,
   SaveXMLOptions,
-  SaveXMLResult,
 } from 'bpmn-js/lib/BaseViewer';
 import { BpmnJsReactHook } from '@/interfaces/BpmnJsReactHook';
 
@@ -27,11 +26,6 @@ export const useBpmnJsReact: BpmnJsReactHook = () => {
   ) => {
     bpmnModeler?.saveXML(options, callback);
   };
-
-  const saveXmlAsync: (
-    options?: SaveXMLOptions
-  ) => Promise<SaveXMLResult> = async (options = { format: false }) =>
-    bpmnModeler?.saveXML(options);
 
   const getElements = () => {
     return bpmnModeler?.get('elementRegistry').getAll();
@@ -92,7 +86,6 @@ export const useBpmnJsReact: BpmnJsReactHook = () => {
     setBpmnModeler,
     importXml,
     saveXml,
-    saveXmlAsync,
     getCanvas,
     getElements,
     getElementById,
