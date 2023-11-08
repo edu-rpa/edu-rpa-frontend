@@ -236,6 +236,7 @@ export default function PropertiesSideBar({
                   'processData',
                   JSON.stringify(currLocalStorage)
                 );
+                setFormValues({});
                 console.log(
                   'Current LocalStorage',
                   JSON.parse(localStorage.getItem('processData') as string)
