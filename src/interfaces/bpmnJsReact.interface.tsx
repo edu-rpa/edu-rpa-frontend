@@ -1,4 +1,4 @@
-import { useBpmnJsReact } from '@/hooks/useBPMN';
+import { useBpmnJsReact } from '@/hooks/useBpmnJs';
 import { IElement } from './bpmn.interface';
 
 export type BpmnJsReactHandle = {

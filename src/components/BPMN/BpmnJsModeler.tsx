@@ -28,7 +28,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   {
     useBpmnJsReact,
     xml = defaultBpmnXml,
-    height = 400,
+    height = 600,
     zoomActions = true,
     onLoading = () => {},
     onError = () => {},
