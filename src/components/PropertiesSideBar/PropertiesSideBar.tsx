@@ -9,6 +9,9 @@ import {
   DrawerCloseButton,
   Button,
   Input,
+  InputGroup,
+  FormControl,
+  FormLabel,
 } from '@chakra-ui/react';
 import React from 'react';
 
@@ -27,7 +30,7 @@ export default function PropertiesSideBar({
     currentStep: 1,
     packageName: '',
     serviceName: '',
-    currentActivity: '',
+    currentActivityName: '',
   });
 
   const getTitleStep = (currentStep: number) => {
@@ -38,6 +41,8 @@ export default function PropertiesSideBar({
         return activityPackage.packageName;
       case 3:
         return activityPackage.serviceName;
+      case 4:
+        return activityPackage.currentActivityName;
     }
   };
 
@@ -52,7 +57,8 @@ export default function PropertiesSideBar({
   const handleSelectActivity = (activityName: string) => {
     setActivityPackage((prevState) => ({
       ...prevState,
-      packageName: activityName,
+      currentStep: 4,
+      currentActivityName: activityName,
     }));
   };
 
@@ -68,6 +74,13 @@ export default function PropertiesSideBar({
   const getActivityByService = (data: any, service: string) => {
     const activityLists = data.filter((item: any) => item.service === service);
     return activityLists;
+  };
+
+  const getArgumentsByActivity = (data: any, activityName: string) => {
+    const activityArgs = data.filter(
+      (item: any) => item.displayName === activityName
+    );
+    return activityArgs;
   };
 
   return (
@@ -120,16 +133,54 @@ export default function PropertiesSideBar({
                     getActivityByService(
                       item.activityTemplates,
                       activityPackage.serviceName
-                    ).map((activity: any) => <div>{activity.displayName}</div>)}
+                    ).map((activity: any) => (
+                      <div>
+                        <Button
+                          className="my-[10px]"
+                          onClick={() =>
+                            handleSelectActivity(activity.displayName)
+                          }>
+                          {activity.displayName}
+                        </Button>
+                      </div>
+                    ))}
+                  {activityPackage.currentStep == 4 &&
+                    activityPackage.packageName == item.displayName &&
+                    Object.keys(
+                      getArgumentsByActivity(
+                        item.activityTemplates,
+                        activityPackage.currentActivityName
+                      )
+                    ).map((key: any) => {
+                      const argumentParams = getArgumentsByActivity(
+                        item.activityTemplates,
+                        activityPackage.currentActivityName
+                      )[key].arguments;
+                      return (
+                        <div>
+                          {Object.entries(argumentParams).map(
+                            ([key, value], index) => (
+                              <div key={index}>
+                                <FormControl>
+                                  <FormLabel>{key}</FormLabel>
+                                  <Input type="text" />
+                                </FormControl>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      );
+                    })}
                 </div>
               );
             })}
             <Button
+              className="mt-[20px]"
               onClick={() => {
                 setActivityPackage((prevState) => ({
                   ...prevState,
                   currentStep:
-                    prevState.currentStep > 2 ? prevState.currentStep - 1 : 0,
+                    prevState.currentStep > 2 ? prevState.currentStep - 1 : 1,
                 }));
               }}>
               Back

@@ -18,18 +18,24 @@ export const ActivityPackageTemplates = [
           Connection: {
             type: 'connection.drive',
             value: null,
+            component: 'Input',
+            disable: true,
           },
           'Folder name': {
             type: 'string',
             value: '',
+            component: 'Input',
           },
           'Parent Folder Path': {
             type: 'string',
             value: '',
+            component: 'InputRightElement',
+            icon: 'FolderIcon',
           },
           'Overwrite if folder exists': {
             type: 'boolean',
             value: false,
+            component: 'Switch',
           },
         },
         return: {
@@ -48,20 +54,24 @@ export const ActivityPackageTemplates = [
           Connection: {
             type: 'connection.drive',
             value: null,
+            component: 'text',
           },
           Files: [
             {
               type: 'file',
               value: null,
+              component: 'file',
             },
           ],
           'Destination Folder Path': {
             type: 'string',
             value: '',
+            component: 'text',
           },
           'Overwrite if file exists': {
             type: 'boolean',
             value: false,
+            component: 'switch',
           },
         },
         return: [
@@ -82,10 +92,12 @@ export const ActivityPackageTemplates = [
           Connection: {
             type: 'connection.drive',
             value: null,
+            component: 'text',
           },
           'Folder Path': {
             type: 'string',
             value: '',
+            component: 'text',
           },
         },
         return: null,
@@ -101,10 +113,12 @@ export const ActivityPackageTemplates = [
           Connection: {
             type: 'connection.drive',
             value: null,
+            component: 'text',
           },
           'Folder Path': {
             type: 'string',
             value: '',
+            component: 'text',
           },
         },
         return: [
@@ -125,10 +139,12 @@ export const ActivityPackageTemplates = [
           Connection: {
             type: 'connection.drive',
             value: null,
+            component: 'text',
           },
           Path: {
             type: 'string',
             value: '',
+            component: 'text',
           },
         },
         return: {
@@ -148,6 +164,7 @@ export const ActivityPackageTemplates = [
           Connection: {
             type: 'connection.drive',
             value: null,
+            component: 'text',
           },
           Path: {
             type: 'string',
