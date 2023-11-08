@@ -1,5 +1,8 @@
 import React from 'react';
 import PropertiesSideBar from '../PropertiesSideBar/PropertiesSideBar';
+import { useDispatch, useSelector } from 'react-redux';
+import { bpmnSelector } from '@/redux/selector';
+import { updateBPMN } from '@/redux/slice/bpmnSlice';
 
 interface ModelerSideBarProps {
   isOpen: boolean;

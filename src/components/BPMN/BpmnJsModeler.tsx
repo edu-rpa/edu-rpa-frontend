@@ -16,6 +16,8 @@ import {
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
 //@ts-ignore
 import CliModule from 'bpmn-js-cli';
+//@ts-ignore
+import BpmnColorPickerModule from 'bpmn-js-color-picker';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-font/dist/css/bpmn-embedded.css';
 import { defaultBpmnXml } from './bpmn.default';
@@ -52,6 +54,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
           __init__: ['customContextPadProvider'],
           customContextPadProvider: ['type', removeUnsupportedBpmnFunctions()],
         },
+        BpmnColorPickerModule,
         propertiesProviderModule,
         CliModule,
       ],

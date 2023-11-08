@@ -11,8 +11,8 @@ import { useToast } from '@chakra-ui/react';
 
 function CustomModeler() {
   const ref = useRef<BpmnJsReactHandle>(null);
+  const [processID, setProcessID] = useState('Process_1xkz8m2');
   const toast = useToast();
-  const [importBPMN, setImportBPMN] = useState<string | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef<HTMLInputElement>(null);
   const bpmnReactJs = useBpmnJsReact();
@@ -43,6 +43,23 @@ function CustomModeler() {
         try {
           const xml = e.target?.result;
           await bpmnReactJs.bpmnModeler.importXML(xml);
+          const allEvents = bpmnReactJs.bpmnModeler
+            .get('elementRegistry')
+            .getAll()
+            .map((item: any) => {
+              return item.id;
+            });
+          const [processID, ...activitiesArray] = allEvents;
+          const activities = activitiesArray.reduce(
+            (acc: any, activity: any) => {
+              acc[activity] = {};
+              return acc;
+            },
+            {}
+          );
+          const output = { processID, activities };
+          localStorage.setItem('processData', JSON.stringify(output));
+          setProcessID(processID);
         } catch (err) {
           toast({
             title: 'File is not a XML file',
@@ -59,17 +76,16 @@ function CustomModeler() {
   };
 
   return (
-    <div className="mt-[150px]">
+    <div className="mt-[120px]">
+      <h1 className="text-primary font-bold text-2xl mx-[20px]">{processID}</h1>
       <BpmnJsReact mode="edit" useBpmnJsReact={bpmnReactJs} ref={ref} />
       {bpmnReactJs.bpmnModeler && (
-        <div>
-          <ModelerSideBar
-            isOpen={isOpen}
-            onClose={onClose}
-            onOpen={onOpen}
-            modeler={bpmnReactJs.bpmnModeler}
-          />
-        </div>
+        <ModelerSideBar
+          isOpen={isOpen}
+          onClose={onClose}
+          onOpen={onOpen}
+          modeler={bpmnReactJs.bpmnModeler}
+        />
       )}
       <input
         type="file"

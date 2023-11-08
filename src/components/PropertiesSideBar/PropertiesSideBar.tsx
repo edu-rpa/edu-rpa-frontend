@@ -1,4 +1,5 @@
 import { ActivityPackageTemplates } from '@/constants/activityPackage';
+import { bpmnSelector } from '@/redux/selector';
 import { Activity } from '@/types/activity';
 import {
   Drawer,
@@ -21,28 +22,59 @@ interface PropertiesSideBarProps {
   activityItem: Activity;
 }
 
+interface FormValues {
+  [key: string]: string;
+}
+
 export default function PropertiesSideBar({
   isOpen,
   onClose,
   activityItem,
 }: PropertiesSideBarProps) {
+  const currLocalStorage = JSON.parse(
+    localStorage.getItem('processData') as string
+  );
+  const [formValues, setFormValues] = React.useState<FormValues>({});
   const [activityPackage, setActivityPackage] = React.useState({
     currentStep: 1,
     packageName: '',
     serviceName: '',
-    currentActivityName: '',
+    activityName: '',
   });
+
+  React.useEffect(() => {
+    if (!currLocalStorage.activities[activityItem.activityId]) return;
+    const emptyActivityProperties =
+      Object.keys(currLocalStorage.activities[activityItem.activityId])
+        .length === 0;
+    setActivityPackage((prevState) => ({
+      ...prevState,
+      currentStep: emptyActivityProperties ? 1 : 4,
+    }));
+    console.log('currentActivity', activityItem.activityId);
+  }, [isOpen, activityItem.activityId]);
 
   const getTitleStep = (currentStep: number) => {
     switch (currentStep) {
       case 1:
         return 'Select Activity Package';
       case 2:
-        return activityPackage.packageName;
+        return (
+          currLocalStorage.activities[activityItem.activityId]
+            .packageNameName || activityPackage.packageName
+        );
       case 3:
-        return activityPackage.serviceName;
+        return (
+          currLocalStorage.activities[activityItem.activityId].serviceName ||
+          activityPackage.serviceName
+        );
       case 4:
-        return activityPackage.currentActivityName;
+        return (
+          currLocalStorage.activities[activityItem.activityId].activityName ||
+          activityPackage.activityName
+        );
+      default:
+        return 'Will be update soon';
     }
   };
 
@@ -57,8 +89,8 @@ export default function PropertiesSideBar({
   const handleSelectActivity = (activityName: string) => {
     setActivityPackage((prevState) => ({
       ...prevState,
+      activityName: activityName,
       currentStep: 4,
-      currentActivityName: activityName,
     }));
   };
 
@@ -83,6 +115,10 @@ export default function PropertiesSideBar({
     return activityArgs;
   };
 
+  const handleInputChange = (key: string, value: string) => {
+    setFormValues((prev) => ({ ...prev, [key]: value }));
+  };
+
   return (
     <div>
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
@@ -98,9 +134,9 @@ export default function PropertiesSideBar({
             <h1 className="font-bold text-md text-orange-500">
               Name: {activityItem.activityName}
             </h1>
-            {ActivityPackageTemplates.map((item, index) => {
+            {ActivityPackageTemplates.map((item) => {
               return (
-                <div key={index}>
+                <div key={item._id}>
                   {activityPackage.currentStep == 1 && (
                     <Button
                       className="my-[10px]"
@@ -112,8 +148,8 @@ export default function PropertiesSideBar({
                   {activityPackage.currentStep == 2 &&
                     activityPackage.packageName == item.displayName &&
                     getDistinctService(item.activityTemplates).map(
-                      (service: any) => (
-                        <div>
+                      (service: string) => (
+                        <div key={service}>
                           <Button
                             className="my-[10px]"
                             onClick={() => {
@@ -134,7 +170,7 @@ export default function PropertiesSideBar({
                       item.activityTemplates,
                       activityPackage.serviceName
                     ).map((activity: any) => (
-                      <div>
+                      <div key={activity.displayName}>
                         <Button
                           className="my-[10px]"
                           onClick={() =>
@@ -149,21 +185,33 @@ export default function PropertiesSideBar({
                     Object.keys(
                       getArgumentsByActivity(
                         item.activityTemplates,
-                        activityPackage.currentActivityName
+                        activityPackage.activityName
                       )
                     ).map((key: any) => {
                       const argumentParams = getArgumentsByActivity(
                         item.activityTemplates,
-                        activityPackage.currentActivityName
+                        currLocalStorage.activities[activityItem.activityId]
+                          .activityName || activityPackage.activityName
                       )[key].arguments;
                       return (
-                        <div>
+                        <div key={activityPackage.activityName}>
                           {Object.entries(argumentParams).map(
-                            ([key, value], index) => (
-                              <div key={index}>
+                            ([key, value]) => (
+                              <div key={key}>
                                 <FormControl>
                                   <FormLabel>{key}</FormLabel>
-                                  <Input type="text" />
+                                  <Input
+                                    type="text"
+                                    value={
+                                      formValues[key] ||
+                                      currLocalStorage.activities[
+                                        activityItem.activityId
+                                      ][key]
+                                    }
+                                    onChange={(e) =>
+                                      handleInputChange(key, e.target.value)
+                                    }
+                                  />
                                 </FormControl>
                               </div>
                             )
@@ -179,9 +227,19 @@ export default function PropertiesSideBar({
               onClick={() => {
                 setActivityPackage((prevState) => ({
                   ...prevState,
+                  activityName: '',
                   currentStep:
                     prevState.currentStep > 2 ? prevState.currentStep - 1 : 1,
                 }));
+                currLocalStorage.activities[activityItem.activityId] = {};
+                localStorage.setItem(
+                  'processData',
+                  JSON.stringify(currLocalStorage)
+                );
+                console.log(
+                  'Current LocalStorage',
+                  JSON.parse(localStorage.getItem('processData') as string)
+                );
               }}>
               Back
             </Button>
@@ -191,7 +249,28 @@ export default function PropertiesSideBar({
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="blue">Save</Button>
+            <Button
+              colorScheme="blue"
+              onClick={() => {
+                Object.assign(
+                  currLocalStorage.activities[activityItem.activityId],
+                  {
+                    ...activityPackage,
+                    ...formValues,
+                  }
+                );
+                localStorage.setItem(
+                  'processData',
+                  JSON.stringify(currLocalStorage)
+                );
+                console.log(
+                  'Current LocalStorage',
+                  JSON.parse(localStorage.getItem('processData') as string)
+                );
+                setFormValues({});
+              }}>
+              Save
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
