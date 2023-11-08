@@ -23,6 +23,7 @@
     "bpmn-font": "^0.10.0",
     "bpmn-js": "^14.2.0",
     "bpmn-js-cli": "^2.0.2",
+    "bpmn-js-color-picker": "^0.6.1",
     "bpmn-js-properties-panel": "^0.37.5",
     "camunda-bpmn-moddle": "^4.4.1",
     "chakra-ui-steps": "^2.1.0",
