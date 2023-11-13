@@ -1,8 +1,10 @@
-import { BPMNState, UpdateBPMNActionPayload } from '@/types/activity';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { BPMNState } from '@/types/activity';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState: BPMNState = {
-  processId: '',
+  processID: '',
+  xml: '',
+  processName: '',
   activities: [],
 };
 
@@ -10,7 +12,7 @@ const bpmnSlice = createSlice({
   name: 'bpmn',
   initialState: initialState,
   reducers: {
-    updateBPMN: (state, action: PayloadAction<UpdateBPMNActionPayload>) => {
+    updateBPMN: (state, action) => {
       return {
         ...state,
         ...action.payload,

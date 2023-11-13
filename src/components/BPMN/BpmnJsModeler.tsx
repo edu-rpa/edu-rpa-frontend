@@ -22,6 +22,7 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-font/dist/css/bpmn-embedded.css';
 import { defaultBpmnXml } from './bpmn.default';
 import removeUnsupportedBpmnFunctions from './removeTrackPad';
+import { useParams } from 'next/navigation';
 
 const BpmnJsModeler: ForwardRefRenderFunction<
   BpmnJsReactHandle,
@@ -29,7 +30,6 @@ const BpmnJsModeler: ForwardRefRenderFunction<
 > = (
   {
     useBpmnJsReact,
-    xml = defaultBpmnXml,
     height = 600,
     zoomActions = true,
     onLoading = () => {},
@@ -41,6 +41,12 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   }: BpmnJsReactProps,
   ref
 ) => {
+  const params = useParams();
+
+  const currentProcess = JSON.parse(
+    localStorage.getItem('processList') as string
+  ).find((obj: any) => obj.processID === params.id);
+
   const [bpmnEditor, setBpmnEditor] = useState<CamundaBpmnModeler | null>(null);
 
   useEffect(() => {
@@ -68,7 +74,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   }, []);
 
   useEffect(() => {
-    bpmnEditor?.importXML(xml);
+    bpmnEditor?.importXML(currentProcess.xml);
     bpmnEditor?.on('import.done', (event: any) => {
       const { error, warning } = event;
       if (error) {
@@ -81,7 +87,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
     bpmnEditor?.on('element.click', (e: any) => {
       click(e);
     });
-  }, [bpmnEditor, xml]);
+  }, [bpmnEditor, currentProcess.xml]);
 
   useImperativeHandle(
     ref,

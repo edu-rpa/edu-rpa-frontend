@@ -1,6 +1,6 @@
 export interface Activity {
-  processId: string;
-  activityId: string;
+  processID: string;
+  activityID: string;
   activityName: string;
   activityType: string;
   incoming: Flow[];
@@ -13,11 +13,15 @@ export interface Flow {
 }
 
 export interface BPMNState {
-  processId: string;
+  processID: string;
+  xml: string;
+  processName: string | null;
   activities: Activity[];
 }
 
 export interface UpdateBPMNActionPayload {
-  processId: string;
+  processID: string;
+  xml: string;
+  processName: string | null;
   activities: Activity[];
 }

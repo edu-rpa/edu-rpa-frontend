@@ -8,10 +8,12 @@ import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
 //@ts-ignore
 import { saveAs } from 'file-saver';
 import { useToast } from '@chakra-ui/react';
+import { useParams } from 'next/navigation';
 
 function CustomModeler() {
   const ref = useRef<BpmnJsReactHandle>(null);
-  const [processID, setProcessID] = useState('Process_1xkz8m2');
+  const params = useParams();
+  const [processID, setProcessID] = useState(params.id);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -58,7 +60,7 @@ function CustomModeler() {
             {}
           );
           const output = { processID, activities };
-          localStorage.setItem('processData', JSON.stringify(output));
+          localStorage.setItem('currProcess', JSON.stringify(output));
           setProcessID(processID);
         } catch (err) {
           toast({

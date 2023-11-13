@@ -32,7 +32,7 @@ export default function PropertiesSideBar({
   activityItem,
 }: PropertiesSideBarProps) {
   const currLocalStorage = JSON.parse(
-    localStorage.getItem('processData') as string
+    localStorage.getItem('currProcess') as string
   );
   const [formValues, setFormValues] = React.useState<FormValues>({});
   const [activityPackage, setActivityPackage] = React.useState({
@@ -42,17 +42,17 @@ export default function PropertiesSideBar({
     activityName: '',
   });
 
-  React.useEffect(() => {
-    if (!currLocalStorage.activities[activityItem.activityId]) return;
-    const emptyActivityProperties =
-      Object.keys(currLocalStorage.activities[activityItem.activityId])
-        .length === 0;
-    setActivityPackage((prevState) => ({
-      ...prevState,
-      currentStep: emptyActivityProperties ? 1 : 4,
-    }));
-    console.log('currentActivity', activityItem.activityId);
-  }, [isOpen, activityItem.activityId]);
+  // React.useEffect(() => {
+  //   if (!currLocalStorage.activities[activityItem.activityId]) return;
+  //   const emptyActivityProperties =
+  //     Object.keys(currLocalStorage.activities[activityItem.activityId])
+  //       .length === 0;
+  //   setActivityPackage((prevState) => ({
+  //     ...prevState,
+  //     currentStep: emptyActivityProperties ? 1 : 4,
+  //   }));
+  //   console.log('currentActivity', activityItem.activityId);
+  // }, [isOpen, activityItem.activityId]);
 
   const getTitleStep = (currentStep: number) => {
     switch (currentStep) {
@@ -60,17 +60,17 @@ export default function PropertiesSideBar({
         return 'Select Activity Package';
       case 2:
         return (
-          currLocalStorage.activities[activityItem.activityId]
+          currLocalStorage.activities[activityItem.activityID]
             .packageNameName || activityPackage.packageName
         );
       case 3:
         return (
-          currLocalStorage.activities[activityItem.activityId].serviceName ||
+          currLocalStorage.activities[activityItem.activityID].serviceName ||
           activityPackage.serviceName
         );
       case 4:
         return (
-          currLocalStorage.activities[activityItem.activityId].activityName ||
+          currLocalStorage.activities[activityItem.activityID].activityName ||
           activityPackage.activityName
         );
       default:
@@ -129,7 +129,7 @@ export default function PropertiesSideBar({
           </DrawerHeader>
           <DrawerBody>
             <h1 className="font-bold text-md text-red-500">
-              ActivityID: {activityItem.activityId}
+              ActivityID: {activityItem.activityID}
             </h1>
             <h1 className="font-bold text-md text-orange-500">
               Name: {activityItem.activityName}
@@ -190,7 +190,7 @@ export default function PropertiesSideBar({
                     ).map((key: any) => {
                       const argumentParams = getArgumentsByActivity(
                         item.activityTemplates,
-                        currLocalStorage.activities[activityItem.activityId]
+                        currLocalStorage.activities[activityItem.activityID]
                           .activityName || activityPackage.activityName
                       )[key].arguments;
                       return (
@@ -205,7 +205,7 @@ export default function PropertiesSideBar({
                                     value={
                                       formValues[key] ||
                                       currLocalStorage.activities[
-                                        activityItem.activityId
+                                        activityItem.activityID
                                       ][key]
                                     }
                                     onChange={(e) =>
@@ -231,15 +231,15 @@ export default function PropertiesSideBar({
                   currentStep:
                     prevState.currentStep > 2 ? prevState.currentStep - 1 : 1,
                 }));
-                currLocalStorage.activities[activityItem.activityId] = {};
+                currLocalStorage.activities[activityItem.activityID] = {};
                 localStorage.setItem(
-                  'processData',
+                  'currProcess',
                   JSON.stringify(currLocalStorage)
                 );
                 setFormValues({});
                 console.log(
                   'Current LocalStorage',
-                  JSON.parse(localStorage.getItem('processData') as string)
+                  JSON.parse(localStorage.getItem('currProcess') as string)
                 );
               }}>
               Back
@@ -254,19 +254,19 @@ export default function PropertiesSideBar({
               colorScheme="blue"
               onClick={() => {
                 Object.assign(
-                  currLocalStorage.activities[activityItem.activityId],
+                  currLocalStorage.activities[activityItem.activityID],
                   {
                     ...activityPackage,
                     ...formValues,
                   }
                 );
                 localStorage.setItem(
-                  'processData',
+                  'currProcess',
                   JSON.stringify(currLocalStorage)
                 );
                 console.log(
                   'Current LocalStorage',
-                  JSON.parse(localStorage.getItem('processData') as string)
+                  JSON.parse(localStorage.getItem('currProcess') as string)
                 );
                 setFormValues({});
               }}>

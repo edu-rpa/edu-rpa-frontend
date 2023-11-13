@@ -1,8 +1,6 @@
 import React from 'react';
 import PropertiesSideBar from '../PropertiesSideBar/PropertiesSideBar';
-import { useDispatch, useSelector } from 'react-redux';
-import { bpmnSelector } from '@/redux/selector';
-import { updateBPMN } from '@/redux/slice/bpmnSlice';
+import { getProcessFromLocalStorage } from '@/utils/processService';
 
 interface ModelerSideBarProps {
   isOpen: boolean;
@@ -13,8 +11,8 @@ interface ModelerSideBarProps {
 
 export default function ModelerSideBar(props: ModelerSideBarProps) {
   const [activityItem, setActivityItem] = React.useState({
-    processId: '',
-    activityId: '',
+    processID: '',
+    activityID: '',
     activityName: '',
     activityType: '',
     incoming: [],
@@ -32,13 +30,20 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
     props.modeler.on('selection.changed', (event: any) => {
       if (!event.newSelection[0]) return;
       const currentActivity = {
-        processId: event.newSelection[0].businessObject.$parent.id,
-        activityId: event.newSelection[0].businessObject.id,
+        processID: event.newSelection[0].businessObject.$parent.id,
+        activityID: event.newSelection[0].businessObject.id,
         activityName: event.newSelection[0].businessObject.name,
         activityType: event.newSelection[0].businessObject.$type,
         incoming: getFlowInfo(event.newSelection[0].businessObject.incoming),
         outgoing: getFlowInfo(event.newSelection[0].businessObject.outgoing),
       };
+      console.log('ProcessID', currentActivity.processID);
+      console.log('Activity', currentActivity.activityID);
+      console.log('ActivityType', currentActivity.activityType);
+      console.log(
+        'LocalStorage',
+        getProcessFromLocalStorage(currentActivity.processID)
+      );
       setActivityItem(currentActivity);
       props.onOpen();
     });
