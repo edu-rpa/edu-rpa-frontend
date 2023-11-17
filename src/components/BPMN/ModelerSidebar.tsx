@@ -27,27 +27,29 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
   };
 
   React.useEffect(() => {
-    props.modeler.on('selection.changed', (event: any) => {
+    props.modeler.on('selection.changed', async (event: any) => {
       if (!event.newSelection[0]) return;
+      const eventInfo = event.newSelection[0].businessObject;
       const currentActivity = {
-        processID: event.newSelection[0].businessObject.$parent.id,
-        activityID: event.newSelection[0].businessObject.id,
-        activityName: event.newSelection[0].businessObject.name,
-        activityType: event.newSelection[0].businessObject.$type,
-        incoming: getFlowInfo(event.newSelection[0].businessObject.incoming),
-        outgoing: getFlowInfo(event.newSelection[0].businessObject.outgoing),
+        processID: eventInfo.$parent.id,
+        activityID: eventInfo.id,
+        activityName: eventInfo.name,
+        activityType: eventInfo.$type,
+        incoming: getFlowInfo(eventInfo.incoming),
+        outgoing: getFlowInfo(eventInfo.outgoing),
       };
-      console.log('ProcessID', currentActivity.processID);
-      console.log('Activity', currentActivity.activityID);
-      console.log('ActivityType', currentActivity.activityType);
-      console.log(
-        'LocalStorage',
-        getProcessFromLocalStorage(currentActivity.processID)
-      );
+      // console.log('ProcessID', currentActivity.processID);
+      // console.log('Activity', currentActivity.activityID);
+      // console.log('ActivityType', currentActivity.activityType);
+      // console.log(
+      //   'LocalStorage',
+      //   getProcessFromLocalStorage(currentActivity.processID)
+      // );
+      // console.log(await props.modeler.saveXML({ format: true }));
       setActivityItem(currentActivity);
       props.onOpen();
     });
-  }, [props.modeler, activityItem]);
+  }, [activityItem]);
 
   return (
     <div>

@@ -1,6 +1,6 @@
-import { useBpmnJsReact } from '@/hooks/useBpmnJs';
+import { useBpmn } from '@/hooks/useBpmn';
 import { BpmnJsReactHandle } from '@/interfaces/bpmnJsReact.interface';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import BpmnJsReact from './BpmnJsReact';
 import { Button, useDisclosure } from '@chakra-ui/react';
 import ModelerSideBar from './ModelerSidebar';
@@ -9,6 +9,11 @@ import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
 import { saveAs } from 'file-saver';
 import { useToast } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
+import {
+  getLocalStorageObject,
+  setLocalStorageObject,
+} from '@/utils/localStorageService';
+import { m } from 'framer-motion';
 
 function CustomModeler() {
   const ref = useRef<BpmnJsReactHandle>(null);
@@ -17,7 +22,21 @@ function CustomModeler() {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef<HTMLInputElement>(null);
-  const bpmnReactJs = useBpmnJsReact();
+  const bpmnReactJs = useBpmn();
+  const modelerElements = bpmnReactJs.bpmnModeler
+    ? bpmnReactJs.getElements().length
+    : 0;
+
+  useEffect(() => {
+    console.log('Update BPMN');
+    console.log(getLocalStorageObject('processList'));
+    if (modelerElements == 0) return;
+    const updateModeler = async () => {
+      const data = await bpmnReactJs.saveXML();
+      return data.xml;
+    };
+    bpmnReactJs.bpmnModeler && updateModeler().then((xml) => console.log(xml));
+  }, [modelerElements]);
 
   const exportFile = (content: string, fileName: string) => {
     var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -44,13 +63,10 @@ function CustomModeler() {
       reader.onload = async (e) => {
         try {
           const xml = e.target?.result;
-          await bpmnReactJs.bpmnModeler.importXML(xml);
-          const allEvents = bpmnReactJs.bpmnModeler
-            .get('elementRegistry')
-            .getAll()
-            .map((item: any) => {
-              return item.id;
-            });
+          await bpmnReactJs.importXML(xml as string);
+          const allEvents = bpmnReactJs.getElements().map((item: any) => {
+            return item.id;
+          });
           const [processID, ...activitiesArray] = allEvents;
           const activities = activitiesArray.reduce(
             (acc: any, activity: any) => {
@@ -115,9 +131,9 @@ function CustomModeler() {
         size="md"
         className="mx-[5px]"
         onClick={async () => {
-          const res = await bpmnReactJs.bpmnModeler.saveXML({ format: true });
-          exportFile(res.xml, 'test.xml');
-          console.log(res.xml);
+          const res = await bpmnReactJs.saveXML();
+          exportFile(res.xml as string, `${processID}.xml`);
+          // console.log(res.xml);
         }}>
         Save XML
       </Button>
@@ -126,13 +142,13 @@ function CustomModeler() {
         size="md"
         className="mx-[5px]"
         onClick={async () => {
-          const res = await bpmnReactJs.bpmnModeler.saveXML({ format: true });
+          const res = await bpmnReactJs.saveXML();
           const bpmnParser = new BpmnParser();
           const jsonProcess = stringifyCyclicObject(
-            bpmnParser.parseXML(res.xml)
+            bpmnParser.parseXML(res.xml as string)
           );
-          exportFile(jsonProcess, 'test.json');
-          console.log(bpmnParser.parseXML(res.xml));
+          exportFile(jsonProcess, `${processID}.json`);
+          // console.log(bpmnParser.parseXML(res.xml));
         }}>
         Save JSON
       </Button>

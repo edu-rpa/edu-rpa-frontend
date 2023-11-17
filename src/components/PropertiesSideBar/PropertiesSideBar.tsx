@@ -237,10 +237,10 @@ export default function PropertiesSideBar({
                   JSON.stringify(currLocalStorage)
                 );
                 setFormValues({});
-                console.log(
-                  'Current LocalStorage',
-                  JSON.parse(localStorage.getItem('currProcess') as string)
-                );
+                // console.log(
+                //   'Current LocalStorage',
+                //   JSON.parse(localStorage.getItem('currProcess') as string)
+                // );
               }}>
               Back
             </Button>
@@ -264,10 +264,10 @@ export default function PropertiesSideBar({
                   'currProcess',
                   JSON.stringify(currLocalStorage)
                 );
-                console.log(
-                  'Current LocalStorage',
-                  JSON.parse(localStorage.getItem('currProcess') as string)
-                );
+                // console.log(
+                //   'Current LocalStorage',
+                //   JSON.parse(localStorage.getItem('currProcess') as string)
+                // );
                 setFormValues({});
               }}>
               Save

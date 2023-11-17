@@ -1,0 +1,1170 @@
+{
+  "diagram.destroy": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": {
+              "priority": 1000,
+              "next": {
+                "priority": 500,
+                "next": { "priority": 1, "next": null }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "render.shape": { "priority": 1000, "next": { "priority": 1, "next": null } },
+  "render.connection": {
+    "priority": 1000,
+    "next": { "priority": 1, "next": null }
+  },
+  "render.getShapePath": {
+    "priority": 1000,
+    "next": { "priority": 1, "next": null }
+  },
+  "render.getConnectionPath": {
+    "priority": 1000,
+    "next": { "priority": 1, "next": null }
+  },
+  "diagram.init": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": {
+              "priority": 1000,
+              "next": { "priority": 800, "next": null }
+            }
+          }
+        }
+      }
+    }
+  },
+  "shape.added": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 500, "next": null } }
+  },
+  "connection.added": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "shape.removed": { "priority": 1000, "next": null },
+  "connection.removed": { "priority": 1000, "next": null },
+  "elements.changed": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "root.set": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": { "priority": 1000, "next": null }
+          }
+        }
+      }
+    }
+  },
+  "diagram.clear": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": { "priority": 1000, "next": { "priority": 500, "next": null } }
+      }
+    }
+  },
+  "canvas.destroy": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "canvas.init": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+      }
+    }
+  },
+  "shape.changed": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": { "priority": 500, "next": { "priority": 500, "next": null } }
+      }
+    }
+  },
+  "connection.changed": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 500, "next": null } }
+    }
+  },
+  "interactionEvents.createHit": {
+    "priority": 1000,
+    "next": { "priority": 500, "next": null }
+  },
+  "interactionEvents.updateHit": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "shape.remove": {
+    "priority": 2000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "connection.remove": {
+    "priority": 2000,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "element.hover": {
+    "priority": 1500,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "element.out": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "selection.changed": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": {
+              "priority": 1000,
+              "next": {
+                "priority": 1000,
+                "next": {
+                  "priority": 1000,
+                  "next": {
+                    "priority": 1000,
+                    "next": {
+                      "priority": 1000,
+                      "next": {
+                        "priority": 1000,
+                        "next": {
+                          "priority": 1000,
+                          "next": {
+                            "priority": 1000,
+                            "next": { "priority": 1000, "next": null }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "element.changed": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": { "priority": 500, "next": null }
+          }
+        }
+      }
+    }
+  },
+  "create.end": {
+    "priority": 1500,
+    "next": {
+      "priority": 1500,
+      "next": {
+        "priority": 1500,
+        "next": {
+          "priority": 1250,
+          "next": {
+            "priority": 1200,
+            "next": {
+              "priority": 1000,
+              "next": {
+                "priority": 1000,
+                "next": {
+                  "priority": 500,
+                  "next": {
+                    "priority": 500,
+                    "next": { "priority": 250, "next": null }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "connect.end": {
+    "priority": 1500,
+    "next": {
+      "priority": 1500,
+      "next": {
+        "priority": 1250,
+        "next": {
+          "priority": 1200,
+          "next": {
+            "priority": 1000,
+            "next": { "priority": 500, "next": null }
+          }
+        }
+      }
+    }
+  },
+  "shape.move.end": {
+    "priority": 1500,
+    "next": {
+      "priority": 1500,
+      "next": {
+        "priority": 1250,
+        "next": {
+          "priority": 1200,
+          "next": {
+            "priority": 1000,
+            "next": { "priority": 500, "next": null }
+          }
+        }
+      }
+    }
+  },
+  "element.click": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "canvas.viewbox.changing": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "canvas.viewbox.changed": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "element.marker.update": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.executed": { "priority": 1000, "next": null },
+  "commandStack.revert": { "priority": 1000, "next": null },
+  "commandStack.shape.toggleCollapse.executed": {
+    "priority": 500,
+    "next": { "priority": 400, "next": { "priority": 250, "next": null } }
+  },
+  "commandStack.shape.toggleCollapse.reverted": {
+    "priority": 500,
+    "next": { "priority": 400, "next": { "priority": 250, "next": null } }
+  },
+  "commandStack.shape.create.executed": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": { "priority": 250, "next": null }
+          }
+        }
+      }
+    }
+  },
+  "commandStack.shape.move.executed": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 250, "next": null } }
+    }
+  },
+  "commandStack.shape.delete.executed": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 250, "next": null } }
+  },
+  "commandStack.shape.create.reverted": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": { "priority": 250, "next": null }
+          }
+        }
+      }
+    }
+  },
+  "commandStack.shape.move.reverted": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 250, "next": null } }
+  },
+  "commandStack.shape.delete.reverted": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 250, "next": null } }
+    }
+  },
+  "import.render.complete": { "priority": 1000, "next": null },
+  "import.render.start": { "priority": 1500, "next": null },
+  "attach": { "priority": 1000, "next": null },
+  "detach": { "priority": 1000, "next": null },
+  "editorActions.init": { "priority": 500, "next": null },
+  "keyboard.keydown": {
+    "priority": 1500,
+    "next": {
+      "priority": 1500,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": {
+              "priority": 1000,
+              "next": {
+                "priority": 1000,
+                "next": {
+                  "priority": 1000,
+                  "next": {
+                    "priority": 1000,
+                    "next": {
+                      "priority": 1000,
+                      "next": {
+                        "priority": 1000,
+                        "next": {
+                          "priority": 1000,
+                          "next": {
+                            "priority": 1000,
+                            "next": {
+                              "priority": 1000,
+                              "next": {
+                                "priority": 1000,
+                                "next": {
+                                  "priority": 1000,
+                                  "next": {
+                                    "priority": 1000,
+                                    "next": {
+                                      "priority": 1000,
+                                      "next": { "priority": 1000, "next": null }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "element.mousedown": {
+    "priority": 1500,
+    "next": {
+      "priority": 1500,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": { "priority": 500, "next": null }
+          }
+        }
+      }
+    }
+  },
+  "commandStack.connection.start.canExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.connection.create.canExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.connection.reconnect.canExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.connection.updateWaypoints.canExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.shape.resize.canExecute": { "priority": 1000, "next": null },
+  "commandStack.elements.create.canExecute": { "priority": 1000, "next": null },
+  "commandStack.elements.move.canExecute": { "priority": 1000, "next": null },
+  "commandStack.shape.create.canExecute": { "priority": 1000, "next": null },
+  "commandStack.shape.attach.canExecute": { "priority": 1000, "next": null },
+  "commandStack.element.copy.canExecute": { "priority": 1000, "next": null },
+  "shape.move.start": {
+    "priority": 2000,
+    "next": {
+      "priority": 2000,
+      "next": {
+        "priority": 1750,
+        "next": {
+          "priority": 1500,
+          "next": {
+            "priority": 1401,
+            "next": {
+              "priority": 1400,
+              "next": {
+                "priority": 1250,
+                "next": {
+                  "priority": 1000,
+                  "next": {
+                    "priority": 1000,
+                    "next": {
+                      "priority": 499,
+                      "next": {
+                        "priority": 251,
+                        "next": { "priority": 250, "next": null }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "shape.move.move": {
+    "priority": 1500,
+    "next": {
+      "priority": 1500,
+      "next": {
+        "priority": 1250,
+        "next": {
+          "priority": 1200,
+          "next": {
+            "priority": 500,
+            "next": {
+              "priority": 499,
+              "next": { "priority": 250, "next": null }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tool-manager.update": { "priority": 1000, "next": null },
+  "i18n.changed": { "priority": 1000, "next": null },
+  "drag.move": { "priority": 1000, "next": { "priority": 1000, "next": null } },
+  "contextPad.create": { "priority": 1000, "next": null },
+  "palette.create": { "priority": 1000, "next": null },
+  "contextPad.getProviders": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 900, "next": null } }
+    }
+  },
+  "popupMenu.getProviders.align-elements": {
+    "priority": 1000,
+    "next": { "priority": 900, "next": null }
+  },
+  "commandStack.elements.align.canExecute": { "priority": 1000, "next": null },
+  "autoPlace.end": {
+    "priority": 1000,
+    "next": { "priority": 500, "next": { "priority": 500, "next": null } }
+  },
+  "autoPlace": {
+    "priority": 2000,
+    "next": { "priority": 1000, "next": { "priority": 100, "next": null } }
+  },
+  "drag.start": { "priority": 1000, "next": null },
+  "drag.cleanup": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.shape.create.postExecuted": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": { "priority": 1000, "next": { "priority": 500, "next": null } }
+      }
+    }
+  },
+  "commandStack.elements.move.postExecuted": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": {
+              "priority": 500,
+              "next": { "priority": 500, "next": null }
+            }
+          }
+        }
+      }
+    }
+  },
+  "commandStack.shape.toggleCollapse.postExecuted": {
+    "priority": 1500,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 600, "next": { "priority": 500, "next": null } }
+    }
+  },
+  "commandStack.shape.resize.postExecuted": {
+    "priority": 1000,
+    "next": { "priority": 500, "next": null }
+  },
+  "commandStack.element.autoResize.canExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "bendpoint.move.hover": {
+    "priority": 1500,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "bendpoint.move.out": {
+    "priority": 1100,
+    "next": { "priority": 1000, "next": null }
+  },
+  "bendpoint.move.cleanup": {
+    "priority": 1100,
+    "next": { "priority": 1000, "next": null }
+  },
+  "bendpoint.move.end": {
+    "priority": 1500,
+    "next": {
+      "priority": 1200,
+      "next": { "priority": 1100, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "connectionSegment.move.start": { "priority": 1000, "next": null },
+  "connectionSegment.move.move": {
+    "priority": 1500,
+    "next": { "priority": 1200, "next": { "priority": 1000, "next": null } }
+  },
+  "connectionSegment.move.hover": { "priority": 1000, "next": null },
+  "connectionSegment.move.out": { "priority": 1000, "next": null },
+  "connectionSegment.move.cleanup": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "connectionSegment.move.cancel": { "priority": 1000, "next": null },
+  "connectionSegment.move.end": {
+    "priority": 1200,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "element.mousemove": { "priority": 1000, "next": null },
+  "element.updateId": { "priority": 1000, "next": null },
+  "connect.hover": {
+    "priority": 1500,
+    "next": {
+      "priority": 1500,
+      "next": {
+        "priority": 1250,
+        "next": { "priority": 1000, "next": { "priority": 900, "next": null } }
+      }
+    }
+  },
+  "connect.move": {
+    "priority": 1500,
+    "next": {
+      "priority": 1250,
+      "next": { "priority": 1200, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "bendpoint.move.move": {
+    "priority": 1500,
+    "next": { "priority": 1200, "next": { "priority": 1000, "next": null } }
+  },
+  "bendpoint.move.start": { "priority": 1000, "next": null },
+  "bendpoint.move.cancel": { "priority": 1100, "next": null },
+  "connect.out": {
+    "priority": 1500,
+    "next": { "priority": 1100, "next": { "priority": 1000, "next": null } }
+  },
+  "connect.cleanup": {
+    "priority": 1500,
+    "next": {
+      "priority": 1100,
+      "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "create.move": {
+    "priority": 1500,
+    "next": {
+      "priority": 1500,
+      "next": {
+        "priority": 1500,
+        "next": {
+          "priority": 1250,
+          "next": {
+            "priority": 1200,
+            "next": {
+              "priority": 1000,
+              "next": { "priority": 750, "next": null }
+            }
+          }
+        }
+      }
+    }
+  },
+  "create.hover": {
+    "priority": 1500,
+    "next": { "priority": 1000, "next": null }
+  },
+  "create.out": {
+    "priority": 1500,
+    "next": { "priority": 1000, "next": null }
+  },
+  "create.cleanup": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "create.init": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "copyPaste.copyElement": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 770,
+          "next": { "priority": 750, "next": { "priority": 750, "next": null } }
+        }
+      }
+    }
+  },
+  "copyPaste.pasteElements": { "priority": 1000, "next": null },
+  "moddleCopy.canCopyProperties": { "priority": 1000, "next": null },
+  "moddleCopy.canCopyProperty": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "moddleCopy.canSetCopiedProperty": { "priority": 1000, "next": null },
+  "copyPaste.pasteElement": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 770,
+          "next": { "priority": 750, "next": { "priority": 500, "next": null } }
+        }
+      }
+    }
+  },
+  "replace.end": { "priority": 500, "next": null },
+  "popupMenu.getProviders.bpmn-replace": { "priority": 1000, "next": null },
+  "commandStack.elements.distribute.canExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "resize.move": {
+    "priority": 1250,
+    "next": {
+      "priority": 1200,
+      "next": { "priority": 1000, "next": { "priority": 500, "next": null } }
+    }
+  },
+  "resize.end": {
+    "priority": 1250,
+    "next": {
+      "priority": 1200,
+      "next": { "priority": 1001, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "commandStack.shape.resize.preExecute": {
+    "priority": 5000,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "spaceTool.move": {
+    "priority": 2000,
+    "next": {
+      "priority": 2000,
+      "next": { "priority": 1500, "next": { "priority": 250, "next": null } }
+    }
+  },
+  "spaceTool.end": {
+    "priority": 2000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "create.start": {
+    "priority": 2000,
+    "next": {
+      "priority": 2000,
+      "next": { "priority": 1750, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "commandStack.connection.create.postExecuted": {
+    "priority": 3000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.connection.layout.postExecuted": {
+    "priority": 3000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "shape.move.init": { "priority": 1000, "next": null },
+  "resize.start": {
+    "priority": 1501,
+    "next": {
+      "priority": 1500,
+      "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "resize.cleanup": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "element.dblclick": { "priority": 1000, "next": null },
+  "autoPlace.start": { "priority": 1000, "next": null },
+  "drag.init": { "priority": 1000, "next": null },
+  "popupMenu.open": { "priority": 1000, "next": null },
+  "commandStack.changed": { "priority": 1000, "next": null },
+  "directEditing.activate": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "directEditing.resize": { "priority": 1000, "next": null },
+  "directEditing.complete": { "priority": 1000, "next": null },
+  "directEditing.cancel": { "priority": 1000, "next": null },
+  "commandStack.connection.updateWaypoints.postExecuted": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.label.create.postExecuted": { "priority": 1000, "next": null },
+  "commandStack.elements.create.postExecuted": {
+    "priority": 1000,
+    "next": {
+      "priority": 500,
+      "next": {
+        "priority": 500,
+        "next": { "priority": 500, "next": { "priority": 500, "next": null } }
+      }
+    }
+  },
+  "commandStack.shape.append.preExecute": { "priority": 1000, "next": null },
+  "commandStack.shape.move.postExecute": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.elements.move.preExecute": {
+    "priority": 5000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": { "priority": 500, "next": { "priority": 500, "next": null } }
+      }
+    }
+  },
+  "commandStack.connection.create.postExecute": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.connection.reconnect.postExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.shape.create.preExecute": {
+    "priority": 5000,
+    "next": {
+      "priority": 1500,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": {
+              "priority": 1000,
+              "next": {
+                "priority": 1000,
+                "next": { "priority": 1000, "next": null }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "commandStack.elements.create.preExecute": {
+    "priority": 5000,
+    "next": { "priority": 2000, "next": null }
+  },
+  "commandStack.shape.create.execute": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.shape.create.revert": { "priority": 1000, "next": null },
+  "commandStack.shape.create.postExecute": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "commandStack.connection.create.executed": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "commandStack.connection.delete.executed": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.connection.move.executed": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "commandStack.connection.reconnect.executed": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.connection.create.reverted": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.connection.delete.reverted": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.connection.move.reverted": {
+    "priority": 1000,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "commandStack.connection.reconnect.reverted": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.connection.layout.executed": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.connection.layout.reverted": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.canvas.updateRoot.executed": { "priority": 1000, "next": null },
+  "commandStack.canvas.updateRoot.reverted": { "priority": 1000, "next": null },
+  "commandStack.shape.resize.executed": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.shape.resize.reverted": { "priority": 1000, "next": null },
+  "commandStack.connection.updateWaypoints.executed": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.connection.updateWaypoints.reverted": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.element.updateAttachment.executed": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.element.updateAttachment.reverted": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.element.updateLabel.executed": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.element.updateLabel.reverted": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.shape.delete.postExecute": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.canvas.updateRoot.postExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "spaceTool.selection.init": { "priority": 1000, "next": null },
+  "spaceTool.selection.ended": { "priority": 250, "next": null },
+  "spaceTool.selection.canceled": { "priority": 250, "next": null },
+  "spaceTool.ended": { "priority": 250, "next": null },
+  "spaceTool.canceled": { "priority": 250, "next": null },
+  "spaceTool.selection.end": { "priority": 1000, "next": null },
+  "commandStack.shape.delete.postExecuted": {
+    "priority": 500,
+    "next": { "priority": 500, "next": null }
+  },
+  "commandStack.connection.create.preExecuted": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.shape.replace.preExecuted": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "shape.move.hover": { "priority": 1500, "next": null },
+  "shape.move.out": {
+    "priority": 1500,
+    "next": { "priority": 1000, "next": null }
+  },
+  "global-connect.hover": {
+    "priority": 1500,
+    "next": { "priority": 1000, "next": null }
+  },
+  "global-connect.out": {
+    "priority": 1500,
+    "next": { "priority": 1000, "next": null }
+  },
+  "global-connect.end": { "priority": 1500, "next": null },
+  "global-connect.cleanup": {
+    "priority": 1500,
+    "next": { "priority": 1000, "next": null }
+  },
+  "connect.start": { "priority": 1500, "next": null },
+  "commandStack.label.create.execute": { "priority": 1000, "next": null },
+  "commandStack.label.create.revert": { "priority": 1000, "next": null },
+  "commandStack.shape.delete.execute": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "bpmnElement.added": { "priority": 1000, "next": null },
+  "commandStack.element.updateProperties.postExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.element.updateModdleProperties.postExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.connection.layout.postExecute": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.connection.updateWaypoints.postExecute": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.shape.replace.postExecute": {
+    "priority": 1500,
+    "next": {
+      "priority": 1000,
+      "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+    }
+  },
+  "commandStack.shape.resize.postExecute": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.connection.move.postExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.shape.delete.preExecute": {
+    "priority": 5000,
+    "next": {
+      "priority": 1000,
+      "next": {
+        "priority": 1000,
+        "next": {
+          "priority": 1000,
+          "next": {
+            "priority": 1000,
+            "next": {
+              "priority": 1000,
+              "next": { "priority": 1000, "next": null }
+            }
+          }
+        }
+      }
+    }
+  },
+  "commandStack.connection.reconnect.preExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.element.updateProperties.postExecuted": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.shape.replace.postExecuted": {
+    "priority": 1500,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.element.updateProperties.executed": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.element.updateModdleProperties.executed": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.element.updateProperties.reverted": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": null }
+  },
+  "commandStack.element.updateModdleProperties.reverted": {
+    "priority": 1000,
+    "next": null
+  },
+  "spaceTool.getMinDimensions": { "priority": 1000, "next": null },
+  "commandStack.shape.delete.preExecuted": { "priority": 1000, "next": null },
+  "copyPaste.createTree": { "priority": 1000, "next": null },
+  "commandStack.connection.delete.preExecute": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.canvas.updateRoot.preExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.spaceTool.preExecute": { "priority": 5000, "next": null },
+  "commandStack.lane.add.preExecute": { "priority": 5000, "next": null },
+  "commandStack.lane.resize.preExecute": { "priority": 5000, "next": null },
+  "commandStack.lane.split.preExecute": { "priority": 5000, "next": null },
+  "commandStack.elements.delete.preExecute": { "priority": 5000, "next": null },
+  "commandStack.shape.move.preExecute": {
+    "priority": 5000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.spaceTool.postExecuted": { "priority": 500, "next": null },
+  "commandStack.lane.add.postExecuted": { "priority": 500, "next": null },
+  "commandStack.lane.resize.postExecuted": { "priority": 500, "next": null },
+  "commandStack.lane.split.postExecuted": { "priority": 500, "next": null },
+  "commandStack.elements.delete.postExecuted": {
+    "priority": 500,
+    "next": null
+  },
+  "commandStack.shape.move.postExecuted": { "priority": 500, "next": null },
+  "saveXML.start": { "priority": 2000, "next": null },
+  "commandStack.connection.create.preExecute": {
+    "priority": 1000,
+    "next": null
+  },
+  "commandStack.connection.move.preExecute": { "priority": 1000, "next": null },
+  "shape.move.cleanup": {
+    "priority": 1000,
+    "next": { "priority": 1000, "next": { "priority": 1000, "next": null } }
+  },
+  "commandStack.elements.move.preExecuted": {
+    "priority": 1401,
+    "next": { "priority": 1400, "next": null }
+  },
+  "commandStack.shape.delete.revert": { "priority": 1000, "next": null },
+  "spaceTool.selection.start": { "priority": 1000, "next": null },
+  "spaceTool.selection.move": { "priority": 1000, "next": null },
+  "spaceTool.selection.cleanup": { "priority": 1000, "next": null },
+  "spaceTool.cleanup": { "priority": 1000, "next": null },
+  "shape.move.rejected": { "priority": 1000, "next": null },
+  "create.rejected": { "priority": 1000, "next": null },
+  "lasso.selection.init": { "priority": 1000, "next": null },
+  "lasso.selection.ended": { "priority": 250, "next": null },
+  "lasso.selection.canceled": { "priority": 250, "next": null },
+  "lasso.ended": { "priority": 250, "next": null },
+  "lasso.canceled": { "priority": 250, "next": null },
+  "lasso.selection.end": { "priority": 1000, "next": null },
+  "lasso.end": { "priority": 1000, "next": null },
+  "lasso.start": { "priority": 1000, "next": null },
+  "lasso.move": { "priority": 1000, "next": null },
+  "lasso.cleanup": { "priority": 1000, "next": null },
+  "hand.init": { "priority": 1000, "next": null },
+  "hand.ended": { "priority": 250, "next": null },
+  "hand.canceled": { "priority": 250, "next": null },
+  "hand.move.ended": { "priority": 250, "next": null },
+  "hand.move.canceled": { "priority": 250, "next": null },
+  "keyboard.keyup": { "priority": 1500, "next": null },
+  "hand.end": { "priority": 1000, "next": null },
+  "hand.move.move": { "priority": 1000, "next": null },
+  "hand.move.end": { "priority": 1000, "next": null },
+  "global-connect.init": { "priority": 1000, "next": null },
+  "global-connect.ended": {
+    "priority": 1000,
+    "next": { "priority": 250, "next": null }
+  },
+  "global-connect.canceled": { "priority": 250, "next": null },
+  "global-connect.drag.ended": { "priority": 250, "next": null },
+  "global-connect.drag.canceled": { "priority": 250, "next": null },
+  "palette.getProviders": { "priority": 1000, "next": null },
+  "popupMenu.getProviders.color-picker": { "priority": 1000, "next": null },
+  "propertiesPanel.isEntryVisible": {
+    "priority": 1100,
+    "next": { "priority": 1000, "next": null }
+  },
+  "propertiesPanel.isPropertyEditable": {
+    "priority": 1100,
+    "next": { "priority": 1000, "next": null }
+  },
+  "canvas.resized": { "priority": 1000, "next": null },
+  "import.parse.complete": { "priority": 1000, "next": null },
+  "import.done": { "priority": 1000, "next": null }
+}

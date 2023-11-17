@@ -12,15 +12,13 @@ export type BpmnJsReactHook = () => {
   setBpmnModeler: React.Dispatch<
     React.SetStateAction<ReturnType<typeof IBpmnModeler>>
   >;
-  importXml: (
+  importXML: (
     xml: string,
     bpmnDiagram?: ModdleElement | string
   ) => Promise<ImportXMLResult>;
-  saveXml: (
-    callback: (err: any, xml: string) => void,
-    options?: SaveXMLOptions
-  ) => void;
+  saveXML: (options?: SaveXMLOptions) => Promise<SaveXMLResult>;
   getElementById: (id: string) => any;
+  getEventBus: () => any;
 
   zoomIn: (step?: number) => void;
   zoomOut: (step?: number) => void;

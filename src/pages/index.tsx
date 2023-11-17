@@ -22,7 +22,7 @@ export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = React.useRef<HTMLInputElement>(null);
   const finalRef = React.useRef<HTMLInputElement>(null);
-  const [currStorage, setCurrStorge] = React.useState<any>([]);
+  const [currStorage, setCurrStorage] = React.useState<any>([]);
   // useEffect(() => {
   //   const profile = localStorageService.getProfile();
   //   profile ?? router.push('/auth/login');
@@ -32,13 +32,12 @@ export default function Home() {
     if (!processLocalStorage) {
       localStorage.setItem('processList', JSON.stringify([]));
     } else {
-      setCurrStorge(JSON.parse(localStorage.getItem('processList') as string));
+      setCurrStorage(JSON.parse(localStorage.getItem('processList') as string));
     }
   }, []);
 
-  const handleCreateNewProcess = () => {
-    const processID = generateProcessID();
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+  const defaultXML = (processID: string) => {
+    return `<?xml version="1.0" encoding="UTF-8"?>
     <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_1htzell" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="14.0.0">
       <bpmn:process id="${processID}" isExecutable="false">
         <bpmn:startEvent id="StartEvent_0vr9as6" />
@@ -51,6 +50,11 @@ export default function Home() {
         </bpmndi:BPMNPlane>
       </bpmndi:BPMNDiagram>
     </bpmn:definitions>`;
+  };
+
+  const handleCreateNewProcess = () => {
+    const processID = generateProcessID();
+    const xml = defaultXML(processID);
     const payload = {
       processID: processID,
       xml: xml,
