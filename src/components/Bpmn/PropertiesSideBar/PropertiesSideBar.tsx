@@ -1,6 +1,6 @@
 import { ActivityPackageTemplates } from '@/constants/activityPackage';
-import { bpmnSelector } from '@/redux/selector';
 import { Activity } from '@/types/activity';
+import { getProcessFromLocalStorage } from '@/utils/processService';
 import {
   Drawer,
   DrawerBody,
@@ -14,7 +14,9 @@ import {
   FormControl,
   FormLabel,
 } from '@chakra-ui/react';
-import React from 'react';
+import { useParams } from 'next/navigation';
+import { useRouter } from 'next/router';
+import React, { useEffect, useReducer, useState } from 'react';
 
 interface PropertiesSideBarProps {
   isOpen: boolean;
@@ -25,73 +27,76 @@ interface PropertiesSideBarProps {
 interface FormValues {
   [key: string]: string;
 }
+interface PropertiesProps {
+  currentStep: number;
+  packageName: string;
+  serviceName: string;
+  activityName: string;
+}
+enum SideBarAction {
+  SET_PACKAGE = 'SET_PACKAGE',
+  SET_SERVICE = 'SET_SERVICE',
+  SET_ACTIVITY = 'SET_ACTIVITY',
+}
+
+const initialState: PropertiesProps = {
+  currentStep: 1,
+  packageName: '',
+  serviceName: '',
+  activityName: '',
+};
+
+const sidebarReducer = (state: any, action: any) => {
+  switch (action.type) {
+    case SideBarAction.SET_PACKAGE:
+      return { ...state, currentStep: 2, packageName: action.payload };
+    case SideBarAction.SET_SERVICE:
+      return { ...state, currentStep: 3, packageName: action.payload };
+    case SideBarAction.SET_ACTIVITY:
+      return { ...state, currentStep: 4, activityName: action.payload };
+    default:
+      return state;
+  }
+};
 
 export default function PropertiesSideBar({
   isOpen,
   onClose,
   activityItem,
 }: PropertiesSideBarProps) {
-  const currLocalStorage = JSON.parse(
-    localStorage.getItem('currProcess') as string
-  );
+  const router = useRouter();
+  const params = useParams();
+  const processID = params.id as string;
+  const processStorage = getProcessFromLocalStorage(processID);
+  console.log(processStorage);
   const [formValues, setFormValues] = React.useState<FormValues>({});
-  const [activityPackage, setActivityPackage] = React.useState({
-    currentStep: 1,
-    packageName: '',
-    serviceName: '',
-    activityName: '',
-  });
+  const [sideBarState, dispatch] = useReducer(sidebarReducer, initialState);
 
-  // React.useEffect(() => {
-  //   if (!currLocalStorage.activities[activityItem.activityId]) return;
-  //   const emptyActivityProperties =
-  //     Object.keys(currLocalStorage.activities[activityItem.activityId])
-  //       .length === 0;
-  //   setActivityPackage((prevState) => ({
-  //     ...prevState,
-  //     currentStep: emptyActivityProperties ? 1 : 4,
-  //   }));
-  //   console.log('currentActivity', activityItem.activityId);
-  // }, [isOpen, activityItem.activityId]);
+  const handleSelectPackage = (packageName: string) => {
+    dispatch({ type: SideBarAction.SET_PACKAGE, payload: packageName });
+  };
+
+  const handleSelectService = (serviceName: string) => {
+    dispatch({ type: SideBarAction.SET_SERVICE, payload: serviceName });
+  };
+
+  const handleSelectActivity = (activityName: string) => {
+    dispatch({ type: SideBarAction.SET_ACTIVITY, payload: activityName });
+  };
 
   const getTitleStep = (currentStep: number) => {
     switch (currentStep) {
       case 1:
         return 'Select Activity Package';
       case 2:
-        return (
-          currLocalStorage.activities[activityItem.activityID]
-            .packageNameName || activityPackage.packageName
-        );
+        return sideBarState.packageName;
       case 3:
-        return (
-          currLocalStorage.activities[activityItem.activityID].serviceName ||
-          activityPackage.serviceName
-        );
+        return sideBarState.serviceName;
       case 4:
-        return (
-          currLocalStorage.activities[activityItem.activityID].activityName ||
-          activityPackage.activityName
-        );
+        return sideBarState.activityName;
       default:
         return 'Will be update soon';
     }
-  };
-
-  const handleSelectPackage = (packageName: string) => {
-    setActivityPackage((prevState) => ({
-      ...prevState,
-      currentStep: 2,
-      packageName: packageName,
-    }));
-  };
-
-  const handleSelectActivity = (activityName: string) => {
-    setActivityPackage((prevState) => ({
-      ...prevState,
-      activityName: activityName,
-      currentStep: 4,
-    }));
   };
 
   const getDistinctService = (data: any) => {
@@ -124,9 +129,7 @@ export default function PropertiesSideBar({
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>
-            {getTitleStep(activityPackage.currentStep)}
-          </DrawerHeader>
+          <DrawerHeader>{getTitleStep(sideBarState.currentStep)}</DrawerHeader>
           <DrawerBody>
             <h1 className="font-bold text-md text-red-500">
               ActivityID: {activityItem.activityID}
@@ -134,10 +137,10 @@ export default function PropertiesSideBar({
             <h1 className="font-bold text-md text-orange-500">
               Name: {activityItem.activityName}
             </h1>
-            {ActivityPackageTemplates.map((item) => {
+            {/* {ActivityPackageTemplates.map((item: any) => {
               return (
                 <div key={item._id}>
-                  {activityPackage.currentStep == 1 && (
+                  {sideBarState.currentStep == 1 && (
                     <Button
                       className="my-[10px]"
                       colorScheme={item.color}
@@ -145,30 +148,24 @@ export default function PropertiesSideBar({
                       {item.displayName}
                     </Button>
                   )}
-                  {activityPackage.currentStep == 2 &&
-                    activityPackage.packageName == item.displayName &&
+                  {sideBarState.currentStep == 2 &&
+                    sideBarState.packageName == item.displayName &&
                     getDistinctService(item.activityTemplates).map(
                       (service: string) => (
                         <div key={service}>
                           <Button
                             className="my-[10px]"
-                            onClick={() => {
-                              setActivityPackage((prevState) => ({
-                                ...prevState,
-                                currentStep: 3,
-                                serviceName: service,
-                              }));
-                            }}>
+                            onClick={() => handleSelectService(service)}>
                             {service}
                           </Button>
                         </div>
                       )
                     )}
-                  {activityPackage.currentStep == 3 &&
-                    activityPackage.packageName == item.displayName &&
+                  {sideBarState.currentStep == 3 &&
+                    sideBarState.packageName == item.displayName &&
                     getActivityByService(
                       item.activityTemplates,
-                      activityPackage.serviceName
+                      sideBarState.serviceName
                     ).map((activity: any) => (
                       <div key={activity.displayName}>
                         <Button
@@ -180,21 +177,21 @@ export default function PropertiesSideBar({
                         </Button>
                       </div>
                     ))}
-                  {activityPackage.currentStep == 4 &&
-                    activityPackage.packageName == item.displayName &&
+                  {sideBarState.currentStep == 4 &&
+                    sideBarState.packageName == item.displayName &&
                     Object.keys(
                       getArgumentsByActivity(
                         item.activityTemplates,
-                        activityPackage.activityName
+                        sideBarState.activityName
                       )
                     ).map((key: any) => {
                       const argumentParams = getArgumentsByActivity(
                         item.activityTemplates,
-                        currLocalStorage.activities[activityItem.activityID]
-                          .activityName || activityPackage.activityName
+                        currentStorage.activities[activityItem.activityID]
+                          .activityName || sideBarState.activityName
                       )[key].arguments;
                       return (
-                        <div key={activityPackage.activityName}>
+                        <div key={sideBarState.activityName}>
                           {Object.entries(argumentParams).map(
                             ([key, value]) => (
                               <div key={key}>
@@ -204,7 +201,7 @@ export default function PropertiesSideBar({
                                     type="text"
                                     value={
                                       formValues[key] ||
-                                      currLocalStorage.activities[
+                                      currentStorage.activities[
                                         activityItem.activityID
                                       ][key]
                                     }
@@ -221,57 +218,15 @@ export default function PropertiesSideBar({
                     })}
                 </div>
               );
-            })}
-            <Button
-              className="mt-[20px]"
-              onClick={() => {
-                setActivityPackage((prevState) => ({
-                  ...prevState,
-                  activityName: '',
-                  currentStep:
-                    prevState.currentStep > 2 ? prevState.currentStep - 1 : 1,
-                }));
-                currLocalStorage.activities[activityItem.activityID] = {};
-                localStorage.setItem(
-                  'currProcess',
-                  JSON.stringify(currLocalStorage)
-                );
-                setFormValues({});
-                // console.log(
-                //   'Current LocalStorage',
-                //   JSON.parse(localStorage.getItem('currProcess') as string)
-                // );
-              }}>
-              Back
-            </Button>
+            })} */}
+            <Button className="mt-[20px]">Back</Button>
           </DrawerBody>
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button
-              colorScheme="blue"
-              onClick={() => {
-                Object.assign(
-                  currLocalStorage.activities[activityItem.activityID],
-                  {
-                    ...activityPackage,
-                    ...formValues,
-                  }
-                );
-                localStorage.setItem(
-                  'currProcess',
-                  JSON.stringify(currLocalStorage)
-                );
-                // console.log(
-                //   'Current LocalStorage',
-                //   JSON.parse(localStorage.getItem('currProcess') as string)
-                // );
-                setFormValues({});
-              }}>
-              Save
-            </Button>
+            <Button colorScheme="blue">Save</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

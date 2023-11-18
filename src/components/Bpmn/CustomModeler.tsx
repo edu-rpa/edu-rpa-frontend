@@ -43,18 +43,13 @@ function CustomModeler() {
     bpmnReactJs.bpmnModeler &&
       updateModeler().then((xml) => {
         const activityList = bpmnReactJs.getElementList();
-        console.log('Modeler List', activityList);
         const newObj = {
           ...getProcessFromLocalStorage(processId),
           xml: xml,
-          activities: activityList,
+          activities: activityList.slice(1),
         };
         const newLocalStorage = updateLocalStorage(newObj);
         setLocalStorageObject('processList', newLocalStorage);
-        console.log(
-          'Modeler Update LocalStorage',
-          getProcessFromLocalStorage(processId)
-        );
       });
   }, [modelerLength]);
 
@@ -85,7 +80,6 @@ function CustomModeler() {
           const xml = e.target?.result;
           await bpmnReactJs.importXML(xml as string);
           const elementList = bpmnReactJs.getElementList();
-          console.log(elementList);
           const processID = elementList[0].activityID;
           const activities = elementList.slice(1);
           const newImportStorage = {
@@ -157,7 +151,7 @@ function CustomModeler() {
         onClick={async () => {
           const res = await bpmnReactJs.saveXML();
           exportFile(res.xml as string, `${processId}.xml`);
-          // console.log(res.xml);
+          console.log(res.xml);
         }}>
         Save XML
       </Button>
@@ -172,9 +166,24 @@ function CustomModeler() {
             bpmnParser.parseXML(res.xml as string)
           );
           exportFile(jsonProcess, `${processId}.json`);
-          // console.log(bpmnParser.parseXML(res.xml));
+          console.log(bpmnParser.parseXML(res.xml as string));
         }}>
         Save JSON
+      </Button>
+      <Button
+        colorScheme="red"
+        size="md"
+        className="mx-[5px]"
+        onClick={() => {
+          const processProperties = getProcessFromLocalStorage(processId);
+          console.log(processProperties);
+          delete processProperties['xml'];
+          exportFile(
+            JSON.stringify(processProperties),
+            `${processId}_properties.json`
+          );
+        }}>
+        Save Properties
       </Button>
       <br />
     </div>

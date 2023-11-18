@@ -21,7 +21,6 @@ interface ModelerSideBarProps {
 
 export default function ModelerSideBar(props: ModelerSideBarProps) {
   const [activityItem, setActivityItem] = React.useState({
-    processID: '',
     activityID: '',
     activityName: '',
     activityType: '',
@@ -32,15 +31,15 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
     props.modeler.on('selection.changed', async (event: any) => {
       if (!event.newSelection[0]) return;
       const eventInfo = event.newSelection[0].businessObject;
+      const processID = eventInfo.$parent.id;
       const currentActivity = {
-        processID: eventInfo.$parent.id,
         activityID: eventInfo.id,
         activityName: eventInfo.name,
         activityType: eventInfo.$type,
         properties: [],
       };
-      const processID = currentActivity.processID;
       const currentProcess = getProcessFromLocalStorage(processID);
+
       const isActivityExists = getActivityInProcess(
         processID,
         currentActivity.activityID

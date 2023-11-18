@@ -1,6 +1,5 @@
 import { Process } from '@/types/process';
 import { getLocalStorageObject } from './localStorageService';
-import { ProcessList } from '@/types/processList';
 import { Activity } from '@/types/activity';
 
 const generateProcessID = () => {
@@ -34,14 +33,13 @@ const initProcess = (
   processID: string,
   xml: string,
   processName: string
-): ProcessList => {
+): Process => {
   return {
     processID: processID,
     xml: xml,
     processName: processName,
     activities: [
       {
-        processID: processID,
         activityID: 'StartEvent_0vr9as6',
         activityType: 'bpmn:StartEvent',
         properties: [],
