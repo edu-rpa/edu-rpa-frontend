@@ -24,18 +24,15 @@ function CustomModeler() {
   const router = useRouter();
   const ref = useRef<BpmnJsReactHandle>(null);
   const params = useParams();
-  const [processId, setProcessID] = useState(params.id as string);
-  const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const inputFileRef = useRef<HTMLInputElement>(null);
   const bpmnReactJs = useBpmn();
   const modelerElements = bpmnReactJs.bpmnModeler
     ? bpmnReactJs.getElements().length
     : 0;
-
-  useEffect(() => {
-    router.push(`/studio/modeler/${processId}`);
-  }, [processId]);
+  const [modelerLength, setModelerLength] = useState(modelerElements);
+  const [processId, setProcessID] = useState(params.id as string);
+  const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (modelerElements == 0) return;
@@ -45,12 +42,21 @@ function CustomModeler() {
     };
     bpmnReactJs.bpmnModeler &&
       updateModeler().then((xml) => {
-        const newObj = { ...getProcessFromLocalStorage(processId), xml: xml };
+        const activityList = bpmnReactJs.getElementList();
+        console.log('Modeler List', activityList);
+        const newObj = {
+          ...getProcessFromLocalStorage(processId),
+          xml: xml,
+          activities: activityList,
+        };
         const newLocalStorage = updateLocalStorage(newObj);
         setLocalStorageObject('processList', newLocalStorage);
-        console.log(getLocalStorageObject('processList'));
+        console.log(
+          'Modeler Update LocalStorage',
+          getProcessFromLocalStorage(processId)
+        );
       });
-  }, [modelerElements]);
+  }, [modelerLength]);
 
   const exportFile = (content: string, fileName: string) => {
     var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -120,6 +126,7 @@ function CustomModeler() {
           onClose={onClose}
           onOpen={onOpen}
           modeler={bpmnReactJs.bpmnModeler}
+          setModelerLength={setModelerLength}
         />
       )}
       <input

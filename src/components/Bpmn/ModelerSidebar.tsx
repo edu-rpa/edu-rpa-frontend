@@ -1,12 +1,22 @@
 import React from 'react';
 import PropertiesSideBar from './PropertiesSideBar/PropertiesSideBar';
-import { getProcessFromLocalStorage } from '@/utils/processService';
+import {
+  getActivityInProcess,
+  getProcessFromLocalStorage,
+  updateLocalStorage,
+} from '@/utils/processService';
+import {
+  getLocalStorageObject,
+  setLocalStorageObject,
+} from '@/utils/localStorageService';
+import { Activity } from '@/types/activity';
 
 interface ModelerSideBarProps {
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
   modeler: any;
+  setModelerLength: any;
 }
 
 export default function ModelerSideBar(props: ModelerSideBarProps) {
@@ -15,17 +25,8 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
     activityID: '',
     activityName: '',
     activityType: '',
-    incoming: [],
-    outgoing: [],
     properties: [],
   });
-  const getFlowInfo = (flowArray: any) => {
-    return (
-      flowArray?.map((item: any) => {
-        return { flowId: item.id, name: item?.name };
-      }) || []
-    );
-  };
 
   React.useEffect(() => {
     props.modeler.on('selection.changed', async (event: any) => {
@@ -36,13 +37,28 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
         activityID: eventInfo.id,
         activityName: eventInfo.name,
         activityType: eventInfo.$type,
-        incoming: getFlowInfo(eventInfo.incoming),
-        outgoing: getFlowInfo(eventInfo.outgoing),
         properties: [],
       };
-      console.log(currentActivity);
+      const processID = currentActivity.processID;
+      const currentProcess = getProcessFromLocalStorage(processID);
+      const isActivityExists = getActivityInProcess(
+        processID,
+        currentActivity.activityID
+      );
+      if (!isActivityExists) {
+        const newUpdateStorage = {
+          ...currentProcess,
+          activities: [...currentProcess.activities, currentActivity],
+        };
+        setLocalStorageObject(
+          'processList',
+          updateLocalStorage(newUpdateStorage)
+        );
+      } else {
+        props.onOpen();
+      }
+      props.setModelerLength(currentProcess.activities.length);
       setActivityItem(currentActivity);
-      // props.onOpen();
     });
   }, [activityItem]);
 

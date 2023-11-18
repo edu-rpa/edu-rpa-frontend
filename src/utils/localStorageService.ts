@@ -1,5 +1,6 @@
 const getLocalStorageObject = (key: string) => {
-  return JSON.parse(localStorage.getItem(key) as string);
+  const currentStorage = localStorage.getItem(key);
+  return currentStorage ? JSON.parse(currentStorage) : [];
 };
 
 const setLocalStorageObject = (key: string, value: object[]) => {

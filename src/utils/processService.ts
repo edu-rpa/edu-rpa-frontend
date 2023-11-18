@@ -41,6 +41,7 @@ const initProcess = (
     processName: processName,
     activities: [
       {
+        processID: processID,
         activityID: 'StartEvent_0vr9as6',
         activityType: 'bpmn:StartEvent',
         properties: [],
@@ -52,7 +53,7 @@ const initProcess = (
 
 const getProcessFromLocalStorage = (processID: string) => {
   return getLocalStorageObject('processList').find(
-    (process: any) => process.processID === processID
+    (process: Process) => process.processID === processID
   );
 };
 
@@ -78,9 +79,9 @@ const replaceLocalStorage = (processID: string, newObj: Process) => {
 };
 
 const getActivityInProcess = (processID: string, activityID: string) => {
-  return getLocalStorageObject('processList')
-    .find((process: any) => process.processID === processID)
-    .activites.find((activty: any) => activty.activityID === activityID);
+  return getProcessFromLocalStorage(processID).activities.find(
+    (activity: Activity) => activity.activityID === activityID
+  );
 };
 
 const updateActivitesByProcessID = (processID: string, newObj: Activity[]) => {

@@ -84,7 +84,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
     bpmnEditor?.on('element.click', (e: any) => {
       click(e);
     });
-  }, [bpmnEditor, currentProcess]);
+  }, [bpmnEditor]);
 
   const zoomFit = () => {
     (bpmnEditor as any).get('canvas').zoom('fit-viewport');

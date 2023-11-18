@@ -1,5 +1,9 @@
 import { Process } from '@/types/process';
 import {
+  getLocalStorageObject,
+  setLocalStorageObject,
+} from '@/utils/localStorageService';
+import {
   defaultXML,
   generateProcessID,
   initProcess,
@@ -19,37 +23,38 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function Home() {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const initialRef = React.useRef<HTMLInputElement>(null);
-  const finalRef = React.useRef<HTMLInputElement>(null);
-  const [currStorage, setCurrStorage] = React.useState<any>([]);
+  const initialRef = useRef<HTMLInputElement>(null);
+  const finalRef = useRef<HTMLInputElement>(null);
+  const [currentStorage, setCurrentStorage] = useState<Process[]>([]);
   // useEffect(() => {
   //   const profile = localStorageService.getProfile();
   //   profile ?? router.push('/auth/login');
   // }, []);
-  React.useEffect(() => {
-    const processLocalStorage = localStorage.getItem('processList');
-    if (!processLocalStorage) {
+  useEffect(() => {
+    const currentStorage = localStorage.getItem('processList');
+    if (!currentStorage) {
       localStorage.setItem('processList', JSON.stringify([]));
     } else {
-      setCurrStorage(JSON.parse(localStorage.getItem('processList') as string));
+      const storage = getLocalStorageObject('processList');
+      console.log('Home Storage', storage);
+      setCurrentStorage(storage);
     }
   }, []);
 
   const handleCreateNewProcess = () => {
     const processID = generateProcessID();
     const xml = defaultXML(processID);
-    const initalProcess = initProcess(
+    const initialProcess = initProcess(
       processID,
       xml,
       initialRef.current?.value as string
     );
-    currStorage.push(initalProcess);
-    localStorage.setItem('processList', JSON.stringify(currStorage));
+    setLocalStorageObject('processList', [...currentStorage, initialProcess]);
     router.push(`/studio/modeler/${processID}`);
   };
 
@@ -71,10 +76,10 @@ export default function Home() {
             Clear All
           </Button>
           <div>
-            {currStorage.map((process: Process, index: number) => {
+            {currentStorage.map((process: Process, index: number) => {
               return (
                 <div
-                  key={index}
+                  key={process.processID}
                   className="p-[10px] shadow-custom-0 rounded-xl hover:cursor-pointer hover:opacity-80 hover:bg-blue-300 my-[15px]"
                   onClick={() => {
                     router.push(`/studio/modeler/${process.processID}`);
