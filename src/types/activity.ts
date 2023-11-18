@@ -1,27 +1,20 @@
+import { VariableType } from './variable';
+
 export interface Activity {
-  processID: string;
+  processID?: string;
   activityID: string;
-  activityName: string;
+  activityName?: string;
   activityType: string;
-  incoming: Flow[];
-  outgoing: Flow[];
+  incoming?: Flow[];
+  outgoing?: Flow[];
+  properties: Property[];
+}
+
+export interface Property {
+  [key: string]: VariableType;
 }
 
 export interface Flow {
   flowId: string;
   name?: string;
-}
-
-export interface BPMNState {
-  processID: string;
-  xml: string;
-  processName: string | null;
-  activities: Activity[];
-}
-
-export interface UpdateBPMNActionPayload {
-  processID: string;
-  xml: string;
-  processName: string | null;
-  activities: Activity[];
 }

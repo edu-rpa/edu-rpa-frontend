@@ -41,6 +41,16 @@ export const useBpmn: BpmnJsReactHook = () => {
   const getElements = () => {
     return bpmnModeler.get('elementRegistry').getAll();
   };
+
+  const getElementList = () => {
+    return getElements().map((item: any) => {
+      return {
+        activityID: item.id,
+        activityType: item.type,
+        properties: [],
+      };
+    });
+  };
   const getElementById = (id: string) => {
     return bpmnModeler.get('elementRegistry').get(id);
   };
@@ -96,6 +106,7 @@ export const useBpmn: BpmnJsReactHook = () => {
     getCanvas,
     getEventBus,
     getElements,
+    getElementList,
     getElementById,
     getBusinessObject,
     zoomIn,

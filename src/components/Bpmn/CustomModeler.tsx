@@ -13,12 +13,18 @@ import {
   getLocalStorageObject,
   setLocalStorageObject,
 } from '@/utils/localStorageService';
-import { m } from 'framer-motion';
+import {
+  getProcessFromLocalStorage,
+  replaceLocalStorage,
+  updateLocalStorage,
+} from '@/utils/processService';
+import { useRouter } from 'next/router';
 
 function CustomModeler() {
+  const router = useRouter();
   const ref = useRef<BpmnJsReactHandle>(null);
   const params = useParams();
-  const [processID, setProcessID] = useState(params.id);
+  const [processId, setProcessID] = useState(params.id as string);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -28,14 +34,22 @@ function CustomModeler() {
     : 0;
 
   useEffect(() => {
-    console.log('Update BPMN');
-    console.log(getLocalStorageObject('processList'));
+    router.push(`/studio/modeler/${processId}`);
+  }, [processId]);
+
+  useEffect(() => {
     if (modelerElements == 0) return;
     const updateModeler = async () => {
       const data = await bpmnReactJs.saveXML();
       return data.xml;
     };
-    bpmnReactJs.bpmnModeler && updateModeler().then((xml) => console.log(xml));
+    bpmnReactJs.bpmnModeler &&
+      updateModeler().then((xml) => {
+        const newObj = { ...getProcessFromLocalStorage(processId), xml: xml };
+        const newLocalStorage = updateLocalStorage(newObj);
+        setLocalStorageObject('processList', newLocalStorage);
+        console.log(getLocalStorageObject('processList'));
+      });
   }, [modelerElements]);
 
   const exportFile = (content: string, fileName: string) => {
@@ -64,20 +78,23 @@ function CustomModeler() {
         try {
           const xml = e.target?.result;
           await bpmnReactJs.importXML(xml as string);
-          const allEvents = bpmnReactJs.getElements().map((item: any) => {
-            return item.id;
-          });
-          const [processID, ...activitiesArray] = allEvents;
-          const activities = activitiesArray.reduce(
-            (acc: any, activity: any) => {
-              acc[activity] = {};
-              return acc;
-            },
-            {}
+          const elementList = bpmnReactJs.getElementList();
+          console.log(elementList);
+          const processID = elementList[0].activityID;
+          const activities = elementList.slice(1);
+          const newImportStorage = {
+            ...getProcessFromLocalStorage(processId),
+            processID: processID,
+            xml: xml,
+            activities: activities,
+          };
+          const replaceStorageSnapshot = replaceLocalStorage(
+            processId,
+            newImportStorage
           );
-          const output = { processID, activities };
-          localStorage.setItem('currProcess', JSON.stringify(output));
+          setLocalStorageObject('processList', replaceStorageSnapshot);
           setProcessID(processID);
+          router.push(`/studio/modeler/${processID}`);
         } catch (err) {
           toast({
             title: 'File is not a XML file',
@@ -95,7 +112,7 @@ function CustomModeler() {
 
   return (
     <div className="mt-[120px]">
-      <h1 className="text-primary font-bold text-2xl mx-[20px]">{processID}</h1>
+      <h1 className="text-primary font-bold text-2xl mx-[20px]">{processId}</h1>
       <BpmnJsReact mode="edit" useBpmnJsReact={bpmnReactJs} ref={ref} />
       {bpmnReactJs.bpmnModeler && (
         <ModelerSideBar
@@ -132,7 +149,7 @@ function CustomModeler() {
         className="mx-[5px]"
         onClick={async () => {
           const res = await bpmnReactJs.saveXML();
-          exportFile(res.xml as string, `${processID}.xml`);
+          exportFile(res.xml as string, `${processId}.xml`);
           // console.log(res.xml);
         }}>
         Save XML
@@ -147,7 +164,7 @@ function CustomModeler() {
           const jsonProcess = stringifyCyclicObject(
             bpmnParser.parseXML(res.xml as string)
           );
-          exportFile(jsonProcess, `${processID}.json`);
+          exportFile(jsonProcess, `${processId}.json`);
           // console.log(bpmnParser.parseXML(res.xml));
         }}>
         Save JSON

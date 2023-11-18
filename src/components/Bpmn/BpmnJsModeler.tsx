@@ -20,9 +20,9 @@ import CliModule from 'bpmn-js-cli';
 import BpmnColorPickerModule from 'bpmn-js-color-picker';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-font/dist/css/bpmn-embedded.css';
-import { defaultBpmnXml } from './bpmn.default';
 import removeUnsupportedBpmnFunctions from './removeTrackPad';
 import { useParams } from 'next/navigation';
+import { getProcessFromLocalStorage } from '@/utils/processService';
 
 const BpmnJsModeler: ForwardRefRenderFunction<
   BpmnJsReactHandle,
@@ -42,11 +42,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   ref
 ) => {
   const params = useParams();
-
-  const currentProcess = JSON.parse(
-    localStorage.getItem('processList') as string
-  ).find((obj: any) => obj.processID === params.id);
-
+  const currentProcess = getProcessFromLocalStorage(params.id as string);
   const [bpmnEditor, setBpmnEditor] = useState<CamundaBpmnModeler | null>(null);
 
   useEffect(() => {
@@ -74,6 +70,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   }, []);
 
   useEffect(() => {
+    if (!currentProcess) return;
     bpmnEditor?.importXML(currentProcess.xml);
     bpmnEditor?.on('import.done', (event: any) => {
       const { error, warning } = event;
@@ -87,47 +84,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
     bpmnEditor?.on('element.click', (e: any) => {
       click(e);
     });
-  }, [bpmnEditor, currentProcess.xml]);
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      saveXml(result: any, options = { format: false }) {
-        bpmnEditor?.saveXML(options);
-      },
-      async saveXmlAsync(result: any, options = { format: false }) {
-        return await bpmnEditor?.saveXML(options);
-      },
-      importXml(xml: string) {
-        bpmnEditor?.importXML(xml);
-      },
-      getModeler() {
-        return bpmnEditor;
-      },
-      getCanvas() {
-        return bpmnEditor?.get('canvas');
-      },
-      zoomIn(step = 0.1) {
-        (bpmnEditor as any).get('zoomScroll').stepZoom(step);
-      },
-      zoomOut(step = 0.1) {
-        (bpmnEditor as any).get('zoomScroll').stepZoom(-step);
-      },
-      zoomFit() {
-        (bpmnEditor as any).get('canvas').zoom('fit-viewport');
-      },
-      setColor(elements: any, color: any) {
-        (bpmnEditor as any).get('modeling').setColor(elements, color);
-      },
-      addMarker(id: string, cssClass: string) {
-        (bpmnEditor as any).get('canvas').addMarker(id, cssClass);
-      },
-      removeMarker(id: string, cssClass: string) {
-        (bpmnEditor as any).get('canvas').removeMarker(id, cssClass);
-      },
-    }),
-    [bpmnEditor]
-  );
+  }, [bpmnEditor, currentProcess]);
 
   const zoomFit = () => {
     (bpmnEditor as any).get('canvas').zoom('fit-viewport');

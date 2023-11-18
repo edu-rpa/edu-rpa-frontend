@@ -1,7 +1,7 @@
-import { BPMNState } from '@/types/activity';
+import { Process } from '@/types/process';
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState: BPMNState = {
+const initialState: Process = {
   processID: '',
   xml: '',
   processName: '',

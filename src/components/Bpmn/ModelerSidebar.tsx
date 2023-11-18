@@ -1,5 +1,5 @@
 import React from 'react';
-import PropertiesSideBar from '../PropertiesSideBar/PropertiesSideBar';
+import PropertiesSideBar from './PropertiesSideBar/PropertiesSideBar';
 import { getProcessFromLocalStorage } from '@/utils/processService';
 
 interface ModelerSideBarProps {
@@ -17,6 +17,7 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
     activityType: '',
     incoming: [],
     outgoing: [],
+    properties: [],
   });
   const getFlowInfo = (flowArray: any) => {
     return (
@@ -37,17 +38,11 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
         activityType: eventInfo.$type,
         incoming: getFlowInfo(eventInfo.incoming),
         outgoing: getFlowInfo(eventInfo.outgoing),
+        properties: [],
       };
-      // console.log('ProcessID', currentActivity.processID);
-      // console.log('Activity', currentActivity.activityID);
-      // console.log('ActivityType', currentActivity.activityType);
-      // console.log(
-      //   'LocalStorage',
-      //   getProcessFromLocalStorage(currentActivity.processID)
-      // );
-      // console.log(await props.modeler.saveXML({ format: true }));
+      console.log(currentActivity);
       setActivityItem(currentActivity);
-      props.onOpen();
+      // props.onOpen();
     });
   }, [activityItem]);
 

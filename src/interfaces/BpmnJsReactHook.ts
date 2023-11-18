@@ -6,6 +6,7 @@ import {
   SaveXMLOptions,
   SaveXMLResult,
 } from 'bpmn-js/lib/BaseViewer';
+import { Activity } from '@/types/activity';
 
 export type BpmnJsReactHook = () => {
   bpmnModeler: ReturnType<typeof IBpmnModeler>;
@@ -33,6 +34,8 @@ export type BpmnJsReactHook = () => {
   getAttribute: (id: string, attr: string) => any;
   setAttribute: (id: string, attr: string, value: any) => void;
   getElements: () => any;
+  getElementList: () => Activity[];
+
   getBusinessObject: (id: string) => any;
   getIncoming: (id: string) => any;
   getOutgoing: (id: string) => any;
