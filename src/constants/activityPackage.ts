@@ -575,57 +575,6 @@ export const ActivityPackageTemplates = [
         },
       },
       {
-        templateId: 'gmail.forward_email',
-        displayName: 'Forward Email',
-        description: 'Forward an email with the specified ID to other people',
-        iconCode: 'FaEnvelope',
-        service: 'Gmail',
-        type: 'activity',
-        arguments: {
-          Connection: {
-            type: 'connection.gmail',
-            value: null,
-          },
-          'Email ID': {
-            type: 'string',
-            value: null,
-          },
-          'Share With': {
-            to: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-            cc: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-            bcc: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-          },
-          Body: {
-            type: 'string',
-            value: null,
-          },
-          Attachments: [
-            {
-              type: 'file',
-              value: null,
-            },
-          ],
-        },
-        return: {
-          message: 'Forward Email successfully!',
-        },
-      },
-      {
         templateId: 'sheet.create_spreadsheet',
         displayName: 'Create SpreadSheet',
         description: 'Create SpreadSheet in Google Sheet',
@@ -1102,7 +1051,7 @@ export const ActivityPackageTemplates = [
   {
     _id: 'document_automation',
     displayName: 'Document automation',
-    color: 'yellow',
+    color: 'orange',
     description:
       'Help you automate tasks related to documents (traditional paper documents or digital documents like PDFs) with the help of AI',
     iconCode: 'FaFileAlt',

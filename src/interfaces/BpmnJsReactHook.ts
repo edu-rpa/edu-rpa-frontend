@@ -6,21 +6,20 @@ import {
   SaveXMLOptions,
   SaveXMLResult,
 } from 'bpmn-js/lib/BaseViewer';
+import { Activity } from '@/types/activity';
 
 export type BpmnJsReactHook = () => {
   bpmnModeler: ReturnType<typeof IBpmnModeler>;
   setBpmnModeler: React.Dispatch<
     React.SetStateAction<ReturnType<typeof IBpmnModeler>>
   >;
-  importXml: (
+  importXML: (
     xml: string,
     bpmnDiagram?: ModdleElement | string
   ) => Promise<ImportXMLResult>;
-  saveXml: (
-    callback: (err: any, xml: string) => void,
-    options?: SaveXMLOptions
-  ) => void;
+  saveXML: (options?: SaveXMLOptions) => Promise<SaveXMLResult>;
   getElementById: (id: string) => any;
+  getEventBus: () => any;
 
   zoomIn: (step?: number) => void;
   zoomOut: (step?: number) => void;
@@ -35,6 +34,8 @@ export type BpmnJsReactHook = () => {
   getAttribute: (id: string, attr: string) => any;
   setAttribute: (id: string, attr: string, value: any) => void;
   getElements: () => any;
+  getElementList: () => Activity[];
+
   getBusinessObject: (id: string) => any;
   getIncoming: (id: string) => any;
   getOutgoing: (id: string) => any;

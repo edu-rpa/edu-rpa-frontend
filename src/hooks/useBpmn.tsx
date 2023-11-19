@@ -5,48 +5,68 @@ import {
   SaveXMLOptions,
 } from 'bpmn-js/lib/BaseViewer';
 import { BpmnJsReactHook } from '@/interfaces/BpmnJsReactHook';
+//@ts-ignore
+import { BpmnModeler as IBpmnModeler } from 'bpmn-js/lib/Modeler';
 
-export const useBpmnJsReact: BpmnJsReactHook = () => {
-  const [bpmnModeler, setBpmnModeler] = useState<ReturnType<any>>(null);
+export const useBpmn: BpmnJsReactHook = () => {
+  const [bpmnModeler, setBpmnModeler] =
+    useState<ReturnType<IBpmnModeler>>(null);
 
-  const getCanvas = () => bpmnModeler?.get('canvas');
+  const getCanvas = () => {
+    return bpmnModeler.get('canvas');
+  };
 
-  const importXml: (
+  const getEventBus = () => {
+    return bpmnModeler.get('eventBus');
+  };
+
+  const importXML: (
     xml: string,
     bpmnDiagram?: ModdleElement | string
   ) => Promise<ImportXMLResult> = (xml: string) => {
-    return bpmnModeler?.importXML(xml);
+    return bpmnModeler.importXML(xml);
   };
 
-  const saveXml = (
-    callback: (err: any, xml: string) => void,
+  const saveXML = (
     options: SaveXMLOptions = {
-      format: false,
+      format: true,
     }
   ) => {
-    bpmnModeler?.saveXML(options, callback);
+    return bpmnModeler.saveXML(options);
+  };
+  const getElementRegistry = () => {
+    return bpmnModeler.get('elementRegistry');
   };
 
   const getElements = () => {
-    return bpmnModeler?.get('elementRegistry').getAll();
+    return bpmnModeler.get('elementRegistry').getAll();
+  };
+
+  const getElementList = () => {
+    return getElements().map((item: any) => {
+      return {
+        activityID: item.id,
+        activityType: item.type,
+        properties: {},
+      };
+    });
   };
   const getElementById = (id: string) => {
-    return bpmnModeler?.get('elementRegistry').get(id);
+    return bpmnModeler.get('elementRegistry').get(id);
   };
-  //STYLING
 
   const zoomIn = (step = 0.1) => {
-    bpmnModeler?.get('zoomScroll')?.zoom(step);
+    bpmnModeler.get('zoomScroll')?.zoom(step);
   };
   const zoomOut = (step = 0.1) => {
-    bpmnModeler?.get('zoomScroll')?.zoom(-step);
+    bpmnModeler.get('zoomScroll')?.zoom(-step);
   };
   const zoomFit = () => {
-    bpmnModeler?.get('zoomScroll')?.zoom('fit-viewport');
+    bpmnModeler.get('zoomScroll')?.zoom('fit-viewport');
   };
   const setStyle = () => {
-    const canvas = bpmnModeler?.get('canvas');
-    canvas?.zoom('fit-viewport');
+    const canvas = bpmnModeler.get('canvas');
+    canvas.zoom('fit-viewport');
   };
   const addMarker = (id: string, cssClass: string) => {
     bpmnModeler.get('canvas').addMarker(id, cssClass);
@@ -58,11 +78,8 @@ export const useBpmnJsReact: BpmnJsReactHook = () => {
     bpmnModeler.get('modeling').setColor(elements, color);
   };
 
-  //PROPERTIES
-  const getElementRegistry = () => bpmnModeler?.get('elementRegistry');
-
   const getBusinessObject = (id: string) => {
-    return getElementRegistry()?.get(id).businessObject;
+    return getElementRegistry().get(id).businessObject;
   };
 
   const getAttribute = (id: string, key: string) => {
@@ -84,10 +101,12 @@ export const useBpmnJsReact: BpmnJsReactHook = () => {
   return {
     bpmnModeler,
     setBpmnModeler,
-    importXml,
-    saveXml,
+    importXML,
+    saveXML,
     getCanvas,
+    getEventBus,
     getElements,
+    getElementList,
     getElementById,
     getBusinessObject,
     zoomIn,

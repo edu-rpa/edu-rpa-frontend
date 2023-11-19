@@ -24,7 +24,7 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { LoginDto } from '@/dtos/authDto';
 import authApi from '@/apis/auth';
-import { localStorageService } from '@/utils/localStorageService';
+import { localStorageService } from '@/utils/profile';
 
 export default function LoginForm() {
   const router = useRouter();

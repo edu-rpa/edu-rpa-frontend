@@ -1,5 +1,5 @@
+import { localStorageService } from '@/utils/profile';
 import axios from 'axios';
-import { localStorageService } from '@/utils/localStorageService';
 
 const apiBase = axios.create();
 apiBase.interceptors.request.use((config) => {

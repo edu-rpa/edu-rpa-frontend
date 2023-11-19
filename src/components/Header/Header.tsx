@@ -9,7 +9,16 @@ export default function Header() {
   return (
     <div className="bg-[#fff] w-full shadow-header fixed top-0 left-0 z-10">
       <div className="w-11/12 m-auto py-[20px] flex justify-between">
-        <Image src={logo} width={150} height={150} alt="Logo" />
+        <Image
+          src={logo}
+          width={150}
+          height={150}
+          alt="Logo"
+          className="hover:cursor-pointer"
+          onClick={() => {
+            router.push('/');
+          }}
+        />
         <div className="flex justify-between items-center w-[200px]">
           <Button
             colorScheme="teal"
