@@ -5,18 +5,14 @@ import {
   getProcessFromLocalStorage,
   updateLocalStorage,
 } from '@/utils/processService';
-import {
-  getLocalStorageObject,
-  setLocalStorageObject,
-} from '@/utils/localStorageService';
-import { Activity } from '@/types/activity';
+import { setLocalStorageObject } from '@/utils/localStorageService';
 
 interface ModelerSideBarProps {
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
   modeler: any;
-  setModelerLength: any;
+  setIsEdit: any;
 }
 
 export default function ModelerSideBar(props: ModelerSideBarProps) {
@@ -24,7 +20,7 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
     activityID: '',
     activityName: '',
     activityType: '',
-    properties: [],
+    properties: {},
   });
 
   React.useEffect(() => {
@@ -36,7 +32,7 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
         activityID: eventInfo.id,
         activityName: eventInfo.name,
         activityType: eventInfo.$type,
-        properties: [],
+        properties: {},
       };
       const currentProcess = getProcessFromLocalStorage(processID);
 
@@ -53,10 +49,11 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
           'processList',
           updateLocalStorage(newUpdateStorage)
         );
+        props.setIsEdit(true);
       } else {
         props.onOpen();
+        props.setIsEdit(false);
       }
-      props.setModelerLength(currentProcess.activities.length);
       setActivityItem(currentActivity);
     });
   }, [activityItem]);

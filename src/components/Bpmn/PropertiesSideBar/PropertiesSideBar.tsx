@@ -1,6 +1,15 @@
 import { ActivityPackageTemplates } from '@/constants/activityPackage';
 import { Activity } from '@/types/activity';
-import { getProcessFromLocalStorage } from '@/utils/processService';
+import {
+  getLocalStorageObject,
+  setLocalStorageObject,
+} from '@/utils/localStorageService';
+import {
+  getActivityInProcess,
+  getProcessFromLocalStorage,
+  updateActivityInProcess,
+  updateLocalStorage,
+} from '@/utils/processService';
 import {
   Drawer,
   DrawerBody,
@@ -15,7 +24,6 @@ import {
   FormLabel,
 } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
-import { useRouter } from 'next/router';
 import React, { useEffect, useReducer, useState } from 'react';
 
 interface PropertiesSideBarProps {
@@ -34,9 +42,12 @@ interface PropertiesProps {
   activityName: string;
 }
 enum SideBarAction {
+  SET_DEFAULT = 'SET_DEFAULT',
+  SET_PROPERTY = 'SET_PROPERTY',
   SET_PACKAGE = 'SET_PACKAGE',
   SET_SERVICE = 'SET_SERVICE',
   SET_ACTIVITY = 'SET_ACTIVITY',
+  SET_BACK = 'SET_BACK',
 }
 
 const initialState: PropertiesProps = {
@@ -51,9 +62,28 @@ const sidebarReducer = (state: any, action: any) => {
     case SideBarAction.SET_PACKAGE:
       return { ...state, currentStep: 2, packageName: action.payload };
     case SideBarAction.SET_SERVICE:
-      return { ...state, currentStep: 3, packageName: action.payload };
+      return { ...state, currentStep: 3, serviceName: action.payload };
     case SideBarAction.SET_ACTIVITY:
       return { ...state, currentStep: 4, activityName: action.payload };
+    case SideBarAction.SET_BACK:
+      return {
+        ...state,
+        currentStep: Math.max(1, state.currentStep - 1),
+      };
+    case SideBarAction.SET_DEFAULT:
+      return {
+        ...state,
+        currentStep: 1,
+      };
+    case SideBarAction.SET_PROPERTY:
+      return {
+        ...state,
+        currentStep: 4,
+        packageName: action.payload?.activityPackage,
+        serviceName: action.payload?.serviceName,
+        activityName: action.payload?.activityName,
+      };
+
     default:
       return state;
   }
@@ -64,13 +94,26 @@ export default function PropertiesSideBar({
   onClose,
   activityItem,
 }: PropertiesSideBarProps) {
-  const router = useRouter();
   const params = useParams();
   const processID = params.id as string;
-  const processStorage = getProcessFromLocalStorage(processID);
-  console.log(processStorage);
   const [formValues, setFormValues] = React.useState<FormValues>({});
   const [sideBarState, dispatch] = useReducer(sidebarReducer, initialState);
+
+  useEffect(() => {
+    const getActivityByID = getActivityInProcess(
+      processID,
+      activityItem.activityID
+    );
+    if (!getActivityByID) return;
+    const isEmptyProperty = Object.keys(getActivityByID.properties).length;
+    if (isEmptyProperty == 0) {
+      handleSetDefault();
+      setFormValues({});
+    } else {
+      handleSetPropertyFromLocalStorage(getActivityByID.properties);
+      setFormValues(getActivityByID.properties.arguments);
+    }
+  }, [isOpen]);
 
   const handleSelectPackage = (packageName: string) => {
     dispatch({ type: SideBarAction.SET_PACKAGE, payload: packageName });
@@ -84,6 +127,19 @@ export default function PropertiesSideBar({
     dispatch({ type: SideBarAction.SET_ACTIVITY, payload: activityName });
   };
 
+  const handleGoBack = () => {
+    dispatch({ type: SideBarAction.SET_BACK });
+    setFormValues({});
+  };
+
+  const handleSetDefault = () => {
+    dispatch({ type: SideBarAction.SET_DEFAULT });
+  };
+
+  const handleSetPropertyFromLocalStorage = (activityInfo: Activity) => {
+    dispatch({ type: SideBarAction.SET_PROPERTY, payload: activityInfo });
+  };
+
   const getTitleStep = (currentStep: number) => {
     switch (currentStep) {
       case 1:
@@ -94,8 +150,6 @@ export default function PropertiesSideBar({
         return sideBarState.serviceName;
       case 4:
         return sideBarState.activityName;
-      default:
-        return 'Will be update soon';
     }
   };
 
@@ -124,6 +178,25 @@ export default function PropertiesSideBar({
     setFormValues((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleUpdateProperties = () => {
+    const payload = {
+      activityPackage: sideBarState.packageName,
+      serviceName: sideBarState.serviceName,
+      activityName: sideBarState.activityName,
+      arguments: formValues,
+    };
+    const updatePayload = {
+      ...getActivityInProcess(processID, activityItem.activityID),
+      properties: payload,
+    };
+    const updateProperties = updateActivityInProcess(processID, updatePayload);
+    const updateProcess = updateLocalStorage({
+      ...getProcessFromLocalStorage(processID),
+      activities: updateProperties,
+    });
+    setLocalStorageObject('processList', updateProcess);
+  };
+
   return (
     <div>
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
@@ -137,96 +210,107 @@ export default function PropertiesSideBar({
             <h1 className="font-bold text-md text-orange-500">
               Name: {activityItem.activityName}
             </h1>
-            {/* {ActivityPackageTemplates.map((item: any) => {
-              return (
-                <div key={item._id}>
-                  {sideBarState.currentStep == 1 && (
+            {ActivityPackageTemplates.map((item) => {
+              const { _id, displayName, activityTemplates, color } = item;
+              const { currentStep, packageName, serviceName, activityName } =
+                sideBarState;
+
+              const renderStepOne = () => (
+                <Button
+                  className="my-[10px]"
+                  colorScheme={color}
+                  onClick={() => handleSelectPackage(displayName)}>
+                  {displayName}
+                </Button>
+              );
+
+              const renderStepTwo = () => {
+                const services = getDistinctService(activityTemplates);
+                return (
+                  packageName === displayName &&
+                  services.map((service: string) => (
+                    <div key={service}>
+                      <Button
+                        className="my-[10px]"
+                        onClick={() => handleSelectService(service)}>
+                        {service}
+                      </Button>
+                    </div>
+                  ))
+                );
+              };
+
+              const renderStepThree = () => {
+                const activities = getActivityByService(
+                  activityTemplates,
+                  serviceName
+                );
+                return activities.map((activity: any) => (
+                  <div key={activity.displayName}>
                     <Button
                       className="my-[10px]"
-                      colorScheme={item.color}
-                      onClick={() => handleSelectPackage(item.displayName)}>
-                      {item.displayName}
+                      onClick={() =>
+                        handleSelectActivity(activity.displayName)
+                      }>
+                      {activity.displayName}
                     </Button>
-                  )}
-                  {sideBarState.currentStep == 2 &&
-                    sideBarState.packageName == item.displayName &&
-                    getDistinctService(item.activityTemplates).map(
-                      (service: string) => (
-                        <div key={service}>
-                          <Button
-                            className="my-[10px]"
-                            onClick={() => handleSelectService(service)}>
-                            {service}
-                          </Button>
-                        </div>
-                      )
-                    )}
-                  {sideBarState.currentStep == 3 &&
-                    sideBarState.packageName == item.displayName &&
-                    getActivityByService(
-                      item.activityTemplates,
-                      sideBarState.serviceName
-                    ).map((activity: any) => (
-                      <div key={activity.displayName}>
-                        <Button
-                          className="my-[10px]"
-                          onClick={() =>
-                            handleSelectActivity(activity.displayName)
-                          }>
-                          {activity.displayName}
-                        </Button>
-                      </div>
-                    ))}
-                  {sideBarState.currentStep == 4 &&
-                    sideBarState.packageName == item.displayName &&
-                    Object.keys(
-                      getArgumentsByActivity(
-                        item.activityTemplates,
-                        sideBarState.activityName
-                      )
-                    ).map((key: any) => {
-                      const argumentParams = getArgumentsByActivity(
-                        item.activityTemplates,
-                        currentStorage.activities[activityItem.activityID]
-                          .activityName || sideBarState.activityName
-                      )[key].arguments;
-                      return (
-                        <div key={sideBarState.activityName}>
-                          {Object.entries(argumentParams).map(
-                            ([key, value]) => (
-                              <div key={key}>
-                                <FormControl>
-                                  <FormLabel>{key}</FormLabel>
-                                  <Input
-                                    type="text"
-                                    value={
-                                      formValues[key] ||
-                                      currentStorage.activities[
-                                        activityItem.activityID
-                                      ][key]
-                                    }
-                                    onChange={(e) =>
-                                      handleInputChange(key, e.target.value)
-                                    }
-                                  />
-                                </FormControl>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      );
-                    })}
+                  </div>
+                ));
+              };
+
+              const renderStepFour = () => {
+                const activityInfo = getArgumentsByActivity(
+                  activityTemplates,
+                  activityName
+                );
+                const activityProperty = activityInfo?.[0]?.arguments;
+                return (
+                  <div>
+                    {activityProperty &&
+                      Object.entries(activityProperty).map(
+                        ([paramKey, paramValue]) => (
+                          <div key={paramKey}>
+                            <FormControl>
+                              <FormLabel>{paramKey}</FormLabel>
+                              <Input
+                                type="text"
+                                value={(formValues[paramKey] as string) ?? ''}
+                                onChange={(e) =>
+                                  handleInputChange(paramKey, e.target.value)
+                                }
+                              />
+                            </FormControl>
+                          </div>
+                        )
+                      )}
+                  </div>
+                );
+              };
+
+              return (
+                <div key={_id}>
+                  {currentStep === 1 && renderStepOne()}
+                  {currentStep === 2 && renderStepTwo()}
+                  {currentStep === 3 && renderStepThree()}
+                  {currentStep === 4 && renderStepFour()}
                 </div>
               );
-            })} */}
-            <Button className="mt-[20px]">Back</Button>
+            })}
+            <Button
+              className="mt-[20px]"
+              colorScheme="yellow"
+              onClick={handleGoBack}>
+              Back
+            </Button>
           </DrawerBody>
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="blue">Save</Button>
+            <Button colorScheme="blue" onClick={handleUpdateProperties}>
+              Save
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

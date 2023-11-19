@@ -91,11 +91,9 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   };
 
   return (
-    <>
-      <div className="bpmn-wrapper">
-        <div id="bpmnview" style={{ height }}></div>
-      </div>
-    </>
+    <div className="bpmn-wrapper">
+      <div id="bpmnview" style={{ height }}></div>
+    </div>
   );
 };
 

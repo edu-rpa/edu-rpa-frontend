@@ -47,7 +47,7 @@ export const useBpmn: BpmnJsReactHook = () => {
       return {
         activityID: item.id,
         activityType: item.type,
-        properties: [],
+        properties: {},
       };
     });
   };

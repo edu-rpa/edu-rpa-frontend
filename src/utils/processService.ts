@@ -42,7 +42,7 @@ const initProcess = (
       {
         activityID: 'StartEvent_0vr9as6',
         activityType: 'bpmn:StartEvent',
-        properties: [],
+        properties: {},
       },
     ],
     variables: [],
@@ -63,6 +63,16 @@ const updateLocalStorage = (newObj: Process) => {
   return res;
 };
 
+const updateActivityInProcess = (processID: string, newObj: Activity) => {
+  const getProcessByID = getProcessFromLocalStorage(processID);
+  const oldObj = getProcessByID?.activities;
+  const res = oldObj.map(
+    (obj: Activity) =>
+      [newObj].find((o) => o.activityID === obj.activityID) || obj
+  );
+  return res;
+};
+
 const getIndexByProcessID = (processID: string) => {
   const currLocalStorage = getLocalStorageObject('processList');
   return currLocalStorage.findIndex((x: Process) => x.processID === processID);
@@ -70,7 +80,6 @@ const getIndexByProcessID = (processID: string) => {
 
 const replaceLocalStorage = (processID: string, newObj: Process) => {
   const index = getIndexByProcessID(processID);
-  console.log(index);
   const currLocalStorage = getLocalStorageObject('processList');
   currLocalStorage[index] = newObj;
   return currLocalStorage;
@@ -82,19 +91,11 @@ const getActivityInProcess = (processID: string, activityID: string) => {
   );
 };
 
-const updateActivitesByProcessID = (processID: string, newObj: Activity[]) => {
-  const updateActivityObj = {
-    ...getProcessFromLocalStorage(processID),
-    activites: newObj,
-  };
-  console.log(updateActivityObj);
-};
-
 export {
   generateProcessID,
   getProcessFromLocalStorage,
   getActivityInProcess,
-  updateActivitesByProcessID,
+  updateActivityInProcess,
   initProcess,
   defaultXML,
   replaceLocalStorage,

@@ -25,17 +25,14 @@ function CustomModeler() {
   const ref = useRef<BpmnJsReactHandle>(null);
   const params = useParams();
   const bpmnReactJs = useBpmn();
-  const modelerElements = bpmnReactJs.bpmnModeler
-    ? bpmnReactJs.getElements().length
-    : 0;
-  const [modelerLength, setModelerLength] = useState(modelerElements);
+  const [isEdit, setIsEdit] = useState(false);
   const [processId, setProcessID] = useState(params.id as string);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (modelerElements == 0) return;
+    if (!isEdit) return;
     const updateModeler = async () => {
       const data = await bpmnReactJs.saveXML();
       return data.xml;
@@ -51,7 +48,7 @@ function CustomModeler() {
         const newLocalStorage = updateLocalStorage(newObj);
         setLocalStorageObject('processList', newLocalStorage);
       });
-  }, [modelerLength]);
+  }, [isEdit]);
 
   const exportFile = (content: string, fileName: string) => {
     var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -120,7 +117,7 @@ function CustomModeler() {
           onClose={onClose}
           onOpen={onOpen}
           modeler={bpmnReactJs.bpmnModeler}
-          setModelerLength={setModelerLength}
+          setIsEdit={setIsEdit}
         />
       )}
       <input

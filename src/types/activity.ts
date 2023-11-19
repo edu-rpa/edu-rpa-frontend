@@ -1,17 +1,8 @@
-import { VariableType } from './variable';
-
 export interface Activity {
-  processID?: string;
   activityID: string;
   activityName?: string;
   activityType: string;
-  incoming?: Flow[];
-  outgoing?: Flow[];
-  properties: Property[];
-}
-
-export interface Property {
-  [key: string]: VariableType;
+  properties: object;
 }
 
 export interface Flow {
