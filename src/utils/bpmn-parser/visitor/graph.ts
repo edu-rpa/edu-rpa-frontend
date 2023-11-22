@@ -2,7 +2,6 @@ import { Block } from "@mui/icons-material";
 import { DirectedGraph } from "typescript-graph";
 import { BpmnNode } from "../model/bpmn";
 import { Sequence } from "./BasicBlock";
-import { BpmnStartEvent } from "../model/bpmn-model";
 
 // Extends BuiltIn Graph To Add More Functionality
 

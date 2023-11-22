@@ -1,4 +1,8 @@
-Activity_0pkjxtm - Open Browser
+IF: Gateway_0uqg7tr
+	Activity_0pkjxtm - Open Browser
+ELSE:
+	[Empty]
+
 Activity_1536xo5 - Get Title Assign to ${title}
 IF: Gateway_0sc92or
 	Activity_1gusysf - Log Screen

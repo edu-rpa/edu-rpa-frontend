@@ -5,19 +5,16 @@ import {
   BpmnExclusiveGateway,
   BpmnFlow,
   BpmnStartEvent,
-  BpmnSubprocess,
   BpmnTask,
   BpmnProcess,
   BpmnNode,
+  BpmnSubProcess
 } from "./model/bpmn";
 
 import { DirectedAcyclicGraph } from "typescript-graph";
 import { BpmnParseError, BpmnParseErrorCode } from "./error";
 import { CustomGraph, GraphVisitor } from "./visitor/graph";
-import { Edge } from "typescript-graph/dist/types/graph";
-import { Block, Branch, Sequence } from "./visitor/BasicBlock";
-import { join } from "path";
-import { createScopedAnimate } from 'framer-motion/dom';
+import { Branch, Sequence } from "./visitor/BasicBlock";
 
 var convert = require("xml-js");
 var fs = require("fs");
@@ -73,7 +70,7 @@ export class BpmnParser {
           process.flows[bpmnFlow.id] = bpmnFlow;
           break;
         case element.name.includes('subProcess'):
-          let bpmnSubprocess: BpmnSubprocess = new BpmnSubprocess(element);
+          let bpmnSubprocess: BpmnSubProcess = new BpmnSubProcess(element);
           process.elements[bpmnSubprocess.id] = bpmnSubprocess;
           this.parseElement(element.elements, bpmnSubprocess);
           bpmnSubprocess.check();
@@ -182,12 +179,21 @@ class ConcreteGraphVisitor extends GraphVisitor {
   visitBpmnTask(node: BpmnTask, sequence: Sequence) {
     let nodeId = node.id
     let adjacent = this.graph.getAdjacent(nodeId);
+    if(this.visited.includes(nodeId))
+      return { sequence, joinNodeId: nodeId };
+    this.visited.push(nodeId)
 
     if (
-      this.joinNode.includes(nodeId) &&
-      !(sequence.scope && sequence.scope instanceof Branch)
+      this.joinNode.includes(nodeId)
     ) {
-      return { sequence, joinNodeId: nodeId };
+      // Task is Join Node - Ignore First Time Visit Until All Branch Visited
+      let curBlock = sequence.block.at(-1)
+      if(curBlock instanceof Branch && curBlock.join == nodeId) {
+        sequence.block.push(node);
+        return this.visit(this.graph.getNode(adjacent[0]), sequence)
+      }
+      if((sequence.scope && sequence.scope instanceof Branch))
+        return { sequence, joinNodeId: nodeId };
     }
     sequence.block.push(node);
     return this.visit(this.graph.getNode(adjacent[0]), sequence);
@@ -196,37 +202,62 @@ class ConcreteGraphVisitor extends GraphVisitor {
   visitBpmnExclusiveGateway(node: BpmnExclusiveGateway, sequence: Sequence) {
     let nodeId = node.id
     let adjacent = this.graph.getAdjacent(nodeId);
+    if(this.visited.includes(nodeId))
+      return { sequence, joinNodeId: nodeId };
+    this.visited.push(nodeId)
 
     if (this.splitNode.includes(nodeId)) {
-      let curBlock = new Branch(nodeId);
+      let curBlock = new Branch(nodeId, null);
       let joinNodeId: string = "";
 
+      // Visit all branch except join node
       for (let n of adjacent) {
         let { sequence: branchSequence, joinNodeId: branchJoinNodeId } =
           this.visit(this.graph.getNode(n), new Sequence([], curBlock));
         curBlock.braches.push(branchSequence);
         joinNodeId = branchJoinNodeId;
       }
-
+      curBlock.join = joinNodeId // Set join node of branching
+      // Visit Join Node
       this.visited = this.visited.filter((e) => e != joinNodeId);
       sequence.block.push(curBlock);
-      this.visit(this.graph.getNode(joinNodeId), sequence); // May be affected by for loop ?
-      let joinNodeAdjacent = this.graph.getAdjacent(joinNodeId);
-
-      return this.visit(this.graph.getNode(joinNodeAdjacent[0]), sequence);
+      return  this.visit(this.graph.getNode(joinNodeId), sequence);    
     } else if (this.joinNode.includes(nodeId)) {
+      let curBlock = sequence.block.at(-1);
+      if(curBlock instanceof Branch && curBlock.join == nodeId) {
+        return this.visit(this.graph.getNode(adjacent[0]), sequence)
+      }
       return { sequence, joinNodeId: nodeId };
     }
   }
 
   visitBpmnEndEvent(node: BpmnEndEvent, sequence: Sequence) {
     let nodeId = node.id
+    if(this.visited.includes(nodeId))
+      return { sequence, joinNodeId: nodeId };
+    this.visited.push(nodeId)
+
     return { sequence, joinNodeId: nodeId };
   }
 
   visitBpmnStartEvent(node: BpmnStartEvent, sequence: Sequence) {
     let nodeId = node.id
     let adjacent = this.graph.getAdjacent(nodeId);
+    if(this.visited.includes(nodeId))
+      return { sequence, joinNodeId: nodeId };
+    this.visited.push(nodeId)
+
+    return this.visit(this.graph.getNode(adjacent[0]), sequence)
+  }
+
+  visitBpmnSubProcess(node: BpmnSubProcess, sequence: Sequence) {
+    let nodeId = node.id
+    let adjacent = this.graph.getAdjacent(nodeId);
+    if(this.visited.includes(nodeId))
+      return { sequence, joinNodeId: nodeId };
+    this.visited.push(nodeId)
+    let subProcessSequence = new ConcreteGraphVisitor(node).buildGraph().buildBasicBlock()
+    sequence.block.push(subProcessSequence)
     return this.visit(this.graph.getNode(adjacent[0]), sequence)
   }
 
