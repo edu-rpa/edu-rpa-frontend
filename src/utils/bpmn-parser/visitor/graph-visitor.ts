@@ -9,7 +9,7 @@ import {
   BpmnExclusiveGateway,
   BpmnSubProcess,
 } from "../model/bpmn";
-import { Sequence, Branch, BlankBlock } from "./BasicBlock";
+import { Sequence, Branch, BlankBlock, IfBranchBlock } from "./BasicBlock";
 import { CustomGraph } from "./graph";
 
 export class GraphVisitor {
@@ -153,7 +153,12 @@ export class ConcreteGraphVisitor extends GraphVisitor {
       for (let n of adjacent) {
         let { sequence: branchSequence, joinNodeId: branchJoinNodeId } =
           this.visit(this.graph.getNode(n), new Sequence([], curBlock));
-        curBlock.braches.push(branchSequence);
+        let conditionFlow = this.findEdgeId(nodeId, n)
+        if(!conditionFlow) {
+          throw new BpmnParseError("Unknow Error", nodeId)
+        }
+        let ifBranch = new IfBranchBlock(branchSequence, conditionFlow)
+        curBlock.branches.push(ifBranch);
         joinNodeId = branchJoinNodeId;
       }
       curBlock.join = joinNodeId; // Set join node of branching
@@ -217,5 +222,16 @@ export class ConcreteGraphVisitor extends GraphVisitor {
     this.visited = []; // Reset the visited array for each traversal.
     this.visit(this.graph.getNode(nodeId), sequence); // Start the traversal from the initial node.
     return sequence;
+  }
+
+  findEdgeId(gateWayId: string, firstNodeId: string) {
+    let edges = this.process.flows;
+    for (let flowId of Object.keys(edges)) {
+      let edge = edges[flowId];
+      if(gateWayId == edge.source && firstNodeId == edge.target) {
+        return flowId
+      }
+    }
+    return null;
   }
 }

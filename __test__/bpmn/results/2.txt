@@ -5,6 +5,6 @@ IF: Gateway_0sc92or
 	Activity_173a9c7 - Click "Dịch vụ Internet"
 ELSE:
 	Activity_0m9hqf4 - Log Screen
-	Activity_0p2itoz - Click "Thảo luận
+	Activity_0p2itoz - Click "Thảo luận"
 
 Activity_012ckfs - Close Browser

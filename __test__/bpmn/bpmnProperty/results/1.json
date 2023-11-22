@@ -1,0 +1,37 @@
+{
+  "name": "",
+  "tests": {
+    "name": "Main",
+    "body": [
+      {
+        "name": "Upload files",
+        "args": [
+          "Connection=Hahaha",
+          "Files=david",
+          "Destination Folder Path=root"
+        ],
+        "assisgns": []
+      },
+      {
+        "name": "Send email",
+        "args": [
+          "Connection=a",
+          "Share With=me",
+          "Subject=Hello",
+          "Body=Heloo",
+          "Attachments=None"
+        ],
+        "assisgns": []
+      }
+    ]
+  },
+  "resource": {
+    "imports": [
+      {
+        "type": "LIBRARY",
+        "name": "RPA.CLoud.Google"
+      }
+    ],
+    "variables": []
+  }
+}

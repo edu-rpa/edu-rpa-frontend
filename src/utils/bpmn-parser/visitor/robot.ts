@@ -36,7 +36,7 @@ export class Argument {
         public value: string,
     ) {}
     toJSON() {
-        return `${this.value}`
+        return `${this.name}=${this.value}`
     }
 }
 
@@ -61,7 +61,7 @@ export class Variable {
 export type BranchType = "IF" | "ELSE IF" | "ELSE"
 export class IfBranch {
     constructor(
-        private type: BranchType,
+        public type: BranchType,
         public condition: string,
         public body: BodyItem[],
     ) {}
@@ -141,7 +141,7 @@ export class Resource {
 
     toJSON() {
         return {
-
+            imports: this.imports.map(v => v.toJSON()),
             variables: this.variables.map(v => v.toJSON()),
         }
     }
