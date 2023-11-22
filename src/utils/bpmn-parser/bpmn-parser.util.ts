@@ -18,9 +18,9 @@ var options = { ignoreComment: true, alwaysChildren: true };
 if (typeof window === 'undefined') {
   var fs = require('fs'); // Comment When run
 }
-// }else {
-//   var fs = require('fs'); // Comment When run
-// }
+else {
+  var fs = require('fs'); // Comment When run
+}
 export class BpmnParser {
   constructor() {}
 

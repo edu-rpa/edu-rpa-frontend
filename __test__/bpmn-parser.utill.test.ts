@@ -8,12 +8,12 @@ var fs = require("fs");
 describe("BPMN Parser Test", () => {
   // describe("Exception Test", () => {
   //   it("Test", () => {
-  //     expect(() => new BpmnParser().parse("__test__/bpmn/1.xml")).toThrow(
+  //     expect(() => new BpmnParser().parse2Sequence("__test__/bpmn/1.xml")).toThrow(
   //       BpmnParseError
   //     );
   //   });
   //   it("Have Loop", () => {
-  //     const t = () => new BpmnParser().parse("__test__/bpmn/4.xml");
+  //     const t = () => new BpmnParser().parse2Sequence("__test__/bpmn/4.xml");
   //     expect(t).toThrow(BpmnParseError);
   //     expect(t).toThrow("Detected Loop in Process - Unsupported");
   //   });
@@ -22,21 +22,21 @@ describe("BPMN Parser Test", () => {
 
   // })
 
-  describe("SubProcess Test", () => {
-    it("Simple SubProcess With Task", () => {
-      let testcase = 9;
-      let fileName = `__test__/bpmn/${testcase}.xml`;
-      let expected = fs.readFileSync(
-        `__test__/bpmn/expected/${testcase}.txt`,
-        "utf8", 
-      ).replace(/\r/g, '');
-      let sequence = new BpmnParser().parse(fileName, []);
-  /*     let result = sequence.toString(0); */
-      // writeResult(fileName, sequence);
-      // expect(result).toBe(expected);
-    });
+  // describe("SubProcess Test", () => {
+  //   it("Simple SubProcess With Task", () => {
+  //     let testcase = 9;
+  //     let fileName = `__test__/bpmn/${testcase}.xml`;
+  //     let expected = fs.readFileSync(
+  //       `__test__/bpmn/expected/${testcase}.txt`,
+  //       "utf8", 
+  //     ).replace(/\r/g, '');
+  //     let sequence = new BpmnParser().parse2Sequence(fileName);
+  //     let result = sequence.toString(0);
+  //     writeResult(fileName, sequence);
+  //     expect(result).toBe(expected);
+  //   });
 
-  })
+  // })
 
 
   // describe("Normailize Gateway Test", () => {
@@ -47,7 +47,7 @@ describe("BPMN Parser Test", () => {
   //       `__test__/bpmn/expected/${testcase}.txt`,
   //       "utf8", 
   //     ).replace(/\r/g, '');
-  //     let sequence = new BpmnParser().parse(fileName);
+  //     let sequence = new BpmnParser().parse2Sequence(fileName);
   //     let result = sequence.toString(0);
   //     writeResult(fileName, sequence);
   //     expect(result).toBe(expected);
@@ -59,7 +59,7 @@ describe("BPMN Parser Test", () => {
   //       `__test__/bpmn/expected/${testcase}.txt`,
   //       "utf8", 
   //     ).replace(/\r/g, '');
-  //     let sequence = new BpmnParser().parse(fileName);
+  //     let sequence = new BpmnParser().parse2Sequence(fileName);
   //     let result = sequence.toString(0);
   //     writeResult(fileName, sequence);
   //     expect(result).toBe(expected);
@@ -71,7 +71,7 @@ describe("BPMN Parser Test", () => {
   //       `__test__/bpmn/expected/${testcase}.txt`,
   //       "utf8", 
   //     ).replace(/\r/g, '');
-  //     let sequence = new BpmnParser().parse(fileName);
+  //     let sequence = new BpmnParser().parse2Sequence(fileName);
   //     let result = sequence.toString(0);
   //     writeResult(fileName, sequence);
   //     expect(result).toBe(expected);
@@ -86,7 +86,7 @@ describe("BPMN Parser Test", () => {
   //       `__test__/bpmn/expected/${testcase}.txt`,
   //       "utf8", 
   //     ).replace(/\r/g, '');
-  //     let sequence = new BpmnParser().parse(fileName);
+  //     let sequence = new BpmnParser().parse2Sequence(fileName);
   //     let result = sequence.toString(0);
   //     writeResult(fileName, sequence);
   //     expect(result).toBe(expected);
@@ -99,7 +99,7 @@ describe("BPMN Parser Test", () => {
   //       `__test__/bpmn/expected/${testcase}.txt`,
   //       "utf8", 
   //     ).replace(/\r/g, '');
-  //     let sequence = new BpmnParser().parse(fileName);
+  //     let sequence = new BpmnParser().parse2Sequence(fileName);
   //     let result = sequence.toString(0);
   //     writeResult(fileName, sequence);
   //     expect(result).toBe(expected);
@@ -114,7 +114,7 @@ describe("BPMN Parser Test", () => {
   //     `__test__/bpmn/expected/${testcase}.txt`,
   //     "utf8", 
   //   ).replace(/\r/g, '');
-  //   let sequence = new BpmnParser().parse(fileName);
+  //   let sequence = new BpmnParser().parse2Sequence(fileName);
   //   let result = sequence.toString(0);
   //   writeResult(fileName, sequence);
   //   expect(result).toBe(expected);
