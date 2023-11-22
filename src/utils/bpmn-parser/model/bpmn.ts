@@ -96,7 +96,7 @@ export class BpmnProcess extends BpmnNode {
     }
 }
 
-export class BpmnSubprocess extends BpmnProcess{
+export class BpmnSubProcess extends BpmnProcess{
     incomming: string[] = []
     outgoing: string[] = []
     body : BpmnNode[] = []
