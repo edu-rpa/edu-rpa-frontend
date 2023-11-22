@@ -207,8 +207,8 @@ export const ActivityPackageTemplates = [
       },
       {
         templateId: 'drive.share_file_folder',
-        displayName: 'Share a file/folder',
-        description: 'Share a file/folder in Google Drive',
+        displayName: 'Share file/folder',
+        description: 'Share file/folder in Google Drive',
         iconCode: 'FaGoogleDrive',
         service: 'Google Drive',
         type: 'activity',
@@ -254,7 +254,7 @@ export const ActivityPackageTemplates = [
             type: 'connection.gmail',
             value: null,
           },
-          'Share With': {
+          'Share Email': {
             to: [
               {
                 type: 'email',
@@ -559,16 +559,6 @@ export const ActivityPackageTemplates = [
               },
             ],
           },
-          Body: {
-            type: 'string',
-            value: null,
-          },
-          Attachments: [
-            {
-              type: 'file',
-              value: null,
-            },
-          ],
         },
         return: {
           message: 'Forward Email successfully!',
