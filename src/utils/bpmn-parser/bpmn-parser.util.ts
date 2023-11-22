@@ -15,17 +15,39 @@ import { DirectedAcyclicGraph } from "typescript-graph";
 import { BpmnParseError, BpmnParseErrorCode } from "./error";
 import { CustomGraph, GraphVisitor } from "./visitor/graph";
 import { Branch, Sequence } from "./visitor/BasicBlock";
+import { Properties } from './model/properties.model';
 
-var convert = require("xml-js");
-var fs = require("fs");
+var convert = require('xml-js');
 var options = { ignoreComment: true, alwaysChildren: true };
-
+if (typeof window === 'undefined') {
+  var fs = require('fs'); // Comment When run
+}
 export class BpmnParser {
   constructor() {}
 
-  public parse(fileName: string) {
+  public parse(fileName: string, properties: Properties[]) {
     // Convert XML to JSON Format
-    let xml = fs.readFileSync(fileName, "utf8");
+    let xml = fs.readFileSync(fileName, 'utf8');
+    let result = convert.xml2js(xml, options);
+    let bpmn: Bpmn = Convert.toBpmn(JSON.stringify(result));
+
+    // Conver JSON To BpmnObject
+    let process = bpmn.elements[0].elements.filter((e) =>
+      e.name.includes('process')
+    )[0];
+    const process_name = process.name;
+    const process_attributes = process.attributes;
+    let bpmnProcess = new BpmnProcess(process_name, process_attributes.id);
+    this.parseElement(process.elements as BpmnElement[], bpmnProcess);
+    bpmnProcess.check();
+
+    // Component Analyze: Detect control sequence If Branch
+    let g = new ConcreteGraphVisitor(bpmnProcess);
+    let sequence = g.buildGraph().buildBasicBlock();
+    return sequence;
+  }
+
+  public parseXML(xml: string) {
     let result = convert.xml2js(xml, options);
     let bpmn: Bpmn = Convert.toBpmn(JSON.stringify(result));
 
@@ -97,8 +119,8 @@ class ConcreteGraphVisitor extends GraphVisitor {
     this.splitNode = [];
     this.joinNode = [];
     this.visited = [];
-    this.source = "";
-    this.sink = "";
+    this.source = '';
+    this.sink = '';
   }
 
   buildGraph() {
@@ -106,11 +128,11 @@ class ConcreteGraphVisitor extends GraphVisitor {
     let edges = this.process.flows;
     this.source =
       Object.values(nodes).find((node) => node instanceof BpmnStartEvent)?.id ||
-      "";
+      '';
 
     this.sink =
       Object.values(nodes).find((node) => node instanceof BpmnEndEvent)?.id ||
-      "";
+      '';
 
     // Build Graph
     Object.keys(nodes).forEach((nodeId: string) =>
@@ -140,7 +162,7 @@ class ConcreteGraphVisitor extends GraphVisitor {
   private check() {
     if (this.haveCycle) {
       throw new BpmnParseError(
-        BpmnParseErrorCode["Detected Loop in Process - Unsupported"],
+        BpmnParseErrorCode['Detected Loop in Process - Unsupported'],
         this.process.id
       );
     }
@@ -149,7 +171,7 @@ class ConcreteGraphVisitor extends GraphVisitor {
     if (!this.graph.canReachFrom(this.source, this.sink)) {
       throw new BpmnParseError(
         BpmnParseErrorCode[
-          "Invalid Workflow - start and end event not connect"
+          'Invalid Workflow - start and end event not connect'
         ],
         this.process.id
       );
@@ -164,7 +186,7 @@ class ConcreteGraphVisitor extends GraphVisitor {
     ) {
       throw new BpmnParseError(
         BpmnParseErrorCode[
-          "Invalid Struture - Flow Must Follow From End To Start"
+          'Invalid Struture - Flow Must Follow From End To Start'
         ],
         this.process.id
       );
@@ -177,7 +199,7 @@ class ConcreteGraphVisitor extends GraphVisitor {
   }
 
   visitBpmnTask(node: BpmnTask, sequence: Sequence) {
-    let nodeId = node.id
+    let nodeId = node.id;
     let adjacent = this.graph.getAdjacent(nodeId);
     if(this.visited.includes(nodeId))
       return { sequence, joinNodeId: nodeId };
@@ -200,7 +222,7 @@ class ConcreteGraphVisitor extends GraphVisitor {
   }
 
   visitBpmnExclusiveGateway(node: BpmnExclusiveGateway, sequence: Sequence) {
-    let nodeId = node.id
+    let nodeId = node.id;
     let adjacent = this.graph.getAdjacent(nodeId);
     if(this.visited.includes(nodeId))
       return { sequence, joinNodeId: nodeId };
@@ -241,7 +263,7 @@ class ConcreteGraphVisitor extends GraphVisitor {
   }
 
   visitBpmnStartEvent(node: BpmnStartEvent, sequence: Sequence) {
-    let nodeId = node.id
+    let nodeId = node.id;
     let adjacent = this.graph.getAdjacent(nodeId);
     if(this.visited.includes(nodeId))
       return { sequence, joinNodeId: nodeId };

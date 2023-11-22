@@ -30,7 +30,7 @@ describe("BPMN Parser Test", () => {
         `__test__/bpmn/expected/${testcase}.txt`,
         "utf8", 
       ).replace(/\r/g, '');
-      let sequence = new BpmnParser().parse(fileName);
+      let sequence = new BpmnParser().parse(fileName, []);
       let result = sequence.toString(0);
       writeResult(fileName, sequence);
       expect(result).toBe(expected);
@@ -129,9 +129,9 @@ describe("BPMN Parser Test", () => {
 
 function writeResult(fileName: string, sequence: Sequence) {
   fs.writeFile(
-    `__test__/bpmn/results/${fileName.split("/").at(-1)?.split(".")[0]}.txt`,
+    `__test__/bpmn/results/${fileName.split('/').at(-1)?.split('.')[0]}.txt`,
     sequence.toString(0),
-    "utf8",
+    'utf8',
     () => {}
   );
 }

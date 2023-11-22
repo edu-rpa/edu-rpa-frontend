@@ -1,4 +1,4 @@
-import { useBpmnJsReact } from '@/hooks/useBPMN';
+import { useBpmn } from '@/hooks/useBpmn';
 import { IElement } from './bpmn.interface';
 
 export type BpmnJsReactHandle = {
@@ -20,7 +20,7 @@ export type BpmnJsReactHandle = {
 
 export type BpmnJsReactProps = {
   mode?: 'view' | 'edit';
-  useBpmnJsReact?: ReturnType<typeof useBpmnJsReact>;
+  useBpmnJsReact?: ReturnType<typeof useBpmn>;
   xml?: any;
   height?: any;
   onLoading?: Function;
