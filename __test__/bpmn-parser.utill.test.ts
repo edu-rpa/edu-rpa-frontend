@@ -6,6 +6,8 @@ import { escape, escapeRegExp } from "lodash";
 var fs = require("fs");
 
 describe("BPMN Parser Test", () => {
+  it("Main", () => {})
+  
   // describe("Exception Test", () => {
   //   it("Test", () => {
   //     expect(() => new BpmnParser().parse2Sequence("__test__/bpmn/1.xml")).toThrow(

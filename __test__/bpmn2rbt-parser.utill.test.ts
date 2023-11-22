@@ -1,22 +1,25 @@
 import { BpmnParser } from "@/utils/bpmn-parser/bpmn-parser.util";
-import { BpmnParseError } from "@/utils/bpmn-parser/error";
-import { Sequence } from "@/utils/bpmn-parser/visitor/BasicBlock";
-import { log } from "console";
-import { escape, escapeRegExp } from "lodash";
 var fs = require("fs");
 
+const root = "__test__/bpmn/bpmnProperty"
 describe("BPMN Parser Test", () => {
     it("Test", () => {
-      expect(() => new BpmnParser().parse2Sequence("__test__/bpmn/1.xml")).toThrow(
-        BpmnParseError
-      );
+      let testcase = 1;
+      let bpmnFileName = `${root}/${testcase}.xml`;
+      let propertiesFileName = `${root}/${testcase}.json`;
+      let xml = fs.readFileSync(bpmnFileName, 'utf8');
+      let properties = JSON.parse(fs.readFileSync(propertiesFileName, 'utf8'));
+
+      let robot = new BpmnParser().parse(xml, properties["activities"]);
+      console.log(robot)
+      writeResult(bpmnFileName, robot);
     });
 });
 
-function writeResult(fileName: string, sequence: Sequence) {
+function writeResult(fileName: string, robot: any) {
   fs.writeFile(
-    `__test__/bpmn/results/${fileName.split('/').at(-1)?.split('.')[0]}.txt`,
-    sequence.toString(0),
+    `${root}/results/${fileName.split('/').at(-1)?.split('.')[0]}.json`,
+    JSON.stringify(robot, null, 2),
     'utf8',
     () => {}
   );

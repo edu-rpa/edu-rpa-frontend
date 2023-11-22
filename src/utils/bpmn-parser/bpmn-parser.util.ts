@@ -15,21 +15,14 @@ import { Properties } from './model/properties.model';
 
 var convert = require('xml-js');
 var options = { ignoreComment: true, alwaysChildren: true };
-if (typeof window === 'undefined') {
-  var fs = require('fs'); // Comment When run
-}
-else {
-  var fs = require('fs'); // Comment When run
-}
+
 export class BpmnParser {
   constructor() {}
 
-  public parse(fileName: string, properties: Properties[]) {
+  public parse(xml: string, properties: Properties[]) {
     // Convert XML to JSON Format
-    let xml = fs.readFileSync(fileName, 'utf8');
     let result = convert.xml2js(xml, options);
     let bpmn: Bpmn = Convert.toBpmn(JSON.stringify(result));
-
     // Conver JSON To BpmnObject
     let process = bpmn.elements[0].elements.filter((e) =>
       e.name.includes('process')
@@ -103,9 +96,8 @@ export class BpmnParser {
     });
   }
 
-  parse2Sequence(fileName: string) {
+  parse2Sequence(xml: string) {
     // Convert XML to JSON Format
-    let xml = fs.readFileSync(fileName, 'utf8');
     let result = convert.xml2js(xml, options);
     let bpmn: Bpmn = Convert.toBpmn(JSON.stringify(result));
 

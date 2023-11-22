@@ -5,6 +5,7 @@ export class BpmnParseError extends Error {
 }
 
 export enum BpmnParseErrorCode {
+  "Activity name must be specified" = "Activity name must be specified",
   "Missing Property" = "Missing Property",
   "Invalid Struture - Flow Must Follow From End To Start" = "Invalid Struture - Flow Must Follow From End To Start",
   "Both a split node and a join node" = "Both a split node and a join node",
