@@ -1,7 +1,7 @@
 import { log } from "console";
 import { BpmnNode } from "../model/bpmn";
 
-type BodyItem = BpmnNode | Branch | Sequence;
+export type SequenceItem = BpmnNode | Branch | Sequence;
 export class Block {
   accept(visitor: any, param: any) {
     // visitor: Visitor
@@ -11,7 +11,7 @@ export class Block {
 }
 
 export class Sequence extends Block {
-  constructor(public block: BodyItem[] = [], public scope?: Branch) {
+  constructor(public block: SequenceItem[] = [], public scope?: Branch) {
     super();
   }
   public toString(indent: number): string {

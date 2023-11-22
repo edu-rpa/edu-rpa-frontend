@@ -1,8 +1,17 @@
 import { BpmnParseError, BpmnParseErrorCode } from "../error";
 import { BpmnNode, BpmnTask } from "../model/bpmn";
 import { Arguments, Properties } from "../model/properties.model";
-import { Branch, Sequence } from "./BasicBlock";
-import { Argument, BodyItem, Keyword, Resource, Robot, Test } from "./robot";
+import { Branch, Sequence, SequenceItem } from "./BasicBlock";
+import {
+  Argument,
+  BodyItem,
+  Keyword,
+  Lib,
+  Resource,
+  Robot,
+  Test,
+  Variable,
+} from "./robot";
 
 export class SequenceVisitor {
   properties: Map<string, Properties>;
@@ -16,7 +25,7 @@ export class SequenceVisitor {
     this.imports = new Set<string>();
   }
 
-  visit(node: Sequence, param: any) {
+  visit(node: SequenceItem, param: any) {
     if (!node) return { sequence: param, joinNodeId: null };
     return node.accept(this, param);
   }
@@ -31,13 +40,12 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     let name = "";
     let body: BodyItem[] = this.visit(this.sequence, []);
     let test = new Test("Main", body);
-    let resource = new Resource([], []);
+    let resource = new Resource(
+      Array.from(this.imports).map((i) => new Lib(i)),
+      []
+    );
     let robot = new Robot(name, test, resource);
-    return robot.toJSON();
-  }
-  visit(node: Sequence, param: any) {
-    if (!node) return { sequence: param, joinNodeId: null };
-    return node.accept(this, param);
+    return robot;
   }
 
   visitBpmnTask(node: BpmnTask, params: any[]) {
@@ -48,15 +56,32 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
         BpmnParseErrorCode["Missing Property"],
         activityID
       );
-    let args = property.properties.arguments;
-    let keywordArg = [];
+    const args = property.properties.arguments;
+    const assigns = property.properties.arguments;
+    const Lib = property.properties.library;
+    let keywordAssigns = [] as Variable[];
+    let keywordArg = [] as Argument[];
     if (args) {
       keywordArg = Object.keys(args).map(
         (k) => new Argument(k, (args as Arguments)[k])
       );
     }
-    return new Keyword(args.activityName, keywordArg)
+    if (assigns) {
+      keywordAssigns = Object.keys(assigns).map((k) => new Variable(k));
+    }
+    if (Lib) {
+      this.imports.add(Lib);
+    }
+    return new Keyword(args.activityName, keywordArg, keywordAssigns);
   }
-  visitSequence(node: Sequence, params: any[]) {}
+
+  visitSequence(node: Sequence, params: any[]) {
+    let body = [] as BodyItem[];
+    for(let item of node.block) {
+      body = body.concat(this.visit(item, params));
+    }
+    return body
+  }
+
   visitBranch(node: Branch, params: any[]) {}
 }
