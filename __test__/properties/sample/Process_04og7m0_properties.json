@@ -88,12 +88,13 @@
       "properties": {
         "activityPackage": "Google Workspace",
         "serviceName": "Google Drive",
+        "libraryName": "RPA.Cloud.Google", 
         "activityName": "Create folder",
+        "Connection": "dsds",
+        "Overwrite if folder exists": "dsdsds",
         "arguments": {
-          "Connection": "dsds",
-          "Folder name": "dsds",
-          "Parent Folder Path": "dsdsd",
-          "Overwrite if folder exists": "dsdsds"
+          "Folder": "dsds",
+          "Parent Folder Path": "dsdsd"
         }
       }
     },

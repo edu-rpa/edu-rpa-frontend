@@ -9,7 +9,7 @@ import {
   BpmnExclusiveGateway,
   BpmnSubProcess,
 } from "../model/bpmn";
-import { Sequence, Branch } from "./BasicBlock";
+import { Sequence, Branch, BlankBlock } from "./BasicBlock";
 import { CustomGraph } from "./graph";
 
 export class GraphVisitor {
@@ -199,7 +199,7 @@ export class ConcreteGraphVisitor extends GraphVisitor {
         let subProcessSequence = new ConcreteGraphVisitor(node)
           .buildGraph()
           .buildBasicBlock();
-        sequence.block.push(subProcessSequence);
+        sequence.block.push(new BlankBlock(node.id, subProcessSequence));
         return this.visit(this.graph.getNode(adjacent[0]), sequence);
       }
       if (sequence.scope && sequence.scope instanceof Branch)
@@ -208,7 +208,7 @@ export class ConcreteGraphVisitor extends GraphVisitor {
     let subProcessSequence = new ConcreteGraphVisitor(node)
       .buildGraph()
       .buildBasicBlock();
-    sequence.block.push(subProcessSequence);
+    sequence.block.push(new BlankBlock(node.id, subProcessSequence));
     return this.visit(this.graph.getNode(adjacent[0]), sequence);
   }
 
