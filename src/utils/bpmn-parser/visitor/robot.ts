@@ -36,7 +36,7 @@ export class Argument {
         public value: string,
     ) {}
     toJSON() {
-        return `${this.value}`
+        return `${this.name}=${this.value}`
     }
 }
 
@@ -141,7 +141,7 @@ export class Resource {
 
     toJSON() {
         return {
-
+            imports: this.imports.map(v => v.toJSON()),
             variables: this.variables.map(v => v.toJSON()),
         }
     }

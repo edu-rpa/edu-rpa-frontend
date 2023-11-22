@@ -50,17 +50,20 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
 
   visitBpmnTask(node: BpmnTask, params: any[]) {
     let activityID = node.id;
-    let property = this.properties.get(activityID);
+    let property = this.properties.get(activityID)?.properties;
     if (!property)
       throw new BpmnParseError(
         BpmnParseErrorCode["Missing Property"],
         activityID
       );
-    const args = property.properties.arguments;
-    const assigns = property.properties.arguments;
-    const Lib = property.properties.library;
+    const args = property.arguments;
+    const assigns = property.assigns;
+    const Lib = property.library;
     let keywordAssigns = [] as Variable[];
     let keywordArg = [] as Argument[];
+    if(!property.activityName) {
+      throw new BpmnParseError("Activity name must be specified", node.id)
+    }
     if (args) {
       keywordArg = Object.keys(args).map(
         (k) => new Argument(k, (args as Arguments)[k])
@@ -72,7 +75,7 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     if (Lib) {
       this.imports.add(Lib);
     }
-    return new Keyword(args.activityName, keywordArg, keywordAssigns);
+    return new Keyword(property.activityName, keywordArg, keywordAssigns);
   }
 
   visitSequence(node: Sequence, params: any[]) {
