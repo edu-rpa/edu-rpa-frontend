@@ -1,7 +1,7 @@
 import { log } from "console";
 import { BpmnNode } from "../model/bpmn";
 
-export type SequenceItem = BpmnNode | Branch | Sequence;
+export type SequenceItem = BpmnNode | Branch | Sequence | IfBranchBlock ;
 export class Block {
   accept(visitor: any, param: any) {
     // visitor: Visitor
@@ -36,26 +36,40 @@ export class BlankBlock extends Sequence {
   }
 }
 
+export class IfBranchBlock extends Block{
+  constructor(public sequence: Sequence, public conditionId: string) {
+    super();
+  }
+  toString(indent: number): string {
+    return this.sequence.block
+      .map((b) => {
+        return b.toString(indent);
+      })
+      .join("\n");
+  }
+}
+
+
 export class Branch extends Block {
   constructor(
     public split: string,
     public join: string | null,
-    public braches: Sequence[] = []
+    public branches: IfBranchBlock[] = []
   ) {
     super();
   }
   public toString(indent: number): string {
     let branchCode = "";
-    for (let i = 0; i < this.braches.length; i++) {
+    for (let i = 0; i < this.branches.length; i++) {
       if (i == 0) {
         branchCode += genIndent(indent, `IF: ${this.split}\n`);
-      } else if (i == this.braches.length - 1) {
+      } else if (i == this.branches.length - 1) {
         branchCode += genIndent(indent, "ELSE:") + "\n";
       } else {
         branchCode += genIndent(indent, "ELSE IF:") + "\n";
       }
-      branchCode += this.braches[i].block.length
-        ? this.braches[i].toString(indent + 1)
+      branchCode += this.branches[i].sequence.block.length
+        ? this.branches[i].toString(indent + 1)
         : genIndent(indent + 1, "[Empty]");
       branchCode += "\n";
     }

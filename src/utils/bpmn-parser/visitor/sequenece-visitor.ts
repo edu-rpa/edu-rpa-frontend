@@ -1,10 +1,12 @@
 import { BpmnParseError, BpmnParseErrorCode } from "../error";
 import { BpmnNode, BpmnTask } from "../model/bpmn";
 import { Arguments, Properties } from "../model/properties.model";
-import { Branch, Sequence, SequenceItem } from "./BasicBlock";
+import { Branch, IfBranchBlock, Sequence, SequenceItem } from "./BasicBlock";
 import {
   Argument,
   BodyItem,
+  If,
+  IfBranch,
   Keyword,
   Lib,
   Resource,
@@ -75,7 +77,7 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     if (Lib) {
       this.imports.add(Lib);
     }
-    return new Keyword(property.activityName, keywordArg, keywordAssigns);
+    return [new Keyword(property.activityName, keywordArg, keywordAssigns)];
   }
 
   visitSequence(node: Sequence, params: any[]) {
@@ -86,5 +88,35 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     return body
   }
 
-  visitBranch(node: Branch, params: any[]) {}
+  visitBranch(node: Branch, params: any[]) {
+    let ifBranch : IfBranch[] = [];
+    for(let branch of node.branches) {
+      let branchCode : IfBranch = this.visit(branch, params);
+      ifBranch.push(branchCode)
+    }
+    let haveElse = false;
+    for(let i = 0; i < ifBranch.length; i++) {
+      if(i == 0) {
+        ifBranch[i].type = "IF"
+      }else {
+        if(ifBranch[i].condition.length)
+          ifBranch[i].type = "ELSE IF"
+        else if(ifBranch[i].condition.length) {
+          if(!haveElse) {
+            ifBranch[i].type = "ELSE" 
+            haveElse = true
+          }else {
+            // throw new BpmnParseError(BpmnParseErrorCode["Have 2 else branch - missing condition"], node.join || "")
+          } 
+        }
+      }
+    }
+    return [new If(ifBranch)]
+  }
+
+  visitIfBranchBlock(node: IfBranchBlock, params: any[]) {
+    let body : BodyItem[] = this.visit(node.sequence, params)
+    let condition = "" // Get condition from properties
+    return new IfBranch("IF",condition, body)
+  }
 }

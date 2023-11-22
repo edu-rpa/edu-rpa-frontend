@@ -61,7 +61,7 @@ export class Variable {
 export type BranchType = "IF" | "ELSE IF" | "ELSE"
 export class IfBranch {
     constructor(
-        private type: BranchType,
+        public type: BranchType,
         public condition: string,
         public body: BodyItem[],
     ) {}
