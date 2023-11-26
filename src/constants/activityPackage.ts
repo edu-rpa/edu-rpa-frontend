@@ -1,11 +1,11 @@
-export const ActivityPackageTemplates = [
+export const ActivityTemplates = [
   {
     _id: 'google_workspace',
     displayName: 'Google Workspace',
     description:
       'Help you integrate your work with Google Workspace applications (like Google Drive)',
     iconCode: 'FcGoogle',
-    color: 'red',
+    library: 'RPA.Cloud.Google',
     activityTemplates: [
       {
         templateId: 'drive.create_folder',
@@ -14,90 +14,51 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaGoogleDrive',
         service: 'Google Drive',
         type: 'activity',
+        keyword: 'Create Drive Directory',
         arguments: {
           Connection: {
-            type: 'connection.drive',
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
             value: null,
-            component: 'Input',
-            disable: true,
           },
           'Folder name': {
             type: 'string',
+            description: 'The name of the folder',
+            keywordArg: 'folder',
             value: '',
-            component: 'Input',
           },
           'Parent Folder Path': {
             type: 'string',
+            description: 'The path to the parent folder',
+            keywordArg: 'parent_folder',
             value: '',
-            component: 'InputRightElement',
-            icon: 'FolderIcon',
-          },
-          'Overwrite if folder exists': {
-            type: 'boolean',
-            value: false,
-            component: 'Switch',
           },
         },
         return: {
-          'Folder ID': null,
-          'Folder URL': null,
+          displayName: 'Folder',
+          assignedTo: null,
+          type: 'dictionary',
+          description:
+            'The created folder. This is a dictionary, contains: id (folder id), url (folder url)',
         },
-      },
-      {
-        templateId: 'drive.upload_files',
-        displayName: 'Upload files',
-        description: 'Upload files to a given directory in Google Drive',
-        iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
-        type: 'activity',
-        arguments: {
-          Connection: {
-            type: 'connection.drive',
-            value: null,
-            component: 'text',
-          },
-          Files: [
-            {
-              type: 'file',
-              value: null,
-              component: 'file',
-            },
-          ],
-          'Destination Folder Path': {
-            type: 'string',
-            value: '',
-            component: 'text',
-          },
-          'Overwrite if file exists': {
-            type: 'boolean',
-            value: false,
-            component: 'switch',
-          },
-        },
-        return: [
-          {
-            'File ID': null,
-            'File URL': null,
-          },
-        ],
       },
       {
         templateId: 'drive.for_each_file_in_folder',
         displayName: 'For each file in folder',
-        description: 'Iterates over a list of folder in Google Drive',
+        description: 'Iterates over a list of files in a Google Drive folder',
         iconCode: 'FaGoogleDrive',
         service: 'Google Drive',
         type: 'subprocess',
         arguments: {
           Connection: {
-            type: 'connection.drive',
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
             value: null,
-            component: 'text',
           },
           'Folder Path': {
             type: 'string',
+            description: 'The path to the folder',
             value: '',
-            component: 'text',
           },
         },
         return: null,
@@ -109,24 +70,33 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaGoogleDrive',
         service: 'Google Drive',
         type: 'activity',
+        keyword: 'Search Drive Files',
         arguments: {
           Connection: {
-            type: 'connection.drive',
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
             value: null,
-            component: 'text',
           },
           'Folder Path': {
             type: 'string',
+            description: 'The path to the folder',
+            keywordArg: 'source',
             value: '',
-            component: 'text',
+          },
+          Query: {
+            type: 'string',
+            description: 'Enter your query condition',
+            keywordArg: 'query',
+            value: '',
           },
         },
-        return: [
-          {
-            'File ID': null,
-            'File URL': null,
-          },
-        ],
+        return: {
+          displayName: 'File List',
+          assignedTo: null,
+          type: 'list',
+          description:
+            'A list of files. Each file is a dictionary, contains: id (file id), url (file url), name (file name), is_folder, mimeType (file mime type), size (file size), modifiedTime (file modified time)',
+        },
       },
       {
         templateId: 'drive.get_file_folder',
@@ -135,22 +105,26 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaGoogleDrive',
         service: 'Google Drive',
         type: 'activity',
+        keyword: 'Get Drive File By Id',
         arguments: {
           Connection: {
-            type: 'connection.drive',
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
             value: null,
-            component: 'text',
           },
-          Path: {
+          ID: {
             type: 'string',
+            description: 'The ID of folder or file',
+            keywordArg: 'file_id',
             value: '',
-            component: 'text',
           },
         },
         return: {
-          type: null,
-          id: null,
-          url: null,
+          displayName: 'File/Folder',
+          assignedTo: null,
+          type: 'dictionary',
+          description:
+            'The file/folder. This is a dictionary, contains: id (file/folder id), url (file/folder url), name (file/folder name), is_folder, mimeType (file/folder mime type), size (file/folder size), modifiedTime (file/folder modified time)',
         },
       },
       {
@@ -160,19 +134,25 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaGoogleDrive',
         service: 'Google Drive',
         type: 'activity',
+        keyword: 'Delete Drive File',
         arguments: {
           Connection: {
-            type: 'connection.drive',
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
             value: null,
-            component: 'text',
           },
-          Path: {
+          ID: {
             type: 'string',
+            description: 'The ID of folder or file',
+            keywordArg: 'file_id',
             value: '',
           },
         },
         return: {
-          message: 'Delete Successfully!',
+          displayName: 'Number of deleted',
+          assignedTo: null,
+          type: 'number',
+          description: 'The number of deleted files/folders',
         },
       },
       {
@@ -182,64 +162,78 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaGoogleDrive',
         service: 'Google Drive',
         type: 'activity',
+        keyword: 'Move Drive File',
         arguments: {
           Connection: {
-            type: 'connection.drive',
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
             value: null,
           },
-          'Source Path': {
+          'Source ID': {
             type: 'string',
+            description: 'The ID of source folder or file',
+            keywordArg: 'file_id',
             value: '',
           },
-          'Destination Path': {
+          'Destination Folder Path': {
             type: 'string',
+            description: 'The path to destination folder',
+            keywordArg: 'target',
             value: '',
-          },
-          'Overwrite if file/folder exists': {
-            type: 'boolean',
-            value: false,
           },
         },
         return: {
-          message:
-            'Move file/folder from ${Source Path} to ${Destination Path} successfully!',
+          displayName: 'List of files/folders id',
+          assignedTo: null,
+          type: 'list',
+          description: 'A list of files/folders id',
         },
       },
       {
         templateId: 'drive.share_file_folder',
-        displayName: 'Share file/folder',
-        description: 'Share file/folder in Google Drive',
+        displayName: 'Share a file/folder',
+        description: 'Share a file/folder in Google Drive',
         iconCode: 'FaGoogleDrive',
         service: 'Google Drive',
         type: 'activity',
+        keyword: 'Add Drive Share',
         arguments: {
           Connection: {
-            type: 'connection.drive',
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
             value: null,
           },
-          shareWith: {
-            type: 'all' || 'group',
-            value: 'all',
+          'Share Type': {
+            type: 'enum.shareType',
+            description: 'Share with list emails or all people',
+            keywordArg: 'share_type',
+            value: 'user',
           },
-          shareEmail:
-            [
-              {
-                type: 'email',
-                value: null,
-              },
-            ] || null, // could be empty array is share for all, list array is share with group, null is revoke sharing with anyone
-          permission: {
-            type: 'view', // view, comment, edit, all
-            value: null,
+          'Share with Email': {
+            type: 'email',
+            description: 'Email address to share with',
+            keywordArg: 'email',
+            value: '',
           },
-          Path: {
+          Permission: {
+            type: 'enum.permission',
+            description: 'The role including reader, commenter, writer',
+            keywordArg: 'role',
+            value: 'reader',
+          },
+          ID: {
             type: 'string',
+            description: 'The ID of the file or folder',
+            keywordArg: 'file_id',
             value: '',
           },
         },
         return: {
-          message: 'Share File/Folder Successfully!',
-          url: null,
+          displayName: 'Share response',
+          assignedTo: null,
+          type: 'dictionary',
+          description:
+            'The share response. This is a dictionary, contains: file_id, permission_id',
         },
       },
       {
@@ -249,48 +243,44 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaEnvelope',
         service: 'Gmail',
         type: 'activity',
+        keyword: 'Send Message',
         arguments: {
           Connection: {
-            type: 'connection.gmail',
+            type: 'connection.Gmail',
+            description: 'Your connection ID with Gmail',
             value: null,
           },
-          'Share Email': {
-            to: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-            cc: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-            bcc: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
+          From: {
+            type: 'string',
+            description: 'Your source email',
+            keywordArg: 'sender',
+            value: 'me',
+          },
+          To: {
+            type: 'email',
+            description: 'Email you want to send email to',
+            keywordArg: 'to',
+            value: '',
           },
           Subject: {
             type: 'string',
-            value: null,
+            description: 'The subject of email',
+            keywordArg: 'subject',
+            value: '',
           },
           Body: {
             type: 'string',
-            value: null,
+            description: 'The body of email',
+            keywordArg: 'message_text',
+            value: '',
           },
-          Attachments: [
-            {
-              type: 'file',
-              value: null,
-            },
-          ],
         },
         return: {
-          message: 'Send email successfully!',
+          displayName: 'Sent message',
+          assignedTo: null,
+          type: 'dictionary',
+          description:
+            'The sent message. This is a dictionary, contains: id (message id), threadId (message thread id)',
         },
       },
       {
@@ -302,266 +292,94 @@ export const ActivityPackageTemplates = [
         type: 'subprocess',
         arguments: {
           Connection: {
-            type: 'connection.gmail',
+            type: 'connection.Gmail',
+            description: 'Your connection ID with Gmail',
             value: null,
           },
-          'Email Path': {
-            type: 'string',
+          'Email Folder Path': {
+            type: 'label_ids',
+            description: 'The source email folder path',
+            value: [],
+          },
+          'Max number emails': {
+            type: 'number',
+            description: 'Filter by the limit number of emails',
+            keywordArg: 'max_results',
+            value: 100,
+          },
+          'From email': {
+            type: 'email',
+            description: 'Filter by source email',
+            value: '',
+          },
+          'Starred Email': {
+            type: 'boolean',
+            description: 'Filter by starred email',
+            value: false,
+          },
+          'Read Email': {
+            type: 'boolean',
+            description: 'Filter by read email',
+            value: false,
+          },
+          'From date': {
+            type: 'date',
+            description: 'Filter by range of day (start day)',
             value: null,
           },
-          Filters: {
-            limit: {
-              type: 'number',
-              value: 100,
-            },
-            fromEmail: [
-              {
-                type: 'string',
-                value: null,
-              },
-            ],
-            isStar: {
-              type: 'boolean',
-              value: false, // read or unread
-            },
-            isRead: {
-              type: 'boolean',
-              value: false, // star/unstar
-            },
-            fromDay: {
-              type: 'date',
-              value: false,
-            },
-            toDay: {
-              type: 'date',
-              value: false,
-            },
+          'To date': {
+            type: 'date',
+            description: 'Filter by range of day (end day)',
+            value: null,
           },
         },
         return: null,
       },
       {
-        templateId: 'gmail.filter_email_list',
-        displayName: 'Filter Email List',
-        description: 'Filter a list of emails by conditions',
+        templateId: 'gmail.list_emails',
+        displayName: 'Get list emails',
+        description: 'List emails in a given folder in Gmail',
         iconCode: 'FaEnvelope',
         service: 'Gmail',
         type: 'activity',
+        keyword: 'List Messages',
         arguments: {
           Connection: {
-            type: 'connection.gmail',
+            type: 'connection.Gmail',
+            description: 'Your connection ID with Gmail',
             value: null,
           },
-          'Email Path': {
+          'Email Folder Path': {
+            type: 'list',
+            description: 'The source email folder path',
+            keywordArg: 'label_ids',
+            value: [],
+          },
+          'User ID': {
             type: 'string',
-            value: null,
+            description: 'The ID of user',
+            keywordArg: 'user_id',
+            value: 'me',
           },
-          Filters: {
-            limit: {
-              type: 'number',
-              value: 100,
-            },
-            fromEmail: [
-              {
-                type: 'string',
-                value: null,
-              },
-            ],
-            isStar: {
-              type: 'boolean',
-              value: false, // read or unread
-            },
-            isRead: {
-              type: 'boolean',
-              value: false, // star/unstar
-            },
-            fromDay: {
-              type: 'date',
-              value: false,
-            },
-            toDay: {
-              type: 'date',
-              value: false,
-            },
-          },
-        },
-        return: [
-          {
-            type: 'email',
-            emailID: null,
-          },
-        ],
-      },
-      {
-        templateId: 'gmail.get_email_by_id',
-        displayName: 'Get Email By ID',
-        description: 'Retrieves the email with the specified ID',
-        iconCode: 'FaEnvelope',
-        service: 'Gmail',
-        type: 'activity',
-        arguments: {
-          Connection: {
-            type: 'connection.gmail',
-            value: null,
-          },
-          'Email ID': {
+          Query: {
             type: 'string',
-            value: null,
+            description: 'The query condition',
+            keywordArg: 'query',
+            value: '',
+          },
+          'Max number emails': {
+            type: 'number',
+            description: 'Filter by the limit number of emails',
+            keywordArg: 'max_results',
+            value: 100,
           },
         },
         return: {
-          id: null,
-          url: null,
-          'Share With': {
-            to: [],
-            cc: [],
-            bcc: [],
-          },
-          Subject: '',
-          Body: '',
-          Attachments: [],
-        },
-      },
-      {
-        templateId: 'gmail.mark_email_star_unstar',
-        displayName: 'Mark Email as Star/Unstar',
-        description: 'Mark an email as Star/Unstar with the specified ID',
-        iconCode: 'FaEnvelope',
-        service: 'Gmail',
-        type: 'activity',
-        arguments: {
-          Connection: {
-            type: 'connection.gmail',
-            value: null,
-          },
-          'Email ID': {
-            type: 'string',
-            value: null,
-          },
-          'Mark Email as Star': {
-            type: 'boolean',
-            value: true,
-          },
-        },
-        return: {
-          message: 'Mark Email as Star/Unstar successfully!',
-        },
-      },
-      {
-        templateId: 'gmail.mark_email_read_unread',
-        displayName: 'Mark Email as Read/Unread',
-        description: 'Mark an email as Read/Unread with the specified ID',
-        iconCode: 'FaEnvelope',
-        service: 'Gmail',
-        type: 'activity',
-        arguments: {
-          Connection: {
-            type: 'connection.gmail',
-            value: null,
-          },
-          'Email ID': {
-            type: 'string',
-            value: null,
-          },
-          'Mark Email as Read': {
-            type: 'boolean',
-            value: true,
-          },
-        },
-        return: {
-          message: 'Mark Email as Read/Unread successfully!',
-        },
-      },
-      {
-        templateId: 'gmail.reply_email',
-        displayName: 'Reply Email',
-        description: 'Reply an email with the specified ID to other people',
-        iconCode: 'FaEnvelope',
-        service: 'Gmail',
-        type: 'activity',
-        arguments: {
-          Connection: {
-            type: 'connection.gmail',
-            value: null,
-          },
-          'Email ID': {
-            type: 'string',
-            value: null,
-          },
-          'Share With': {
-            to: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-            cc: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-            bcc: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-          },
-          Body: {
-            type: 'string',
-            value: null,
-          },
-          Attachments: [
-            {
-              type: 'file',
-              value: null,
-            },
-          ],
-        },
-        return: {
-          message: 'Reply Email successfully!',
-        },
-      },
-      {
-        templateId: 'gmail.forward_email',
-        displayName: 'Forward Email',
-        description: 'Forward an email with the specified ID to other people',
-        iconCode: 'FaEnvelope',
-        service: 'Gmail',
-        type: 'activity',
-        arguments: {
-          Connection: {
-            type: 'connection.gmail',
-            value: null,
-          },
-          'Email ID': {
-            type: 'string',
-            value: null,
-          },
-          'Share With': {
-            to: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-            cc: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-            bcc: [
-              {
-                type: 'email',
-                value: null,
-              },
-            ],
-          },
-        },
-        return: {
-          message: 'Forward Email successfully!',
+          displayName: 'Emails',
+          assignedTo: null,
+          type: 'list',
+          description:
+            'A list of emails. Each email is a dictionary, contains: id (email id), from (email from), to (email to), cc (email cc), bcc (email bcc), subject (email subject), body (email body), attachments (email attachments)',
         },
       },
       {
@@ -571,23 +389,25 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaFileSpreadsheet',
         service: 'Google Sheet',
         type: 'activity',
+        keyword: 'Create Spreadsheet',
         arguments: {
           Connection: {
-            type: 'connection.drive',
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
             value: null,
           },
-          'Drive Path': {
+          'SpreadSheet Name': {
             type: 'string',
-            value: null,
-          },
-          'Spread Sheet Name': {
-            type: 'string',
-            value: null,
+            description: 'The spread sheet name',
+            keywordArg: 'title',
+            value: '',
           },
         },
         return: {
-          message: 'Create a spread sheet successfully!',
-          url: null,
+          displayName: 'SpreadSheet ID',
+          assignedTo: null,
+          type: 'string',
+          description: 'The created spreadsheet id',
         },
       },
       {
@@ -599,39 +419,47 @@ export const ActivityPackageTemplates = [
         type: 'subprocess',
         arguments: {
           Connection: {
-            type: 'connection.sheet',
+            type: 'connection.Google Sheets',
+            description: 'Your connection ID with Google Sheet',
             value: null,
           },
-          'SpreadSheet Path': {
+          'SpreadSheet ID': {
             type: 'string',
+            description: 'The ID of spread sheet',
+            keywordArg: 'spreadsheet_id',
             value: '',
           },
         },
         return: null,
       },
       {
-        templateId: 'sheet.get_sheet_list_in_spreadsheet',
-        displayName: 'Get Sheet List',
-        description: 'Get a list of sheet in given spreadsheet in Google Sheet',
+        templateId: 'sheet.get_spreadsheet_by_id',
+        displayName: 'Get SpreadSheet By Id',
+        description: 'Get SpreadSheet By Id in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
         service: 'Google Sheet',
         type: 'activity',
+        keyword: 'Get Spreadsheet Basic Information',
         arguments: {
           Connection: {
-            type: 'connection.sheet',
+            type: 'connection.Google Sheets',
+            description: 'Your connection ID with Google Sheet',
             value: null,
           },
-          'SpreadSheet Path': {
+          'SpreadSheet ID': {
             type: 'string',
+            description: 'The ID of spread sheet',
+            keywordArg: 'spreadsheet_id',
             value: '',
           },
         },
-        return: [
-          {
-            'Sheet ID': null,
-            'Sheet URL': null,
-          },
-        ],
+        return: {
+          displayName: 'SpreadSheet',
+          assignedTo: null,
+          type: 'dictionary',
+          description:
+            'The spreadsheet. This is a dictionary, contains: id (spreadsheet id), url (spreadsheet url), name (spreadsheet name), sheets (spreadsheet sheets)',
+        },
       },
       {
         templateId: 'sheet.add_sheet',
@@ -640,23 +468,27 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaFileSpreadsheet',
         service: 'Google Sheet',
         type: 'activity',
+        keyword: 'Create Sheet',
         arguments: {
           Connection: {
-            type: 'connection.sheet',
+            type: 'connection.Google Sheets',
+            description: 'Your connection ID with Google Sheet',
             value: null,
           },
-          'SpreadSheet Path': {
+          'SpreadSheet ID': {
             type: 'string',
+            description: 'The ID of spread sheet',
+            keywordArg: 'spreadsheet_id',
             value: '',
           },
           'Sheet Name': {
             type: 'string',
+            description: 'The name of the sheet',
+            keywordArg: 'sheet_name',
             value: '',
           },
         },
-        return: {
-          meesage: 'Add sheet successfully!',
-        },
+        return: null,
       },
       {
         templateId: 'sheet.delete_sheet',
@@ -665,23 +497,27 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaFileSpreadsheet',
         service: 'Google Sheet',
         type: 'activity',
+        keyword: 'Delete Sheet',
         arguments: {
           Connection: {
-            type: 'connection.sheet',
+            type: 'connection.Google Sheets',
+            description: 'Your connection ID with Google Sheet',
             value: null,
           },
-          'SpreadSheet Path': {
+          'SpreadSheet ID': {
             type: 'string',
+            description: 'The ID of spread sheet',
+            keywordArg: 'spreadsheet_id',
             value: '',
           },
           'Sheet Name': {
             type: 'string',
+            description: 'The name of the sheet',
+            keywordArg: 'sheet_name',
             value: '',
           },
         },
-        return: {
-          meesage: 'Delete sheet successfully!',
-        },
+        return: null,
       },
       {
         templateId: 'sheet.rename_sheet',
@@ -690,64 +526,33 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaFileSpreadsheet',
         service: 'Google Sheet',
         type: 'activity',
+        keyword: 'Rename Sheet',
         arguments: {
           Connection: {
-            type: 'connection.sheet',
+            type: 'connection.Google Sheets',
+            description: 'Your connection ID with Google Sheet',
             value: null,
           },
-          'SpreadSheet Path': {
+          'SpreadSheet ID': {
             type: 'string',
+            description: 'The ID of spread sheet',
+            keywordArg: 'spreadsheet_id',
             value: '',
           },
           'Old Sheet Name': {
             type: 'string',
+            description: 'The old name of sheet',
+            keywordArg: 'sheet_name',
             value: '',
           },
           'New Sheet Name': {
             type: 'string',
+            description: 'The new name of sheet',
+            keywordArg: 'new_sheet_name',
             value: '',
           },
         },
-        return: {
-          meesage: 'Rename sheet successfully!',
-        },
-      },
-      {
-        templateId: 'sheet.share_spreadsheet',
-        displayName: 'Share a spreadsheet',
-        description: 'Share a spreadsheet in Google Sheet',
-        iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
-        type: 'activity',
-        arguments: {
-          Connection: {
-            type: 'connection.sheet',
-            value: null,
-          },
-          shareWith: {
-            type: 'all' || 'group',
-            value: 'all',
-          },
-          shareEmail:
-            [
-              {
-                type: 'email',
-                value: null,
-              },
-            ] || null, // could be empty array is share for all, list array is share with group, null is revoke sharing with anyone
-          permission: {
-            type: 'view', // view, comment, edit, all
-            value: null,
-          },
-          Path: {
-            type: 'string',
-            value: '',
-          },
-        },
-        return: {
-          message: 'Share SpreadSheet Successfully!',
-          url: null,
-        },
+        return: null,
       },
       {
         templateId: 'sheet.write_data_to_sheet',
@@ -757,42 +562,33 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaFileSpreadsheet',
         service: 'Google Sheet',
         type: 'activity',
+        keyword: 'Update Sheet Values',
         arguments: {
           Connection: {
-            type: 'connection.sheet',
+            type: 'connection.Google Sheets',
+            description: 'Your connection ID with Google Sheet',
             value: null,
           },
-          'SpreadSheet Path': {
+          'SpreadSheet ID': {
             type: 'string',
+            description: 'The ID of spread sheet',
+            keywordArg: 'spreadsheet_id',
             value: '',
           },
-          'Sheet Name': {
+          'Sheet Range': {
             type: 'string',
+            description: 'The range of the sheet',
+            keywordArg: 'sheet_range',
             value: '',
           },
           Content: {
-            type: 'string',
-            value: '',
-          },
-          'Overwrite existed content': {
-            type: 'boolean',
-            value: true,
-          },
-          Filters: {
-            // example from A5:C12, default start at A1 and write all data
-            fromCell: {
-              type: 'string',
-              value: 'A1',
-            },
-            toCell: {
-              type: 'string',
-              value: null,
-            },
+            type: 'list',
+            description: 'The data written to the sheet',
+            keywordArg: 'values',
+            value: [],
           },
         },
-        return: {
-          meesage: 'Write data to sheet successfully!',
-        },
+        return: null,
       },
       {
         templateId: 'sheet.read_data_from_sheet',
@@ -802,79 +598,62 @@ export const ActivityPackageTemplates = [
         iconCode: 'FaFileSpreadsheet',
         service: 'Google Sheet',
         type: 'activity',
+        keyword: 'Get Sheet Values',
         arguments: {
           Connection: {
-            type: 'connection.sheet',
+            type: 'connection.Google Sheets',
+            description: 'Your connection ID with Google Sheet',
             value: null,
           },
-          'SpreadSheet Path': {
+          'SpreadSheet ID': {
             type: 'string',
+            description: 'The ID of spread sheet',
+            keywordArg: 'spreadsheet_id',
             value: '',
           },
-          'Sheet Name': {
+          'Sheet Range': {
             type: 'string',
+            description: 'The range of the sheet',
+            keywordArg: 'sheet_range',
             value: '',
-          },
-          Content: {
-            type: 'string',
-            value: '',
-          },
-          Filters: {
-            // example from A5:C12, default start at A1 and write all data
-            fromCell: {
-              type: 'string',
-              value: 'A1',
-            },
-            toCell: {
-              type: 'string',
-              value: null,
-            },
           },
         },
         return: {
-          content: '',
+          displayName: 'Sheet Values',
+          assignedTo: null,
+          type: 'list',
+          description: 'A list of values. Each value is a list of cells value',
         },
       },
       {
-        templateId: 'sheet.delete_data_from_sheet',
-        displayName: 'Delete Data From Sheet',
+        templateId: 'sheet.clear_data_from_sheet',
+        displayName: 'Clear Data From Sheet',
         description:
-          'Delete Data From Sheet in a given SpreadSheet in Google Sheet',
+          'Clear Data From Sheet in a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
         service: 'Google Sheet',
         type: 'activity',
+        keyword: 'Clear Sheet Values',
         arguments: {
           Connection: {
-            type: 'connection.sheet',
+            type: 'connection.Google Sheets',
+            description: 'Your connection ID with Google Sheet',
             value: null,
           },
-          'SpreadSheet Path': {
+          'SpreadSheet ID': {
             type: 'string',
+            description: 'The ID of spread sheet',
+            keywordArg: 'spreadsheet_id',
             value: '',
           },
-          'Sheet Name': {
+          'Sheet Range': {
             type: 'string',
+            description: 'The range of the sheet',
+            keywordArg: 'sheet_range',
             value: '',
-          },
-          Content: {
-            type: 'string',
-            value: '',
-          },
-          Filters: {
-            // example from A5:C12, default start at A1 and write all data
-            fromCell: {
-              type: 'string',
-              value: 'A1',
-            },
-            toCell: {
-              type: 'string',
-              value: null,
-            },
           },
         },
-        return: {
-          message: 'Delete data from sheet successfully!',
-        },
+        return: null,
       },
     ],
   },
@@ -883,31 +662,34 @@ export const ActivityPackageTemplates = [
     displayName: 'Control',
     description: 'Help you control the execution flow of your robot',
     iconCode: 'MdControlCamera',
-    color: 'green',
     activityTemplates: [
       {
         templateId: 'if',
-        displayName: 'If ... then ... else',
+        displayName: 'If/Else',
         description:
           'If a condition is met, then execute a set of activities, otherwise execute another set of activities',
         iconCode: 'AiOutlineBranches',
-        service: 'If/Else',
+        service: 'Condition',
         type: 'gateway',
         arguments: {
           Condition: {
             type: 'expression.logic',
+            description: 'The condition to execute',
             value: {
               left: {
                 type: 'string',
-                value: '',
-              },
-              right: {
-                type: 'string',
+                description: 'The left operand',
                 value: '',
               },
               operator: {
-                type: 'operator.logic',
-                value: null,
+                type: 'enum.operator.logic',
+                description: 'The operator',
+                value: '=',
+              },
+              right: {
+                type: 'string',
+                description: 'The right operand',
+                value: '',
               },
             },
           },
@@ -916,18 +698,20 @@ export const ActivityPackageTemplates = [
       },
       {
         templateId: 'for_each',
-        displayName: 'For each ... in ...',
+        displayName: 'For each',
         description: 'Execute a set of activities for each item in a list',
         iconCode: 'ImLoop2',
-        service: 'For Each',
+        service: 'Loop',
         type: 'subprocess',
         arguments: {
           List: {
-            type: 'expression.list',
-            value: null,
+            type: 'list',
+            description: 'List of value',
+            value: [],
           },
           Item: {
             type: 'string',
+            description: 'The initial variable for the loop',
             value: '',
           },
         },
@@ -941,15 +725,16 @@ export const ActivityPackageTemplates = [
     description:
       'Help you automate tasks that need to be done in a web browser (like Chrome)',
     iconCode: 'TbBrowserCheck',
-    color: 'blue',
+    library: 'RPA.Browser.Playwright',
     activityTemplates: [
       {
         templateId: 'use_browser',
         displayName: 'Use browser',
         description: 'Open a browser and use it to execute a set of activities',
+        service: 'Navigation',
         iconCode: 'GoBrowser',
-        service: 'Browser',
         type: 'subprocess',
+        keyword: 'New Browser',
         arguments: {},
         return: null,
       },
@@ -958,11 +743,14 @@ export const ActivityPackageTemplates = [
         displayName: 'Go to URL',
         description: 'Go to a given URL in the current browser tab',
         iconCode: 'GoBrowser',
-        service: 'Browser',
+        service: 'Navigation',
         type: 'activity',
+        keyword: 'Go To',
         arguments: {
           URL: {
             type: 'string',
+            description: 'The URL link',
+            keywordArg: 'url',
             value: '',
           },
         },
@@ -973,47 +761,40 @@ export const ActivityPackageTemplates = [
         displayName: 'Click',
         description: 'Click on a given element in the current browser tab',
         iconCode: 'FaMousePointer',
-        service: 'Browser',
         type: 'activity',
+        service: 'Browser Event',
+        keyword: 'Click',
         arguments: {
           Element: {
-            type: 'expression.element',
-            value: null,
-          },
-        },
-        return: null,
-      },
-      {
-        templateId: 'type',
-        displayName: 'Type',
-        description:
-          'Type a given text into a given element in the current browser tab',
-        iconCode: 'FaKeyboard',
-        service: 'Browser',
-        type: 'activity',
-        arguments: {
-          Element: {
-            type: 'expression.element',
-            value: null,
-          },
-          Text: {
             type: 'string',
+            description: 'The element HTML DOM of the website',
+            keywordArg: 'selector',
             value: '',
           },
         },
         return: null,
       },
       {
-        templateId: 'wait',
-        displayName: 'Wait',
-        description: 'Wait for a given amount of time',
-        iconCode: 'FaClock',
-        service: 'Browser',
+        templateId: 'type',
+        displayName: 'Type Into',
+        description:
+          'Type a given text into a given element in the current browser tab',
+        iconCode: 'FaKeyboard',
         type: 'activity',
+        service: 'Browser Event',
+        keyword: 'Fill Text',
         arguments: {
-          Time: {
-            type: 'expression.time',
-            value: null,
+          Element: {
+            type: 'string',
+            description: 'The HTML DOM element of the website',
+            keywordArg: 'selector',
+            value: '',
+          },
+          Text: {
+            type: 'string',
+            description: 'The text to type to the website',
+            keywordArg: 'txt',
+            value: '',
           },
         },
         return: null,
@@ -1024,16 +805,22 @@ export const ActivityPackageTemplates = [
         description:
           'Get the text of a given element in the current browser tab',
         iconCode: 'FaFont',
-        service: 'Browser',
         type: 'activity',
+        service: 'Browser Event',
+        keyword: 'Get Text',
         arguments: {
           Element: {
-            type: 'expression.element',
-            value: null,
+            type: 'string',
+            description: 'The HTML DOM element of the website',
+            keywordArg: 'selector',
+            value: '',
           },
         },
         return: {
-          text: null,
+          displayName: 'Text',
+          assignedTo: null,
+          type: 'string',
+          description: 'The text of the element',
         },
       },
     ],
@@ -1041,7 +828,6 @@ export const ActivityPackageTemplates = [
   {
     _id: 'document_automation',
     displayName: 'Document automation',
-    color: 'orange',
     description:
       'Help you automate tasks related to documents (traditional paper documents or digital documents like PDFs) with the help of AI',
     iconCode: 'FaFileAlt',
