@@ -1,4 +1,4 @@
-import { ActivityPackageTemplates } from '@/constants/activityPackage';
+import { ActivityTemplates } from '@/constants/activityPackage';
 import { Activity } from '@/types/activity';
 import {
   getLocalStorageObject,
@@ -22,10 +22,21 @@ import {
   InputGroup,
   FormControl,
   FormLabel,
+  IconButton,
+  Select,
+  Switch,
+  Tooltip,
 } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useReducer, useState } from 'react';
+import { SingleDatepicker } from 'chakra-dayzed-datepicker';
+import SVGIcon from '@/components/Icons/SVGIcon';
 
+import GoogleWorkpaceIcon from '@/assets/svgs/google-workspace.svg';
+import ControlIcon from '@/assets/svgs/control.svg';
+import BrowserAutomationIcon from '@/assets/svgs/browser-automation.svg';
+import DocumentAutomationIcon from '@/assets/svgs/document-automation.svg';
+import DatePicker from '@/components/DatePicker/DatePicker';
 interface PropertiesSideBarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -41,6 +52,13 @@ interface PropertiesProps {
   serviceName: string;
   activityName: string;
 }
+interface ArgumentProps {
+  type: string;
+  description: string;
+  keywordArg?: string;
+  value?: any;
+}
+
 enum SideBarAction {
   SET_DEFAULT = 'SET_DEFAULT',
   SET_PROPERTY = 'SET_PROPERTY',
@@ -96,7 +114,7 @@ export default function PropertiesSideBar({
 }: PropertiesSideBarProps) {
   const params = useParams();
   const processID = params.id as string;
-  const [formValues, setFormValues] = React.useState<FormValues>({});
+  const [formValues, setFormValues] = useState<FormValues>({});
   const [sideBarState, dispatch] = useReducer(sidebarReducer, initialState);
 
   useEffect(() => {
@@ -200,28 +218,50 @@ export default function PropertiesSideBar({
   return (
     <div>
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-        <DrawerContent>
+        <DrawerContent w={400} maxW={400}>
           <DrawerCloseButton />
           <DrawerHeader>{getTitleStep(sideBarState.currentStep)}</DrawerHeader>
           <DrawerBody>
             <h1 className="font-bold text-md text-red-500">
               ActivityID: {activityItem.activityID}
             </h1>
-            <h1 className="font-bold text-md text-orange-500">
-              Name: {activityItem.activityName}
-            </h1>
-            {ActivityPackageTemplates.map((item) => {
-              const { _id, displayName, activityTemplates, color } = item;
+
+            {ActivityTemplates.map((item) => {
+              const { _id, displayName, activityTemplates, description } = item;
               const { currentStep, packageName, serviceName, activityName } =
                 sideBarState;
 
+              const getPackageIcon = (displayName: string) => {
+                switch (displayName) {
+                  case 'Google Workspace':
+                    return GoogleWorkpaceIcon;
+                  case 'Control':
+                    return ControlIcon;
+                  case 'Browser automation':
+                    return BrowserAutomationIcon;
+                  case 'Document automation':
+                    return DocumentAutomationIcon;
+                }
+              };
+
               const renderStepOne = () => (
-                <Button
-                  className="my-[10px]"
-                  colorScheme={color}
-                  onClick={() => handleSelectPackage(displayName)}>
-                  {displayName}
-                </Button>
+                <Tooltip label={description}>
+                  <div className="my-[20px] flex justify-center">
+                    <IconButton
+                      variant="outline"
+                      aria-label="Call Segun"
+                      style={{ width: 100, height: 100 }}
+                      onClick={() => handleSelectPackage(displayName)}
+                      icon={
+                        <SVGIcon
+                          width="100%"
+                          height="100%"
+                          svgComponent={getPackageIcon(displayName)}
+                        />
+                      }
+                    />
+                  </div>
+                </Tooltip>
               );
 
               const renderStepTwo = () => {
@@ -247,15 +287,174 @@ export default function PropertiesSideBar({
                 );
                 return activities.map((activity: any) => (
                   <div key={activity.displayName}>
-                    <Button
-                      className="my-[10px]"
-                      onClick={() =>
-                        handleSelectActivity(activity.displayName)
-                      }>
-                      {activity.displayName}
-                    </Button>
+                    <Tooltip label={activity.description}>
+                      <Button
+                        className="my-[10px]"
+                        onClick={() =>
+                          handleSelectActivity(activity.displayName)
+                        }>
+                        {activity.displayName}
+                      </Button>
+                    </Tooltip>
                   </div>
                 ));
+              };
+
+              const renderProperty = (
+                paramKey: string,
+                paramValue: ArgumentProps
+              ) => {
+                switch (paramValue.type) {
+                  case 'string':
+                    return (
+                      <Input
+                        type="text"
+                        value={(formValues[paramKey] as string) ?? ''}
+                        onChange={(e) =>
+                          handleInputChange(paramKey, e.target.value)
+                        }
+                      />
+                    );
+                  case 'boolean':
+                    return <Switch id={paramKey} />;
+                  case 'date':
+                    return <DatePicker />;
+                  case 'email':
+                    return (
+                      <Input
+                        type="email"
+                        value={(formValues[paramKey] as string) ?? ''}
+                        onChange={(e) =>
+                          handleInputChange(paramKey, e.target.value)
+                        }
+                      />
+                    );
+                  case 'number':
+                    return (
+                      <Input
+                        type="number"
+                        value={(formValues[paramKey] as string) ?? ''}
+                        onChange={(e) =>
+                          handleInputChange(paramKey, e.target.value)
+                        }
+                      />
+                    );
+                  case 'connection.Google Drive':
+                    return (
+                      <Input
+                        type="text"
+                        variant="filled"
+                        value={
+                          (formValues[paramKey] as string) ??
+                          'My Google Drive Connection'
+                        }
+                        disabled
+                      />
+                    );
+                  case 'connection.Gmail':
+                    return (
+                      <Input
+                        type="text"
+                        variant="filled"
+                        value={
+                          (formValues[paramKey] as string) ??
+                          'My Gmail Connection'
+                        }
+                        disabled
+                      />
+                    );
+                  case 'connection.Google Sheets':
+                    return (
+                      <Input
+                        type="text"
+                        variant="filled"
+                        value={
+                          (formValues[paramKey] as string) ??
+                          'My Google Sheet Connection'
+                        }
+                        disabled
+                      />
+                    );
+                  case 'list':
+                    return (
+                      <Input
+                        type="text"
+                        value={(formValues[paramKey] as string) ?? ''}
+                        onChange={(e) =>
+                          handleInputChange(paramKey, e.target.value)
+                        }
+                      />
+                    );
+                  case 'enum.shareType':
+                    return (
+                      <Select>
+                        <option value="user">User</option>
+                        <option value="all">All</option>
+                      </Select>
+                    );
+                  case 'enum.permission':
+                    return (
+                      <Select>
+                        <option value="reader">Reader</option>
+                        <option value="editor">Editor</option>
+                        <option value="commenter">Commenter</option>
+                        <option value="all">All</option>
+                      </Select>
+                    );
+                  case 'label_ids':
+                    return (
+                      <Select>
+                        <option value="inbox">Inbox</option>
+                        <option value="starred">Starred</option>
+                        <option value="sent">Sent</option>
+                        <option value="spam">Spam</option>
+                        <option value="trash">Trash</option>
+                        <option value="scheduled">Scheduled</option>
+                      </Select>
+                    );
+                  case 'expression.logic':
+                    return (
+                      <div className="grid grid-cols-3">
+                        {Object.entries(paramValue.value).map(
+                          ([paramKey, paramValue]) => {
+                            if (!paramValue) return;
+                            if (
+                              typeof paramValue === 'object' &&
+                              'type' in paramValue &&
+                              paramValue.type == 'string'
+                            ) {
+                              return (
+                                <Input
+                                  key={paramKey}
+                                  type="text"
+                                  value={(formValues[paramKey] as string) ?? ''}
+                                  onChange={(e) =>
+                                    handleInputChange(paramKey, e.target.value)
+                                  }
+                                />
+                              );
+                            } else {
+                              if (
+                                typeof paramValue === 'object' &&
+                                'description' in paramValue
+                              ) {
+                                return (
+                                  <Select key={paramKey}>
+                                    <option value="=">=</option>
+                                    <option value="!=">!=</option>
+                                    <option value=">">{'>'}</option>
+                                    <option value="<">{'<'}</option>
+                                    <option value=">=">{'>='}</option>
+                                    <option value="<=">{'<='}</option>
+                                  </Select>
+                                );
+                              }
+                            }
+                          }
+                        )}
+                      </div>
+                    );
+                }
               };
 
               const renderStepFour = () => {
@@ -268,20 +467,28 @@ export default function PropertiesSideBar({
                   <div>
                     {activityProperty &&
                       Object.entries(activityProperty).map(
-                        ([paramKey, paramValue]) => (
-                          <div key={paramKey}>
-                            <FormControl>
-                              <FormLabel>{paramKey}</FormLabel>
-                              <Input
-                                type="text"
-                                value={(formValues[paramKey] as string) ?? ''}
-                                onChange={(e) =>
-                                  handleInputChange(paramKey, e.target.value)
-                                }
-                              />
-                            </FormControl>
-                          </div>
-                        )
+                        ([paramKey, paramValue]) => {
+                          if (
+                            paramValue &&
+                            typeof paramValue === 'object' &&
+                            'description' in paramValue
+                          ) {
+                            return (
+                              <Tooltip
+                                label={paramValue.description as string}
+                                key={paramKey}>
+                                <FormControl>
+                                  <FormLabel>{paramKey}</FormLabel>
+                                  {renderProperty(
+                                    paramKey,
+                                    paramValue as ArgumentProps
+                                  )}
+                                </FormControl>
+                              </Tooltip>
+                            );
+                          }
+                          return null; // Handle null or invalid values
+                        }
                       )}
                   </div>
                 );
@@ -296,12 +503,14 @@ export default function PropertiesSideBar({
                 </div>
               );
             })}
-            <Button
-              className="mt-[20px]"
-              colorScheme="yellow"
-              onClick={handleGoBack}>
-              Back
-            </Button>
+            {sideBarState.currentStep > 1 && (
+              <Button
+                className="mt-[20px]"
+                colorScheme="teal"
+                onClick={handleGoBack}>
+                Back
+              </Button>
+            )}
           </DrawerBody>
 
           <DrawerFooter>
