@@ -10,13 +10,14 @@ const CustomDatePicker = React.forwardRef<
   CustomDatePickerRef,
   {
     paramKey: string;
+    defaultValue: Date;
     handleInputChange: (paramKey: string, newDate: any) => void;
   }
 >((props, ref) => {
   const dateRef = useRef(new Date());
 
   useEffect(() => {
-    dateRef.current = new Date();
+    dateRef.current = props.defaultValue;
   }, []);
 
   useImperativeHandle(ref, () => ({

@@ -15,6 +15,7 @@ import {
   replaceLocalStorage,
 } from '@/utils/processService';
 import { useRouter } from 'next/router';
+import VariablesSideBar from './VariablesSideBar/VariablesSideBar';
 
 function CustomModeler() {
   const router = useRouter();
@@ -157,6 +158,7 @@ function CustomModeler() {
         }}>
         Save Properties
       </Button>
+      <VariablesSideBar />
       <br />
     </div>
   );

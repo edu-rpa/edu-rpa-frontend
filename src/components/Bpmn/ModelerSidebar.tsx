@@ -6,7 +6,6 @@ import {
   updateLocalStorage,
 } from '@/utils/processService';
 import { setLocalStorageObject } from '@/utils/localStorageService';
-import { Activity } from '@/types/activity';
 
 interface ModelerSideBarProps {
   isOpen: boolean;

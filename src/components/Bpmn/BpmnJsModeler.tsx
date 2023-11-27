@@ -33,7 +33,6 @@ const BpmnJsModeler: ForwardRefRenderFunction<
     height = 600,
     onError = () => {},
     onShown = () => {},
-    click = () => {},
   }: BpmnJsReactProps,
   ref
 ) => {
