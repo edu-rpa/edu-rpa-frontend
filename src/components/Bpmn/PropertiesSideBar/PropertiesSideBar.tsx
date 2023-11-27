@@ -1,9 +1,6 @@
 import { ActivityTemplates } from '@/constants/activityPackage';
 import { Activity } from '@/types/activity';
-import {
-  getLocalStorageObject,
-  setLocalStorageObject,
-} from '@/utils/localStorageService';
+import { setLocalStorageObject } from '@/utils/localStorageService';
 import {
   getActivityInProcess,
   getProcessFromLocalStorage,
@@ -13,30 +10,28 @@ import {
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerContent,
   DrawerCloseButton,
   Button,
   Input,
-  InputGroup,
   FormControl,
   FormLabel,
   IconButton,
   Select,
   Switch,
   Tooltip,
+  DrawerOverlay,
 } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
-import React, { useEffect, useReducer, useState } from 'react';
-import { SingleDatepicker } from 'chakra-dayzed-datepicker';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import SVGIcon from '@/components/Icons/SVGIcon';
-
 import GoogleWorkpaceIcon from '@/assets/svgs/google-workspace.svg';
 import ControlIcon from '@/assets/svgs/control.svg';
 import BrowserAutomationIcon from '@/assets/svgs/browser-automation.svg';
 import DocumentAutomationIcon from '@/assets/svgs/document-automation.svg';
-import DatePicker from '@/components/DatePicker/DatePicker';
+import CustomDatePicker from '@/components/CustomDatePicker/ CustomDatePicker';
+import { LocalStorage } from '@/constants/localStorage';
 interface PropertiesSideBarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -44,7 +39,7 @@ interface PropertiesSideBarProps {
 }
 
 interface FormValues {
-  [key: string]: string;
+  [key: string]: any;
 }
 interface PropertiesProps {
   currentStep: number;
@@ -101,7 +96,6 @@ const sidebarReducer = (state: any, action: any) => {
         serviceName: action.payload?.serviceName,
         activityName: action.payload?.activityName,
       };
-
     default:
       return state;
   }
@@ -116,6 +110,8 @@ export default function PropertiesSideBar({
   const processID = params.id as string;
   const [formValues, setFormValues] = useState<FormValues>({});
   const [sideBarState, dispatch] = useReducer(sidebarReducer, initialState);
+  const [isExist, setIsExist] = useState(false);
+  const datePickerRef = useRef(null);
 
   useEffect(() => {
     const getActivityByID = getActivityInProcess(
@@ -127,9 +123,11 @@ export default function PropertiesSideBar({
     if (isEmptyProperty == 0) {
       handleSetDefault();
       setFormValues({});
+      setIsExist(false);
     } else {
       handleSetPropertyFromLocalStorage(getActivityByID.properties);
       setFormValues(getActivityByID.properties.arguments);
+      setIsExist(true);
     }
   }, [isOpen]);
 
@@ -192,11 +190,12 @@ export default function PropertiesSideBar({
     return activityArgs;
   };
 
-  const handleInputChange = (key: string, value: string) => {
+  const handleInputChange = (key: string, value: any) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleUpdateProperties = () => {
+    if (sideBarState.currentStep < 4) return;
     const payload = {
       activityPackage: sideBarState.packageName,
       serviceName: sideBarState.serviceName,
@@ -212,18 +211,26 @@ export default function PropertiesSideBar({
       ...getProcessFromLocalStorage(processID),
       activities: updateProperties,
     });
-    setLocalStorageObject('processList', updateProcess);
+    setLocalStorageObject(LocalStorage.PROCESS_LIST, updateProcess);
   };
 
   return (
     <div>
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+      <Drawer
+        isOpen={isOpen}
+        placement="right"
+        onClose={onClose}
+        onCloseComplete={handleUpdateProperties}>
+        <DrawerOverlay />
         <DrawerContent w={400} maxW={400}>
           <DrawerCloseButton />
           <DrawerHeader>{getTitleStep(sideBarState.currentStep)}</DrawerHeader>
           <DrawerBody>
-            <h1 className="font-bold text-md text-red-500">
+            <h1 className="font-bold text-md text-primary">
               ActivityID: {activityItem.activityID}
+            </h1>
+            <h1 className="font-bold text-md text-primary">
+              Name: {activityItem.activityName}
             </h1>
 
             {ActivityTemplates.map((item) => {
@@ -309,21 +316,38 @@ export default function PropertiesSideBar({
                     return (
                       <Input
                         type="text"
-                        value={(formValues[paramKey] as string) ?? ''}
+                        value={formValues[paramKey] ?? ''}
                         onChange={(e) =>
                           handleInputChange(paramKey, e.target.value)
                         }
                       />
                     );
                   case 'boolean':
-                    return <Switch id={paramKey} />;
+                    if (!isExist) formValues[paramKey] = false;
+                    return (
+                      <Switch
+                        defaultChecked={formValues[paramKey]}
+                        onChange={(e) => {
+                          formValues[paramKey] = e.target.checked;
+                        }}
+                        id={paramKey}
+                      />
+                    );
                   case 'date':
-                    return <DatePicker />;
+                    if (!isExist) formValues[paramKey] = new Date();
+                    return (
+                      <CustomDatePicker
+                        ref={datePickerRef}
+                        defaultValue={new Date(formValues[paramKey])}
+                        paramKey={paramKey}
+                        handleInputChange={handleInputChange}
+                      />
+                    );
                   case 'email':
                     return (
                       <Input
                         type="email"
-                        value={(formValues[paramKey] as string) ?? ''}
+                        value={formValues[paramKey] ?? ''}
                         onChange={(e) =>
                           handleInputChange(paramKey, e.target.value)
                         }
@@ -333,45 +357,48 @@ export default function PropertiesSideBar({
                     return (
                       <Input
                         type="number"
-                        value={(formValues[paramKey] as string) ?? ''}
+                        value={formValues[paramKey] ?? ''}
                         onChange={(e) =>
                           handleInputChange(paramKey, e.target.value)
                         }
                       />
                     );
                   case 'connection.Google Drive':
+                    if (!isExist) {
+                      const driveConnection = 'My Google Drive Connection';
+                      formValues[paramKey] = driveConnection;
+                    }
                     return (
                       <Input
                         type="text"
                         variant="filled"
-                        value={
-                          (formValues[paramKey] as string) ??
-                          'My Google Drive Connection'
-                        }
+                        value={formValues[paramKey]}
                         disabled
                       />
                     );
                   case 'connection.Gmail':
+                    if (!isExist) {
+                      const gmailConnection = 'My Gmail Connection';
+                      formValues[paramKey] = gmailConnection;
+                    }
                     return (
                       <Input
                         type="text"
                         variant="filled"
-                        value={
-                          (formValues[paramKey] as string) ??
-                          'My Gmail Connection'
-                        }
+                        value={formValues[paramKey]}
                         disabled
                       />
                     );
                   case 'connection.Google Sheets':
+                    if (!isExist) {
+                      const sheetConnection = 'My Google Sheet Connection';
+                      formValues[paramKey] = sheetConnection;
+                    }
                     return (
                       <Input
                         type="text"
                         variant="filled"
-                        value={
-                          (formValues[paramKey] as string) ??
-                          'My Google Sheet Connection'
-                        }
+                        value={formValues[paramKey]}
                         disabled
                       />
                     );
@@ -379,22 +406,36 @@ export default function PropertiesSideBar({
                     return (
                       <Input
                         type="text"
-                        value={(formValues[paramKey] as string) ?? ''}
+                        value={formValues[paramKey] ?? ''}
                         onChange={(e) =>
                           handleInputChange(paramKey, e.target.value)
                         }
                       />
                     );
                   case 'enum.shareType':
+                    if (!isExist) {
+                      formValues[paramKey] = 'user';
+                    }
                     return (
-                      <Select>
+                      <Select
+                        defaultValue={formValues[paramKey]}
+                        onChange={(e) => {
+                          formValues[paramKey] = e.target.value;
+                        }}>
                         <option value="user">User</option>
                         <option value="all">All</option>
                       </Select>
                     );
                   case 'enum.permission':
+                    if (!isExist) {
+                      formValues[paramKey] = 'reader';
+                    }
                     return (
-                      <Select>
+                      <Select
+                        defaultValue={formValues[paramKey]}
+                        onChange={(e) => {
+                          formValues[paramKey] = e.target.value;
+                        }}>
                         <option value="reader">Reader</option>
                         <option value="editor">Editor</option>
                         <option value="commenter">Commenter</option>
@@ -402,8 +443,15 @@ export default function PropertiesSideBar({
                       </Select>
                     );
                   case 'label_ids':
+                    if (!isExist) {
+                      formValues[paramKey] = 'inbox';
+                    }
                     return (
-                      <Select>
+                      <Select
+                        defaultValue={formValues[paramKey]}
+                        onChange={(e) => {
+                          formValues[paramKey] = e.target.value;
+                        }}>
                         <option value="inbox">Inbox</option>
                         <option value="starred">Starred</option>
                         <option value="sent">Sent</option>
@@ -427,7 +475,7 @@ export default function PropertiesSideBar({
                                 <Input
                                   key={paramKey}
                                   type="text"
-                                  value={(formValues[paramKey] as string) ?? ''}
+                                  value={formValues[paramKey] ?? ''}
                                   onChange={(e) =>
                                     handleInputChange(paramKey, e.target.value)
                                   }
@@ -438,8 +486,14 @@ export default function PropertiesSideBar({
                                 typeof paramValue === 'object' &&
                                 'description' in paramValue
                               ) {
+                                if (!isExist) formValues[paramKey] = '=';
                                 return (
-                                  <Select key={paramKey}>
+                                  <Select
+                                    key={paramKey}
+                                    defaultValue={formValues[paramKey]}
+                                    onChange={(e) => {
+                                      formValues[paramKey] = e.target.value;
+                                    }}>
                                     <option value="=">=</option>
                                     <option value="!=">!=</option>
                                     <option value=">">{'>'}</option>
@@ -512,15 +566,6 @@ export default function PropertiesSideBar({
               </Button>
             )}
           </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue" onClick={handleUpdateProperties}>
-              Save
-            </Button>
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </div>

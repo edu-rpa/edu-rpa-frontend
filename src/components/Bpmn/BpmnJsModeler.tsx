@@ -31,13 +31,8 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   {
     useBpmnJsReact,
     height = 600,
-    zoomActions = true,
-    onLoading = () => {},
     onError = () => {},
     onShown = () => {},
-    click = () => {},
-    dbclick = () => {},
-    ...props
   }: BpmnJsReactProps,
   ref
 ) => {
@@ -70,7 +65,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   }, []);
 
   useEffect(() => {
-    if (!currentProcess) return;
+    if (!currentProcess.xml) return;
     bpmnEditor?.importXML(currentProcess.xml);
     bpmnEditor?.on('import.done', (event: any) => {
       const { error, warning } = event;
@@ -79,10 +74,6 @@ const BpmnJsModeler: ForwardRefRenderFunction<
       }
       zoomFit();
       onShown(warning);
-    });
-
-    bpmnEditor?.on('element.click', (e: any) => {
-      click(e);
     });
   }, [bpmnEditor]);
 
