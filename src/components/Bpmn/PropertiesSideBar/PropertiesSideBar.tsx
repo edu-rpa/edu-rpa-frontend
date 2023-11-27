@@ -100,7 +100,6 @@ const sidebarReducer = (state: any, action: any) => {
         serviceName: action.payload?.serviceName,
         activityName: action.payload?.activityName,
       };
-
     default:
       return state;
   }
@@ -123,6 +122,7 @@ export default function PropertiesSideBar({
       activityItem.activityID
     );
     if (!getActivityByID) return;
+    console.log('Yee', getActivityByID.properties);
     const isEmptyProperty = Object.keys(getActivityByID.properties).length;
     if (isEmptyProperty == 0) {
       handleSetDefault();
@@ -197,23 +197,22 @@ export default function PropertiesSideBar({
   };
 
   const handleUpdateProperties = () => {
-    console.log(formValues);
-    // const payload = {
-    //   activityPackage: sideBarState.packageName,
-    //   serviceName: sideBarState.serviceName,
-    //   activityName: sideBarState.activityName,
-    //   arguments: formValues,
-    // };
-    // const updatePayload = {
-    //   ...getActivityInProcess(processID, activityItem.activityID),
-    //   properties: payload,
-    // };
-    // const updateProperties = updateActivityInProcess(processID, updatePayload);
-    // const updateProcess = updateLocalStorage({
-    //   ...getProcessFromLocalStorage(processID),
-    //   activities: updateProperties,
-    // });
-    // setLocalStorageObject('processList', updateProcess);
+    const payload = {
+      activityPackage: sideBarState.packageName,
+      serviceName: sideBarState.serviceName,
+      activityName: sideBarState.activityName,
+      arguments: formValues,
+    };
+    const updatePayload = {
+      ...getActivityInProcess(processID, activityItem.activityID),
+      properties: payload,
+    };
+    const updateProperties = updateActivityInProcess(processID, updatePayload);
+    const updateProcess = updateLocalStorage({
+      ...getProcessFromLocalStorage(processID),
+      activities: updateProperties,
+    });
+    setLocalStorageObject('processList', updateProcess);
   };
 
   return (
@@ -327,6 +326,7 @@ export default function PropertiesSideBar({
                       />
                     );
                   case 'date':
+                    formValues[paramKey] = new Date();
                     return (
                       <CustomDatePicker
                         ref={datePickerRef}
@@ -465,8 +465,14 @@ export default function PropertiesSideBar({
                                 typeof paramValue === 'object' &&
                                 'description' in paramValue
                               ) {
+                                formValues[paramKey] = '=';
                                 return (
-                                  <Select key={paramKey}>
+                                  <Select
+                                    key={paramKey}
+                                    defaultValue={'='}
+                                    onChange={(e) => {
+                                      formValues[paramKey] = e.target.value;
+                                    }}>
                                     <option value="=">=</option>
                                     <option value="!=">!=</option>
                                     <option value=">">{'>'}</option>
