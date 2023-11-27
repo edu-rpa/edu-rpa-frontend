@@ -28,15 +28,14 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
-import React, { useEffect, useReducer, useState } from 'react';
-import { SingleDatepicker } from 'chakra-dayzed-datepicker';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import SVGIcon from '@/components/Icons/SVGIcon';
 
 import GoogleWorkpaceIcon from '@/assets/svgs/google-workspace.svg';
 import ControlIcon from '@/assets/svgs/control.svg';
 import BrowserAutomationIcon from '@/assets/svgs/browser-automation.svg';
 import DocumentAutomationIcon from '@/assets/svgs/document-automation.svg';
-import DatePicker from '@/components/DatePicker/DatePicker';
+import CustomDatePicker from '@/components/DatePicker/DatePicker';
 interface PropertiesSideBarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -44,7 +43,7 @@ interface PropertiesSideBarProps {
 }
 
 interface FormValues {
-  [key: string]: string;
+  [key: string]: any;
 }
 interface PropertiesProps {
   currentStep: number;
@@ -116,6 +115,7 @@ export default function PropertiesSideBar({
   const processID = params.id as string;
   const [formValues, setFormValues] = useState<FormValues>({});
   const [sideBarState, dispatch] = useReducer(sidebarReducer, initialState);
+  const datePickerRef = useRef(null);
 
   useEffect(() => {
     const getActivityByID = getActivityInProcess(
@@ -192,27 +192,28 @@ export default function PropertiesSideBar({
     return activityArgs;
   };
 
-  const handleInputChange = (key: string, value: string) => {
+  const handleInputChange = (key: string, value: any) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleUpdateProperties = () => {
-    const payload = {
-      activityPackage: sideBarState.packageName,
-      serviceName: sideBarState.serviceName,
-      activityName: sideBarState.activityName,
-      arguments: formValues,
-    };
-    const updatePayload = {
-      ...getActivityInProcess(processID, activityItem.activityID),
-      properties: payload,
-    };
-    const updateProperties = updateActivityInProcess(processID, updatePayload);
-    const updateProcess = updateLocalStorage({
-      ...getProcessFromLocalStorage(processID),
-      activities: updateProperties,
-    });
-    setLocalStorageObject('processList', updateProcess);
+    console.log(formValues);
+    // const payload = {
+    //   activityPackage: sideBarState.packageName,
+    //   serviceName: sideBarState.serviceName,
+    //   activityName: sideBarState.activityName,
+    //   arguments: formValues,
+    // };
+    // const updatePayload = {
+    //   ...getActivityInProcess(processID, activityItem.activityID),
+    //   properties: payload,
+    // };
+    // const updateProperties = updateActivityInProcess(processID, updatePayload);
+    // const updateProcess = updateLocalStorage({
+    //   ...getProcessFromLocalStorage(processID),
+    //   activities: updateProperties,
+    // });
+    // setLocalStorageObject('processList', updateProcess);
   };
 
   return (
@@ -316,9 +317,23 @@ export default function PropertiesSideBar({
                       />
                     );
                   case 'boolean':
-                    return <Switch id={paramKey} />;
+                    formValues[paramKey] = false;
+                    return (
+                      <Switch
+                        onChange={(e) => {
+                          formValues[paramKey] = e.target.checked;
+                        }}
+                        id={paramKey}
+                      />
+                    );
                   case 'date':
-                    return <DatePicker />;
+                    return (
+                      <CustomDatePicker
+                        ref={datePickerRef}
+                        paramKey={paramKey}
+                        handleInputChange={handleInputChange}
+                      />
+                    );
                   case 'email':
                     return (
                       <Input
@@ -340,38 +355,35 @@ export default function PropertiesSideBar({
                       />
                     );
                   case 'connection.Google Drive':
+                    const driveConnection = 'My Google Drive Connection';
+                    formValues[paramKey] = driveConnection;
                     return (
                       <Input
                         type="text"
                         variant="filled"
-                        value={
-                          (formValues[paramKey] as string) ??
-                          'My Google Drive Connection'
-                        }
+                        value={formValues[paramKey] as string}
                         disabled
                       />
                     );
                   case 'connection.Gmail':
+                    const gmailConnection = 'My Gmail Connection';
+                    formValues[paramKey] = gmailConnection;
                     return (
                       <Input
                         type="text"
                         variant="filled"
-                        value={
-                          (formValues[paramKey] as string) ??
-                          'My Gmail Connection'
-                        }
+                        value={formValues[paramKey] as string}
                         disabled
                       />
                     );
                   case 'connection.Google Sheets':
+                    const sheetConnection = 'My Google Sheet Connection';
+                    formValues[paramKey] = sheetConnection;
                     return (
                       <Input
                         type="text"
                         variant="filled"
-                        value={
-                          (formValues[paramKey] as string) ??
-                          'My Google Sheet Connection'
-                        }
+                        value={formValues[paramKey]}
                         disabled
                       />
                     );
@@ -386,15 +398,25 @@ export default function PropertiesSideBar({
                       />
                     );
                   case 'enum.shareType':
+                    formValues[paramKey] = 'user';
                     return (
-                      <Select>
+                      <Select
+                        defaultValue={'user'}
+                        onChange={(e) => {
+                          formValues[paramKey] = e.target.value;
+                        }}>
                         <option value="user">User</option>
                         <option value="all">All</option>
                       </Select>
                     );
                   case 'enum.permission':
+                    formValues[paramKey] = 'reader';
                     return (
-                      <Select>
+                      <Select
+                        defaultValue={'reader'}
+                        onChange={(e) => {
+                          formValues[paramKey] = e.target.value;
+                        }}>
                         <option value="reader">Reader</option>
                         <option value="editor">Editor</option>
                         <option value="commenter">Commenter</option>
@@ -402,8 +424,13 @@ export default function PropertiesSideBar({
                       </Select>
                     );
                   case 'label_ids':
+                    formValues[paramKey] = 'inbox';
                     return (
-                      <Select>
+                      <Select
+                        defaultValue={'inbox'}
+                        onChange={(e) => {
+                          formValues[paramKey] = e.target.value;
+                        }}>
                         <option value="inbox">Inbox</option>
                         <option value="starred">Starred</option>
                         <option value="sent">Sent</option>

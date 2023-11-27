@@ -1,9 +1,40 @@
 import { SingleDatepicker } from 'chakra-dayzed-datepicker';
-import React, { useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef } from 'react';
 
-export default function DatePicker() {
-  const [date, setDate] = useState(new Date());
+type CustomDatePickerRef = {
+  getDate: () => Date;
+  setDate: (newDate: Date) => void;
+};
+
+const CustomDatePicker = React.forwardRef<
+  CustomDatePickerRef,
+  {
+    paramKey: string;
+    handleInputChange: (paramKey: string, newDate: any) => void;
+  }
+>((props, ref) => {
+  const dateRef = useRef(new Date());
+
+  useEffect(() => {
+    dateRef.current = new Date();
+  }, []);
+
+  useImperativeHandle(ref, () => ({
+    getDate: () => dateRef.current,
+    setDate: (newDate: Date) => {
+      dateRef.current = newDate;
+    },
+  }));
+
   return (
-    <SingleDatepicker name="date-input" date={date} onDateChange={setDate} />
+    <SingleDatepicker
+      name={props.paramKey}
+      date={dateRef.current}
+      onDateChange={(newDate) => {
+        dateRef.current = newDate;
+        props.handleInputChange(props.paramKey, newDate);
+      }}
+    />
   );
-}
+});
+export default CustomDatePicker;
