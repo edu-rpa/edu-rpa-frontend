@@ -6,6 +6,7 @@ import {
   updateLocalStorage,
 } from '@/utils/processService';
 import { setLocalStorageObject } from '@/utils/localStorageService';
+import { LocalStorage } from '@/constants/localStorage';
 
 interface ModelerSideBarProps {
   isOpen: boolean;
@@ -37,7 +38,6 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
         processID,
         currentActivity.activityID
       );
-
       if (isActivityExists) {
         props.onOpen();
       } else {
@@ -50,7 +50,7 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
             activities: activityList.slice(1),
           };
           const newLocalStorage = updateLocalStorage(newObj);
-          setLocalStorageObject('processList', newLocalStorage);
+          setLocalStorageObject(LocalStorage.PROCESS_LIST, newLocalStorage);
         };
         await updateModelerAndLocalStorage();
       }

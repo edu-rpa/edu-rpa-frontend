@@ -1,6 +1,7 @@
 import { Process } from '@/types/process';
 import { getLocalStorageObject } from './localStorageService';
 import { Activity } from '@/types/activity';
+import { LocalStorage } from '@/constants/localStorage';
 
 const generateProcessID = () => {
   return (
@@ -50,13 +51,13 @@ const initProcess = (
 };
 
 const getProcessFromLocalStorage = (processID: string) => {
-  return getLocalStorageObject('processList').find(
+  return getLocalStorageObject(LocalStorage.PROCESS_LIST).find(
     (process: Process) => process.processID === processID
   );
 };
 
 const updateLocalStorage = (newObj: Process) => {
-  const oldObj = getLocalStorageObject('processList');
+  const oldObj = getLocalStorageObject(LocalStorage.PROCESS_LIST);
   const res = oldObj.map(
     (obj: Process) => [newObj].find((o) => o.processID === obj.processID) || obj
   );
@@ -74,13 +75,13 @@ const updateActivityInProcess = (processID: string, newObj: Activity) => {
 };
 
 const getIndexByProcessID = (processID: string) => {
-  const currLocalStorage = getLocalStorageObject('processList');
+  const currLocalStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
   return currLocalStorage.findIndex((x: Process) => x.processID === processID);
 };
 
 const replaceLocalStorage = (processID: string, newObj: Process) => {
   const index = getIndexByProcessID(processID);
-  const currLocalStorage = getLocalStorageObject('processList');
+  const currLocalStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
   currLocalStorage[index] = newObj;
   return currLocalStorage;
 };

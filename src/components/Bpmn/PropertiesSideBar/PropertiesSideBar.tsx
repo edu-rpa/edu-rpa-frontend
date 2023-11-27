@@ -1,9 +1,6 @@
 import { ActivityTemplates } from '@/constants/activityPackage';
 import { Activity } from '@/types/activity';
-import {
-  getLocalStorageObject,
-  setLocalStorageObject,
-} from '@/utils/localStorageService';
+import { setLocalStorageObject } from '@/utils/localStorageService';
 import {
   getActivityInProcess,
   getProcessFromLocalStorage,
@@ -13,31 +10,28 @@ import {
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerContent,
   DrawerCloseButton,
   Button,
   Input,
-  InputGroup,
   FormControl,
   FormLabel,
   IconButton,
   Select,
   Switch,
   Tooltip,
-  useToast,
   DrawerOverlay,
 } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useReducer, useRef, useState } from 'react';
 import SVGIcon from '@/components/Icons/SVGIcon';
-
 import GoogleWorkpaceIcon from '@/assets/svgs/google-workspace.svg';
 import ControlIcon from '@/assets/svgs/control.svg';
 import BrowserAutomationIcon from '@/assets/svgs/browser-automation.svg';
 import DocumentAutomationIcon from '@/assets/svgs/document-automation.svg';
-import CustomDatePicker from '@/components/DatePicker/DatePicker';
+import CustomDatePicker from '@/components/CustomDatePicker/ CustomDatePicker';
+import { LocalStorage } from '@/constants/localStorage';
 interface PropertiesSideBarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -113,7 +107,6 @@ export default function PropertiesSideBar({
   activityItem,
 }: PropertiesSideBarProps) {
   const params = useParams();
-  const toast = useToast();
   const processID = params.id as string;
   const [formValues, setFormValues] = useState<FormValues>({});
   const [sideBarState, dispatch] = useReducer(sidebarReducer, initialState);
@@ -134,7 +127,6 @@ export default function PropertiesSideBar({
     } else {
       handleSetPropertyFromLocalStorage(getActivityByID.properties);
       setFormValues(getActivityByID.properties.arguments);
-      console.log('Form Values', formValues);
       setIsExist(true);
     }
   }, [isOpen]);
@@ -203,6 +195,7 @@ export default function PropertiesSideBar({
   };
 
   const handleUpdateProperties = () => {
+    if (sideBarState.currentStep < 4) return;
     const payload = {
       activityPackage: sideBarState.packageName,
       serviceName: sideBarState.serviceName,
@@ -218,19 +211,16 @@ export default function PropertiesSideBar({
       ...getProcessFromLocalStorage(processID),
       activities: updateProperties,
     });
-    setLocalStorageObject('processList', updateProcess);
-    toast({
-      title: `Save properties of ${activityItem.activityID} successfully!`,
-      position: 'top-right',
-      status: 'success',
-      duration: 1000,
-      isClosable: true,
-    });
+    setLocalStorageObject(LocalStorage.PROCESS_LIST, updateProcess);
   };
 
   return (
     <div>
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+      <Drawer
+        isOpen={isOpen}
+        placement="right"
+        onClose={onClose}
+        onCloseComplete={handleUpdateProperties}>
         <DrawerOverlay />
         <DrawerContent w={400} maxW={400}>
           <DrawerCloseButton />
@@ -576,15 +566,6 @@ export default function PropertiesSideBar({
               </Button>
             )}
           </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue" onClick={handleUpdateProperties}>
-              Save
-            </Button>
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </div>

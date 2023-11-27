@@ -16,6 +16,7 @@ import {
 } from '@/utils/processService';
 import { useRouter } from 'next/router';
 import VariablesSideBar from './VariablesSideBar/VariablesSideBar';
+import { LocalStorage } from '@/constants/localStorage';
 
 function CustomModeler() {
   const router = useRouter();
@@ -66,7 +67,10 @@ function CustomModeler() {
             processId,
             newImportStorage
           );
-          setLocalStorageObject('processList', replaceStorageSnapshot);
+          setLocalStorageObject(
+            LocalStorage.PROCESS_LIST,
+            replaceStorageSnapshot
+          );
           setProcessID(processID);
           router.push(`/studio/modeler/${processID}`);
         } catch (err) {
@@ -158,7 +162,7 @@ function CustomModeler() {
         }}>
         Save Properties
       </Button>
-      <VariablesSideBar />
+      <VariablesSideBar processID={processId} />
       <br />
     </div>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Drawer,
   DrawerBody,
@@ -9,11 +9,51 @@ import {
   DrawerCloseButton,
   useDisclosure,
   Button,
-  Input,
 } from '@chakra-ui/react';
+import DynamicVariableTable from '@/components/Bpmn/DynamicVariableTable/DynamicVariableTable';
+import { Variable } from '@/types/variable';
+import {
+  getVariableItemFromLocalStorage,
+  replaceVariableStorage,
+} from '@/utils/variableService';
+import {
+  getLocalStorageObject,
+  setLocalStorageObject,
+} from '@/utils/localStorageService';
+import { LocalStorage } from '@/constants/localStorage';
 
-export default function VariablesSideBar() {
+interface VariablesSideBarProps {
+  processID: string;
+}
+
+export default function VariablesSideBar(props: VariablesSideBarProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const initialStorage = getVariableItemFromLocalStorage(props.processID);
+  const [variableList, setVariableList] = useState<Variable[]>(
+    initialStorage ? initialStorage.variables : []
+  );
+  const handleBlur = () => {
+    const currentVariable = {
+      processID: props.processID,
+      variables: variableList,
+    };
+    if (!initialStorage) {
+      setLocalStorageObject(LocalStorage.VARIABLE_LIST, [
+        ...getLocalStorageObject(LocalStorage.VARIABLE_LIST),
+        currentVariable,
+      ]);
+    } else {
+      const newStorage = replaceVariableStorage(
+        props.processID,
+        currentVariable
+      );
+      setLocalStorageObject(LocalStorage.VARIABLE_LIST, newStorage);
+      setVariableList(
+        getVariableItemFromLocalStorage(props.processID).variables
+      );
+    }
+  };
+
   return (
     <div className="inline-block">
       <Button
@@ -23,22 +63,24 @@ export default function VariablesSideBar() {
         onClick={onOpen}>
         Variable
       </Button>
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+      <Drawer
+        isOpen={isOpen}
+        placement="bottom"
+        onClose={onClose}
+        onCloseComplete={handleBlur}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Create your account</DrawerHeader>
+          <DrawerHeader>Variable List</DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder="Type here..." />
+            <div className="w-full m-auto">
+              <DynamicVariableTable
+                variableList={variableList}
+                setVariableList={setVariableList}
+              />
+            </div>
           </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue">Save</Button>
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </div>

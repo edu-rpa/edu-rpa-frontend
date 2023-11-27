@@ -1,3 +1,5 @@
 export const LocalStorage = {
-  PROFILE: 'PROFILE',
+  PROFILE: 'profile',
+  PROCESS_LIST: 'processList',
+  VARIABLE_LIST: 'variableList',
 };

@@ -38,4 +38,6 @@ const CustomDatePicker = React.forwardRef<
     />
   );
 });
+CustomDatePicker.displayName = 'CustomDatePicker';
+
 export default CustomDatePicker;
