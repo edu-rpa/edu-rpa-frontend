@@ -1,5 +1,6 @@
 import { LocalStorage } from '@/constants/localStorage';
 import { Process } from '@/types/process';
+import { VariableItem } from '@/types/variable';
 import {
   getLocalStorageObject,
   setLocalStorageObject,
@@ -52,8 +53,20 @@ export default function Home() {
     if (!variableStorage) {
       localStorage.setItem(LocalStorage.VARIABLE_LIST, JSON.stringify([]));
     } else {
-      const storage = getLocalStorageObject(LocalStorage.VARIABLE_LIST);
-      console.log('Variable Storage', storage);
+      const processStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
+      const variableStorage = getLocalStorageObject(LocalStorage.VARIABLE_LIST);
+      const processList = processStorage.map((item: Process) => item.processID);
+      const filteredVariableStorage = variableStorage.filter(
+        (variable: VariableItem) => processList.includes(variable.processID)
+      );
+      setLocalStorageObject(
+        LocalStorage.VARIABLE_LIST,
+        filteredVariableStorage
+      );
+      console.log(
+        'Variable storage',
+        getLocalStorageObject(LocalStorage.VARIABLE_LIST)
+      );
     }
   }, []);
 

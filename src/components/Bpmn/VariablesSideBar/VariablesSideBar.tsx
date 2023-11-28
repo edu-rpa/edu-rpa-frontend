@@ -21,6 +21,7 @@ import {
   setLocalStorageObject,
 } from '@/utils/localStorageService';
 import { LocalStorage } from '@/constants/localStorage';
+import { useParams } from 'next/navigation';
 
 interface VariablesSideBarProps {
   processID: string;
@@ -29,9 +30,22 @@ interface VariablesSideBarProps {
 export default function VariablesSideBar(props: VariablesSideBarProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialStorage = getVariableItemFromLocalStorage(props.processID);
+  const params = useParams();
   const [variableList, setVariableList] = useState<Variable[]>(
     initialStorage ? initialStorage.variables : []
   );
+
+  useEffect(() => {
+    const currentVariables = getVariableItemFromLocalStorage(
+      params.id as string
+    );
+    if (currentVariables) {
+      setVariableList(currentVariables.variables);
+    } else {
+      setVariableList([]);
+    }
+  }, [params.id]);
+
   const handleBlur = () => {
     const currentVariable = {
       processID: props.processID,
