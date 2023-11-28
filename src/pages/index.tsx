@@ -85,6 +85,7 @@ export default function Home() {
             className="ml-[10px]"
             onClick={() => {
               localStorage.removeItem(LocalStorage.PROCESS_LIST);
+              localStorage.removeItem(LocalStorage.VARIABLE_LIST);
               router.reload();
             }}>
             Clear All

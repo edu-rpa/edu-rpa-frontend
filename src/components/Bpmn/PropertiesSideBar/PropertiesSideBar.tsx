@@ -32,6 +32,10 @@ import BrowserAutomationIcon from '@/assets/svgs/browser-automation.svg';
 import DocumentAutomationIcon from '@/assets/svgs/document-automation.svg';
 import CustomDatePicker from '@/components/CustomDatePicker/ CustomDatePicker';
 import { LocalStorage } from '@/constants/localStorage';
+import { ArgumentProps, PropertiesProps } from '@/types/property';
+import { getVariableItemFromLocalStorage } from '@/utils/variableService';
+import { Variable } from '@/utils/bpmn-parser/visitor/robot';
+import TextAutoComplete from '@/components/AutoComplete/TextAutoComplete';
 interface PropertiesSideBarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -40,18 +44,6 @@ interface PropertiesSideBarProps {
 
 interface FormValues {
   [key: string]: any;
-}
-interface PropertiesProps {
-  currentStep: number;
-  packageName: string;
-  serviceName: string;
-  activityName: string;
-}
-interface ArgumentProps {
-  type: string;
-  description: string;
-  keywordArg?: string;
-  value?: any;
 }
 
 enum SideBarAction {
@@ -112,6 +104,9 @@ export default function PropertiesSideBar({
   const [sideBarState, dispatch] = useReducer(sidebarReducer, initialState);
   const [isExist, setIsExist] = useState(false);
   const datePickerRef = useRef(null);
+  const variableStorage = getVariableItemFromLocalStorage(
+    processID
+  ).variables.map((variable: Variable) => variable.name);
 
   useEffect(() => {
     const getActivityByID = getActivityInProcess(
@@ -314,12 +309,13 @@ export default function PropertiesSideBar({
                 switch (paramValue.type) {
                   case 'string':
                     return (
-                      <Input
+                      <TextAutoComplete
                         type="text"
                         value={formValues[paramKey] ?? ''}
-                        onChange={(e) =>
-                          handleInputChange(paramKey, e.target.value)
-                        }
+                        onChange={(newValue: string) => {
+                          handleInputChange(paramKey, newValue);
+                        }}
+                        recommendedWords={variableStorage}
                       />
                     );
                   case 'boolean':
@@ -345,12 +341,13 @@ export default function PropertiesSideBar({
                     );
                   case 'email':
                     return (
-                      <Input
+                      <TextAutoComplete
                         type="email"
                         value={formValues[paramKey] ?? ''}
-                        onChange={(e) =>
-                          handleInputChange(paramKey, e.target.value)
-                        }
+                        onChange={(newValue: string) => {
+                          handleInputChange(paramKey, newValue);
+                        }}
+                        recommendedWords={variableStorage}
                       />
                     );
                   case 'number':
