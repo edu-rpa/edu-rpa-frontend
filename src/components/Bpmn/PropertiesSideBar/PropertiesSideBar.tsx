@@ -101,12 +101,14 @@ export default function PropertiesSideBar({
   const params = useParams();
   const processID = params.id as string;
   const [formValues, setFormValues] = useState<FormValues>({});
+  const [saveResult, setSaveResult] = useState<string | null>(null);
   const [sideBarState, dispatch] = useReducer(sidebarReducer, initialState);
   const [isExist, setIsExist] = useState(false);
   const datePickerRef = useRef(null);
-  const variableStorage = getVariableItemFromLocalStorage(
-    processID
-  ).variables.map((variable: Variable) => variable.name);
+  const currentVariableStorage = getVariableItemFromLocalStorage(processID);
+  const variableStorage = currentVariableStorage?.variables.map(
+    (variable: Variable) => variable.name
+  );
 
   useEffect(() => {
     const getActivityByID = getActivityInProcess(
@@ -118,10 +120,12 @@ export default function PropertiesSideBar({
     if (isEmptyProperty == 0) {
       handleSetDefault();
       setFormValues({});
+      setSaveResult(null);
       setIsExist(false);
     } else {
       handleSetPropertyFromLocalStorage(getActivityByID.properties);
       setFormValues(getActivityByID.properties.arguments);
+      setSaveResult(getActivityByID.properties.returnVariable);
       setIsExist(true);
     }
   }, [isOpen]);
@@ -196,6 +200,7 @@ export default function PropertiesSideBar({
       serviceName: sideBarState.serviceName,
       activityName: sideBarState.activityName,
       arguments: formValues,
+      returnVariable: saveResult,
     };
     const updatePayload = {
       ...getActivityInProcess(processID, activityItem.activityID),
@@ -514,6 +519,7 @@ export default function PropertiesSideBar({
                   activityName
                 );
                 const activityProperty = activityInfo?.[0]?.arguments;
+                const returnType = activityInfo?.[0]?.return;
                 return (
                   <div>
                     {activityProperty &&
@@ -538,9 +544,32 @@ export default function PropertiesSideBar({
                               </Tooltip>
                             );
                           }
-                          return null; // Handle null or invalid values
+                          return null;
                         }
                       )}
+                    {returnType && (
+                      <Tooltip
+                        label={returnType.description}
+                        key={returnType.displayName}>
+                        <FormControl>
+                          <FormLabel>Result Variable</FormLabel>
+                          <Select
+                            defaultValue={saveResult || ''}
+                            onChange={(e) => {
+                              setSaveResult(e.target.value);
+                            }}>
+                            <option value="" disabled>
+                              Choose Variable
+                            </option>
+                            {variableStorage.map((variable: Variable) => (
+                              <option value={'${' + variable.toString() + '}$'}>
+                                {'${' + variable.toString() + '}$'}
+                              </option>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Tooltip>
+                    )}
                   </div>
                 );
               };
