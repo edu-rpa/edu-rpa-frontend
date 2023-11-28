@@ -29,6 +29,7 @@
     "bpmn-js-properties-panel": "^0.37.5",
     "camunda-bpmn-moddle": "^4.4.1",
     "chakra-dayzed-datepicker": "^0.2.10",
+    "chakra-ui-autocomplete": "^1.4.5",
     "chakra-ui-steps": "^2.1.0",
     "date-fns": "^2.30.0",
     "dayzed": "^3.2.3",
