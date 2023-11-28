@@ -6,13 +6,13 @@ import {
   updateLocalStorage,
 } from '@/utils/processService';
 import { setLocalStorageObject } from '@/utils/localStorageService';
+import { LocalStorage } from '@/constants/localStorage';
 
 interface ModelerSideBarProps {
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
   modeler: any;
-  setIsEdit: any;
 }
 
 export default function ModelerSideBar(props: ModelerSideBarProps) {
@@ -24,7 +24,7 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
   });
 
   React.useEffect(() => {
-    props.modeler.on('selection.changed', async (event: any) => {
+    props.modeler.bpmnModeler.on('selection.changed', async (event: any) => {
       if (!event.newSelection[0]) return;
       const eventInfo = event.newSelection[0].businessObject;
       const processID = eventInfo.$parent.id;
@@ -34,25 +34,25 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
         activityType: eventInfo.$type,
         properties: {},
       };
-      const currentProcess = getProcessFromLocalStorage(processID);
-
       const isActivityExists = getActivityInProcess(
         processID,
         currentActivity.activityID
       );
-      if (!isActivityExists) {
-        const newUpdateStorage = {
-          ...currentProcess,
-          activities: [...currentProcess.activities, currentActivity],
-        };
-        setLocalStorageObject(
-          'processList',
-          updateLocalStorage(newUpdateStorage)
-        );
-        props.setIsEdit(true);
-      } else {
+      if (isActivityExists) {
         props.onOpen();
-        props.setIsEdit(false);
+      } else {
+        const updateModelerAndLocalStorage = async () => {
+          const xml = await props.modeler.saveXML();
+          const activityList = props.modeler.getElementList();
+          const newObj = {
+            ...getProcessFromLocalStorage(processID),
+            xml: xml.xml,
+            activities: activityList.slice(1),
+          };
+          const newLocalStorage = updateLocalStorage(newObj);
+          setLocalStorageObject(LocalStorage.PROCESS_LIST, newLocalStorage);
+        };
+        await updateModelerAndLocalStorage();
       }
       setActivityItem(currentActivity);
     });

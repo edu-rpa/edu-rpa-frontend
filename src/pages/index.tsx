@@ -1,4 +1,6 @@
+import { LocalStorage } from '@/constants/localStorage';
 import { Process } from '@/types/process';
+import { VariableItem } from '@/types/variable';
 import {
   getLocalStorageObject,
   setLocalStorageObject,
@@ -36,13 +38,35 @@ export default function Home() {
   //   profile ?? router.push('/auth/login');
   // }, []);
   useEffect(() => {
-    const currentStorage = localStorage.getItem('processList');
+    const currentStorage = localStorage.getItem(LocalStorage.PROCESS_LIST);
     if (!currentStorage) {
-      localStorage.setItem('processList', JSON.stringify([]));
+      localStorage.setItem(LocalStorage.PROCESS_LIST, JSON.stringify([]));
     } else {
-      const storage = getLocalStorageObject('processList');
-      console.log('Home Storage', storage);
+      const storage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
+      console.log('Process Storage', storage);
       setCurrentStorage(storage);
+    }
+  }, []);
+
+  useEffect(() => {
+    const variableStorage = localStorage.getItem(LocalStorage.VARIABLE_LIST);
+    if (!variableStorage) {
+      localStorage.setItem(LocalStorage.VARIABLE_LIST, JSON.stringify([]));
+    } else {
+      const processStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
+      const variableStorage = getLocalStorageObject(LocalStorage.VARIABLE_LIST);
+      const processList = processStorage.map((item: Process) => item.processID);
+      const filteredVariableStorage = variableStorage.filter(
+        (variable: VariableItem) => processList.includes(variable.processID)
+      );
+      setLocalStorageObject(
+        LocalStorage.VARIABLE_LIST,
+        filteredVariableStorage
+      );
+      console.log(
+        'Variable storage',
+        getLocalStorageObject(LocalStorage.VARIABLE_LIST)
+      );
     }
   }, []);
 
@@ -54,7 +78,10 @@ export default function Home() {
       xml,
       initialRef.current?.value as string
     );
-    setLocalStorageObject('processList', [...currentStorage, initialProcess]);
+    setLocalStorageObject(LocalStorage.PROCESS_LIST, [
+      ...currentStorage,
+      initialProcess,
+    ]);
     router.push(`/studio/modeler/${processID}`);
   };
 
@@ -70,7 +97,8 @@ export default function Home() {
             colorScheme="blue"
             className="ml-[10px]"
             onClick={() => {
-              localStorage.removeItem('processList');
+              localStorage.removeItem(LocalStorage.PROCESS_LIST);
+              localStorage.removeItem(LocalStorage.VARIABLE_LIST);
               router.reload();
             }}>
             Clear All

@@ -1,9 +1,5 @@
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 
-/**
- * @description Removes unsupported BPMN artifacts from the modeler
- * @category Frontend
- */
 const removeUnsupportedBpmnFunctions = () => {
   const { getPaletteEntries } = PaletteProvider.prototype;
   PaletteProvider.prototype.getPaletteEntries = function () {
@@ -36,7 +32,6 @@ const removeUnsupportedBpmnFunctions = () => {
       };
     }
   }
-
   return CustomContextPadProvider;
 };
 

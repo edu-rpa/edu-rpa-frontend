@@ -9,46 +9,24 @@ import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
 import { saveAs } from 'file-saver';
 import { useToast } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
-import {
-  getLocalStorageObject,
-  setLocalStorageObject,
-} from '@/utils/localStorageService';
+import { setLocalStorageObject } from '@/utils/localStorageService';
 import {
   getProcessFromLocalStorage,
   replaceLocalStorage,
-  updateLocalStorage,
 } from '@/utils/processService';
 import { useRouter } from 'next/router';
+import VariablesSideBar from './VariablesSideBar/VariablesSideBar';
+import { LocalStorage } from '@/constants/localStorage';
 
 function CustomModeler() {
   const router = useRouter();
   const ref = useRef<BpmnJsReactHandle>(null);
   const params = useParams();
   const bpmnReactJs = useBpmn();
-  const [isEdit, setIsEdit] = useState(false);
   const [processId, setProcessID] = useState(params.id as string);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!isEdit) return;
-    const updateModeler = async () => {
-      const data = await bpmnReactJs.saveXML();
-      return data.xml;
-    };
-    bpmnReactJs.bpmnModeler &&
-      updateModeler().then((xml) => {
-        const activityList = bpmnReactJs.getElementList();
-        const newObj = {
-          ...getProcessFromLocalStorage(processId),
-          xml: xml,
-          activities: activityList.slice(1),
-        };
-        const newLocalStorage = updateLocalStorage(newObj);
-        setLocalStorageObject('processList', newLocalStorage);
-      });
-  }, [isEdit]);
 
   const exportFile = (content: string, fileName: string) => {
     var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -89,7 +67,10 @@ function CustomModeler() {
             processId,
             newImportStorage
           );
-          setLocalStorageObject('processList', replaceStorageSnapshot);
+          setLocalStorageObject(
+            LocalStorage.PROCESS_LIST,
+            replaceStorageSnapshot
+          );
           setProcessID(processID);
           router.push(`/studio/modeler/${processID}`);
         } catch (err) {
@@ -116,8 +97,7 @@ function CustomModeler() {
           isOpen={isOpen}
           onClose={onClose}
           onOpen={onOpen}
-          modeler={bpmnReactJs.bpmnModeler}
-          setIsEdit={setIsEdit}
+          modeler={bpmnReactJs}
         />
       )}
       <input
@@ -182,6 +162,7 @@ function CustomModeler() {
         }}>
         Save Properties
       </Button>
+      <VariablesSideBar processID={processId} />
       <br />
     </div>
   );
