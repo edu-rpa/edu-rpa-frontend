@@ -91,7 +91,7 @@ export class If extends BodyItem {
 
 export class For extends BodyItem {
     constructor(
-        public assisgn: Variable[],
+        public variables: Variable[],
         public flavor: "IN" | "IN RANGE",
         public values: Variable[],
         public body: BodyItem[],
@@ -104,7 +104,8 @@ export class For extends BodyItem {
 
     toJSON() {
         return {
-            assisgn: this.assisgn,
+            type: "FOR",
+            variables: this.variables,
             flavor: this.flavor,
             values: this.values.map(v => v.toJSON()),
             body: this.body.map(item => item.toJSON()),

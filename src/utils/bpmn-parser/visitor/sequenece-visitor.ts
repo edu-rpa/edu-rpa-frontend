@@ -1,10 +1,11 @@
 import { BpmnParseError, BpmnParseErrorCode } from "../error";
 import { BpmnNode, BpmnTask } from "../model/bpmn";
 import { Arguments, Properties } from "../model/properties.model";
-import { Branch, IfBranchBlock, Sequence, SequenceItem } from "./BasicBlock";
+import { BlankBlock, Branch, IfBranchBlock, Sequence, SequenceItem } from "./BasicBlock";
 import {
   Argument,
   BodyItem,
+  For,
   If,
   IfBranch,
   Keyword,
@@ -58,13 +59,16 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
         BpmnParseErrorCode["Missing Property"],
         activityID
       );
+    if(property.activityPackage === "Control") {
+      throw new BpmnParseError(BpmnParseErrorCode["Invalid Property"], activityID)
+    }
     const args = property.arguments;
     const assigns = property.assigns;
     const Lib = property.library;
     let keywordAssigns = [] as Variable[];
     let keywordArg = [] as Argument[];
-    if(!property.activityName) {
-      throw new BpmnParseError("Activity name must be specified", node.id)
+    if (!property.activityName) {
+      throw new BpmnParseError("Activity name must be specified", node.id);
     }
     if (args) {
       keywordArg = Object.keys(args).map(
@@ -82,41 +86,66 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
 
   visitSequence(node: Sequence, params: any[]) {
     let body = [] as BodyItem[];
-    for(let item of node.block) {
+    for (let item of node.block) {
       body = body.concat(this.visit(item, params));
     }
-    return body
+    return body;
   }
 
   visitBranch(node: Branch, params: any[]) {
-    let ifBranch : IfBranch[] = [];
-    for(let branch of node.branches) {
-      let branchCode : IfBranch = this.visit(branch, params);
-      ifBranch.push(branchCode)
+    let ifBranch: IfBranch[] = [];
+    for (let branch of node.branches) {
+      let branchCode: IfBranch = this.visit(branch, params);
+      ifBranch.push(branchCode);
     }
     let haveElse = false;
-    for(let i = 0; i < ifBranch.length; i++) {
-      if(i == 0) {
-        ifBranch[i].type = "IF"
-      }else {
-        if(ifBranch[i].condition.length)
-          ifBranch[i].type = "ELSE IF"
-        else if(ifBranch[i].condition.length) {
-          if(!haveElse) {
-            ifBranch[i].type = "ELSE" 
-            haveElse = true
-          }else {
+    for (let i = 0; i < ifBranch.length; i++) {
+      if (i == 0) {
+        ifBranch[i].type = "IF";
+      } else {
+        if (ifBranch[i].condition.length) ifBranch[i].type = "ELSE IF";
+        else if (ifBranch[i].condition.length) {
+          if (!haveElse) {
+            ifBranch[i].type = "ELSE";
+            haveElse = true;
+          } else {
             // throw new BpmnParseError(BpmnParseErrorCode["Have 2 else branch - missing condition"], node.join || "")
-          } 
+          }
         }
       }
     }
-    return [new If(ifBranch)]
+    return [new If(ifBranch)];
   }
 
   visitIfBranchBlock(node: IfBranchBlock, params: any[]) {
-    let body : BodyItem[] = this.visit(node.sequence, params)
-    let condition = "" // Get condition from properties
-    return new IfBranch("IF",condition, body)
+    let body: BodyItem[] = this.visit(node.sequence, params);
+    let condition = ""; // Get condition from properties
+    return new IfBranch("IF", condition, body);
+  }
+
+  visitBlankBlock(node: BlankBlock, params: any[]) {
+    let activityID = node.bpmnId
+    let property = this.properties.get(activityID)?.properties;
+    if (!property) {
+      let body = [] as BodyItem[];
+      for (let item of node.block) {
+        body = body.concat(this.visit(item, params));
+      }
+      return body;
+    }else {
+      if(property.activityPackage !== "Control") {
+        throw new BpmnParseError(BpmnParseErrorCode["Invalid Property"], activityID)
+      }
+      let args = property.arguments
+      let List = args.List
+      let Item = args.Item
+
+      let body = [] as BodyItem[];
+      for (let item of node.block) {
+        body = body.concat(this.visit(item, params));
+      }
+
+      return new For([new Variable(Item)], "IN", [new Variable(List)], body);
+    }
   }
 }

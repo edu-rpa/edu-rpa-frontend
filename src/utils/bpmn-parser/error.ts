@@ -5,6 +5,7 @@ export class BpmnParseError extends Error {
 }
 
 export enum BpmnParseErrorCode {
+  "Invalid Property" = "Invalid Property",
   "Have 2 else branch - missing condition" = "Have 2 else branch - missing condition",
   "Activity name must be specified" = "Activity name must be specified",
   "Missing Property" = "Missing Property",

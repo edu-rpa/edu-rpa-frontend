@@ -13,13 +13,17 @@
       "properties": {
         "activityPackage": "Google Workspace",
         "serviceName": "Google Drive",
-        "activityName": "Upload files",
+        "activityName": "Create Folder",
+        
         "library": "RPA.CLoud.Google",
+
         "arguments": {
           "Connection": "Hahaha",
           "Files": "david",
           "Destination Folder Path": "root"
-        }
+        },
+
+        "assigns": ["${folder}"]
       }
     },
     {
@@ -39,7 +43,6 @@
         "activityPackage": "Google Workspace",
         "serviceName": "Gmail",
         "activityName": "Send email",
-        
         "arguments": {
           "Connection": "a",
           "Share With": "me",
