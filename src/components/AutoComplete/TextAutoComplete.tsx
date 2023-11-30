@@ -30,32 +30,34 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
         onFocus={() => setIsDropdownOpen(true)}
         placeholder="Type or select variables"
       />
-      {isDropdownOpen && props.recommendedWords.length > 0 && (
-        <Box
-          position="absolute"
-          top="100%"
-          left={0}
-          right={0}
-          bg="white"
-          boxShadow="lg"
-          borderRadius="4px"
-          border="1px solid #E2E8F0"
-          zIndex={1}>
-          {props.recommendedWords.map((word) => (
-            <Text
-              key={word}
-              onClick={() => handleSelectWord(word)}
-              p={2}
-              _hover={{ bg: 'gray.100' }}
-              cursor="pointer"
-              fontSize="md"
-              fontWeight="normal"
-              color="black">
-              {word}
-            </Text>
-          ))}
-        </Box>
-      )}
+      {isDropdownOpen &&
+        props.recommendedWords &&
+        props.recommendedWords.length > 0 && (
+          <Box
+            position="absolute"
+            top="100%"
+            left={0}
+            right={0}
+            bg="white"
+            boxShadow="lg"
+            borderRadius="4px"
+            border="1px solid #E2E8F0"
+            zIndex={1}>
+            {props.recommendedWords.map((word) => (
+              <Text
+                key={word}
+                onClick={() => handleSelectWord(word)}
+                p={2}
+                _hover={{ bg: 'gray.100' }}
+                cursor="pointer"
+                fontSize="md"
+                fontWeight="normal"
+                color="black">
+                {word}
+              </Text>
+            ))}
+          </Box>
+        )}
     </Box>
   );
 };

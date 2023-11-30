@@ -561,11 +561,13 @@ export default function PropertiesSideBar({
                             <option value="" disabled>
                               Choose Variable
                             </option>
-                            {variableStorage.map((variable: Variable) => (
-                              <option value={'${' + variable.toString() + '}$'}>
-                                {'${' + variable.toString() + '}$'}
-                              </option>
-                            ))}
+                            {variableStorage &&
+                              variableStorage.map((variable: Variable) => (
+                                <option
+                                  value={'${' + variable.toString() + '}$'}>
+                                  {'${' + variable.toString() + '}$'}
+                                </option>
+                              ))}
                           </Select>
                         </FormControl>
                       </Tooltip>
