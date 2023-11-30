@@ -38,9 +38,7 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
         processID,
         currentActivity.activityID
       );
-      if (isActivityExists) {
-        props.onOpen();
-      } else {
+      if (!isActivityExists) {
         const updateModelerAndLocalStorage = async () => {
           const xml = await props.modeler.saveXML();
           const activityList = props.modeler.getElementList();
@@ -55,6 +53,9 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
         await updateModelerAndLocalStorage();
       }
       setActivityItem(currentActivity);
+    });
+    props.modeler.bpmnModeler.on('element.dblclick', async (event: any) => {
+      props.onOpen();
     });
   }, [activityItem]);
 
