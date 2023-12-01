@@ -3,7 +3,6 @@ import {
   Avatar,
   Box,
   Flex,
-  FlexProps,
   HStack,
   IconButton,
   Menu,
@@ -19,27 +18,21 @@ import Image from 'next/image';
 import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import Logo from '@/assets/images/logo.png';
+import { setLogout } from '@/redux/slice/homeSlice';
 
-interface MobileProps extends FlexProps {
-  onOpen: () => void;
-}
-
-const MobileNav = ({ onOpen, ...props }: MobileProps) => {
+const Navbar = () => {
   const dispatch = useDispatch();
   return (
     <Flex
       px={{ base: 4, md: 4 }}
       height="20"
       pos="fixed"
-      left={0}
-      top={0}
       width="100vw"
       alignItems="center"
       bg={useColorModeValue('white', 'gray.900')}
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
-      justifyContent="space-between"
-      {...props}>
+      justifyContent="space-between">
       <Box className="flex justify-between items-center">
         <IconButton
           aria-label="Toggle Sidebar"
@@ -96,9 +89,10 @@ const MobileNav = ({ onOpen, ...props }: MobileProps) => {
               borderColor={useColorModeValue('gray.200', 'gray.700')}>
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
               <MenuDivider />
-              <MenuItem>Sign out</MenuItem>
+              <MenuItem onClick={() => dispatch(setLogout())}>
+                Sign out
+              </MenuItem>
             </MenuList>
           </Menu>
         </Flex>
@@ -107,4 +101,4 @@ const MobileNav = ({ onOpen, ...props }: MobileProps) => {
   );
 };
 
-export default MobileNav;
+export default Navbar;

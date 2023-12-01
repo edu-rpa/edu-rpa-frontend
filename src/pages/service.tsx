@@ -4,7 +4,9 @@ import React from 'react';
 export default function Test() {
   return (
     <div>
-      <Sidebar />
+      <Sidebar>
+        <h1>Service</h1>
+      </Sidebar>
     </div>
   );
 }

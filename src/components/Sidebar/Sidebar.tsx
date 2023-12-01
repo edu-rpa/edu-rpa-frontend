@@ -6,37 +6,37 @@ import {
   useDisclosure,
   Button,
 } from '@chakra-ui/react';
-import Image from 'next/image';
+
 import { FaHome, FaRobot } from 'react-icons/fa';
 import { RiFlowChart } from 'react-icons/ri';
 import { IoIosRocket } from 'react-icons/io';
 import { FaFile } from 'react-icons/fa6';
-import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import MobileNav from './MobileNav/MobileNav';
+import Navbar from '../Header/Navbar';
 import SidebarList from './SidebarList';
+import { useSelector } from 'react-redux';
+import { homeSelector } from '@/redux/selector';
 
 const sidebarItems = [
   { path: '/home', name: 'Home', icon: FaHome },
-  { path: '/studio-2', name: 'Studio', icon: RiFlowChart },
+  { path: '/studio', name: 'Studio', icon: RiFlowChart },
   { path: '/robot', name: 'Robot', icon: FaRobot },
   { path: '/service', name: 'Integration Service', icon: IoIosRocket },
   { path: '/storage', name: 'Storage', icon: FaFile },
 ];
 
-const Sidebar = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+interface Props {
+  children?: React.ReactNode;
+}
+
+const Sidebar = ({ children }: Props) => {
+  const { isOpen, onClose } = useDisclosure();
   const pathName = usePathname();
+  const { isHiddenSidebar } = useSelector(homeSelector);
+  const leftAlignStyle = isHiddenSidebar ? 'left-[120px]' : 'left-[350px]';
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
-      <Box>
-        <SidebarList
-          data={sidebarItems}
-          path={pathName}
-          onClose={onClose}
-          className="hidden md:block"
-        />
-      </Box>
+      <SidebarList data={sidebarItems} path={pathName} onClose={onClose} />
       <Drawer
         isOpen={isOpen}
         placement="left"
@@ -48,8 +48,15 @@ const Sidebar = () => {
           <SidebarList data={sidebarItems} path={pathName} onClose={onClose} />
         </DrawerContent>
       </Drawer>
-      <MobileNav onOpen={onOpen} />
-      <h1>Hello</h1>
+      <Navbar />
+      <Box
+        style={{ transitionProperty: 'left' }}
+        className={
+          'fixed top-[100px] transition-left duration-500 ease-in-out ' +
+          leftAlignStyle
+        }>
+        {children}
+      </Box>
     </Box>
   );
 };

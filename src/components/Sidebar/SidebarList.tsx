@@ -3,7 +3,6 @@ import {
   BoxProps,
   CloseButton,
   Flex,
-  IconButton,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
@@ -20,7 +19,7 @@ interface LinkProps {
 }
 
 interface SidebarListProps extends BoxProps {
-  data: any;
+  data: LinkProps[];
   path: string;
   onClose: () => void;
 }
@@ -36,16 +35,17 @@ const SidebarList = ({ onClose, data, path, ...props }: SidebarListProps) => {
       bg="white"
       borderRight="1px"
       pos="fixed"
+      top={{ base: 0, md: 20 }}
       transition="width 0.5s ease"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: sideBarWidth }}
       style={{ height: '100vh' }}
       {...props}>
-      <Flex alignItems="center" justifyContent="center" className="my-[20px]">
+      <Flex alignItems="center" justifyContent="center">
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      <Box className="mt-[10vh]">
-        {data.map((link: any) => {
+      <Box>
+        {data.map((link: LinkProps) => {
           const activeStyle =
             link.path == path ? 'bg-[#4FD1C5] text-white' : '';
           return (
