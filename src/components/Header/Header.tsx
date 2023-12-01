@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import React from 'react';
-import logo from '@/assets/images/logo.png';
+import Logo from '@/assets/images/logo.png';
 import { Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
@@ -10,7 +10,7 @@ export default function Header() {
     <div className="bg-[#fff] w-full shadow-header fixed top-0 left-0 z-10">
       <div className="w-11/12 m-auto py-[20px] flex justify-between">
         <Image
-          src={logo}
+          src={Logo}
           width={150}
           height={150}
           alt="Logo"

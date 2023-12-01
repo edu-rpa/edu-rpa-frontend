@@ -9,7 +9,7 @@ interface Props {
 function Layout({ children }: Props) {
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       {children}
       <Footer />
     </div>
