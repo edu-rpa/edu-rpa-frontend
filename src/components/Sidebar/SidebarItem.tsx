@@ -17,7 +17,7 @@ const SidebarItem = ({ icon, children, ...props }: NavItemProps) => {
         rounded="lg"
         cursor="pointer"
         _hover={{
-          opacity: 0.7,
+          opacity: 0.8,
         }}
         {...props}>
         {icon && (

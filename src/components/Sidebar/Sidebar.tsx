@@ -34,8 +34,13 @@ const Sidebar = ({ children }: Props) => {
   const pathName = usePathname();
   const { isHiddenSidebar } = useSelector(homeSelector);
   const leftAlignStyle = isHiddenSidebar ? 'left-[120px]' : 'left-[300px]';
+
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+    <Box
+      minH="100vh"
+      bg={useColorModeValue('gray.100', 'gray.900')}
+      display="flex">
+      {/* Sidebar */}
       <SidebarList data={sidebarItems} path={pathName} onClose={onClose} />
       <Drawer
         isOpen={isOpen}
@@ -48,14 +53,17 @@ const Sidebar = ({ children }: Props) => {
           <SidebarList data={sidebarItems} path={pathName} onClose={onClose} />
         </DrawerContent>
       </Drawer>
-      <Navbar />
-      <Box
-        style={{ transitionProperty: 'left' }}
-        className={
-          'fixed top-[130px] transition-left duration-500 ease-in-out ' +
-          leftAlignStyle
-        }>
-        {children}
+
+      <Box flex="1" overflowY="auto" overflowX="hidden">
+        <Navbar />
+        <Box
+          style={{ transitionProperty: 'left' }}
+          className={
+            'relative top-[130px] transition-left duration-500 ease-in-out ' +
+            leftAlignStyle
+          }>
+          {children}
+        </Box>
       </Box>
     </Box>
   );

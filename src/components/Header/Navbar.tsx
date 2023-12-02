@@ -42,7 +42,7 @@ const Navbar = () => {
       <Box className="flex justify-between items-center">
         <IconButton
           aria-label="Toggle Sidebar"
-          icon={<FiMenu fontSize="20" color="#4FD1C5" />}
+          icon={<FiMenu fontSize="20" color="#319795" />}
           variant="outline"
           onClick={() => dispatch(toggleSidebar())}
         />
