@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initState = {
-  isLogin: false,
+  isLoggedIn: false,
   isHiddenSidebar: false,
 };
 
@@ -13,10 +13,10 @@ const homeSlice = createSlice({
       state.isHiddenSidebar = !state.isHiddenSidebar;
     },
     setLogin: (state) => {
-      state.isLogin = true;
+      state.isLoggedIn = true;
     },
     setLogout: (state) => {
-      state.isLogin = false;
+      state.isLoggedIn = false;
     },
   },
 });

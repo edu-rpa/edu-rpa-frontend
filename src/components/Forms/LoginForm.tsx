@@ -163,6 +163,7 @@ export default function LoginForm() {
           variant="outline"
           onClick={() => {
             setAuthToken();
+            router.push('/home');
           }}
           leftIcon={<SVGIcon svgComponent={GoogleIcon} />}>
           Sign in with Google

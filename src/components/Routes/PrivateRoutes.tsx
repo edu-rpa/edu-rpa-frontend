@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useAuth from '@/hooks/useAuth';
 
@@ -8,14 +8,12 @@ interface Props {
 
 const PrivateRoute = ({ children }: Props) => {
   const router = useRouter();
-  const { isLoggedIn } = useAuth();
-
   useEffect(() => {
-    if (!isLoggedIn) {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
       router.push('/auth/login');
     }
-  }, [isLoggedIn]);
-
+  }, []);
   return children;
 };
 

@@ -22,7 +22,7 @@ type AppPropsWithLayout = AppProps & {
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
   const queryClient = new QueryClient();
-  const getLayout = () => {
+  const useGetLayout = () => {
     const router = useRouter();
     const path = router.pathname;
     const sidebarRoutes = [
@@ -41,7 +41,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
     }
   };
 
-  const Layout = getLayout();
+  const Layout = useGetLayout();
 
   return (
     <Provider store={store}>

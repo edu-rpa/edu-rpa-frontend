@@ -564,8 +564,9 @@ export default function PropertiesSideBar({
                             {variableStorage &&
                               variableStorage.map((variable: Variable) => (
                                 <option
+                                  key={variable.toString()}
                                   value={'${' + variable.toString() + '}$'}>
-                                  {'${' + variable.toString() + '}$'}
+                                  {'${' + variable.toString() + '}'}
                                 </option>
                               ))}
                           </Select>
