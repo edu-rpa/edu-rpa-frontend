@@ -1,12 +1,10 @@
 import Sidebar from '@/components/Sidebar/Sidebar';
 import React from 'react';
 
-export default function Home() {
+export default function Test() {
   return (
     <div>
-      <Sidebar>
-        <h1>Home</h1>
-      </Sidebar>
+      <h1>Storage</h1>
     </div>
   );
 }

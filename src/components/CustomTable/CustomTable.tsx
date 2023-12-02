@@ -27,10 +27,10 @@ const CustomTable = () => {
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th>ID</Th>
-            <Th>Name</Th>
-            <Th isNumeric>Quantity</Th>
-            <Th>Description</Th>
+            <Th>Process ID</Th>
+            <Th>Process Name</Th>
+            <Th>Owner</Th>
+            <Th>Last Modified</Th>
             <Th>Actions</Th>
           </Tr>
         </Thead>

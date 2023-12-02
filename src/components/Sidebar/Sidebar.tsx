@@ -33,7 +33,7 @@ const Sidebar = ({ children }: Props) => {
   const { isOpen, onClose } = useDisclosure();
   const pathName = usePathname();
   const { isHiddenSidebar } = useSelector(homeSelector);
-  const leftAlignStyle = isHiddenSidebar ? 'left-[120px]' : 'left-[350px]';
+  const leftAlignStyle = isHiddenSidebar ? 'left-[120px]' : 'left-[300px]';
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarList data={sidebarItems} path={pathName} onClose={onClose} />
@@ -52,7 +52,7 @@ const Sidebar = ({ children }: Props) => {
       <Box
         style={{ transitionProperty: 'left' }}
         className={
-          'fixed top-[100px] transition-left duration-500 ease-in-out ' +
+          'fixed top-[130px] transition-left duration-500 ease-in-out ' +
           leftAlignStyle
         }>
         {children}

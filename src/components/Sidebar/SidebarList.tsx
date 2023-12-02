@@ -27,7 +27,7 @@ interface SidebarListProps extends BoxProps {
 const SidebarList = ({ onClose, data, path, ...props }: SidebarListProps) => {
   const router = useRouter();
   const { isHiddenSidebar } = useSelector(homeSelector);
-  const MAX_WIDTH = 300;
+  const MAX_WIDTH = 250;
   const MIN_WIDTH = 81;
   const sideBarWidth = !isHiddenSidebar ? MAX_WIDTH : MIN_WIDTH;
   return (
@@ -54,7 +54,7 @@ const SidebarList = ({ onClose, data, path, ...props }: SidebarListProps) => {
               icon={link.icon}
               onClick={() => router.push(link.path)}
               className={activeStyle}>
-              {sideBarWidth >= 300 && (
+              {sideBarWidth === 250 && (
                 <p className="text-[14px] ">{link.name}</p>
               )}
             </SidebarItem>

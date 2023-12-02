@@ -16,17 +16,23 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
-import { useDispatch } from 'react-redux';
 import Logo from '@/assets/images/logo.png';
-import { setLogout } from '@/redux/slice/homeSlice';
+import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
+import useAuth from '@/hooks/useAuth';
 
 const Navbar = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
+  const { removeAuthToken } = useAuth();
   return (
     <Flex
       px={{ base: 4, md: 4 }}
       height="20"
       pos="fixed"
+      top="0"
+      left="0"
+      style={{ zIndex: 1000 }}
       width="100vw"
       alignItems="center"
       bg={useColorModeValue('white', 'gray.900')}
@@ -58,10 +64,7 @@ const Navbar = () => {
         />
         <Flex alignItems="center">
           <Menu>
-            <MenuButton
-              py={2}
-              transition="all 0.3s"
-              _focus={{ boxShadow: 'none' }}>
+            <MenuButton py={2} transition="all 0.3s">
               <HStack>
                 <Avatar
                   size="sm"
@@ -90,7 +93,11 @@ const Navbar = () => {
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
               <MenuDivider />
-              <MenuItem onClick={() => dispatch(setLogout())}>
+              <MenuItem
+                onClick={() => {
+                  router.push('/auth/login');
+                  removeAuthToken();
+                }}>
                 Sign out
               </MenuItem>
             </MenuList>
