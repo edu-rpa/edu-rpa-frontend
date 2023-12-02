@@ -29,6 +29,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       '/home',
       '/studio',
       '/robot',
+      '/profile',
       '/service',
       '/storage',
     ];
