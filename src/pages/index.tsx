@@ -33,10 +33,7 @@ export default function Home() {
   const initialRef = useRef<HTMLInputElement>(null);
   const finalRef = useRef<HTMLInputElement>(null);
   const [currentStorage, setCurrentStorage] = useState<Process[]>([]);
-  // useEffect(() => {
-  //   const profile = localStorageService.getProfile();
-  //   profile ?? router.push('/auth/login');
-  // }, []);
+
   useEffect(() => {
     const currentStorage = localStorage.getItem(LocalStorage.PROCESS_LIST);
     if (!currentStorage) {

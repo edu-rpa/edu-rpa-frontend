@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Step,
@@ -10,7 +10,6 @@ import {
   StepStatus,
   StepTitle,
   Stepper,
-  useSteps,
 } from '@chakra-ui/react';
 import { ProgressBarProps } from '@/types/step';
 

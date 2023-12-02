@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
+const initState = {
   name: '',
   email: '',
   password: '',
@@ -8,7 +8,7 @@ const initialState = {
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: initialState,
+  initialState: initState,
   reducers: {
     updateInfo: (state, action) => {
       return {
@@ -17,7 +17,7 @@ const authSlice = createSlice({
       };
     },
     removeInfo: (state) => {
-      return initialState;
+      return initState;
     },
   },
 });
