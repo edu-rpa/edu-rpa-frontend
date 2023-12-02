@@ -18,14 +18,15 @@ import {
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import TemplateCard from '@/components/TemplateCard/TemplateCard';
+import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
 
 export default function Studio() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
   const finalRef = useRef<HTMLInputElement>(null);
   return (
-    <div>
-      <div className="bg-white w-[75vw] rounded-[15px] py-[30px]">
+    <div className="mb-[200px]">
+      <SidebarContent>
         <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
           Process List
         </h1>
@@ -77,8 +78,8 @@ export default function Studio() {
         <div className="w-90 m-auto">
           <CustomTable />
         </div>
-      </div>
-      <div className="bg-white w-[75vw] rounded-[15px] py-[30px] mt-[30px]">
+      </SidebarContent>
+      <SidebarContent>
         <h1 className="px-[20px] ml-[30px] font-bold text-2xl text-[#319795]">
           Select from our templates
         </h1>
@@ -88,7 +89,7 @@ export default function Studio() {
           <TemplateCard />
           <TemplateCard />
         </div>
-      </div>
+      </SidebarContent>
     </div>
   );
 }
