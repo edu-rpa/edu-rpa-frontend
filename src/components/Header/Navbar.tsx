@@ -90,7 +90,9 @@ const Navbar = () => {
             <MenuList
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}>
-              <MenuItem>Profile</MenuItem>
+              <MenuItem onClick={() => router.push('/profile')}>
+                Profile
+              </MenuItem>
               <MenuItem>Settings</MenuItem>
               <MenuDivider />
               <MenuItem
