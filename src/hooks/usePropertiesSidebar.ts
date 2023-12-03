@@ -22,7 +22,13 @@ const propertiesBarReducer = (state: any, action: any) => {
     case 'SET_DEFAULT':
       return { ...initialState };
     case 'SET_PROPERTY':
-      return { ...state, ...action.payload };
+      return {
+        ...state,
+        currentStep: 4,
+        packageName: action.payload?.activityPackage,
+        serviceName: action.payload?.serviceName,
+        activityName: action.payload?.activityName,
+      };
     default:
       return state;
   }
@@ -46,7 +52,7 @@ export const usePropertiesSidebar = () => {
     dispatch({ type: 'SET_ACTIVITY', payload: activityName });
   };
 
-  const goBack = () => {
+  const setBack = () => {
     dispatch({ type: 'SET_BACK' });
   };
 
@@ -54,7 +60,7 @@ export const usePropertiesSidebar = () => {
     dispatch({ type: 'SET_DEFAULT' });
   };
 
-  const setPropertyFromLocalStorage = (activityInfo: Activity) => {
+  const setProperty = (activityInfo: Activity) => {
     dispatch({ type: 'SET_PROPERTY', payload: activityInfo });
   };
 
@@ -77,8 +83,8 @@ export const usePropertiesSidebar = () => {
     setPackage,
     setService,
     setActivity,
-    goBack,
+    setBack,
     setDefault,
-    setPropertyFromLocalStorage,
+    setProperty,
   };
 };
