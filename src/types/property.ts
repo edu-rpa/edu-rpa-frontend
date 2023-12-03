@@ -7,6 +7,6 @@ export interface PropertiesProps {
 export interface ArgumentProps {
   type: string;
   description: string;
-  keywordArg?: string;
+  keywordArg?: string | null;
   value?: any;
 }

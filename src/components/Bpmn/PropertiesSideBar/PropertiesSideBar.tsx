@@ -36,17 +36,28 @@ import { ArgumentProps, PropertiesProps } from '@/types/property';
 import { getVariableItemFromLocalStorage } from '@/utils/variableService';
 import { Variable } from '@/utils/bpmn-parser/visitor/robot';
 import TextAutoComplete from '@/components/AutoComplete/TextAutoComplete';
+import {
+  getActivityByService,
+  getArgumentsByActivity,
+  getDistinctService,
+  getLibrary,
+} from '@/utils/propertyService';
 interface PropertiesSideBarProps {
   isOpen: boolean;
   onClose: () => void;
   activityItem: Activity;
 }
 
-interface FormValues {
-  [key: string]: any;
+interface FormProperties {
+  keywordArg: string | null;
+  value: any;
 }
 
-enum SideBarAction {
+interface FormValues {
+  [key: string]: FormProperties;
+}
+
+enum ProperiesBar {
   SET_DEFAULT = 'SET_DEFAULT',
   SET_PROPERTY = 'SET_PROPERTY',
   SET_PACKAGE = 'SET_PACKAGE',
@@ -62,25 +73,25 @@ const initialState: PropertiesProps = {
   activityName: '',
 };
 
-const sidebarReducer = (state: any, action: any) => {
+const propertiesBarReducer = (state: any, action: any) => {
   switch (action.type) {
-    case SideBarAction.SET_PACKAGE:
+    case ProperiesBar.SET_PACKAGE:
       return { ...state, currentStep: 2, packageName: action.payload };
-    case SideBarAction.SET_SERVICE:
+    case ProperiesBar.SET_SERVICE:
       return { ...state, currentStep: 3, serviceName: action.payload };
-    case SideBarAction.SET_ACTIVITY:
+    case ProperiesBar.SET_ACTIVITY:
       return { ...state, currentStep: 4, activityName: action.payload };
-    case SideBarAction.SET_BACK:
+    case ProperiesBar.SET_BACK:
       return {
         ...state,
         currentStep: Math.max(1, state.currentStep - 1),
       };
-    case SideBarAction.SET_DEFAULT:
+    case ProperiesBar.SET_DEFAULT:
       return {
         ...state,
         currentStep: 1,
       };
-    case SideBarAction.SET_PROPERTY:
+    case ProperiesBar.SET_PROPERTY:
       return {
         ...state,
         currentStep: 4,
@@ -102,7 +113,10 @@ export default function PropertiesSideBar({
   const processID = params.id as string;
   const [formValues, setFormValues] = useState<FormValues>({});
   const [saveResult, setSaveResult] = useState<string | null>(null);
-  const [sideBarState, dispatch] = useReducer(sidebarReducer, initialState);
+  const [sideBarState, dispatch] = useReducer(
+    propertiesBarReducer,
+    initialState
+  );
   const [isExist, setIsExist] = useState(false);
   const datePickerRef = useRef(null);
   const currentVariableStorage = getVariableItemFromLocalStorage(processID);
@@ -131,28 +145,28 @@ export default function PropertiesSideBar({
   }, [isOpen]);
 
   const handleSelectPackage = (packageName: string) => {
-    dispatch({ type: SideBarAction.SET_PACKAGE, payload: packageName });
+    dispatch({ type: ProperiesBar.SET_PACKAGE, payload: packageName });
   };
 
   const handleSelectService = (serviceName: string) => {
-    dispatch({ type: SideBarAction.SET_SERVICE, payload: serviceName });
+    dispatch({ type: ProperiesBar.SET_SERVICE, payload: serviceName });
   };
 
   const handleSelectActivity = (activityName: string) => {
-    dispatch({ type: SideBarAction.SET_ACTIVITY, payload: activityName });
+    dispatch({ type: ProperiesBar.SET_ACTIVITY, payload: activityName });
   };
 
   const handleGoBack = () => {
-    dispatch({ type: SideBarAction.SET_BACK });
+    dispatch({ type: ProperiesBar.SET_BACK });
     setFormValues({});
   };
 
   const handleSetDefault = () => {
-    dispatch({ type: SideBarAction.SET_DEFAULT });
+    dispatch({ type: ProperiesBar.SET_DEFAULT });
   };
 
   const handleSetPropertyFromLocalStorage = (activityInfo: Activity) => {
-    dispatch({ type: SideBarAction.SET_PROPERTY, payload: activityInfo });
+    dispatch({ type: ProperiesBar.SET_PROPERTY, payload: activityInfo });
   };
 
   const getTitleStep = (currentStep: number) => {
@@ -168,29 +182,11 @@ export default function PropertiesSideBar({
     }
   };
 
-  const getDistinctService = (data: any) => {
-    const services = data
-      .map((template: any) => template.service)
-      .filter(
-        (value: any, index: any, self: any) => self.indexOf(value) === index
-      );
-    return services;
-  };
-
-  const getActivityByService = (data: any, service: string) => {
-    const activityLists = data.filter((item: any) => item.service === service);
-    return activityLists;
-  };
-
-  const getArgumentsByActivity = (data: any, activityName: string) => {
-    const activityArgs = data.filter(
-      (item: any) => item.displayName === activityName
-    );
-    return activityArgs;
-  };
-
   const handleInputChange = (key: string, value: any) => {
-    setFormValues((prev) => ({ ...prev, [key]: value }));
+    setFormValues((prev) => ({
+      ...prev,
+      [key]: { ...prev[key], value: value },
+    }));
   };
 
   const handleUpdateProperties = () => {
@@ -199,6 +195,7 @@ export default function PropertiesSideBar({
       activityPackage: sideBarState.packageName,
       serviceName: sideBarState.serviceName,
       activityName: sideBarState.activityName,
+      library: getLibrary(sideBarState.packageName),
       arguments: formValues,
       return: saveResult,
     };
@@ -287,6 +284,18 @@ export default function PropertiesSideBar({
                 );
               };
 
+              const setDefaultValue = (
+                paramKey: string,
+                paramValue: ArgumentProps,
+                value: any
+              ) => {
+                return {
+                  ...formValues[paramKey],
+                  keywordArg: paramValue.keywordArg || null,
+                  value: value,
+                };
+              };
+
               const renderStepThree = () => {
                 const activities = getActivityByService(
                   activityTemplates,
@@ -313,10 +322,17 @@ export default function PropertiesSideBar({
               ) => {
                 switch (paramValue.type) {
                   case 'string':
+                    if (!isExist) {
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        ''
+                      );
+                    }
                     return (
                       <TextAutoComplete
                         type="text"
-                        value={formValues[paramKey] ?? ''}
+                        value={formValues[paramKey].value}
                         onChange={(newValue: string) => {
                           handleInputChange(paramKey, newValue);
                         }}
@@ -324,31 +340,50 @@ export default function PropertiesSideBar({
                       />
                     );
                   case 'boolean':
-                    if (!isExist) formValues[paramKey] = false;
+                    if (!isExist) {
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        false
+                      );
+                    }
                     return (
                       <Switch
-                        defaultChecked={formValues[paramKey]}
+                        defaultChecked={formValues[paramKey].value}
                         onChange={(e) => {
-                          formValues[paramKey] = e.target.checked;
+                          formValues[paramKey].value = e.target.checked;
                         }}
                         id={paramKey}
                       />
                     );
                   case 'date':
-                    if (!isExist) formValues[paramKey] = new Date();
+                    if (!isExist) {
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        new Date()
+                      );
+                    }
                     return (
                       <CustomDatePicker
                         ref={datePickerRef}
-                        defaultValue={new Date(formValues[paramKey])}
+                        defaultValue={new Date(formValues[paramKey].value)}
                         paramKey={paramKey}
                         handleInputChange={handleInputChange}
                       />
                     );
                   case 'email':
+                    if (!isExist) {
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        ''
+                      );
+                    }
                     return (
                       <TextAutoComplete
                         type="email"
-                        value={formValues[paramKey] ?? ''}
+                        value={formValues[paramKey].value}
                         onChange={(newValue: string) => {
                           handleInputChange(paramKey, newValue);
                         }}
@@ -356,10 +391,17 @@ export default function PropertiesSideBar({
                       />
                     );
                   case 'number':
+                    if (!isExist) {
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        ''
+                      );
+                    }
                     return (
                       <Input
                         type="number"
-                        value={formValues[paramKey] ?? ''}
+                        value={formValues[paramKey].value}
                         onChange={(e) =>
                           handleInputChange(paramKey, e.target.value)
                         }
@@ -368,47 +410,66 @@ export default function PropertiesSideBar({
                   case 'connection.Google Drive':
                     if (!isExist) {
                       const driveConnection = 'My Google Drive Connection';
-                      formValues[paramKey] = driveConnection;
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        driveConnection
+                      );
                     }
                     return (
                       <Input
                         type="text"
                         variant="filled"
-                        value={formValues[paramKey]}
+                        value={formValues[paramKey].value}
                         disabled
                       />
                     );
                   case 'connection.Gmail':
                     if (!isExist) {
                       const gmailConnection = 'My Gmail Connection';
-                      formValues[paramKey] = gmailConnection;
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        gmailConnection
+                      );
                     }
                     return (
                       <Input
                         type="text"
                         variant="filled"
-                        value={formValues[paramKey]}
+                        value={formValues[paramKey].value}
                         disabled
                       />
                     );
                   case 'connection.Google Sheets':
                     if (!isExist) {
                       const sheetConnection = 'My Google Sheet Connection';
-                      formValues[paramKey] = sheetConnection;
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        sheetConnection
+                      );
                     }
                     return (
                       <Input
                         type="text"
                         variant="filled"
-                        value={formValues[paramKey]}
+                        value={formValues[paramKey].value}
                         disabled
                       />
                     );
                   case 'list':
+                    if (!isExist) {
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        ''
+                      );
+                    }
                     return (
                       <Input
                         type="text"
-                        value={formValues[paramKey] ?? ''}
+                        value={formValues[paramKey].value}
                         onChange={(e) =>
                           handleInputChange(paramKey, e.target.value)
                         }
@@ -416,13 +477,17 @@ export default function PropertiesSideBar({
                     );
                   case 'enum.shareType':
                     if (!isExist) {
-                      formValues[paramKey] = 'user';
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        'user'
+                      );
                     }
                     return (
                       <Select
-                        defaultValue={formValues[paramKey]}
+                        defaultValue={formValues[paramKey].value}
                         onChange={(e) => {
-                          formValues[paramKey] = e.target.value;
+                          formValues[paramKey].value = e.target.value;
                         }}>
                         <option value="user">User</option>
                         <option value="all">All</option>
@@ -430,13 +495,17 @@ export default function PropertiesSideBar({
                     );
                   case 'enum.permission':
                     if (!isExist) {
-                      formValues[paramKey] = 'reader';
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        'reader'
+                      );
                     }
                     return (
                       <Select
-                        defaultValue={formValues[paramKey]}
+                        defaultValue={formValues[paramKey].value}
                         onChange={(e) => {
-                          formValues[paramKey] = e.target.value;
+                          formValues[paramKey].value = e.target.value;
                         }}>
                         <option value="reader">Reader</option>
                         <option value="editor">Editor</option>
@@ -446,13 +515,17 @@ export default function PropertiesSideBar({
                     );
                   case 'label_ids':
                     if (!isExist) {
-                      formValues[paramKey] = 'inbox';
+                      formValues[paramKey] = setDefaultValue(
+                        paramKey,
+                        paramValue,
+                        'inbox'
+                      );
                     }
                     return (
                       <Select
-                        defaultValue={formValues[paramKey]}
+                        defaultValue={formValues[paramKey].value}
                         onChange={(e) => {
-                          formValues[paramKey] = e.target.value;
+                          formValues[paramKey].value = e.target.value;
                         }}>
                         <option value="inbox">Inbox</option>
                         <option value="starred">Starred</option>
@@ -477,7 +550,7 @@ export default function PropertiesSideBar({
                                 <Input
                                   key={paramKey}
                                   type="text"
-                                  value={formValues[paramKey] ?? ''}
+                                  value={formValues[paramKey].value ?? ''}
                                   onChange={(e) =>
                                     handleInputChange(paramKey, e.target.value)
                                   }
@@ -488,13 +561,14 @@ export default function PropertiesSideBar({
                                 typeof paramValue === 'object' &&
                                 'description' in paramValue
                               ) {
-                                if (!isExist) formValues[paramKey] = '=';
+                                if (!isExist) formValues[paramKey].value = '=';
                                 return (
                                   <Select
                                     key={paramKey}
-                                    defaultValue={formValues[paramKey]}
+                                    defaultValue={formValues[paramKey].value}
                                     onChange={(e) => {
-                                      formValues[paramKey] = e.target.value;
+                                      formValues[paramKey].value =
+                                        e.target.value;
                                     }}>
                                     <option value="=">=</option>
                                     <option value="!=">!=</option>
