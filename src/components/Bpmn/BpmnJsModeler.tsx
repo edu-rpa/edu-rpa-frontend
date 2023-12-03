@@ -30,7 +30,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
 > = (
   {
     useBpmnJsReact,
-    height = 600,
+    height = '80vh',
     onError = () => {},
     onShown = () => {},
   }: BpmnJsReactProps,

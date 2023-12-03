@@ -125,7 +125,7 @@ export default function PropertiesSideBar({
     } else {
       handleSetPropertyFromLocalStorage(getActivityByID.properties);
       setFormValues(getActivityByID.properties.arguments);
-      setSaveResult(getActivityByID.properties.returnVariable);
+      setSaveResult(getActivityByID.properties.return);
       setIsExist(true);
     }
   }, [isOpen]);
@@ -200,7 +200,7 @@ export default function PropertiesSideBar({
       serviceName: sideBarState.serviceName,
       activityName: sideBarState.activityName,
       arguments: formValues,
-      returnVariable: saveResult,
+      return: saveResult,
     };
     const updatePayload = {
       ...getActivityInProcess(processID, activityItem.activityID),

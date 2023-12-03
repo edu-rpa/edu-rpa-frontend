@@ -2,11 +2,9 @@ import { useBpmn } from '@/hooks/useBpmn';
 import { BpmnJsReactHandle } from '@/interfaces/bpmnJsReact.interface';
 import { useEffect, useRef, useState } from 'react';
 import BpmnJsReact from './BpmnJsReact';
-import { Button, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, IconButton, useDisclosure } from '@chakra-ui/react';
 import ModelerSideBar from './ModelerSidebar';
 import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
-//@ts-ignore
-import { saveAs } from 'file-saver';
 import { useToast } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
 import { setLocalStorageObject } from '@/utils/localStorageService';
@@ -17,6 +15,8 @@ import {
 import { useRouter } from 'next/router';
 import VariablesSideBar from './VariablesSideBar/VariablesSideBar';
 import { LocalStorage } from '@/constants/localStorage';
+import { ChevronLeftIcon } from '@chakra-ui/icons';
+import { exportFile, stringifyCyclicObject } from '@/utils/common';
 
 function CustomModeler() {
   const router = useRouter();
@@ -27,24 +27,6 @@ function CustomModeler() {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef<HTMLInputElement>(null);
-
-  const exportFile = (content: string, fileName: string) => {
-    var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, fileName);
-  };
-
-  const stringifyCyclicObject = (content: any) => {
-    const seen: any = [];
-    return JSON.stringify(content, function (key, val) {
-      if (val != null && typeof val == 'object') {
-        if (seen.indexOf(val) >= 0) {
-          return;
-        }
-        seen.push(val);
-      }
-      return val;
-    });
-  };
 
   const handleImportBPMN = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
@@ -89,8 +71,25 @@ function CustomModeler() {
   };
 
   return (
-    <div className="mt-[120px]">
-      <h1 className="text-primary font-bold text-2xl mx-[20px]">{processId}</h1>
+    <div className="mt-[20px]">
+      <Box className="flex justify-between items-center mx-[10px]">
+        <Box className="flex justify-between items-center">
+          <IconButton
+            colorScheme="teal"
+            aria-label="Prev to home"
+            variant="outline"
+            isRound={true}
+            size="lg"
+            onClick={() => router.push('/studio')}
+            icon={<ChevronLeftIcon />}
+          />
+          <h1 className="text-primary font-bold text-2xl mx-[20px]">
+            {processId}
+          </h1>
+        </Box>
+        <Box></Box>
+      </Box>
+
       <BpmnJsReact mode="edit" useBpmnJsReact={bpmnReactJs} ref={ref} />
       {bpmnReactJs.bpmnModeler && (
         <ModelerSideBar
