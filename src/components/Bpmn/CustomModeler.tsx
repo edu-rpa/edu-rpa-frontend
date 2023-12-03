@@ -1,8 +1,14 @@
 import { useBpmn } from '@/hooks/useBpmn';
 import { BpmnJsReactHandle } from '@/interfaces/bpmnJsReact.interface';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import BpmnJsReact from './BpmnJsReact';
-import { Box, Button, IconButton, useDisclosure } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  useDisclosure,
+} from '@chakra-ui/react';
 import ModelerSideBar from './ModelerSidebar';
 import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
 import { useToast } from '@chakra-ui/react';
@@ -17,6 +23,9 @@ import VariablesSideBar from './VariablesSideBar/VariablesSideBar';
 import { LocalStorage } from '@/constants/localStorage';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { exportFile, stringifyCyclicObject } from '@/utils/common';
+import { FaPlay } from 'react-icons/fa';
+import { MdPublish } from 'react-icons/md';
+import { IoMdShare } from 'react-icons/io';
 
 function CustomModeler() {
   const router = useRouter();
@@ -72,7 +81,7 @@ function CustomModeler() {
 
   return (
     <div className="mt-[20px]">
-      <Box className="flex justify-between items-center mx-[10px]">
+      <Box className="flex justify-between items-center mx-[25px]">
         <Box className="flex justify-between items-center">
           <IconButton
             colorScheme="teal"
@@ -87,7 +96,17 @@ function CustomModeler() {
             {processId}
           </h1>
         </Box>
-        <Box></Box>
+        <Stack direction="row" spacing={4}>
+          <Button leftIcon={<FaPlay />} colorScheme="teal" variant="solid">
+            Run
+          </Button>
+          <Button leftIcon={<MdPublish />} colorScheme="orange" variant="solid">
+            Publish
+          </Button>
+          <Button leftIcon={<IoMdShare />} colorScheme="blue" variant="solid">
+            Share
+          </Button>
+        </Stack>
       </Box>
 
       <BpmnJsReact mode="edit" useBpmnJsReact={bpmnReactJs} ref={ref} />
@@ -120,6 +139,7 @@ function CustomModeler() {
         }}>
         Import XML
       </Button>
+
       <Button
         colorScheme="teal"
         size="md"

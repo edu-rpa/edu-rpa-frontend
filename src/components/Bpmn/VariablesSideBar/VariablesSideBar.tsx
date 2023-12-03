@@ -75,7 +75,7 @@ export default function VariablesSideBar(props: VariablesSideBarProps) {
         size="md"
         className="mx-[5px]"
         onClick={onOpen}>
-        Variable
+        Set Variable
       </Button>
       <Drawer
         isOpen={isOpen}
