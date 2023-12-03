@@ -1,4 +1,3 @@
-// usePropertiesSidebarState.js or usePropertiesSidebarState.ts if using TypeScript
 import { Activity } from '@/types/activity';
 import { useReducer } from 'react';
 
