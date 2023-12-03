@@ -36,62 +36,27 @@ import { ArgumentProps, PropertiesProps } from '@/types/property';
 import { getVariableItemFromLocalStorage } from '@/utils/variableService';
 import { Variable } from '@/utils/bpmn-parser/visitor/robot';
 import TextAutoComplete from '@/components/AutoComplete/TextAutoComplete';
+import {
+  getActivityByService,
+  getArgumentsByActivity,
+  getDistinctService,
+  getLibrary,
+} from '@/utils/propertyService';
+import { usePropertiesSidebar } from '@/hooks/usePropertiesSidebar';
 interface PropertiesSideBarProps {
   isOpen: boolean;
   onClose: () => void;
   activityItem: Activity;
 }
 
+interface FormProperties {
+  keywordArg: string | null;
+  value: any;
+}
+
 interface FormValues {
-  [key: string]: any;
+  [key: string]: FormProperties;
 }
-
-enum SideBarAction {
-  SET_DEFAULT = 'SET_DEFAULT',
-  SET_PROPERTY = 'SET_PROPERTY',
-  SET_PACKAGE = 'SET_PACKAGE',
-  SET_SERVICE = 'SET_SERVICE',
-  SET_ACTIVITY = 'SET_ACTIVITY',
-  SET_BACK = 'SET_BACK',
-}
-
-const initialState: PropertiesProps = {
-  currentStep: 1,
-  packageName: '',
-  serviceName: '',
-  activityName: '',
-};
-
-const sidebarReducer = (state: any, action: any) => {
-  switch (action.type) {
-    case SideBarAction.SET_PACKAGE:
-      return { ...state, currentStep: 2, packageName: action.payload };
-    case SideBarAction.SET_SERVICE:
-      return { ...state, currentStep: 3, serviceName: action.payload };
-    case SideBarAction.SET_ACTIVITY:
-      return { ...state, currentStep: 4, activityName: action.payload };
-    case SideBarAction.SET_BACK:
-      return {
-        ...state,
-        currentStep: Math.max(1, state.currentStep - 1),
-      };
-    case SideBarAction.SET_DEFAULT:
-      return {
-        ...state,
-        currentStep: 1,
-      };
-    case SideBarAction.SET_PROPERTY:
-      return {
-        ...state,
-        currentStep: 4,
-        packageName: action.payload?.activityPackage,
-        serviceName: action.payload?.serviceName,
-        activityName: action.payload?.activityName,
-      };
-    default:
-      return state;
-  }
-};
 
 export default function PropertiesSideBar({
   isOpen,
@@ -99,10 +64,19 @@ export default function PropertiesSideBar({
   activityItem,
 }: PropertiesSideBarProps) {
   const params = useParams();
+  const {
+    sideBarState,
+    setPackage,
+    setService,
+    getTitleStep,
+    setActivity,
+    setBack,
+    setDefault,
+    setProperty,
+  } = usePropertiesSidebar();
   const processID = params.id as string;
   const [formValues, setFormValues] = useState<FormValues>({});
   const [saveResult, setSaveResult] = useState<string | null>(null);
-  const [sideBarState, dispatch] = useReducer(sidebarReducer, initialState);
   const [isExist, setIsExist] = useState(false);
   const datePickerRef = useRef(null);
   const currentVariableStorage = getVariableItemFromLocalStorage(processID);
@@ -118,79 +92,28 @@ export default function PropertiesSideBar({
     if (!getActivityByID) return;
     const isEmptyProperty = Object.keys(getActivityByID.properties).length;
     if (isEmptyProperty == 0) {
-      handleSetDefault();
+      setDefault();
       setFormValues({});
       setSaveResult(null);
       setIsExist(false);
     } else {
-      handleSetPropertyFromLocalStorage(getActivityByID.properties);
+      setProperty(getActivityByID.properties);
       setFormValues(getActivityByID.properties.arguments);
-      setSaveResult(getActivityByID.properties.returnVariable);
+      setSaveResult(getActivityByID.properties.return);
       setIsExist(true);
     }
   }, [isOpen]);
 
-  const handleSelectPackage = (packageName: string) => {
-    dispatch({ type: SideBarAction.SET_PACKAGE, payload: packageName });
-  };
-
-  const handleSelectService = (serviceName: string) => {
-    dispatch({ type: SideBarAction.SET_SERVICE, payload: serviceName });
-  };
-
-  const handleSelectActivity = (activityName: string) => {
-    dispatch({ type: SideBarAction.SET_ACTIVITY, payload: activityName });
-  };
-
   const handleGoBack = () => {
-    dispatch({ type: SideBarAction.SET_BACK });
+    setBack();
     setFormValues({});
   };
 
-  const handleSetDefault = () => {
-    dispatch({ type: SideBarAction.SET_DEFAULT });
-  };
-
-  const handleSetPropertyFromLocalStorage = (activityInfo: Activity) => {
-    dispatch({ type: SideBarAction.SET_PROPERTY, payload: activityInfo });
-  };
-
-  const getTitleStep = (currentStep: number) => {
-    switch (currentStep) {
-      case 1:
-        return 'Select Activity Package';
-      case 2:
-        return sideBarState.packageName;
-      case 3:
-        return sideBarState.serviceName;
-      case 4:
-        return sideBarState.activityName;
-    }
-  };
-
-  const getDistinctService = (data: any) => {
-    const services = data
-      .map((template: any) => template.service)
-      .filter(
-        (value: any, index: any, self: any) => self.indexOf(value) === index
-      );
-    return services;
-  };
-
-  const getActivityByService = (data: any, service: string) => {
-    const activityLists = data.filter((item: any) => item.service === service);
-    return activityLists;
-  };
-
-  const getArgumentsByActivity = (data: any, activityName: string) => {
-    const activityArgs = data.filter(
-      (item: any) => item.displayName === activityName
-    );
-    return activityArgs;
-  };
-
   const handleInputChange = (key: string, value: any) => {
-    setFormValues((prev) => ({ ...prev, [key]: value }));
+    setFormValues((prev) => ({
+      ...prev,
+      [key]: { ...prev[key], value: value },
+    }));
   };
 
   const handleUpdateProperties = () => {
@@ -199,8 +122,9 @@ export default function PropertiesSideBar({
       activityPackage: sideBarState.packageName,
       serviceName: sideBarState.serviceName,
       activityName: sideBarState.activityName,
+      library: getLibrary(sideBarState.packageName),
       arguments: formValues,
-      returnVariable: saveResult,
+      return: saveResult,
     };
     const updatePayload = {
       ...getActivityInProcess(processID, activityItem.activityID),
@@ -258,7 +182,7 @@ export default function PropertiesSideBar({
                       variant="outline"
                       aria-label="Call Segun"
                       style={{ width: 100, height: 100 }}
-                      onClick={() => handleSelectPackage(displayName)}
+                      onClick={() => setPackage(displayName)}
                       icon={
                         <SVGIcon
                           width="100%"
@@ -279,12 +203,24 @@ export default function PropertiesSideBar({
                     <div key={service}>
                       <Button
                         className="my-[10px]"
-                        onClick={() => handleSelectService(service)}>
+                        onClick={() => setService(service)}>
                         {service}
                       </Button>
                     </div>
                   ))
                 );
+              };
+
+              const setDefaultValue = (
+                paramKey: string,
+                paramValue: ArgumentProps,
+                value: any
+              ) => {
+                return {
+                  ...formValues[paramKey],
+                  keywordArg: paramValue.keywordArg || null,
+                  value: value,
+                };
               };
 
               const renderStepThree = () => {
@@ -297,9 +233,7 @@ export default function PropertiesSideBar({
                     <Tooltip label={activity.description}>
                       <Button
                         className="my-[10px]"
-                        onClick={() =>
-                          handleSelectActivity(activity.displayName)
-                        }>
+                        onClick={() => setActivity(activity.displayName)}>
                         {activity.displayName}
                       </Button>
                     </Tooltip>
@@ -307,209 +241,215 @@ export default function PropertiesSideBar({
                 ));
               };
 
+              const initDefaultValue = (type: string) => {
+                const defaultValues: Record<string, any> = {
+                  string: '',
+                  email: '',
+                  list: '',
+                  boolean: false,
+                  date: new Date(),
+                  number: '',
+                  'connection.Google Drive': 'My Google Drive Connection',
+                  'connection.Gmail': 'My Gmail Connection',
+                  'connection.Google Sheets': 'My Google Sheet Connection',
+                  'enum.shareType': 'user',
+                  'enum.permission': 'reader',
+                  label_ids: 'inbox',
+                  'expression.logic': '=',
+                };
+
+                return defaultValues[type] ?? null;
+              };
+
+              type OptionType = { value: string; label: string };
+
+              const renderInput = (
+                paramKey: string,
+                type: string,
+                additionalProps: Record<string, unknown> = {}
+              ) => (
+                <Input
+                  type={type}
+                  value={formValues[paramKey]?.value ?? ''}
+                  onChange={(e) => handleInputChange(paramKey, e.target.value)}
+                  {...additionalProps}
+                />
+              );
+
+              const renderSelect = (
+                paramKey: string,
+                options: OptionType[]
+              ) => (
+                <Select
+                  defaultValue={formValues[paramKey]?.value ?? options[0].value}
+                  onChange={(e) => handleInputChange(paramKey, e.target.value)}>
+                  {options.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </Select>
+              );
+
               const renderProperty = (
                 paramKey: string,
                 paramValue: ArgumentProps
               ) => {
+                if (!formValues[paramKey]) {
+                  formValues[paramKey] = setDefaultValue(
+                    paramKey,
+                    paramValue,
+                    initDefaultValue(paramValue.type)
+                  );
+                }
+
                 switch (paramValue.type) {
                   case 'string':
+                  case 'email':
                     return (
                       <TextAutoComplete
                         type="text"
-                        value={formValues[paramKey] ?? ''}
-                        onChange={(newValue: string) => {
-                          handleInputChange(paramKey, newValue);
-                        }}
+                        value={formValues[paramKey]?.value ?? ''}
+                        onChange={(newValue: string) =>
+                          handleInputChange(paramKey, newValue)
+                        }
                         recommendedWords={variableStorage}
                       />
                     );
                   case 'boolean':
-                    if (!isExist) formValues[paramKey] = false;
                     return (
                       <Switch
-                        defaultChecked={formValues[paramKey]}
+                        defaultChecked={formValues[paramKey]?.value}
+                        colorScheme="teal"
                         onChange={(e) => {
-                          formValues[paramKey] = e.target.checked;
+                          formValues[paramKey].value = e.target.checked;
                         }}
                         id={paramKey}
                       />
                     );
                   case 'date':
-                    if (!isExist) formValues[paramKey] = new Date();
                     return (
                       <CustomDatePicker
                         ref={datePickerRef}
-                        defaultValue={new Date(formValues[paramKey])}
+                        defaultValue={new Date(formValues[paramKey]?.value)}
                         paramKey={paramKey}
                         handleInputChange={handleInputChange}
                       />
                     );
-                  case 'email':
-                    return (
-                      <TextAutoComplete
-                        type="email"
-                        value={formValues[paramKey] ?? ''}
-                        onChange={(newValue: string) => {
-                          handleInputChange(paramKey, newValue);
-                        }}
-                        recommendedWords={variableStorage}
-                      />
-                    );
                   case 'number':
-                    return (
-                      <Input
-                        type="number"
-                        value={formValues[paramKey] ?? ''}
-                        onChange={(e) =>
-                          handleInputChange(paramKey, e.target.value)
-                        }
-                      />
-                    );
+                    return renderInput(paramKey, 'number');
                   case 'connection.Google Drive':
-                    if (!isExist) {
-                      const driveConnection = 'My Google Drive Connection';
-                      formValues[paramKey] = driveConnection;
-                    }
-                    return (
-                      <Input
-                        type="text"
-                        variant="filled"
-                        value={formValues[paramKey]}
-                        disabled
-                      />
-                    );
                   case 'connection.Gmail':
-                    if (!isExist) {
-                      const gmailConnection = 'My Gmail Connection';
-                      formValues[paramKey] = gmailConnection;
-                    }
-                    return (
-                      <Input
-                        type="text"
-                        variant="filled"
-                        value={formValues[paramKey]}
-                        disabled
-                      />
-                    );
                   case 'connection.Google Sheets':
-                    if (!isExist) {
-                      const sheetConnection = 'My Google Sheet Connection';
-                      formValues[paramKey] = sheetConnection;
-                    }
-                    return (
-                      <Input
-                        type="text"
-                        variant="filled"
-                        value={formValues[paramKey]}
-                        disabled
-                      />
-                    );
+                    return renderInput(paramKey, 'text', {
+                      variant: 'filled',
+                      disabled: true,
+                    });
                   case 'list':
-                    return (
-                      <Input
-                        type="text"
-                        value={formValues[paramKey] ?? ''}
-                        onChange={(e) =>
-                          handleInputChange(paramKey, e.target.value)
-                        }
-                      />
-                    );
+                    return renderInput(paramKey, 'text');
                   case 'enum.shareType':
-                    if (!isExist) {
-                      formValues[paramKey] = 'user';
-                    }
-                    return (
-                      <Select
-                        defaultValue={formValues[paramKey]}
-                        onChange={(e) => {
-                          formValues[paramKey] = e.target.value;
-                        }}>
-                        <option value="user">User</option>
-                        <option value="all">All</option>
-                      </Select>
-                    );
+                    return renderSelect(paramKey, [
+                      { value: 'user', label: 'User' },
+                      { value: 'all', label: 'All' },
+                    ]);
                   case 'enum.permission':
-                    if (!isExist) {
-                      formValues[paramKey] = 'reader';
-                    }
-                    return (
-                      <Select
-                        defaultValue={formValues[paramKey]}
-                        onChange={(e) => {
-                          formValues[paramKey] = e.target.value;
-                        }}>
-                        <option value="reader">Reader</option>
-                        <option value="editor">Editor</option>
-                        <option value="commenter">Commenter</option>
-                        <option value="all">All</option>
-                      </Select>
-                    );
+                    return renderSelect(paramKey, [
+                      { value: 'reader', label: 'Reader' },
+                      { value: 'commenter', label: 'Commenter' },
+                      { value: 'editor', label: 'Editor' },
+                      { value: 'all', label: 'All' },
+                    ]);
                   case 'label_ids':
-                    if (!isExist) {
-                      formValues[paramKey] = 'inbox';
-                    }
-                    return (
-                      <Select
-                        defaultValue={formValues[paramKey]}
-                        onChange={(e) => {
-                          formValues[paramKey] = e.target.value;
-                        }}>
-                        <option value="inbox">Inbox</option>
-                        <option value="starred">Starred</option>
-                        <option value="sent">Sent</option>
-                        <option value="spam">Spam</option>
-                        <option value="trash">Trash</option>
-                        <option value="scheduled">Scheduled</option>
-                      </Select>
-                    );
+                    return renderSelect(paramKey, [
+                      { value: 'inbox', label: 'Inbox' },
+                      { value: 'starred', label: 'Starred' },
+                      { value: 'sent', label: 'Sent' },
+                      { value: 'spam', label: 'Spam' },
+                      { value: 'trash', label: 'Trash' },
+                      { value: 'scheduled', label: 'Scheduled' },
+                    ]);
                   case 'expression.logic':
+                    if (
+                      paramValue.type === 'expression.logic' &&
+                      paramValue.value &&
+                      !isExist
+                    ) {
+                      Object.entries(paramValue.value).forEach(
+                        ([key, value]) => {
+                          if (
+                            value &&
+                            typeof value === 'object' &&
+                            'type' in value &&
+                            value.type === 'string'
+                          ) {
+                            formValues[key] = setDefaultValue(
+                              key,
+                              value as ArgumentProps,
+                              ''
+                            );
+                          } else if (
+                            value &&
+                            typeof value === 'object' &&
+                            'description' in value
+                          ) {
+                            formValues[key] = setDefaultValue(
+                              key,
+                              value as ArgumentProps,
+                              '='
+                            );
+                          }
+                        }
+                      );
+                    }
                     return (
                       <div className="grid grid-cols-3">
                         {Object.entries(paramValue.value).map(
-                          ([paramKey, paramValue]) => {
-                            if (!paramValue) return;
+                          ([innerKey, innerValue]) => {
+                            if (!innerValue) return null;
                             if (
-                              typeof paramValue === 'object' &&
-                              'type' in paramValue &&
-                              paramValue.type == 'string'
+                              typeof innerValue === 'object' &&
+                              'type' in innerValue &&
+                              innerValue.type === 'string'
                             ) {
                               return (
                                 <Input
-                                  key={paramKey}
+                                  key={innerKey}
                                   type="text"
-                                  value={formValues[paramKey] ?? ''}
+                                  value={formValues[innerKey]?.value ?? ''}
                                   onChange={(e) =>
-                                    handleInputChange(paramKey, e.target.value)
+                                    handleInputChange(innerKey, e.target.value)
                                   }
                                 />
                               );
-                            } else {
-                              if (
-                                typeof paramValue === 'object' &&
-                                'description' in paramValue
-                              ) {
-                                if (!isExist) formValues[paramKey] = '=';
-                                return (
-                                  <Select
-                                    key={paramKey}
-                                    defaultValue={formValues[paramKey]}
-                                    onChange={(e) => {
-                                      formValues[paramKey] = e.target.value;
-                                    }}>
-                                    <option value="=">=</option>
-                                    <option value="!=">!=</option>
-                                    <option value=">">{'>'}</option>
-                                    <option value="<">{'<'}</option>
-                                    <option value=">=">{'>='}</option>
-                                    <option value="<=">{'<='}</option>
-                                  </Select>
-                                );
-                              }
+                            } else if (
+                              typeof innerValue === 'object' &&
+                              'description' in innerValue
+                            ) {
+                              return (
+                                <Select
+                                  key={innerKey}
+                                  defaultValue={
+                                    formValues[innerKey]?.value ?? '='
+                                  }
+                                  onChange={(e) =>
+                                    handleInputChange(innerKey, e.target.value)
+                                  }>
+                                  <option value="=">=</option>
+                                  <option value="!=">!=</option>
+                                  <option value=">">{'>'}</option>
+                                  <option value="<">{'<'}</option>
+                                  <option value=">=">{'>='}</option>
+                                  <option value="<=">{'<='}</option>
+                                </Select>
+                              );
                             }
+                            return null;
                           }
                         )}
                       </div>
                     );
+                  default:
+                    return null;
                 }
               };
 
@@ -565,7 +505,7 @@ export default function PropertiesSideBar({
                               variableStorage.map((variable: Variable) => (
                                 <option
                                   key={variable.toString()}
-                                  value={'${' + variable.toString() + '}$'}>
+                                  value={'${' + variable.toString() + '}'}>
                                   {'${' + variable.toString() + '}'}
                                 </option>
                               ))}
