@@ -35,7 +35,7 @@ import { LocalStorage } from '@/constants/localStorage';
 import { ArgumentProps, PropertiesProps } from '@/types/property';
 import { getVariableItemFromLocalStorage } from '@/utils/variableService';
 import { Variable } from '@/utils/bpmn-parser/visitor/robot';
-import TextAutoComplete from '@/components/AutoComplete/TextAutoComplete';
+import TextAutoComplete from '@/components/Input/AutoComplete/TextAutoComplete';
 import {
   getActivityByService,
   getArgumentsByActivity,
