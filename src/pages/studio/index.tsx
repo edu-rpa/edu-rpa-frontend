@@ -76,6 +76,22 @@ export default function Studio() {
     }
   }, []);
 
+  const formatData =
+    processList &&
+    processList.map((item: Process) => {
+      return {
+        id: item.processID,
+        name: item.processName,
+        owner: 'You',
+        last_modified: formatDate(new Date()),
+      };
+    });
+
+  const tableProps = {
+    header: ['Process ID', 'Process Name', 'Owner', 'Last Modified', 'Actions'],
+    data: formatData ?? [],
+  };
+
   const handleCreateNewProcess = () => {
     const processID = generateProcessID();
     const xml = defaultXML(processID);
@@ -90,17 +106,6 @@ export default function Studio() {
     ]);
     router.push(`/studio/modeler/${processID}`);
   };
-
-  const formatData =
-    processList &&
-    processList.map((item: Process) => {
-      return {
-        id: item.processID,
-        name: item.processName,
-        owner: 'You',
-        last_modified: formatDate(new Date()),
-      };
-    });
 
   const handleDeleteProcessByID = (processID: string) => {
     const processListAfterDelete = deleteProcessById(processID);
@@ -117,11 +122,6 @@ export default function Studio() {
   const handleDownloadProcessByID = (processID: string) => {
     const processXML = getProcessFromLocalStorage(processID).xml;
     exportFile(processXML, `${processID}.xml`);
-  };
-
-  const tableProps = {
-    header: ['Process ID', 'Process Name', 'Owner', 'Last Modified', 'Actions'],
-    data: formatData ?? [],
   };
 
   return (
@@ -182,6 +182,7 @@ export default function Studio() {
           <CustomTable
             header={tableProps.header}
             data={tableProps.data}
+            onView={handleEditProcessByID}
             onDownload={handleDownloadProcessByID}
             onDelete={handleDeleteProcessByID}
             onEdit={handleEditProcessByID}

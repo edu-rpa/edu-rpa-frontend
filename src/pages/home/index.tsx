@@ -1,33 +1,27 @@
-import ContactUsHome from '@/components/LandingPage/ContactUs/ContactUs';
-import FeatureHome from '@/components/LandingPage/Feature/Feature';
-import HeroHome from '@/components/LandingPage/Hero/Hero';
-import OurTeamSection from '@/components/LandingPage/OurTeam/OurTeam';
-import PricingHome from '@/components/LandingPage/Pricing/Pricing';
-import TestimonialHome from '@/components/LandingPage/Testimonial/Testimonial';
-import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
 import React from 'react';
+import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
+import HeroHome from '@/components/LandingPage/Hero/Hero';
+import FeatureHome from '@/components/LandingPage/Feature/Feature';
+import OurTeamSection from '@/components/LandingPage/OurTeam/OurTeam';
+import TestimonialHome from '@/components/LandingPage/Testimonial/Testimonial';
+import PricingHome from '@/components/LandingPage/Pricing/Pricing';
+import ContactUsHome from '@/components/LandingPage/ContactUs/ContactUs';
+
+const componentsToRender = [
+  <HeroHome />,
+  <FeatureHome />,
+  <OurTeamSection />,
+  <TestimonialHome />,
+  <PricingHome />,
+  <ContactUsHome />,
+];
 
 export default function Home() {
   return (
     <div className="mb-[200px]">
-      <SidebarContent>
-        <HeroHome />
-      </SidebarContent>
-      <SidebarContent>
-        <FeatureHome />
-      </SidebarContent>
-      <SidebarContent>
-        <OurTeamSection />
-      </SidebarContent>
-      <SidebarContent>
-        <TestimonialHome />
-      </SidebarContent>
-      <SidebarContent>
-        <PricingHome />
-      </SidebarContent>
-      <SidebarContent>
-        <ContactUsHome />
-      </SidebarContent>
+      {componentsToRender.map((Component, index) => (
+        <SidebarContent key={index}>{Component}</SidebarContent>
+      ))}
     </div>
   );
 }
