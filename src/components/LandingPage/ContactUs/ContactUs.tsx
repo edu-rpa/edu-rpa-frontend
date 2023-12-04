@@ -28,7 +28,7 @@ import {
 } from 'react-icons/md';
 import { BsGithub, BsDiscord, BsPerson } from 'react-icons/bs';
 
-export default function Contact() {
+export default function ContactUsHome() {
   return (
     <Box>
       <Stack spacing={4} as={Container} maxW={'3xl'} textAlign={'center'}>

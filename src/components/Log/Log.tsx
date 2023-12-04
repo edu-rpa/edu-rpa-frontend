@@ -1,22 +1,22 @@
 import React from 'react';
 import { Box, Text, VStack, Container } from '@chakra-ui/react';
-
-interface LogMessage {
-  type: 'success' | 'error';
-  text: string;
-}
+import { LogMessage } from '@/types/log';
 
 interface LogProps {
   messages: LogMessage[];
 }
 
 const Log: React.FC<LogProps> = ({ messages }) => {
-  const getColorScheme = (type: 'success' | 'error') => {
+  const getColorScheme = (type: 'success' | 'error' | 'info' | 'warning') => {
     switch (type) {
       case 'success':
         return 'green';
       case 'error':
         return 'red';
+      case 'info':
+        return 'blue';
+      case 'warning':
+        return 'yellow';
       default:
         return 'gray';
     }
@@ -30,7 +30,9 @@ const Log: React.FC<LogProps> = ({ messages }) => {
         bg="gray.100"
         p={5}
         borderRadius="md"
-        boxShadow="md">
+        boxShadow="md"
+        maxHeight="500px"
+        overflowY="auto">
         {messages.map((message, index) => (
           <Box
             key={index}
@@ -38,7 +40,7 @@ const Log: React.FC<LogProps> = ({ messages }) => {
             bg={`${getColorScheme(message.type)}.100`}
             borderRadius="md">
             <Text fontSize="md" color={`${getColorScheme(message.type)}.800`}>
-              {message.text}
+              {message.type}: {message.text}
             </Text>
           </Box>
         ))}
