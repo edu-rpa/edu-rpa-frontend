@@ -127,7 +127,7 @@ function CustomModeler() {
         onChange={handleImportBPMN}
       />
       <Button
-        colorScheme="orange"
+        colorScheme="teal"
         size="md"
         className="mx-[5px]"
         onClick={() => {
@@ -140,7 +140,7 @@ function CustomModeler() {
         Import XML
       </Button>
 
-      <Button
+      {/* <Button
         colorScheme="teal"
         size="md"
         className="mx-[5px]"
@@ -180,7 +180,7 @@ function CustomModeler() {
           );
         }}>
         Save Properties
-      </Button>
+      </Button> */}
       <VariablesSideBar processID={processId} />
       <br />
     </div>

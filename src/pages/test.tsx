@@ -1,5 +1,6 @@
 import BoundingBox from '@/components/BoundingBox/BoundingBox';
 import React, { useState } from 'react';
+import SampleImage from '@/assets/images/sample.png';
 import {
   Modal,
   ModalOverlay,
@@ -10,8 +11,11 @@ import {
   ModalCloseButton,
   Button,
   useDisclosure,
+  IconButton,
 } from '@chakra-ui/react';
 import { Rectangle } from '@/types/boundingBox';
+import IconImage from '@/components/IconImage/IconImage';
+import Image from 'next/image';
 
 export default function Test() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -50,6 +54,7 @@ export default function Test() {
 
   return (
     <div>
+      <IconImage icon={SampleImage as any} label="Custom Icon" />
       <input type="file" onChange={handleImageUpload} accept="image/*" />
       <Button onClick={handleImageEditing}>Edit Image</Button>
       <Modal isOpen={isOpen} onClose={onClose} size="4xl">

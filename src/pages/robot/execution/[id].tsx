@@ -61,7 +61,7 @@ const RobotExecution = () => {
         <Text fontSize="lg" fontWeight="bold">
           Robot Information:
         </Text>
-        <Text>ID: {params.id} </Text>
+        <Text>ID: {params && params.id} </Text>
       </Box>
       <Box className="w-90 m-auto">
         <Log messages={logMessages} />

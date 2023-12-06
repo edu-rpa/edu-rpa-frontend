@@ -28,7 +28,7 @@ export default function HeroHome() {
           <Heading
             lineHeight={1.1}
             fontWeight={600}
-            fontSize={{ base: '3xl', sm: '4xl', lg: '6xl' }}>
+            fontSize={{ base: '3xl', sm: '4xl', lg: '5xl' }}>
             <Text
               as={'span'}
               position={'relative'}
@@ -42,18 +42,22 @@ export default function HeroHome() {
                 bg: '#319795',
                 zIndex: -1,
               }}>
-              Write once,
+              More automation,
             </Text>
             <br />
-            <Text as={'span'} color={'#319795'}>
-              {' '}
-              use everywhere!
+            <Text as={'span'} color={'#319795'} fontSize={55}>
+              better education
             </Text>
           </Heading>
           <Text color={'gray.500'}>
-            Snippy is a rich coding snippets app that lets you create your own
-            code snippets, categorize them, and even sync them in the cloud so
-            you can use them anywhere. All that is free!
+            EduRPA is a transformative platform integrating Robotic Process
+            Automation (RPA) within the education sector, designed to assist
+            teachers and students.
+            <br />
+            <br />
+            This tool empowers users to automate their most time-consuming and
+            monotonous activities, allowing them to focus more on the essential
+            aspects of teaching and learning.
           </Text>
           <Stack
             spacing={{ base: 4, sm: 6 }}

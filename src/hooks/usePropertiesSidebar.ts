@@ -8,6 +8,19 @@ const initialState = {
   activityName: '',
 };
 
+const getPreviousState = (state: any, currentStep: number) => {
+  switch (currentStep) {
+    case 1:
+      return { ...state, packageName: '' };
+    case 2:
+      return { ...state, serviceName: '' };
+    case 3:
+      return { ...state, activityName: '' };
+    case 4:
+      return { ...state };
+  }
+};
+
 const propertiesBarReducer = (state: any, action: any) => {
   switch (action.type) {
     case 'SET_PACKAGE':
@@ -17,7 +30,15 @@ const propertiesBarReducer = (state: any, action: any) => {
     case 'SET_ACTIVITY':
       return { ...state, currentStep: 4, activityName: action.payload };
     case 'SET_BACK':
-      return { ...state, currentStep: Math.max(1, state.currentStep - 1) };
+      const previousState = getPreviousState(
+        state,
+        Math.max(1, state.currentStep - 1)
+      );
+      return {
+        ...state,
+        ...previousState,
+        currentStep: Math.max(1, state.currentStep - 1),
+      };
     case 'SET_DEFAULT':
       return { ...initialState };
     case 'SET_PROPERTY':

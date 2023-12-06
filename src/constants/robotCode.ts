@@ -1,4 +1,4 @@
-export const robotCode = `*** Settings ***
+const robotCode = `*** Settings ***
 Activity_0pkjxtm - Open Browser
 Activity_1536xo5 - Get Title Assign to Home
 IF: Gateway_0sc92or
@@ -15,3 +15,5 @@ ELSE:
 	Activity_1juwgjw - Break
 
 Activity_012ckfs - Close Browser`;
+
+export default robotCode;

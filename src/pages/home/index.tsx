@@ -8,19 +8,19 @@ import PricingHome from '@/components/LandingPage/Pricing/Pricing';
 import ContactUsHome from '@/components/LandingPage/ContactUs/ContactUs';
 
 const componentsToRender = [
-  <HeroHome />,
-  <FeatureHome />,
-  <OurTeamSection />,
-  <TestimonialHome />,
-  <PricingHome />,
-  <ContactUsHome />,
+  { id: 'hero', component: <HeroHome /> },
+  { id: 'feature', component: <FeatureHome /> },
+  { id: 'ourTeam', component: <OurTeamSection /> },
+  { id: 'testimonial', component: <TestimonialHome /> },
+  { id: 'pricing', component: <PricingHome /> },
+  { id: 'contactUs', component: <ContactUsHome /> },
 ];
 
 export default function Home() {
   return (
     <div className="mb-[200px]">
-      {componentsToRender.map((Component, index) => (
-        <SidebarContent key={index}>{Component}</SidebarContent>
+      {componentsToRender.map((item) => (
+        <SidebarContent key={item.id}>{item.component}</SidebarContent>
       ))}
     </div>
   );

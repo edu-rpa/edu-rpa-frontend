@@ -56,7 +56,7 @@ const CustomTable = (props: TableProps) => {
             {value}
           </Tag>
         );
-      case 'file':
+      case 'type':
         return (
           <Box className="flex justify-between">
             <Box className="flex justify-between">
@@ -81,7 +81,7 @@ const CustomTable = (props: TableProps) => {
         <Thead>
           <Tr>
             {props.header.map((item: string) => (
-              <Th>{item}</Th>
+              <Th key={item}>{item}</Th>
             ))}
           </Tr>
         </Thead>

@@ -64,7 +64,7 @@ const RobotMonitor = () => {
         <Text fontSize="lg" fontWeight="bold">
           Robot Information:
         </Text>
-        <Text>ID: {params.id} </Text>
+        <Text>ID: {params && params.id} </Text>
       </Box>
       <Flex flexDirection="column" alignItems="center" p={4}>
         <Grid

@@ -22,14 +22,11 @@ import {
   Switch,
   Tooltip,
   DrawerOverlay,
+  Box,
+  Text,
 } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
-import React, { useEffect, useReducer, useRef, useState } from 'react';
-import SVGIcon from '@/components/Icons/SVGIcon';
-import GoogleWorkpaceIcon from '@/assets/svgs/google-workspace.svg';
-import ControlIcon from '@/assets/svgs/control.svg';
-import BrowserAutomationIcon from '@/assets/svgs/browser-automation.svg';
-import DocumentAutomationIcon from '@/assets/svgs/document-automation.svg';
+import React, { useEffect, useRef, useState } from 'react';
 import CustomDatePicker from '@/components/CustomDatePicker/ CustomDatePicker';
 import { LocalStorage } from '@/constants/localStorage';
 import { ArgumentProps, PropertiesProps } from '@/types/property';
@@ -43,6 +40,21 @@ import {
   getLibrary,
 } from '@/utils/propertyService';
 import { usePropertiesSidebar } from '@/hooks/usePropertiesSidebar';
+import IconImage from '@/components/IconImage/IconImage';
+import GoogleWorkpaceIcon from '@/assets/images/packages/icons8-google-100.png';
+import ControlIcon from '@/assets/images/packages/icons8-control-100.png';
+import BrowserAutomationIcon from '@/assets/images/packages/icons8-browser-64.png';
+import DocumentAutomationIcon from '@/assets/images/packages/icons8-document-100.png';
+import GoogleDriveIcon from '@/assets/images/services/icons8-google-drive-96.png';
+import GmailIcon from '@/assets/images/services/icons8-gmail-96.png';
+import GoogleSheetIcon from '@/assets/images/services/icons8-google-sheets-96.png';
+import ConditionIcon from '@/assets/images/services/icons8-rule-64.png';
+import LoopIcon from '@/assets/images/services/icons8-repeat-100.png';
+import NavigationIcon from '@/assets/images/services/icons8-navigation-100-2.png';
+import BrowserEventIcon from '@/assets/images/services/icons8-search-in-browser-100.png';
+import TextExtractionIcon from '@/assets/images/services/icons8-image-100.png';
+import Image from 'next/image';
+
 interface PropertiesSideBarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -138,6 +150,47 @@ export default function PropertiesSideBar({
     setLocalStorageObject(LocalStorage.PROCESS_LIST, updateProcess);
   };
 
+  const getPackageIcon = (displayName: string) => {
+    switch (displayName) {
+      case 'Google Workspace':
+        return GoogleWorkpaceIcon;
+      case 'Control':
+        return ControlIcon;
+      case 'Browser automation':
+        return BrowserAutomationIcon;
+      case 'Document automation':
+        return DocumentAutomationIcon;
+      default:
+        return null;
+    }
+  };
+
+  const getServiceIcon = (serviceName: string) => {
+    switch (serviceName) {
+      case 'Google Drive':
+        return GoogleDriveIcon;
+      case 'Gmail':
+        return GmailIcon;
+      case 'Google Sheet':
+        return GoogleSheetIcon;
+      case 'Condition':
+        return ConditionIcon;
+      case 'Loop':
+        return LoopIcon;
+      case 'Navigation':
+        return NavigationIcon;
+      case 'Browser Event':
+        return BrowserEventIcon;
+      case 'OCR':
+        return TextExtractionIcon;
+      default:
+        return null;
+    }
+  };
+  const headerIcon =
+    getServiceIcon(sideBarState.serviceName) ||
+    getPackageIcon(sideBarState.packageName);
+
   return (
     <div>
       <Drawer
@@ -148,7 +201,19 @@ export default function PropertiesSideBar({
         <DrawerOverlay />
         <DrawerContent w={400} maxW={400}>
           <DrawerCloseButton />
-          <DrawerHeader>{getTitleStep(sideBarState.currentStep)}</DrawerHeader>
+          <DrawerHeader>
+            <Box className="flex justify-between items-center">
+              <Box className="flex justify-between items-center">
+                {headerIcon && (
+                  <Image src={headerIcon} alt="logo" width={50} height={50} />
+                )}
+                <Text className={headerIcon ? 'ml-[10px]' : ''}>
+                  {getTitleStep(sideBarState.currentStep)}
+                </Text>
+              </Box>
+              <Box></Box>
+            </Box>
+          </DrawerHeader>
           <DrawerBody>
             <h1 className="font-bold text-md text-primary">
               ActivityID: {activityItem.activityID}
@@ -162,34 +227,13 @@ export default function PropertiesSideBar({
               const { currentStep, packageName, serviceName, activityName } =
                 sideBarState;
 
-              const getPackageIcon = (displayName: string) => {
-                switch (displayName) {
-                  case 'Google Workspace':
-                    return GoogleWorkpaceIcon;
-                  case 'Control':
-                    return ControlIcon;
-                  case 'Browser automation':
-                    return BrowserAutomationIcon;
-                  case 'Document automation':
-                    return DocumentAutomationIcon;
-                }
-              };
-
               const renderStepOne = () => (
                 <Tooltip label={description}>
                   <div className="my-[20px] flex justify-center">
-                    <IconButton
-                      variant="outline"
-                      aria-label="Call Segun"
-                      style={{ width: 100, height: 100 }}
+                    <IconImage
+                      icon={getPackageIcon(displayName) as any}
+                      label={displayName}
                       onClick={() => setPackage(displayName)}
-                      icon={
-                        <SVGIcon
-                          width="100%"
-                          height="100%"
-                          svgComponent={getPackageIcon(displayName)}
-                        />
-                      }
                     />
                   </div>
                 </Tooltip>
@@ -198,16 +242,20 @@ export default function PropertiesSideBar({
               const renderStepTwo = () => {
                 const services = getDistinctService(activityTemplates);
                 return (
-                  packageName === displayName &&
-                  services.map((service: string) => (
-                    <div key={service}>
-                      <Button
-                        className="my-[10px]"
-                        onClick={() => setService(service)}>
-                        {service}
-                      </Button>
-                    </div>
-                  ))
+                  <div className="my-[20px] grid grid-cols-2 gap-[20px] w-90 mx-auto">
+                    {packageName === displayName &&
+                      services.map((service: string) => {
+                        return (
+                          <div key={service}>
+                            <IconImage
+                              icon={getServiceIcon(service) as any}
+                              label={service}
+                              onClick={() => setService(service)}
+                            />
+                          </div>
+                        );
+                      })}
+                  </div>
                 );
               };
 
