@@ -3,7 +3,7 @@ import { Box, Heading, Container, Text, IconButton } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { useParams } from 'next/navigation';
-import { robotCode } from './robotCode';
+import robotCode from '../../../constants/robotCode';
 import CodeViewer from '@/components/CodeViewer/CodeViewer';
 
 const RobotCode = () => {
@@ -44,7 +44,7 @@ const RobotCode = () => {
         <Text fontSize="lg" fontWeight="bold">
           Robot Information:
         </Text>
-        <Text>ID: {params.id} </Text>
+        <Text>ID: {params && params.id} </Text>
       </Box>
       <Box className="w-90 m-auto">
         <CodeViewer code={robotCode} language="robot" />

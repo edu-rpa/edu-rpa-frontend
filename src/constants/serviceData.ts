@@ -2,33 +2,41 @@ import { formatDate } from '@/utils/common';
 
 const formatTime = formatDate(new Date());
 
-export const connectionData = [
+const connectionData = [
   {
-    name: 'Google Drive',
+    name: 'Google Drive 1',
     connectionID: '2023-09-17T06:55:54.536',
     email: 'ducan1406@gmail.com',
     last_modified: formatTime,
     status: 'Connected',
-    id: 'google-drive',
+    id: 'google-drive-1',
   },
   {
-    name: 'Dropbox',
+    name: 'Google Drive 2',
+    connectionID: '2023-09-17T06:55:54.537',
+    email: 'anduckhmt146@gmail.com',
+    last_modified: formatTime,
+    status: 'Connected',
+    id: 'google-drive-2',
+  },
+  {
+    name: 'Gmail',
     connectionID: '2023-09-18T09:30:22.123',
     email: 'example@email.com',
     last_modified: formatTime,
-    status: 'Disconnected',
+    status: 'Connected',
     id: 'dropbox',
   },
   {
-    name: 'Microsoft OneDrive',
+    name: 'Google Sheet',
     connectionID: '2023-09-18T11:45:37.789',
     email: 'user@example.com',
     last_modified: formatTime,
-    status: 'Connected',
+    status: 'Disconnected',
     id: 'onedrive',
   },
   {
-    name: 'Box',
+    name: 'Google Calendar',
     connectionID: '2023-09-18T13:20:15.456',
     email: 'boxuser@example.com',
     last_modified: formatTime,
@@ -40,7 +48,7 @@ export const connectionData = [
     connectionID: '2023-09-18T15:10:58.987',
     email: 'noteuser@example.com',
     last_modified: formatTime,
-    status: 'Connected',
+    status: 'Disconnected',
     id: 'onenote',
   },
   {
@@ -84,3 +92,4 @@ export const connectionData = [
     id: 'slack',
   },
 ];
+export default connectionData;

@@ -1,8 +1,8 @@
 import { formatDate } from '@/utils/common';
 import React from 'react';
-import { connectionData } from './detail/sampleData';
+import connectionData from '../../constants/serviceData';
 import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
-import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
+import { Button, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import CustomTable from '@/components/CustomTable/CustomTable';
 import { useRouter } from 'next/router';
@@ -23,13 +23,21 @@ export default function Service() {
         <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
           Connection List
         </h1>
-        <div className="w-90 mx-auto my-[30px]">
+        <div className="flex justify-between w-90 mx-auto my-[30px]">
           <InputGroup>
             <InputLeftElement pointerEvents="none">
               <SearchIcon color="gray.500" />
             </InputLeftElement>
-            <Input bg="white.300" type="text" placeholder="Search..." />
+            <Input
+              width="55vw"
+              bg="white.300"
+              type="text"
+              placeholder="Search..."
+            />
           </InputGroup>
+          <div className="flex justify-between gap-[10px]">
+            <Button colorScheme="teal">New Connection</Button>
+          </div>
         </div>
 
         <div className="w-90 m-auto">
