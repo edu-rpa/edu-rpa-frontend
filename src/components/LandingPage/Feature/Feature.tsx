@@ -78,7 +78,7 @@ export default function FeatureHome() {
       <Container maxW={'5xl'} mt={12}>
         <Flex flexWrap="wrap" gridGap={6} justify="center">
           <Card
-            heading={'Heading'}
+            heading={'Intelligent Grading'}
             icon={<Icon as={FcAssistant} w={10} h={10} />}
             description={
               'Lorem ipsum dolor sit amet catetur, adipisicing elit.'

@@ -831,6 +831,42 @@ export const ActivityTemplates = [
     description:
       'Help you automate tasks related to documents (traditional paper documents or digital documents like PDFs) with the help of AI',
     iconCode: 'FaFileAlt',
-    activityTemplates: [],
+    activityTemplates: [
+      {
+        templateId: 'drive.create_folder',
+        displayName: 'Bounding Box Annotation',
+        description: 'Create a Google Drive folder in a given directory',
+        iconCode: 'FaGoogleDrive',
+        service: 'OCR',
+        type: 'activity',
+        keyword: 'Text Extraction Directory',
+        arguments: {
+          Connection: {
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
+            value: null,
+          },
+          'Folder name': {
+            type: 'string',
+            description: 'The name of the folder',
+            keywordArg: 'folder',
+            value: '',
+          },
+          'Parent Folder Path': {
+            type: 'string',
+            description: 'The path to the parent folder',
+            keywordArg: 'parent_folder',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'Folder',
+          assignedTo: null,
+          type: 'dictionary',
+          description:
+            'The created folder. This is a dictionary, contains: id (folder id), url (folder url)',
+        },
+      },
+    ],
   },
 ];

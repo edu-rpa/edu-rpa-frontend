@@ -38,8 +38,8 @@ import { useRouter } from 'next/router';
 import { deleteVariableById } from '@/utils/variableService';
 
 export default function Studio() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
   const finalRef = useRef<HTMLInputElement>(null);
   const [processList, setProcessList] = useState([]);
