@@ -841,28 +841,16 @@ export const ActivityTemplates = [
         type: 'activity',
         keyword: 'Text Extraction Directory',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
+          File: {
+            type: 'bbox.file',
+            description: 'Import Bounding Box Here',
             value: null,
-          },
-          'Folder name': {
-            type: 'string',
-            description: 'The name of the folder',
-            keywordArg: 'folder',
-            value: '',
-          },
-          'Parent Folder Path': {
-            type: 'string',
-            description: 'The path to the parent folder',
-            keywordArg: 'parent_folder',
-            value: '',
           },
         },
         return: {
-          displayName: 'Folder',
+          displayName: 'Bounding Box',
           assignedTo: null,
-          type: 'dictionary',
+          type: 'list',
           description:
             'The created folder. This is a dictionary, contains: id (folder id), url (folder url)',
         },

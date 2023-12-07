@@ -54,6 +54,7 @@ import NavigationIcon from '@/assets/images/services/icons8-navigation-100-2.png
 import BrowserEventIcon from '@/assets/images/services/icons8-search-in-browser-100.png';
 import TextExtractionIcon from '@/assets/images/services/icons8-image-100.png';
 import Image from 'next/image';
+import BoundingBoxBlock from '@/components/BoundingBox/BoundingBoxBlock';
 
 interface PropertiesSideBarProps {
   isOpen: boolean;
@@ -375,6 +376,9 @@ export default function PropertiesSideBar({
                         id={paramKey}
                       />
                     );
+                  case 'bbox.file':
+                    return <BoundingBoxBlock />;
+
                   case 'date':
                     return (
                       <CustomDatePicker

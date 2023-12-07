@@ -12,12 +12,14 @@ import {
   Button,
   useDisclosure,
   IconButton,
+  FormLabel,
+  Input,
+  Box,
+  FormControl,
 } from '@chakra-ui/react';
 import { Rectangle } from '@/types/boundingBox';
-import IconImage from '@/components/IconImage/IconImage';
-import Image from 'next/image';
 
-export default function Test() {
+export default function BoundingBoxBlock() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
   const [imageUrl, setImageUrl] = useState('');
@@ -52,11 +54,49 @@ export default function Test() {
     onOpen();
   };
 
+  const formatBoundingBox = (rectangles: Rectangle[]) => {
+    return rectangles.map((rect) => [
+      rect.top,
+      rect.left,
+      rect.bottom,
+      rect.right,
+    ]);
+  };
+
   return (
     <div>
-      <IconImage icon={SampleImage as any} label="Custom Icon" />
-      <input type="file" onChange={handleImageUpload} accept="image/*" />
-      <Button onClick={handleImageEditing}>Edit Image</Button>
+      <FormControl>
+        <Box className="flex justify-between">
+          <Box
+            border="1px"
+            borderColor="gray.300"
+            borderRadius="md"
+            className="my-[10px]">
+            <Input
+              type="file"
+              onChange={handleImageUpload}
+              accept="image/*"
+              p={2}
+              variant="unstyled"
+            />
+          </Box>
+          <Button
+            colorScheme="teal"
+            size="md"
+            className="m-[10px]"
+            onClick={handleImageEditing}>
+            Edit Image
+          </Button>
+        </Box>
+      </FormControl>
+      <FormControl>
+        <FormLabel>Bounding Box Value</FormLabel>
+        <Input
+          type="text"
+          value={JSON.stringify(formatBoundingBox(rectangles))}
+        />
+      </FormControl>
+
       <Modal isOpen={isOpen} onClose={onClose} size="4xl">
         <ModalOverlay />
         <ModalContent>
