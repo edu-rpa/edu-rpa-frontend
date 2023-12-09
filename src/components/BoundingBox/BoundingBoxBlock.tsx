@@ -11,7 +11,6 @@ import {
   ModalCloseButton,
   Button,
   useDisclosure,
-  IconButton,
   FormLabel,
   Input,
   Box,
@@ -19,19 +18,47 @@ import {
 } from '@chakra-ui/react';
 import { Rectangle } from '@/types/boundingBox';
 
-export default function BoundingBoxBlock() {
+interface BoundingBoxBlockProps {
+  imageUrl: string;
+  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+  rectangles: Rectangle[];
+  setRectangles: React.Dispatch<React.SetStateAction<Rectangle[]>>;
+}
+
+export default function BoundingBoxBlock({
+  rectangles,
+  setRectangles,
+  imageUrl,
+  setImageUrl,
+}: BoundingBoxBlockProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [rectangles, setRectangles] = useState<Rectangle[]>([]);
-  const [imageUrl, setImageUrl] = useState('');
   const [editedImageUrl, setEditedImageUrl] = useState('');
 
   const handleNewRectangle = (newRect: Rectangle | Rectangle[]) => {
     if (Array.isArray(newRect)) {
-      setRectangles(newRect);
+      setRectangles(
+        newRect.map((rect) => ({
+          ...rect,
+          left: Math.min(rect.left, rect.right),
+          top: Math.min(rect.top, rect.bottom),
+          right: Math.max(rect.left, rect.right),
+          bottom: Math.max(rect.top, rect.bottom),
+        }))
+      );
     } else {
-      setRectangles([...rectangles, newRect]);
+      setRectangles([
+        ...rectangles,
+        {
+          ...newRect,
+          left: Math.min(newRect.left, newRect.right),
+          top: Math.min(newRect.top, newRect.bottom),
+          right: Math.max(newRect.left, newRect.right),
+          bottom: Math.max(newRect.top, newRect.bottom),
+        },
+      ]);
     }
   };
+
   const handleDeleteRectangle = (index: number) => {
     const updatedRectangles = rectangles.filter((_, i) => i !== index);
     setRectangles(updatedRectangles);
@@ -54,15 +81,6 @@ export default function BoundingBoxBlock() {
     onOpen();
   };
 
-  const formatBoundingBox = (rectangles: Rectangle[]) => {
-    return rectangles.map((rect) => [
-      rect.top,
-      rect.left,
-      rect.bottom,
-      rect.right,
-    ]);
-  };
-
   return (
     <div>
       <FormControl>
@@ -71,7 +89,7 @@ export default function BoundingBoxBlock() {
             border="1px"
             borderColor="gray.300"
             borderRadius="md"
-            className="my-[10px]">
+            className="my-[5px]">
             <Input
               type="file"
               onChange={handleImageUpload}
@@ -89,15 +107,8 @@ export default function BoundingBoxBlock() {
           </Button>
         </Box>
       </FormControl>
-      <FormControl>
-        <FormLabel>Bounding Box Value</FormLabel>
-        <Input
-          type="text"
-          value={JSON.stringify(formatBoundingBox(rectangles))}
-        />
-      </FormControl>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Image Annotation</ModalHeader>
@@ -113,8 +124,8 @@ export default function BoundingBoxBlock() {
             <ul>
               {rectangles.map((rect, index) => (
                 <li key={index}>
-                  {rect.label || 'Label'}: [Left: {rect.left.toFixed(2)}, Right:{' '}
-                  {rect.right.toFixed(2)}, Top: {rect.top.toFixed(2)}, Bottom:{' '}
+                  {rect.label || 'Label'}: [Left: {rect.left.toFixed(2)}, Top:{' '}
+                  {rect.top.toFixed(2)}, Right: {rect.right.toFixed(2)}, Bottom:{' '}
                   {rect.bottom.toFixed(2)}]
                   <Button
                     colorScheme="teal"

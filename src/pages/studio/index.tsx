@@ -36,6 +36,7 @@ import {
 } from '@/utils/processService';
 import { useRouter } from 'next/router';
 import { deleteVariableById } from '@/utils/variableService';
+import AutomationTemplateImage from '@/assets/images/AutomationTemplate.jpg';
 
 export default function Studio() {
   const router = useRouter();
@@ -194,10 +195,26 @@ export default function Studio() {
           Select from our templates
         </h1>
         <div className="grid grid-cols-3 gap-[15px] w-90 m-auto">
-          <TemplateCard />
-          <TemplateCard />
-          <TemplateCard />
-          <TemplateCard />
+          <TemplateCard
+            image={AutomationTemplateImage}
+            title="Grading 100 English Exams from sample document"
+            description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+          />
+          <TemplateCard
+            image={AutomationTemplateImage}
+            title="Get 100 emails from Inbox"
+            description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+          />
+          <TemplateCard
+            image={AutomationTemplateImage}
+            title="Export Data To Google Sheet"
+            description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+          />
+          <TemplateCard
+            image={AutomationTemplateImage}
+            title="Extract Text From An Image"
+            description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+          />
         </div>
       </SidebarContent>
     </div>

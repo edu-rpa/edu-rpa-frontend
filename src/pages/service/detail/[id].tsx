@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { ChevronLeftIcon, SearchIcon } from '@chakra-ui/icons';
-import { useParams } from 'next/navigation';
 import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
 import CustomTable from '@/components/CustomTable/CustomTable';
 import TemplateCard from '@/components/TemplateCard/TemplateCard';
@@ -27,6 +26,7 @@ import {
   getProcessFromLocalStorage,
 } from '@/utils/processService';
 import { deleteVariableById } from '@/utils/variableService';
+import SampleImage from '@/assets/images/AutomationTemplate.jpg';
 
 const ServiceDetail = () => {
   const router = useRouter();
@@ -114,7 +114,7 @@ const ServiceDetail = () => {
         </Text>
       </Box>
       <Box>
-        <SidebarContent className="w-[80vw]">
+        <SidebarContent className="w-[70vw]">
           <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
             Process List
           </h1>
@@ -143,15 +143,31 @@ const ServiceDetail = () => {
             />
           </div>
         </SidebarContent>
-        <SidebarContent>
+        <SidebarContent className="w-[70vw]">
           <h1 className="px-[20px] ml-[30px] font-bold text-2xl text-[#319795]">
             Google Drive Templates
           </h1>
           <div className="grid grid-cols-3 gap-[15px] w-90 m-auto">
-            <TemplateCard />
-            <TemplateCard />
-            <TemplateCard />
-            <TemplateCard />
+            <TemplateCard
+              image={SampleImage}
+              title="Grading 100 English Exams from sample document"
+              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+            />
+            <TemplateCard
+              image={SampleImage}
+              title="Get 100 emails from Inbox"
+              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+            />
+            <TemplateCard
+              image={SampleImage}
+              title="Export Data To Google Sheet"
+              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+            />
+            <TemplateCard
+              image={SampleImage}
+              title="Extract Text From An Image"
+              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+            />
           </div>
         </SidebarContent>
       </Box>

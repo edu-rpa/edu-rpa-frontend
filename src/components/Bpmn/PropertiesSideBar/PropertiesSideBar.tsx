@@ -17,7 +17,6 @@ import {
   Input,
   FormControl,
   FormLabel,
-  IconButton,
   Select,
   Switch,
   Tooltip,
@@ -38,23 +37,14 @@ import {
   getArgumentsByActivity,
   getDistinctService,
   getLibrary,
+  getPackageIcon,
+  getServiceIcon,
 } from '@/utils/propertyService';
 import { usePropertiesSidebar } from '@/hooks/usePropertiesSidebar';
 import IconImage from '@/components/IconImage/IconImage';
-import GoogleWorkpaceIcon from '@/assets/images/packages/icons8-google-100.png';
-import ControlIcon from '@/assets/images/packages/icons8-control-100.png';
-import BrowserAutomationIcon from '@/assets/images/packages/icons8-browser-64.png';
-import DocumentAutomationIcon from '@/assets/images/packages/icons8-document-100.png';
-import GoogleDriveIcon from '@/assets/images/services/icons8-google-drive-96.png';
-import GmailIcon from '@/assets/images/services/icons8-gmail-96.png';
-import GoogleSheetIcon from '@/assets/images/services/icons8-google-sheets-96.png';
-import ConditionIcon from '@/assets/images/services/icons8-rule-64.png';
-import LoopIcon from '@/assets/images/services/icons8-repeat-100.png';
-import NavigationIcon from '@/assets/images/services/icons8-navigation-100-2.png';
-import BrowserEventIcon from '@/assets/images/services/icons8-search-in-browser-100.png';
-import TextExtractionIcon from '@/assets/images/services/icons8-image-100.png';
 import Image from 'next/image';
 import BoundingBoxBlock from '@/components/BoundingBox/BoundingBoxBlock';
+import { Rectangle } from '@/types/boundingBox';
 
 interface PropertiesSideBarProps {
   isOpen: boolean;
@@ -90,6 +80,8 @@ export default function PropertiesSideBar({
   const processID = params.id as string;
   const [formValues, setFormValues] = useState<FormValues>({});
   const [saveResult, setSaveResult] = useState<string | null>(null);
+  const [rectangles, setRectangles] = useState<Rectangle[]>([]);
+  const [imageUrl, setImageUrl] = useState('');
   const [isExist, setIsExist] = useState(false);
   const datePickerRef = useRef(null);
   const currentVariableStorage = getVariableItemFromLocalStorage(processID);
@@ -97,29 +89,55 @@ export default function PropertiesSideBar({
     (variable: Variable) => variable.name
   );
 
+  const handleReset = () => {
+    setDefault();
+    setFormValues({});
+    setSaveResult(null);
+    setIsExist(false);
+  };
+
+  const handleActivities = (activity: any) => {
+    setProperty(activity.properties);
+    setFormValues(activity.properties.arguments);
+    setSaveResult(activity.properties.return);
+    setIsExist(true);
+  };
+
   useEffect(() => {
-    const getActivityByID = getActivityInProcess(
-      processID,
-      activityItem.activityID
-    );
-    if (!getActivityByID) return;
-    const isEmptyProperty = Object.keys(getActivityByID.properties).length;
-    if (isEmptyProperty == 0) {
-      setDefault();
-      setFormValues({});
-      setSaveResult(null);
-      setIsExist(false);
+    const activity = getActivityInProcess(processID, activityItem.activityID);
+    if (!activity) return;
+    const hasProperties = Object.keys(activity.properties).length > 0;
+    if (!hasProperties) {
+      handleReset();
     } else {
-      setProperty(getActivityByID.properties);
-      setFormValues(getActivityByID.properties.arguments);
-      setSaveResult(getActivityByID.properties.return);
-      setIsExist(true);
+      handleActivities(activity);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    const fileUrl = 'File URL';
+    const bboxValues = 'Bounding Box Values';
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [bboxValues]: {
+        ...prevValues[bboxValues],
+        value: JSON.stringify(formatBoundingBox(rectangles)),
+      },
+      [fileUrl]: {
+        ...prevValues[fileUrl],
+        // value: imageUrl,
+        value:
+          'https://images.wallpapersden.com/image/download/artistic-landscape-view_bGhlaGmUmZqaraWkpJRrZWWtbWVl.jpg',
+      },
+    }));
+  }, [rectangles, setFormValues]);
 
   const handleGoBack = () => {
     setBack();
     setFormValues({});
+    setSaveResult(null);
+    setRectangles([]);
+    setImageUrl('');
   };
 
   const handleInputChange = (key: string, value: any) => {
@@ -151,43 +169,15 @@ export default function PropertiesSideBar({
     setLocalStorageObject(LocalStorage.PROCESS_LIST, updateProcess);
   };
 
-  const getPackageIcon = (displayName: string) => {
-    switch (displayName) {
-      case 'Google Workspace':
-        return GoogleWorkpaceIcon;
-      case 'Control':
-        return ControlIcon;
-      case 'Browser automation':
-        return BrowserAutomationIcon;
-      case 'Document automation':
-        return DocumentAutomationIcon;
-      default:
-        return null;
-    }
+  const formatBoundingBox = (rectangles: Rectangle[]) => {
+    return rectangles.map((rect) => [
+      rect.top,
+      rect.left,
+      rect.bottom,
+      rect.right,
+    ]);
   };
 
-  const getServiceIcon = (serviceName: string) => {
-    switch (serviceName) {
-      case 'Google Drive':
-        return GoogleDriveIcon;
-      case 'Gmail':
-        return GmailIcon;
-      case 'Google Sheet':
-        return GoogleSheetIcon;
-      case 'Condition':
-        return ConditionIcon;
-      case 'Loop':
-        return LoopIcon;
-      case 'Navigation':
-        return NavigationIcon;
-      case 'Browser Event':
-        return BrowserEventIcon;
-      case 'OCR':
-        return TextExtractionIcon;
-      default:
-        return null;
-    }
-  };
   const headerIcon =
     getServiceIcon(sideBarState.serviceName) ||
     getPackageIcon(sideBarState.packageName);
@@ -377,7 +367,22 @@ export default function PropertiesSideBar({
                       />
                     );
                   case 'bbox.file':
-                    return <BoundingBoxBlock />;
+                    return (
+                      <BoundingBoxBlock
+                        rectangles={rectangles}
+                        setRectangles={setRectangles}
+                        imageUrl={imageUrl}
+                        setImageUrl={setImageUrl}
+                      />
+                    );
+
+                  case 'bbox.value':
+                    return (
+                      <Input
+                        type="text"
+                        value={JSON.stringify(formatBoundingBox(rectangles))}
+                      />
+                    );
 
                   case 'date':
                     return (

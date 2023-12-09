@@ -36,7 +36,7 @@ export default function ForgetPasswordForm() {
     onSubmit: (values, actions) => {},
   });
   return (
-    <div className="w-40">
+    <div className="w-40 mb-[80px]">
       <h1 className="text-primary font-bold text-3xl text-center">
         Recover your password
       </h1>

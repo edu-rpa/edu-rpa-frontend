@@ -81,7 +81,7 @@ export default function VerifyOTPForm() {
   });
 
   return (
-    <div className="w-30">
+    <div className="w-30 mb-[80px]">
       <BaseForm>
         <FormControl>
           <h1 className="text-primary font-bold text-2xl text-center mb-[30px]">

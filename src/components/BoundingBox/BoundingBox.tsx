@@ -86,7 +86,11 @@ const BoundingBox: React.FC<BoundingBoxProps> = ({
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}>
-      <img src={imageUrl} alt="Bounding Box Target" className="w-full h-auto" />
+      <img
+        src={imageUrl}
+        alt="Bounding Box Target"
+        className="w-[600px] h-[800px]"
+      />
       {rectangles.map((rect, index) => (
         <div key={index} style={getStyle(rect)}>
           <input

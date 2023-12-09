@@ -17,7 +17,7 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
   };
 
   const handleSelectWord = (word: string) => {
-    props.onChange('${' + word + '}$');
+    props.onChange('${' + word + '}');
     setIsDropdownOpen(false);
   };
 

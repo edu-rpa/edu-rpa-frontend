@@ -833,27 +833,27 @@ export const ActivityTemplates = [
     iconCode: 'FaFileAlt',
     activityTemplates: [
       {
-        templateId: 'drive.create_folder',
+        templateId: 'ocr.bbox_annotation',
         displayName: 'Bounding Box Annotation',
-        description: 'Create a Google Drive folder in a given directory',
-        iconCode: 'FaGoogleDrive',
+        description: 'Select bounding box  for marking image annotations',
+        iconCode: 'FaImage',
         service: 'OCR',
         type: 'activity',
-        keyword: 'Text Extraction Directory',
+        keyword: 'Text Extraction',
         arguments: {
-          File: {
+          'File URL': {
             type: 'bbox.file',
-            description: 'Import Bounding Box Here',
+            description: 'Import image and draw bounding box',
+            value: null,
+          },
+          'Bounding Box Values': {
+            type: 'bbox.value',
+            description: 'The list of bounding box value',
+            keywordArg: 'annotations',
             value: null,
           },
         },
-        return: {
-          displayName: 'Bounding Box',
-          assignedTo: null,
-          type: 'list',
-          description:
-            'The created folder. This is a dictionary, contains: id (folder id), url (folder url)',
-        },
+        return: null,
       },
     ],
   },
