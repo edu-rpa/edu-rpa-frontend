@@ -1,3 +1,16 @@
+import GoogleWorkpaceIcon from '@/assets/images/packages/icons8-google-100.png';
+import ControlIcon from '@/assets/images/packages/icons8-control-100.png';
+import BrowserAutomationIcon from '@/assets/images/packages/icons8-browser-64.png';
+import DocumentAutomationIcon from '@/assets/images/packages/icons8-document-100.png';
+import GoogleDriveIcon from '@/assets/images/services/icons8-google-drive-96.png';
+import GmailIcon from '@/assets/images/services/icons8-gmail-96.png';
+import GoogleSheetIcon from '@/assets/images/services/icons8-google-sheets-96.png';
+import ConditionIcon from '@/assets/images/services/icons8-rule-64.png';
+import LoopIcon from '@/assets/images/services/icons8-repeat-100.png';
+import NavigationIcon from '@/assets/images/services/icons8-navigation-100-2.png';
+import BrowserEventIcon from '@/assets/images/services/icons8-search-in-browser-100.png';
+import TextExtractionIcon from '@/assets/images/services/icons8-image-100.png';
+
 const getDistinctService = (data: any) => {
   const services = data
     .map((template: any) => template.service)
@@ -30,9 +43,49 @@ const getLibrary = (packageName: string) => {
   }
 };
 
+const getPackageIcon = (displayName: string) => {
+  switch (displayName) {
+    case 'Google Workspace':
+      return GoogleWorkpaceIcon;
+    case 'Control':
+      return ControlIcon;
+    case 'Browser automation':
+      return BrowserAutomationIcon;
+    case 'Document automation':
+      return DocumentAutomationIcon;
+    default:
+      return null;
+  }
+};
+
+const getServiceIcon = (serviceName: string) => {
+  switch (serviceName) {
+    case 'Google Drive':
+      return GoogleDriveIcon;
+    case 'Gmail':
+      return GmailIcon;
+    case 'Google Sheet':
+      return GoogleSheetIcon;
+    case 'Condition':
+      return ConditionIcon;
+    case 'Loop':
+      return LoopIcon;
+    case 'Navigation':
+      return NavigationIcon;
+    case 'Browser Event':
+      return BrowserEventIcon;
+    case 'OCR':
+      return TextExtractionIcon;
+    default:
+      return null;
+  }
+};
+
 export {
   getDistinctService,
   getActivityByService,
   getArgumentsByActivity,
   getLibrary,
+  getPackageIcon,
+  getServiceIcon,
 };

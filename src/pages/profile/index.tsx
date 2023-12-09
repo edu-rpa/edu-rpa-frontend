@@ -88,10 +88,10 @@ const ProfilePage: React.FC = () => {
         </Box>
         <Box ml={3}>
           <Text fontWeight="bold" fontSize="2xl">
-            Tim Cook
+            Nguyễn Đức An
           </Text>
           <Text fontSize="md" color="gray.500">
-            CEO of Apple
+            ducan1406@gmail.com
           </Text>
         </Box>
         <Box>

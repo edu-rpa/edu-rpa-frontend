@@ -10,8 +10,10 @@ import {
   Link,
 } from '@chakra-ui/react';
 import { FaGithub, FaEnvelope, FaPhone } from 'react-icons/fa';
-import SampleImage from '@/assets/images/sample.png';
 import Image from 'next/image';
+import VinhAvatar from '@/assets/images/Vinh.jpg';
+import KhanhAvatar from '@/assets/images/Khanh.jpg';
+import AnAvatar from '@/assets/images/An.jpg';
 
 interface TeamMemberCardProps {
   name: string;
@@ -78,7 +80,7 @@ const OurTeamSection: React.FC = () => (
         mb={5}
         textAlign="center"
         color="teal.500">
-        Our Dedicated Team
+        Our Team
       </Heading>
       <Text
         className="w-60 m-auto text-center my-[10px]"
@@ -91,25 +93,25 @@ const OurTeamSection: React.FC = () => (
 
     <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
       <TeamMemberCard
-        name="Alice Johnson"
-        title="Chief Executive Officer"
-        imageSrc={SampleImage}
+        name="Huỳnh Đại Vinh"
+        title="Team Leader"
+        imageSrc={VinhAvatar}
         githubUrl="https://github.com/alicejohnson"
         email="alice.johnson@example.com"
         phoneNumber="+1234567890"
       />
       <TeamMemberCard
-        name="Bob Smith"
-        title="Chief Technology Officer"
-        imageSrc={SampleImage}
+        name="Nguyễn Đức An"
+        title="Team Member"
+        imageSrc={AnAvatar}
         githubUrl="https://github.com/bobsmith"
         email="bob.smith@example.com"
         phoneNumber="+1234567891"
       />
       <TeamMemberCard
-        name="Carol Williams"
-        title="Chief Financial Officer"
-        imageSrc={SampleImage}
+        name="Nguyễn Quang Khánh"
+        title="Team Member"
+        imageSrc={KhanhAvatar}
         githubUrl="https://github.com/carolwilliams"
         email="carol.williams@example.com"
         phoneNumber="+1234567892"

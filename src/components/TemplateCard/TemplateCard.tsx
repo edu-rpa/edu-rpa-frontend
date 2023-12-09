@@ -12,13 +12,19 @@ import {
   TagLabel,
   TagCloseButton,
 } from '@chakra-ui/react';
-import SampleImage from '@/assets/images/sample.png';
 
-export default function TemplateCard() {
+interface TemplateCard {
+  image: any;
+  title: string;
+  description?: string;
+}
+
+export default function TemplateCard(props: TemplateCard) {
   return (
     <Center py={6}>
       <Box
         maxW={'445px'}
+        height={550}
         w={'full'}
         bg={useColorModeValue('white', 'gray.900')}
         boxShadow={'2xl'}
@@ -31,8 +37,10 @@ export default function TemplateCard() {
           mt={-6}
           mx={-6}
           mb={4}
-          pos={'relative'}>
-          <Image src={SampleImage} fill alt="Example" />
+          pos={'relative'}
+          borderBottom="2px solid teal"
+          borderRadius="md">
+          <Image src={props.image} fill alt="Example" />
         </Box>
         <Stack>
           <Box className="grid grid-cols-3 mb-2">
@@ -64,12 +72,9 @@ export default function TemplateCard() {
             color={useColorModeValue('gray.700', 'white')}
             fontSize={'xl'}
             fontFamily={'body'}>
-            Scan Image
+            {props.title}
           </Heading>
-          <Text color={'gray.500'}>
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-            nonumy eirmod tempor invidunt ut labore et...
-          </Text>
+          <Text color={'gray.500'}>{props.description}</Text>
         </Stack>
         <Button variant="outline" colorScheme="teal" className="mt-[20px]">
           Try it

@@ -78,7 +78,7 @@ export default function FeatureHome() {
       <Container maxW={'5xl'} mt={12}>
         <Flex flexWrap="wrap" gridGap={6} justify="center">
           <Card
-            heading={'Intelligent Grading'}
+            heading={'Process Modeling'}
             icon={<Icon as={FcAssistant} w={10} h={10} />}
             description={
               'Lorem ipsum dolor sit amet catetur, adipisicing elit.'
@@ -86,7 +86,7 @@ export default function FeatureHome() {
             href={'#'}
           />
           <Card
-            heading={'Heading'}
+            heading={'Robot Automation'}
             icon={<Icon as={FcCollaboration} w={10} h={10} />}
             description={
               'Lorem ipsum dolor sit amet catetur, adipisicing elit.'
@@ -94,7 +94,7 @@ export default function FeatureHome() {
             href={'#'}
           />
           <Card
-            heading={'Heading'}
+            heading={'Intelligent Grading'}
             icon={<Icon as={FcDonate} w={10} h={10} />}
             description={
               'Lorem ipsum dolor sit amet catetur, adipisicing elit.'
@@ -102,7 +102,7 @@ export default function FeatureHome() {
             href={'#'}
           />
           <Card
-            heading={'Heading'}
+            heading={'Email Processing'}
             icon={<Icon as={FcManager} w={10} h={10} />}
             description={
               'Lorem ipsum dolor sit amet catetur, adipisicing elit.'
@@ -110,7 +110,7 @@ export default function FeatureHome() {
             href={'#'}
           />
           <Card
-            heading={'Heading'}
+            heading={'Chat Bot'}
             icon={<Icon as={FcAbout} w={10} h={10} />}
             description={
               'Lorem ipsum dolor sit amet catetur, adipisicing elit.'

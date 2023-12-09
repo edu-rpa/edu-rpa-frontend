@@ -166,8 +166,9 @@ function CustomModeler() {
         }}>
         Save JSON
       </Button>
+       */}
       <Button
-        colorScheme="red"
+        colorScheme="orange"
         size="md"
         className="mx-[5px]"
         onClick={() => {
@@ -180,7 +181,7 @@ function CustomModeler() {
           );
         }}>
         Save Properties
-      </Button> */}
+      </Button>
       <VariablesSideBar processID={processId} />
       <br />
     </div>

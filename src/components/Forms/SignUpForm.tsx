@@ -85,7 +85,7 @@ export default function SignUpForm(props: SignUpFormProps) {
     }
   }, []);
   return (
-    <div className="w-40">
+    <div className="w-40 mb-[80px]">
       <BaseForm>
         <form onSubmit={formik.handleSubmit}>
           <h1 className="text-primary font-bold text-2xl text-center">
