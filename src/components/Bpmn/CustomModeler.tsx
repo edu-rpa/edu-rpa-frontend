@@ -1,22 +1,23 @@
-import { useBpmn } from '@/hooks/useBpmn';
-import { BpmnJsReactHandle } from '@/interfaces/bpmnJsReact.interface';
-import { useEffect, useRef, useState } from 'react';
-import BpmnJsReact from './BpmnJsReact';
-import { Button, useDisclosure } from '@chakra-ui/react';
-import ModelerSideBar from './ModelerSidebar';
-import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
+import { useBpmn } from "@/hooks/useBpmn";
+import { BpmnJsReactHandle } from "@/interfaces/bpmnJsReact.interface";
+import { useEffect, useRef, useState } from "react";
+import BpmnJsReact from "./BpmnJsReact";
+import { Button, useDisclosure } from "@chakra-ui/react";
+import ModelerSideBar from "./ModelerSidebar";
+import { BpmnParser } from "@/utils/bpmn-parser/bpmn-parser.util";
 //@ts-ignore
-import { saveAs } from 'file-saver';
-import { useToast } from '@chakra-ui/react';
-import { useParams } from 'next/navigation';
-import { setLocalStorageObject } from '@/utils/localStorageService';
+import { saveAs } from "file-saver";
+import { useToast } from "@chakra-ui/react";
+import { useParams } from "next/navigation";
+import { setLocalStorageObject } from "@/utils/localStorageService";
 import {
   getProcessFromLocalStorage,
   replaceLocalStorage,
-} from '@/utils/processService';
-import { useRouter } from 'next/router';
-import VariablesSideBar from './VariablesSideBar/VariablesSideBar';
-import { LocalStorage } from '@/constants/localStorage';
+} from "@/utils/processService";
+import { useRouter } from "next/router";
+import VariablesSideBar from "./VariablesSideBar/VariablesSideBar";
+import { LocalStorage } from "@/constants/localStorage";
+import { getVariableItemFromLocalStorage } from "@/utils/variableService";
 
 function CustomModeler() {
   const router = useRouter();
@@ -29,14 +30,14 @@ function CustomModeler() {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const exportFile = (content: string, fileName: string) => {
-    var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     saveAs(blob, fileName);
   };
 
   const stringifyCyclicObject = (content: any) => {
     const seen: any = [];
     return JSON.stringify(content, function (key, val) {
-      if (val != null && typeof val == 'object') {
+      if (val != null && typeof val == "object") {
         if (seen.indexOf(val) >= 0) {
           return;
         }
@@ -75,10 +76,10 @@ function CustomModeler() {
           router.push(`/studio/modeler/${processID}`);
         } catch (err) {
           toast({
-            title: 'File is not a XML file',
-            description: 'Please import XML/BPMN files',
-            position: 'top-right',
-            status: 'error',
+            title: "File is not a XML file",
+            description: "Please import XML/BPMN files",
+            position: "top-right",
+            status: "error",
             duration: 2000,
             isClosable: true,
           });
@@ -89,7 +90,7 @@ function CustomModeler() {
   };
 
   return (
-    <div className="mt-[120px]">
+    <div className="">
       <h1 className="text-primary font-bold text-2xl mx-[20px]">{processId}</h1>
       <BpmnJsReact mode="edit" useBpmnJsReact={bpmnReactJs} ref={ref} />
       {bpmnReactJs.bpmnModeler && (
@@ -116,9 +117,10 @@ function CustomModeler() {
           if (inputFileRef.current) {
             inputFileRef.current.click();
           } else {
-            console.error('BPMN file not found!');
+            console.error("BPMN file not found!");
           }
-        }}>
+        }}
+      >
         Import XML
       </Button>
       <Button
@@ -129,7 +131,8 @@ function CustomModeler() {
           const res = await bpmnReactJs.saveXML();
           exportFile(res.xml as string, `${processId}.xml`);
           console.log(res.xml);
-        }}>
+        }}
+      >
         Save XML
       </Button>
       <Button
@@ -144,7 +147,8 @@ function CustomModeler() {
           );
           exportFile(jsonProcess, `${processId}.json`);
           console.log(bpmnParser.parseXML(res.xml as string));
-        }}>
+        }}
+      >
         Save JSON
       </Button>
       <Button
@@ -154,14 +158,32 @@ function CustomModeler() {
         onClick={() => {
           const processProperties = getProcessFromLocalStorage(processId);
           console.log(processProperties);
-          delete processProperties['xml'];
+          delete processProperties["xml"];
           exportFile(
             JSON.stringify(processProperties),
             `${processId}_properties.json`
           );
-        }}>
+        }}
+      >
         Save Properties
       </Button>
+
+      <Button
+        colorScheme="blue"
+        size="md"
+        className="mx-[5px]"
+        onClick={async () => {
+          const res = await bpmnReactJs.saveXML();
+          const bpmnParser = new BpmnParser();
+          const processProperties = getProcessFromLocalStorage(processId).activities;
+          const variableList = getVariableItemFromLocalStorage(processId).variables;
+          const process = bpmnParser.parse(res.xml as string, processProperties, variableList);
+          console.log(process)
+        }}
+      >
+        Compile Robot
+      </Button>
+
       <VariablesSideBar processID={processId} />
       <br />
     </div>

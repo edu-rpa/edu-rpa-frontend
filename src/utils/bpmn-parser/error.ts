@@ -4,6 +4,13 @@ export class BpmnParseError extends Error {
   }
 }
 
+export class VariableError extends Error {
+  constructor(public message: string, public variableName: any) {
+    super();
+  }
+}
+
+
 export enum BpmnParseErrorCode {
   "Invalid Property" = "Invalid Property",
   "Have 2 else branch - missing condition" = "Have 2 else branch - missing condition",
@@ -13,4 +20,10 @@ export enum BpmnParseErrorCode {
   "Both a split node and a join node" = "Both a split node and a join node",
   "Detected Loop in Process - Unsupported" = "Detected Loop in Process - Unsupported",
   "Invalid Workflow - start and end event not connect" = "Invalid Workflow - start and end event not connect",
+}
+
+export enum VariableErrorCode {
+  "Invalid Variable Name - Variable Contain Special Character" = "Invalid Variable Name - Variable Contain Special Character",
+  "Incompatible Type" = "Incompatible Type",
+  "Value Invalid" = "Value Invalid",
 }

@@ -1,6 +1,7 @@
-import { BpmnParseError, BpmnParseErrorCode } from "../error";
+import { Variable } from "@/types/variable";
+import { BpmnParseError, BpmnParseErrorCode, VariableError, VariableErrorCode } from "../error";
 import { BpmnNode, BpmnTask } from "../model/bpmn";
-import { Arguments, Properties } from "../model/properties.model";
+import { Arguments, ProcessVariables, Properties } from "../model/properties.model";
 import { BlankBlock, Branch, IfBranchBlock, Sequence, SequenceItem } from "./BasicBlock";
 import {
   Argument,
@@ -10,23 +11,27 @@ import {
   IfBranch,
   Keyword,
   Lib,
+  ProcessVariable,
   Resource,
   Robot,
   Test,
-  Variable,
 } from "./robot";
 
 export class SequenceVisitor {
   properties: Map<string, Properties>;
   imports: Set<string>;
+  variables: Variable[];
 
-  constructor(public sequence: Sequence, properties: Properties[]) {
+  constructor(public sequence: Sequence, properties: Properties[], variables: Variable[]) {
+    console.log(properties)
     this.properties = properties.reduce((map, obj) => {
       map.set(obj.activityID, obj);
       return map;
     }, new Map<string, Properties>());
     this.imports = new Set<string>();
+    this.variables = variables
   }
+
 
   visit(node: SequenceItem, param: any) {
     if (!node) return { sequence: param, joinNodeId: null };
@@ -43,12 +48,26 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     let name = "";
     let body: BodyItem[] = this.visit(this.sequence, []);
     let test = new Test("Main", body);
+    let variables: ProcessVariable[] = this.parseVariables()
     let resource = new Resource(
       Array.from(this.imports).map((i) => new Lib(i)),
-      []
+      variables
     );
     let robot = new Robot(name, test, resource);
     return robot;
+  }
+
+  parseVariables() {
+    return this.variables.map((v) => {
+      let value;
+      try {
+        value = JSON.parse(v.value);
+      } catch (error) {
+        throw new VariableError(VariableErrorCode["Value Invalid"], v)
+      }
+      
+      return new ProcessVariable(v.name, value, v.type)
+    })
   }
 
   visitBpmnTask(node: BpmnTask, params: any[]) {
@@ -65,7 +84,7 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     const args = property.arguments;
     const assigns = property.assigns;
     const Lib = property.library;
-    let keywordAssigns = [] as Variable[];
+    let keywordAssigns = [] as ProcessVariable[];
     let keywordArg = [] as Argument[];
     if (!property.activityName) {
       throw new BpmnParseError("Activity name must be specified", node.id);
@@ -76,7 +95,7 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       );
     }
     if (assigns) {
-      keywordAssigns = Object.keys(assigns).map((k) => new Variable(k));
+      keywordAssigns = Object.keys(assigns).map((k) => new ProcessVariable(k));
     }
     if (Lib) {
       this.imports.add(Lib);
@@ -145,7 +164,7 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
         body = body.concat(this.visit(item, params));
       }
 
-      return new For([new Variable(Item)], "IN", [new Variable(List)], body);
+      return new For([new ProcessVariable(Item)], "IN", [new ProcessVariable(List)], body);
     }
   }
 }

@@ -8,7 +8,7 @@ export default function Header() {
   const router = useRouter();
   return (
     <div className="bg-[#fff] w-full shadow-header fixed top-0 left-0 z-10">
-      <div className="w-11/12 m-auto py-[20px] flex justify-between">
+      <div className="w-11/12 m-auto flex justify-between">
         <Image
           src={logo}
           width={150}

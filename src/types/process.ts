@@ -8,3 +8,7 @@ export interface Process {
   activities: Activity[];
   variables: Variable[];
 }
+
+export interface Process {
+  variables: Variable[];
+}

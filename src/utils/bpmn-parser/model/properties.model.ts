@@ -16,3 +16,10 @@ interface PropertiesDetails {
 export interface Arguments {
     [key: string] : string;
 }
+
+export interface ProcessVariables {
+    id: number;
+    name: string;
+    type: string;
+    value: string;
+}
