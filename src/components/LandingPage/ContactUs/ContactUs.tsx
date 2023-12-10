@@ -64,32 +64,29 @@ export default function ContactUsHome() {
                         <Button
                           size="md"
                           height="48px"
-                          width="200px"
                           variant="ghost"
                           color="#319795"
                           _hover={{ bg: '#4FD1C5', color: 'white' }}
                           leftIcon={<MdPhone size="20px" />}>
-                          +91-988888888
+                          0852531027
                         </Button>
                         <Button
                           size="md"
                           height="48px"
-                          width="200px"
                           variant="ghost"
                           color="#319795"
                           _hover={{ bg: '#4FD1C5', color: 'white' }}
                           leftIcon={<MdEmail size="20px" />}>
-                          hello@abc.com
+                          edurpa.contact@gmail.com
                         </Button>
                         <Button
                           size="md"
                           height="48px"
-                          width="200px"
                           variant="ghost"
                           color="#319795"
                           _hover={{ bg: '#4FD1C5', color: 'white' }}
                           leftIcon={<MdLocationOn size="20px" />}>
-                          Karnavati, India
+                          268 Ly Thuong Kiet, HCMC, Viet Nam
                         </Button>
                       </VStack>
                     </Box>

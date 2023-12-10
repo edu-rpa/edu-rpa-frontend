@@ -33,12 +33,14 @@ const defaultXML = (processID: string) => {
 const initProcess = (
   processID: string,
   xml: string,
-  processName: string
+  processName: string,
+  processType: string
 ): Process => {
   return {
     processID: processID,
     xml: xml,
     processName: processName,
+    processType: processType,
     activities: [
       {
         activityID: 'StartEvent_0vr9as6',

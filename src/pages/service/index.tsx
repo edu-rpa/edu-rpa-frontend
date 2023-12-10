@@ -1,8 +1,9 @@
 import { formatDate } from '@/utils/common';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import connectionData from '../../constants/serviceData';
 import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
 import {
+  Box,
   Button,
   Input,
   InputGroup,
@@ -14,6 +15,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -35,6 +37,7 @@ export default function Service() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
   const finalRef = useRef<HTMLInputElement>(null);
+  const [selectFilter, setSelectFilter] = useState('all');
   const tableProps = {
     header: ['Service', 'Connection ID', 'Owner', 'Last Modified', 'Status'],
     data: connectionData,
@@ -66,11 +69,20 @@ export default function Service() {
               <SearchIcon color="gray.500" />
             </InputLeftElement>
             <Input
-              width="55vw"
+              width="40vw"
               bg="white.300"
               type="text"
               placeholder="Search..."
             />
+            <Box className="w-[15vw] ml-[20px]">
+              <Select
+                defaultValue="all"
+                onChange={(e) => setSelectFilter(e.target.value)}>
+                <option value="connected">Connected</option>
+                <option value="unconnected">Unconnected</option>
+                <option value="all">All</option>
+              </Select>
+            </Box>
           </InputGroup>
           <div className="flex justify-between gap-[10px]">
             <Button colorScheme="teal" onClick={onOpen}>
@@ -110,6 +122,7 @@ export default function Service() {
         <div className="w-90 m-auto">
           <CustomTable
             header={tableProps.header}
+            maxRows={5}
             data={tableProps.data}
             onView={handleViewService}
           />

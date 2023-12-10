@@ -1,6 +1,7 @@
 import CustomTable from '@/components/CustomTable/CustomTable';
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Box,
   Button,
   FormControl,
   FormLabel,
@@ -14,6 +15,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   useDisclosure,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
@@ -44,6 +46,8 @@ export default function Studio() {
   const initialRef = useRef<HTMLInputElement>(null);
   const finalRef = useRef<HTMLInputElement>(null);
   const [processList, setProcessList] = useState([]);
+  const [processType, setProcessType] = useState('free');
+  const [selectFilter, setSelectFilter] = useState('all');
 
   useEffect(() => {
     const getProcessStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
@@ -83,13 +87,21 @@ export default function Studio() {
       return {
         id: item.processID,
         name: item.processName,
+        ptype: item.processType,
         owner: 'You',
         last_modified: formatDate(new Date()),
       };
     });
 
   const tableProps = {
-    header: ['Process ID', 'Process Name', 'Owner', 'Last Modified', 'Actions'],
+    header: [
+      'Process ID',
+      'Process Name',
+      'Process Type',
+      'Owner',
+      'Last Modified',
+      'Actions',
+    ],
     data: formatData ?? [],
   };
 
@@ -99,7 +111,8 @@ export default function Studio() {
     const initialProcess = initProcess(
       processID,
       xml,
-      initialRef.current?.value as string
+      initialRef.current?.value as string,
+      processType
     );
     setLocalStorageObject(LocalStorage.PROCESS_LIST, [
       ...processList,
@@ -137,11 +150,22 @@ export default function Studio() {
               <SearchIcon color="gray.500" />
             </InputLeftElement>
             <Input
-              width="45vw"
+              width="30vw"
               bg="white.300"
               type="text"
               placeholder="Search..."
             />
+            <Box className="w-[15vw] ml-[20px]">
+              <Select
+                defaultValue="all"
+                onChange={(e) => setSelectFilter(e.target.value)}>
+                <option value="ocr">OCR</option>
+                <option value="email-processing">Email Processing</option>
+                <option value="google-workspace">Google Workpace</option>
+                <option value="free">Free</option>
+                <option value="all">All</option>
+              </Select>
+            </Box>
           </InputGroup>
           <div className="flex justify-between gap-[10px]">
             <Button colorScheme="teal" onClick={onOpen}>
@@ -164,6 +188,17 @@ export default function Studio() {
                 <FormControl>
                   <FormLabel>Process name</FormLabel>
                   <Input ref={initialRef} placeholder="Process name" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Category</FormLabel>
+                  <Select
+                    defaultValue="free"
+                    onChange={(e) => setProcessType(e.target.value)}>
+                    <option value="ocr">OCR</option>
+                    <option value="email-processing">Email Processing</option>
+                    <option value="google-workspace">Google Workpace</option>
+                    <option value="free">Free</option>
+                  </Select>
                 </FormControl>
               </ModalBody>
               <ModalFooter>

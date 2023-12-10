@@ -5,6 +5,7 @@ export interface Process {
   processID: string;
   xml: string;
   processName: string | null;
+  processType: string;
   activities: Activity[];
   variables: Variable[];
 }
