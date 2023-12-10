@@ -47,12 +47,20 @@ const ServiceDetail = () => {
         id: item.processID,
         name: item.processName,
         owner: 'You',
+        ptype: item.processType,
         last_modified: formatDate(new Date()),
       };
     });
 
   const tableProps = {
-    header: ['Process ID', 'Process Name', 'Owner', 'Last Modified', 'Actions'],
+    header: [
+      'Process ID',
+      'Process Name',
+      'Process Type',
+      'Owner',
+      'Last Modified',
+      'Actions',
+    ],
     data: formatData ?? [],
   };
 
@@ -74,14 +82,17 @@ const ServiceDetail = () => {
   };
 
   return (
-    <Container maxW="container.xl" className="bg-white h-[100vh]">
-      <Box className="flex justify-between items-center w-90 m-auto">
+    <Container
+      maxW="container.xl"
+      className="fixed top-0 left-0 right-0 bottom-0 bg-white overflow-y-auto">
+      <Box className="flex justify-between items-center">
         <IconButton
           colorScheme="teal"
           aria-label="Prev to home"
           variant="outline"
           isRound={true}
           size="lg"
+          className="ml-[40px]"
           onClick={() => router.push('/service')}
           icon={<ChevronLeftIcon />}
         />
@@ -114,7 +125,7 @@ const ServiceDetail = () => {
         </Text>
       </Box>
       <Box>
-        <SidebarContent className="w-[70vw]">
+        <SidebarContent className="w-[80vw] m-auto">
           <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
             Process List
           </h1>
@@ -143,7 +154,9 @@ const ServiceDetail = () => {
             />
           </div>
         </SidebarContent>
-        <SidebarContent className="w-[70vw]">
+      </Box>
+      <Box className="w-[90vw] m-auto">
+        <SidebarContent className="w-[70vw] m-auto">
           <h1 className="px-[20px] ml-[30px] font-bold text-2xl text-[#319795]">
             Google Drive Templates
           </h1>

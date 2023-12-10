@@ -62,7 +62,7 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <SidebarContent className="w-[40vw]">
+    <SidebarContent className="w-[45vw]">
       <Box className="w-90 m-auto">
         <Box className="flex justify-between items-center relative">
           <Box
