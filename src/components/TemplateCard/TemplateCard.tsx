@@ -24,7 +24,6 @@ export default function TemplateCard(props: TemplateCard) {
     <Center py={6}>
       <Box
         maxW={'445px'}
-        height={550}
         w={'full'}
         bg={useColorModeValue('white', 'gray.900')}
         boxShadow={'2xl'}
@@ -71,10 +70,21 @@ export default function TemplateCard(props: TemplateCard) {
             // eslint-disable-next-line react-hooks/rules-of-hooks
             color={useColorModeValue('gray.700', 'white')}
             fontSize={'xl'}
-            fontFamily={'body'}>
+            fontFamily={'body'}
+            noOfLines={1}
+            overflow="hidden"
+            textOverflow="ellipsis">
             {props.title}
           </Heading>
-          <Text color={'gray.500'}>{props.description}</Text>
+          <Box
+            overflowY="auto"
+            color={'gray.500'}
+            maxHeight="100px" // Set a maximum height for the description text
+          >
+            <Text noOfLines={3} overflow="hidden" textOverflow="ellipsis">
+              {props.description}
+            </Text>
+          </Box>
         </Stack>
         <Button variant="outline" colorScheme="teal" className="mt-[20px]">
           Try it

@@ -26,7 +26,7 @@ import {
   getProcessFromLocalStorage,
 } from '@/utils/processService';
 import { deleteVariableById } from '@/utils/variableService';
-import SampleImage from '@/assets/images/AutomationTemplate.jpg';
+import AutomationTemplateImage from '@/assets/images/AutomationTemplate.jpg';
 
 const ServiceDetail = () => {
   const router = useRouter();
@@ -155,31 +155,31 @@ const ServiceDetail = () => {
           </div>
         </SidebarContent>
       </Box>
-      <Box className="w-[90vw] m-auto">
-        <SidebarContent className="w-[70vw] m-auto">
+      <Box className="w-[80vw] m-auto">
+        <SidebarContent className="w-[80vw] m-auto">
           <h1 className="px-[20px] ml-[30px] font-bold text-2xl text-[#319795]">
             Google Drive Templates
           </h1>
           <div className="grid grid-cols-3 gap-[15px] w-90 m-auto">
             <TemplateCard
-              image={SampleImage}
+              image={AutomationTemplateImage}
               title="Grading 100 English Exams from sample document"
-              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+              description="Evaluating 100 English Exam Papers from the provided sample document, ensuring accuracy and fairness throughout the grading process..."
             />
             <TemplateCard
-              image={SampleImage}
+              image={AutomationTemplateImage}
               title="Get 100 emails from Inbox"
-              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+              description="Retrieve 100 emails from your Inbox, managing and organizing your electronic correspondence efficiently and effectively..."
             />
             <TemplateCard
-              image={SampleImage}
+              image={AutomationTemplateImage}
               title="Export Data To Google Sheet"
-              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+              description="Seamlessly transfer your data directly to Google Sheets with our intuitive export feature. Whether you're managing extensive datasets, tracking project progress, or analyzing financial records, our tool ensures your information is synchronized in real-time."
             />
             <TemplateCard
-              image={SampleImage}
+              image={AutomationTemplateImage}
               title="Extract Text From An Image"
-              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+              description="Unlock the hidden potential of your images with our cutting-edge templates. It's your gateway to converting visual content into actionable text, making information more accessible and versatile than ever before."
             />
           </div>
         </SidebarContent>

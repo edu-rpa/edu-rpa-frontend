@@ -68,7 +68,7 @@ export default function PricingHome() {
                 $
               </Text>
               <Text fontSize="5xl" fontWeight="900">
-                79
+                19
               </Text>
               <Text fontSize="3xl" color="gray.500">
                 /month
@@ -82,15 +82,15 @@ export default function PricingHome() {
             <List spacing={3} textAlign="start" px={12}>
               <ListItem>
                 <ListIcon as={FaCheckCircle} color="green.500" />
-                unlimited build minutes
+                Unlimited build minutes
               </ListItem>
               <ListItem>
                 <ListIcon as={FaCheckCircle} color="green.500" />
-                Lorem, ipsum dolor.
+                1TB robot function storage.
               </ListItem>
               <ListItem>
                 <ListIcon as={FaCheckCircle} color="green.500" />
-                5TB Lorem, ipsum dolor.
+                2TB file storage.
               </ListItem>
             </List>
             <Box w="80%" pt={7}>
@@ -129,7 +129,7 @@ export default function PricingHome() {
                   $
                 </Text>
                 <Text fontSize="5xl" fontWeight="900">
-                  149
+                  49
                 </Text>
                 <Text fontSize="3xl" color="gray.500">
                   /month
@@ -143,23 +143,15 @@ export default function PricingHome() {
               <List spacing={3} textAlign="start" px={12}>
                 <ListItem>
                   <ListIcon as={FaCheckCircle} color="green.500" />
-                  unlimited build minutes
+                  Unlimited build minutes.
                 </ListItem>
                 <ListItem>
                   <ListIcon as={FaCheckCircle} color="green.500" />
-                  Lorem, ipsum dolor.
+                  3TB robot function storage.
                 </ListItem>
                 <ListItem>
                   <ListIcon as={FaCheckCircle} color="green.500" />
-                  5TB Lorem, ipsum dolor.
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={FaCheckCircle} color="green.500" />
-                  5TB Lorem, ipsum dolor.
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={FaCheckCircle} color="green.500" />
-                  5TB Lorem, ipsum dolor.
+                  2TB file storage.
                 </ListItem>
               </List>
               <Box w="80%" pt={7}>
@@ -180,7 +172,7 @@ export default function PricingHome() {
                 $
               </Text>
               <Text fontSize="5xl" fontWeight="900">
-                349
+                99
               </Text>
               <Text fontSize="3xl" color="gray.500">
                 /month
@@ -194,15 +186,15 @@ export default function PricingHome() {
             <List spacing={3} textAlign="start" px={12}>
               <ListItem>
                 <ListIcon as={FaCheckCircle} color="green.500" />
-                unlimited build minutes
+                Unlimited build minutes
               </ListItem>
               <ListItem>
                 <ListIcon as={FaCheckCircle} color="green.500" />
-                Lorem, ipsum dolor.
+                5TB robot function storage.
               </ListItem>
               <ListItem>
                 <ListIcon as={FaCheckCircle} color="green.500" />
-                5TB Lorem, ipsum dolor.
+                4TB file storage.
               </ListItem>
             </List>
             <Box w="80%" pt={7}>
