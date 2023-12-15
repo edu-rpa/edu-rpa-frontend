@@ -86,8 +86,9 @@ const OurTeamSection: React.FC = () => (
         className="w-60 m-auto text-center my-[10px]"
         color={'gray.600'}
         fontSize={{ base: 'sm', sm: 'lg' }}>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis
-        obcaecati ut cupiditate pariatur, dignissimos, placeat amet officiis.
+        Our team combines expertise and passion to deliver exceptional service,
+        setting the bar for outstanding quality through diverse knowledge and
+        wholehearted commitment.
       </Text>
     </Box>
 

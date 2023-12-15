@@ -232,6 +232,7 @@ export default function PropertiesSideBar({
 
               const renderStepTwo = () => {
                 const services = getDistinctService(activityTemplates);
+                console.log('Services', services);
                 return (
                   <div className="my-[20px] grid grid-cols-2 gap-[20px] w-90 mx-auto">
                     {packageName === displayName &&

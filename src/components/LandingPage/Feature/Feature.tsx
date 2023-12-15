@@ -47,7 +47,12 @@ const Card = ({ heading, description, icon, href }: CardProps) => {
         </Flex>
         <Box mt={2}>
           <Heading size="md">{heading}</Heading>
-          <Text mt={1} fontSize={'sm'}>
+          <Text
+            my={2}
+            fontSize={'sm'}
+            noOfLines={3}
+            overflow="hidden"
+            textOverflow="ellipsis">
             {description}
           </Text>
         </Box>
@@ -70,8 +75,10 @@ export default function FeatureHome() {
           What we offers
         </Heading>
         <Text color={'gray.600'} fontSize={{ base: 'sm', sm: 'lg' }}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis
-          obcaecati ut cupiditate pariatur, dignissimos, placeat amet officiis.
+          In today's fast-paced business environment, efficiency and innovation
+          are at the forefront of success. Our suite of services is designed to
+          revolutionize how you work, offering customized solutions that drive
+          productivity and growth.
         </Text>
       </Stack>
 
@@ -81,7 +88,7 @@ export default function FeatureHome() {
             heading={'Process Modeling'}
             icon={<Icon as={FcAssistant} w={10} h={10} />}
             description={
-              'Lorem ipsum dolor sit amet catetur, adipisicing elit.'
+              'Optimize your operations with our advanced process modeling techniques. Our tools help you visualize, analyze your workflows, ensuring that you achieve maximum efficiency and quality in every aspect of your business.'
             }
             href={'#'}
           />
@@ -89,7 +96,7 @@ export default function FeatureHome() {
             heading={'Robot Automation'}
             icon={<Icon as={FcCollaboration} w={10} h={10} />}
             description={
-              'Lorem ipsum dolor sit amet catetur, adipisicing elit.'
+              'Embrace the future with our robotic automation services. We provide intelligent systems that automate repetitive tasks, reduce human error, and free up your team to focus on strategic initiatives that propel your business forward.'
             }
             href={'#'}
           />
@@ -97,7 +104,7 @@ export default function FeatureHome() {
             heading={'Intelligent Grading'}
             icon={<Icon as={FcDonate} w={10} h={10} />}
             description={
-              'Lorem ipsum dolor sit amet catetur, adipisicing elit.'
+              'Our intelligent grading system utilizes AI to provide instant, accurate assessments. Ideal for educational institutions and training departments, this tool ensures that evaluations are fair, consistent, and objective.'
             }
             href={'#'}
           />
@@ -105,7 +112,7 @@ export default function FeatureHome() {
             heading={'Email Processing'}
             icon={<Icon as={FcManager} w={10} h={10} />}
             description={
-              'Lorem ipsum dolor sit amet catetur, adipisicing elit.'
+              'Transform the way your business handles task assignments with our robust Email Processing service. Our system organizes your incoming messages and autonomously executes tasks.'
             }
             href={'#'}
           />
@@ -113,7 +120,7 @@ export default function FeatureHome() {
             heading={'Chat Bot'}
             icon={<Icon as={FcAbout} w={10} h={10} />}
             description={
-              'Lorem ipsum dolor sit amet catetur, adipisicing elit.'
+              'Improve customer engagement with our AI-powered chatbots. They provide instant support, answer queries, and ensure that your customers receive the attention they deserve at any time of the day.'
             }
             href={'#'}
           />

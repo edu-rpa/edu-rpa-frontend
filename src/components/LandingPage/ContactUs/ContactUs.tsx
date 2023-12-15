@@ -39,8 +39,8 @@ export default function ContactUsHome() {
           Contact Us
         </Heading>
         <Text color={'gray.600'} fontSize={{ base: 'sm', sm: 'lg' }}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis
-          obcaecati ut cupiditate pariatur, dignissimos, placeat amet officiis.
+          Feel free to reach out to us anytime. We're here to assist you with
+          any questions or concerns you may have.
         </Text>
       </Stack>
       <Container maxW="full" m={0} centerContent overflow="hidden">

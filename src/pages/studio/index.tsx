@@ -233,22 +233,22 @@ export default function Studio() {
           <TemplateCard
             image={AutomationTemplateImage}
             title="Grading 100 English Exams from sample document"
-            description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+            description="Evaluating 100 English Exam Papers from the provided sample document, ensuring accuracy and fairness throughout the grading process..."
           />
           <TemplateCard
             image={AutomationTemplateImage}
             title="Get 100 emails from Inbox"
-            description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+            description="Retrieve 100 emails from your Inbox, managing and organizing your electronic correspondence efficiently and effectively..."
           />
           <TemplateCard
             image={AutomationTemplateImage}
             title="Export Data To Google Sheet"
-            description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+            description="Seamlessly transfer your data directly to Google Sheets with our intuitive export feature. Whether you're managing extensive datasets, tracking project progress, or analyzing financial records, our tool ensures your information is synchronized in real-time."
           />
           <TemplateCard
             image={AutomationTemplateImage}
             title="Extract Text From An Image"
-            description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+            description="Unlock the hidden potential of your images with our cutting-edge templates. It's your gateway to converting visual content into actionable text, making information more accessible and versatile than ever before."
           />
         </div>
       </SidebarContent>

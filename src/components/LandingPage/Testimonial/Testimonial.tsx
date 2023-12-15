@@ -105,7 +105,7 @@ const TestimonialAvatar = ({
 export default function TestimonialHome() {
   return (
     <Box bg="white">
-      <Container maxW={'7xl'} py={10} as={Stack} spacing={12}>
+      <Container maxW={'7xl'} p={10} as={Stack} spacing={12}>
         <Stack spacing={0} align={'center'}>
           <Heading color="teal.500">Our Clients Speak</Heading>
           <Text>We have been working with clients around the world</Text>
@@ -115,10 +115,10 @@ export default function TestimonialHome() {
           spacing={{ base: 10, md: 4, lg: 10 }}>
           <Testimonial>
             <TestimonialContent>
-              <TestimonialHeading>Efficient Collaborating</TestimonialHeading>
+              <TestimonialHeading>Saving Time</TestimonialHeading>
               <TestimonialText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-                neque sed imperdiet nibh lectus feugiat nunc sem.
+                Thanks to these time-saving techniques, I've reclaimed hours in
+                my day and achieved more than ever before!
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
@@ -126,15 +126,15 @@ export default function TestimonialHome() {
                 'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
               }
               name={'Jane Cooper'}
-              title={'CEO at ABC Corporation'}
+              title={'Office Manager'}
             />
           </Testimonial>
           <Testimonial>
             <TestimonialContent>
               <TestimonialHeading>Intuitive Design</TestimonialHeading>
               <TestimonialText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-                neque sed imperdiet nibh lectus feugiat nunc sem.
+                It's made my daily tasks feel effortless and enjoyable, and I
+                couldn't be happier with the user experience it provides.
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
@@ -142,15 +142,16 @@ export default function TestimonialHome() {
                 'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
               }
               name={'Jane Cooper'}
-              title={'CEO at ABC Corporation'}
+              title={'Teacher'}
             />
           </Testimonial>
           <Testimonial>
             <TestimonialContent>
               <TestimonialHeading>Mindblowing Service</TestimonialHeading>
               <TestimonialText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-                neque sed imperdiet nibh lectus feugiat nunc sem.
+                The mind-blowing service I received exceeded all my
+                expectations. The team went above and beyond to ensure my needs
+                were not only met but surpassed. Truly exceptional!
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
@@ -158,7 +159,7 @@ export default function TestimonialHome() {
                 'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
               }
               name={'Jane Cooper'}
-              title={'CEO at ABC Corporation'}
+              title={'Student'}
             />
           </Testimonial>
         </Stack>
