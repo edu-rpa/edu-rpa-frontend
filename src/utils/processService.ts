@@ -98,6 +98,13 @@ const getActivityInProcess = (processID: string, activityID: string) => {
   );
 };
 
+const deleteProcessById = (processID: string) => {
+  const currLocalStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
+  return currLocalStorage.filter(
+    (item: Process) => item.processID !== processID
+  );
+};
+
 export {
   generateProcessID,
   getProcessFromLocalStorage,
@@ -108,4 +115,5 @@ export {
   defaultXML,
   replaceLocalStorage,
   updateLocalStorage,
+  deleteProcessById,
 };

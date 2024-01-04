@@ -70,12 +70,8 @@ export default function VariablesSideBar(props: VariablesSideBarProps) {
 
   return (
     <div className="inline-block">
-      <Button
-        colorScheme="pink"
-        size="md"
-        className="mx-[5px]"
-        onClick={onOpen}>
-        Variable
+      <Button colorScheme="red" size="md" className="mx-[5px]" onClick={onOpen}>
+        Set Variable
       </Button>
       <Drawer
         isOpen={isOpen}

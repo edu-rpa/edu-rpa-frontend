@@ -22,4 +22,15 @@ const replaceVariableStorage = (processID: string, newObj: VariableItem) => {
   return currLocalStorage;
 };
 
-export { getVariableItemFromLocalStorage, replaceVariableStorage };
+const deleteVariableById = (processID: string) => {
+  const currLocalStorage = getLocalStorageObject(LocalStorage.VARIABLE_LIST);
+  return currLocalStorage.filter(
+    (item: VariableItem) => item.processID !== processID
+  );
+};
+
+export {
+  getVariableItemFromLocalStorage,
+  replaceVariableStorage,
+  deleteVariableById,
+};

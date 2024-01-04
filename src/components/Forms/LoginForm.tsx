@@ -25,11 +25,13 @@ import { useMutation } from '@tanstack/react-query';
 import { LoginDto } from '@/dtos/authDto';
 import authApi from '@/apis/auth';
 import { localStorageService } from '@/utils/profile';
+import useAuth from '@/hooks/useAuth';
 
 export default function LoginForm() {
   const router = useRouter();
   const toast = useToast();
   const [isVisible, setIsVisible] = useState(false);
+  const { setAuthToken } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -159,6 +161,10 @@ export default function LoginForm() {
           className="w-full"
           colorScheme="teal"
           variant="outline"
+          onClick={() => {
+            setAuthToken();
+            router.push('/home');
+          }}
           leftIcon={<SVGIcon svgComponent={GoogleIcon} />}>
           Sign in with Google
         </Button>

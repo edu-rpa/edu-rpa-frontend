@@ -18,6 +18,8 @@ import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camu
 import CliModule from 'bpmn-js-cli';
 //@ts-ignore
 import BpmnColorPickerModule from 'bpmn-js-color-picker';
+//@ts-ignore
+import gridModule from 'diagram-js-grid';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-font/dist/css/bpmn-embedded.css';
 import removeUnsupportedBpmnFunctions from './removeTrackPad';
@@ -30,7 +32,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
 > = (
   {
     useBpmnJsReact,
-    height = 600,
+    height = '80vh',
     onError = () => {},
     onShown = () => {},
   }: BpmnJsReactProps,
@@ -54,6 +56,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
         BpmnColorPickerModule,
         propertiesProviderModule,
         CliModule,
+        gridModule,
       ],
       cli: {
         bindTo: 'cli',

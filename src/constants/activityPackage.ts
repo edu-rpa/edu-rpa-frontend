@@ -831,6 +831,30 @@ export const ActivityTemplates = [
     description:
       'Help you automate tasks related to documents (traditional paper documents or digital documents like PDFs) with the help of AI',
     iconCode: 'FaFileAlt',
-    activityTemplates: [],
+    activityTemplates: [
+      {
+        templateId: 'ocr.bbox_annotation',
+        displayName: 'Bounding Box Annotation',
+        description: 'Select bounding box  for marking image annotations',
+        iconCode: 'FaImage',
+        service: 'OCR',
+        type: 'activity',
+        keyword: 'Text Extraction',
+        arguments: {
+          'File URL': {
+            type: 'bbox.file',
+            description: 'Import image and draw bounding box',
+            value: null,
+          },
+          'Bounding Box Values': {
+            type: 'bbox.value',
+            description: 'The list of bounding box value',
+            keywordArg: 'annotations',
+            value: null,
+          },
+        },
+        return: null,
+      },
+    ],
   },
 ];
