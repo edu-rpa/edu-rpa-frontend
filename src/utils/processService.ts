@@ -89,7 +89,7 @@ const replaceLocalStorage = (processID: string, newObj: Process) => {
 };
 
 const getActivityInProcess = (processID: string, activityID: string) => {
-  return getProcessFromLocalStorage(processID).activities.find(
+  return getProcessFromLocalStorage(processID)?.activities.find(
     (activity: Activity) => activity.activityID === activityID
   );
 };
