@@ -21,12 +21,20 @@ import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import useAuth from '@/hooks/useAuth';
 
-import AvatarImage from '@/assets/images/An.jpg';
+import { useQuery } from '@tanstack/react-query';
+import { QUERY_KEY } from '@/constants/queryKey';
+import userApi from '@/apis/userApi';
 
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { removeAuthToken } = useAuth();
+
+  const { data: userInfo } = useQuery({
+    queryKey: [QUERY_KEY.ME],
+    queryFn: () => userApi.getMe(),
+  });
+
   return (
     <Flex
       px={{ base: 4, md: 4 }}
@@ -68,15 +76,19 @@ const Navbar = () => {
           <Menu>
             <MenuButton py={2} transition="all 0.3s">
               <HStack>
-                <Avatar size="sm" src={AvatarImage.src} />
+                <Avatar
+                  size="sm"
+                  bg="gray.500"
+                  src={userInfo && userInfo.avatarUrl}
+                />
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
                   alignItems="flex-start"
                   spacing="1px"
                   ml="2">
-                  <Text fontSize="sm">Nguyễn Đức An</Text>
+                  <Text fontSize="sm">{userInfo && userInfo.name}</Text>
                   <Text fontSize="xs" color="gray.600">
-                    ducan1406@gmail.com
+                    {userInfo && userInfo.email}
                   </Text>
                 </VStack>
                 <Box display={{ base: 'none', md: 'flex' }}>

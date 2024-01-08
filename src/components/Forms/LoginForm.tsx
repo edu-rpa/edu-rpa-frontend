@@ -23,9 +23,10 @@ import BaseForm from './BaseForm';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { LoginDto } from '@/dtos/authDto';
-import authApi from '@/apis/auth';
-import { localStorageService } from '@/utils/profile';
+import authApi from '@/apis/authApi';
 import useAuth from '@/hooks/useAuth';
+import { setLocalStorageObject } from '@/utils/localStorageService';
+import { LocalStorage } from '@/constants/localStorage';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -61,7 +62,7 @@ export default function LoginForm() {
         duration: 1000,
         isClosable: true,
       });
-      localStorageService.setProfile(data);
+      setLocalStorageObject(LocalStorage.ACCESS_TOKEN, data?.accessToken);
       router.push('/');
     },
     onError: () => {

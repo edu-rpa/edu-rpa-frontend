@@ -22,7 +22,7 @@ import * as Yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
 import { SignUpDto } from '@/dtos/authDto';
 import { useToast } from '@chakra-ui/react';
-import authApi from '@/apis/auth';
+import authApi from '@/apis/authApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateInfo } from '@/redux/slice/authSlice';
 import { authSelector } from '@/redux/selector';
