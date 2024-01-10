@@ -99,8 +99,9 @@ const BoundingBox: React.FC<BoundingBoxProps> = ({
             onChange={(e) => handleLabelChange(e, index)}
             style={{
               position: 'absolute',
-              width: '30%',
-              top: 0,
+              width: '100%',
+              minWidth: '50px',
+              top: '-25px',
               border: 'none',
               padding: '2px',
               fontSize: 'small',
