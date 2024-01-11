@@ -6,7 +6,6 @@ export interface DocumentTemplate {
   name: string;
   description: string;
   type: DocumentTemplateType;
-  isSampleUploaded: boolean;
 }
 
 export interface DocumentTemplateDetail {

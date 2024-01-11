@@ -72,9 +72,8 @@ const EditDocumentTemplateModal: React.FC<Props> = ({
           <FormControl>
             <FormLabel>Type</FormLabel>
             <Select
-              value={documentTemplate?.type || DocumentTemplateType.PDF}
+              value={documentTemplate?.type || DocumentTemplateType.IMAGE}
               disabled>
-              <option value={DocumentTemplateType.PDF}>PDF</option>
               <option value={DocumentTemplateType.IMAGE}>Image</option>
             </Select>
           </FormControl>

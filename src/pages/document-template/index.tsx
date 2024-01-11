@@ -8,8 +8,9 @@ import {
   InputLeftElement,
   Select,
   useDisclosure,
+  Tooltip,
 } from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
+import { SearchIcon, QuestionIcon } from '@chakra-ui/icons';
 import CustomTable from '@/components/CustomTable/CustomTable';
 import { DocumentTemplate } from '@/interfaces/document-template';
 import { DocumentTemplateType } from '@/interfaces/enums/document-template-type';
@@ -17,38 +18,11 @@ import { CreateDocumentTemplateDto, SaveDocumentTemplateDto, EditDocumentTemplat
 import CreateDocumentTemplateModal from './create-modal';
 import DetailDocumentTemplateModal from './detail-modal';
 import EditDocumentTemplateModal from './edit-modal';
+import documentTemplateApi from '@/apis/documentTemplateApi';
 
-const documentTemplates: DocumentTemplate[] = [
-  {
-    id: '1',
-    name: 'Document Template 1',
-    description: 'Description 1',
-    type: DocumentTemplateType.PDF,
-    isSampleUploaded: true,
-  },
-  {
-    id: '2',
-    name: 'Document Template 2',
-    description: 'Description 2',
-    type: DocumentTemplateType.IMAGE,
-    isSampleUploaded: false,
-  },
-];
+const documentTemplateExplain = 'Document template is a template that contains the information of the document that you want to extract.';
 
 export default function DocumentTemplateList() {
-  const tableProps = {
-    header: ['ID', 'Name', 'Description', 'Type', 'Note', 'Actions'],
-    data: documentTemplates.map((documentTemplate) => ({
-      id: documentTemplate.id,
-      name: documentTemplate.name,
-      description: documentTemplate.description,
-      type: documentTemplate.type,
-      note: documentTemplate.isSampleUploaded ? '' : (
-        <span className="text-red-500">No sample document uploaded</span>
-      ),
-    })),
-  };
-
   const { 
     isOpen: isOpenCreateModal, 
     onOpen: onOpenCreateModal, 
@@ -65,8 +39,25 @@ export default function DocumentTemplateList() {
     onClose: onCloseEditModal 
   } = useDisclosure();
 
+  const [documentTemplates, setDocumentTemplates] = useState<DocumentTemplate[]>([]);
   const [selectedDocumentTemplate, setSelectedDocumentTemplate] = useState<DocumentTemplate>();
   const [editedDocumentTemplate, setEditedDocumentTemplate] = useState<DocumentTemplate>();
+
+  useEffect(() => {
+    documentTemplateApi.getDocumentTemplates().then((res) => {
+      setDocumentTemplates(res);
+    });
+  }, []);
+
+  const tableProps = {
+    header: ['ID', 'Name', 'Description', 'Type', 'Actions'],
+    data: documentTemplates.map((documentTemplate) => ({
+      id: documentTemplate.id,
+      name: documentTemplate.name,
+      description: documentTemplate.description,
+      type: documentTemplate.type,
+    })),
+  };
 
   const handleViewDocumentTemplate = (documentTemplateId: string) => {
     const selectedDocumentTemplate = documentTemplates.find(
@@ -88,29 +79,49 @@ export default function DocumentTemplateList() {
     }
   };
 
-  const handleEditDocumentTemplate = (editDocumentTemplateDto: EditDocumentTemplateDto) => {
-    console.log(editDocumentTemplateDto);
+  const handleEditDocumentTemplate = async (editDocumentTemplateDto: EditDocumentTemplateDto) => {
+    if (!editedDocumentTemplate) return;
+    const res = await documentTemplateApi.editDocumentTemplate(editedDocumentTemplate.id, editDocumentTemplateDto);
+    setDocumentTemplates(documentTemplates.map((documentTemplate) => {
+      if (documentTemplate.id === editedDocumentTemplate.id) {
+        return res;
+      }
+      return documentTemplate;
+    }));
     onCloseEditModal();
   };
 
-  const handleCreateNewDocumentTemplate = (createDocumentTemplateDto: CreateDocumentTemplateDto) => {
-    console.log(createDocumentTemplateDto);
+  const handleCreateNewDocumentTemplate = async (createDocumentTemplateDto: CreateDocumentTemplateDto) => {
+    const res = await documentTemplateApi.createDocumentTemplate(createDocumentTemplateDto);
+    setDocumentTemplates([...documentTemplates, res]);
     onCloseCreateModal();
-    setSelectedDocumentTemplate(undefined);
+    setSelectedDocumentTemplate(res);
     onOpenDetailModal();
   };
 
-  const handleSaveDocumentTemplate = (saveDocumentTemplateDto: SaveDocumentTemplateDto) => {
-    console.log(saveDocumentTemplateDto);
+  const handleSaveDocumentTemplate = async (saveDocumentTemplateDto: SaveDocumentTemplateDto) => {
+    if (!selectedDocumentTemplate) return;
+    await documentTemplateApi.saveDocumentTemplate(selectedDocumentTemplate.id, saveDocumentTemplateDto);
     onCloseDetailModal();
+  };
+
+  const handleDeleteDocumentTemplate = async (documentTemplateId: string) => {
+    await documentTemplateApi.deleteDocumentTemplate(documentTemplateId);
+    setDocumentTemplates(documentTemplates.filter((documentTemplate) => documentTemplate.id !== documentTemplateId));
   };
 
   return (
     <div className="mb-[200px]">
       <SidebarContent>
-        <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
-          Document Template List
-        </h1>
+        <div className="flex flex-start">
+          <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
+            Document Template List
+          </h1>
+          <Tooltip hasArrow label={documentTemplateExplain} bg='gray.300' color='black'>
+            <QuestionIcon />
+          </Tooltip>
+        </div>
+
         <div className="flex justify-between w-90 mx-auto my-[30px]">
           <InputGroup>
             <InputLeftElement pointerEvents="none">
@@ -128,7 +139,6 @@ export default function DocumentTemplateList() {
             <Box className="w-[10vw]">
               <Select defaultValue="all">
                 <option value="all">All</option>
-                <option value="pdf">PDF</option>
                 <option value="image">Image</option>
               </Select>
             </Box>
@@ -136,6 +146,12 @@ export default function DocumentTemplateList() {
             <Button colorScheme="teal" onClick={onOpenCreateModal}>Create</Button>
           </div>
         </div>
+
+        {documentTemplates.length === 0 && (
+          <div className="flex justify-center items-center">
+            <h1 className="text-2xl">No document template found</h1>
+          </div>
+        )}
 
         <CreateDocumentTemplateModal
           isOpen={isOpenCreateModal}
@@ -163,7 +179,7 @@ export default function DocumentTemplateList() {
             data={tableProps.data}
             onView={handleViewDocumentTemplate}
             onEdit={handleSelectEditDocumentTemplate}
-            onDelete={() => {}}
+            onDelete={handleDeleteDocumentTemplate}
           />
         </div>
       </SidebarContent>

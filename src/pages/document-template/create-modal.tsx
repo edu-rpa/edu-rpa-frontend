@@ -30,7 +30,7 @@ const CreateDocumentTemplateModal: React.FC<Props> = ({
   const [createDocumentTemplate, setCreateDocumentTemplate] = useState<CreateDocumentTemplateDto>({
     name: '',
     description: '',
-    type: DocumentTemplateType.PDF,
+    type: DocumentTemplateType.IMAGE,
   });
 
   return (
@@ -63,7 +63,6 @@ const CreateDocumentTemplateModal: React.FC<Props> = ({
             <Select
               value={createDocumentTemplate.type}
               onChange={(e) => setCreateDocumentTemplate({ ...createDocumentTemplate, type: e.target.value as DocumentTemplateType })}>
-              <option value={DocumentTemplateType.PDF}>PDF</option>
               <option value={DocumentTemplateType.IMAGE}>Image</option>
             </Select>
           </FormControl>

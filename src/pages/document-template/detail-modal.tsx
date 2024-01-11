@@ -1,7 +1,6 @@
 import BoundingBox from "@/components/BoundingBox/BoundingBox";
 import { SaveDocumentTemplateDto } from "@/dtos/documentTemplateDto";
 import { DocumentTemplate, DocumentTemplateDetail } from "@/interfaces/document-template";
-import { DocumentTemplateType } from "@/interfaces/enums/document-template-type"
 import { Rectangle } from "@/types/boundingBox";
 import {
   Modal,
@@ -16,27 +15,12 @@ import {
   Input,
   Box
 } from "@chakra-ui/react"
-import { useState } from "react";
-
-const documentTemplateDetail: DocumentTemplateDetail = {
-  _id: '1',
-  dataTemplate: [
-    {
-      left: 100,
-      top: 100,
-      right: 200,
-      bottom: 200,
-      label: 'Label 1',
-    },
-    {
-      left: 300,
-      top: 300,
-      right: 400,
-      bottom: 400,
-      label: 'Label 2',
-    },
-  ],
-};
+import { useEffect, useState } from "react";
+import documentTemplateApi from "@/apis/documentTemplateApi";
+import { s3Client, createPresignedUrlWithClient } from "@/utils/aws";
+import {
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 
 interface Props {
   isOpen: boolean;
@@ -51,18 +35,67 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
   documentTemplate,
   handleSaveDocumentTemplate,
 }) => {
-  const [imageUrl, setImageUrl] = useState<string>('https://picsum.photos/600/800');
-  const [rectangles, setRectangles] = useState<Rectangle[]>(documentTemplateDetail.dataTemplate);
+  const [imageUrl, setImageUrl] = useState<string>('');
+  const [rectangles, setRectangles] = useState<Rectangle[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (documentTemplate) {
+      setIsLoading(true);
+
+      documentTemplateApi.getDocumentTemplateDetail(documentTemplate.id).then((res) => {
+        const documentTemplateDetail: DocumentTemplateDetail = res;
+        const { dataTemplate } = documentTemplateDetail;
+        setRectangles(dataTemplate);
+      });
+
+      createPresignedUrlWithClient({
+        bucket: 'edurpa-document-template',
+        key: `${documentTemplate.id}/sample-processed.jpg`,
+      })
+        .then((url) => {
+          setImageUrl(url);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [documentTemplate]);
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImageUrl(e.target?.result as string);
+      setIsLoading(true);
+      const { id } = documentTemplate as DocumentTemplate;
+      const fileName = `sample-original.jpg`;
+      const fileKey = `${id}/${fileName}`;
+      const uploadParams = {
+        Bucket: 'edurpa-document-template',
+        Key: fileKey,
+        Body: file,
       };
-      reader.readAsDataURL(file);
+      const uploadCommand = new PutObjectCommand(uploadParams);
+      await s3Client.send(uploadCommand);
+      
+      // WARNING: this is a temporary solution
+      setImageUrl('');
+      setTimeout(() => {
+        createPresignedUrlWithClient({
+          bucket: 'edurpa-document-template',
+          key: `${id}/sample-processed.jpg`,
+        })
+          .then((url) => {
+            setImageUrl(url);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      }, 5000);
     }
+  };
+
+  const handleImageError = () => {
+    setImageUrl('');
   };
 
   const handleNewRectangle = (newRect: Rectangle | Rectangle[]) => {
@@ -95,6 +128,7 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
     setRectangles(updatedRectangles);
   };
 
+  // TODO: fix the document template flow
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
@@ -120,13 +154,25 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
               </Box>
             </FormControl>
 
-            {imageUrl && (
+            <h1 className="text-2xl mt-[20px]">Sample document</h1>
+
+            {!imageUrl && !isLoading && (
+              <div className="flex justify-center items-center">
+                <p>No sample document uploaded or the document cannot be processed</p>
+              </div>
+            )}
+
+            {imageUrl && !isLoading && (
               <BoundingBox
                 imageUrl={imageUrl}
                 rectangles={rectangles}
                 onNewRectangle={handleNewRectangle}
+                onErrorImage={handleImageError}
               />
             )}
+
+            <h1 className="text-2xl mt-[20px]">Data template</h1>
+
             <ul>
               {rectangles.map((rect, index) => (
                 <li key={index}>
@@ -146,6 +192,7 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
           </ModalBody>
           <ModalFooter>
             <Button
+              isLoading={isLoading}
               colorScheme="blue"
               mr={3}
               onClick={() => handleSaveDocumentTemplate({
