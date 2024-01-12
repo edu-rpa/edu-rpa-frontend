@@ -12,3 +12,7 @@ export interface DocumentTemplateDetail {
   _id: string;
   dataTemplate: Rectangle[];
 }
+
+export interface SampleDocumentUrl {
+  url: string;
+}

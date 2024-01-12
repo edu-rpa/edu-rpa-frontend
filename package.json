@@ -11,9 +11,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.489.0",
-    "@aws-sdk/credential-providers": "^3.489.0",
-    "@aws-sdk/s3-request-presigner": "^3.489.0",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.1.5",
     "@chakra-ui/react": "^2.8.1",

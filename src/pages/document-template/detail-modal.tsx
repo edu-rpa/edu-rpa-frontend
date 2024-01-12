@@ -17,10 +17,6 @@ import {
 } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 import documentTemplateApi from "@/apis/documentTemplateApi";
-import { s3Client, createPresignedUrlWithClient } from "@/utils/aws";
-import {
-  PutObjectCommand,
-} from "@aws-sdk/client-s3";
 
 interface Props {
   isOpen: boolean;
@@ -49,12 +45,9 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
         setRectangles(dataTemplate);
       });
 
-      createPresignedUrlWithClient({
-        bucket: 'edurpa-document-template',
-        key: `${documentTemplate.id}/sample-processed.jpg`,
-      })
-        .then((url) => {
-          setImageUrl(url);
+      documentTemplateApi.getPresignedUrl(documentTemplate.id)
+        .then((res) => {
+          setImageUrl(res.url);
         })
         .finally(() => {
           setIsLoading(false);
@@ -66,31 +59,12 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
     const file = event.target.files?.[0];
     if (file) {
       setIsLoading(true);
-      const { id } = documentTemplate as DocumentTemplate;
-      const fileName = `sample-original.jpg`;
-      const fileKey = `${id}/${fileName}`;
-      const uploadParams = {
-        Bucket: 'edurpa-document-template',
-        Key: fileKey,
-        Body: file,
-      };
-      const uploadCommand = new PutObjectCommand(uploadParams);
-      await s3Client.send(uploadCommand);
-      
-      // WARNING: this is a temporary solution
       setImageUrl('');
-      setTimeout(() => {
-        createPresignedUrlWithClient({
-          bucket: 'edurpa-document-template',
-          key: `${id}/sample-processed.jpg`,
-        })
-          .then((url) => {
-            setImageUrl(url);
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
-      }, 5000);
+      const { id } = documentTemplate as DocumentTemplate;
+
+      const res = await documentTemplateApi.uploadSampleDocument(id, file);
+      setImageUrl(res.url);
+      setIsLoading(false);
     }
   };
 

@@ -1,6 +1,8 @@
-import { DocumentTemplate, DocumentTemplateDetail } from '@/interfaces/document-template';
+import { DocumentTemplate, DocumentTemplateDetail, SampleDocumentUrl } from '@/interfaces/document-template';
 import apiBase from './config';
 import { CreateDocumentTemplateDto, EditDocumentTemplateDto, SaveDocumentTemplateDto } from '@/dtos/documentTemplateDto';
+import fs from 'fs';
+import axios from 'axios';
 
 const getDocumentTemplates = async (): Promise<DocumentTemplate[]> => {
   return await apiBase
@@ -50,6 +52,34 @@ const saveDocumentTemplate = async (id: string, payload: SaveDocumentTemplateDto
     });
 };
 
+const uploadSampleDocument = async (id: string, file: File): Promise<SampleDocumentUrl> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onload = () => {
+      fetch(`${process.env.NEXT_PUBLIC_AWS_API_GATEWAY_URL}/${id}/sample-document`, {
+        method: 'POST',
+        body: reader.result,
+        headers: {
+          'Content-Type': file.type,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => resolve(data))
+        .catch((error) => reject(error));
+    };
+    reader.onerror = (error) => reject(error);
+  });
+}
+
+const getPresignedUrl = async (id: string): Promise<SampleDocumentUrl> => {
+  return await axios
+    .get(`${process.env.NEXT_PUBLIC_AWS_API_GATEWAY_URL}/${id}/sample-document`)
+    .then((res: any) => {
+      return res.data;
+    });
+}
+
 const documentTemplateApi = {
   getDocumentTemplates,
   createDocumentTemplate,
@@ -57,6 +87,8 @@ const documentTemplateApi = {
   deleteDocumentTemplate,
   getDocumentTemplateDetail,
   saveDocumentTemplate,
+  uploadSampleDocument,
+  getPresignedUrl,
 };
 
 export default documentTemplateApi;
