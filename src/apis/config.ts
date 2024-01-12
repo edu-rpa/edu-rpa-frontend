@@ -1,11 +1,12 @@
-import { localStorageService } from '@/utils/profile';
+import { LocalStorage } from '@/constants/localStorage';
+import { getLocalStorageObject } from '@/utils/localStorageService';
 import axios from 'axios';
 
 const apiBase = axios.create();
 apiBase.interceptors.request.use((config) => {
-  const profileLocal = localStorageService.getProfile();
-  if (profileLocal?.accessToken) {
-    config.headers.Authorization = `Bearer ${profileLocal.accessToken}`;
+  const accessToken = getLocalStorageObject(LocalStorage.ACCESS_TOKEN);
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });

@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authSelector } from '@/redux/selector';
 import { useMutation } from '@tanstack/react-query';
 import { ResendOtpDto, VerifyOtpDto } from '@/dtos/authDto';
-import authApi from '@/apis/auth';
+import authApi from '@/apis/authApi';
 import { removeInfo } from '@/redux/slice/authSlice';
 
 export default function VerifyOTPForm() {

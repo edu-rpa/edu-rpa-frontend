@@ -7,7 +7,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-import { FaHome, FaRobot } from 'react-icons/fa';
+import { FaHome, FaRobot, FaFileInvoice } from 'react-icons/fa';
 import { RiFlowChart } from 'react-icons/ri';
 import { IoIosRocket } from 'react-icons/io';
 import { FaFile } from 'react-icons/fa6';
@@ -23,6 +23,7 @@ const sidebarItems = [
   { path: '/robot', name: 'Robot', icon: FaRobot },
   { path: '/service', name: 'Integration Service', icon: IoIosRocket },
   { path: '/storage', name: 'Storage', icon: FaFile },
+  { path: '/document-template', name: 'Document Template', icon: FaFileInvoice },
 ];
 
 interface Props {

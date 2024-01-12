@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Flex,
@@ -13,6 +13,9 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
+import { QUERY_KEY } from '@/constants/queryKey';
+import userApi from '@/apis/userApi';
+import { useQuery } from '@tanstack/react-query';
 
 interface ProfileFormData {
   fullName: string;
@@ -22,6 +25,10 @@ interface ProfileFormData {
 
 const ProfilePage: React.FC = () => {
   const toast = useToast();
+  const { data: userInfo } = useQuery({
+    queryKey: [QUERY_KEY.ME],
+    queryFn: () => userApi.getMe(),
+  });
   const {
     register,
     handleSubmit,
@@ -30,6 +37,10 @@ const ProfilePage: React.FC = () => {
   } = useForm<ProfileFormData>();
   const [userAvatar, setUserAvatar] = useState<string>('');
   const [isHovered, setIsHovered] = useState<boolean>(false);
+
+  useEffect(() => {
+    userInfo && userInfo.avatarUrl && setUserAvatar(userInfo.avatarUrl);
+  }, [userInfo]);
 
   const onSubmit = (data: ProfileFormData) => {
     console.log(data);
@@ -62,7 +73,7 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <SidebarContent className="w-[45vw]">
+    <SidebarContent>
       <Box className="w-90 m-auto">
         <Box className="flex justify-between items-center relative">
           <Box
@@ -88,10 +99,10 @@ const ProfilePage: React.FC = () => {
         </Box>
         <Box ml={3}>
           <Text fontWeight="bold" fontSize="2xl">
-            Nguyễn Đức An
+            {userInfo && userInfo.name}
           </Text>
           <Text fontSize="md" color="gray.500">
-            ducan1406@gmail.com
+            {userInfo && userInfo.email}
           </Text>
         </Box>
         <Box>
@@ -102,6 +113,7 @@ const ProfilePage: React.FC = () => {
                 <Input
                   id="fullName"
                   placeholder="Your name"
+                  defaultValue={userInfo && userInfo.name}
                   {...register('fullName')}
                 />
               </FormControl>
@@ -112,6 +124,7 @@ const ProfilePage: React.FC = () => {
                   id="email"
                   type="email"
                   placeholder="Your email"
+                  defaultValue={userInfo && userInfo.email}
                   {...register('email')}
                 />
               </FormControl>

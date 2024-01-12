@@ -1,5 +1,5 @@
 export const LocalStorage = {
-  PROFILE: 'profile',
+  ACCESS_TOKEN: 'accessToken',
   PROCESS_LIST: 'processList',
   VARIABLE_LIST: 'variableList',
 };

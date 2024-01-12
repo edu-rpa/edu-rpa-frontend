@@ -5,12 +5,14 @@ type BoundingBoxProps = {
   imageUrl: string;
   rectangles: Rectangle[];
   onNewRectangle: (newRectangles: Rectangle | Rectangle[]) => void;
+  onErrorImage?: () => void;
 };
 
 const BoundingBox: React.FC<BoundingBoxProps> = ({
   imageUrl,
   rectangles,
   onNewRectangle,
+  onErrorImage,
 }) => {
   const [currentRect, setCurrentRect] = useState<Rectangle | null>(null);
   const [drawing, setDrawing] = useState(false);
@@ -89,7 +91,8 @@ const BoundingBox: React.FC<BoundingBoxProps> = ({
       <img
         src={imageUrl}
         alt="Bounding Box Target"
-        className="w-[600px] h-[800px]"
+        className=""
+        onError={onErrorImage}
       />
       {rectangles.map((rect, index) => (
         <div key={index} style={getStyle(rect)}>
@@ -99,8 +102,9 @@ const BoundingBox: React.FC<BoundingBoxProps> = ({
             onChange={(e) => handleLabelChange(e, index)}
             style={{
               position: 'absolute',
-              width: '30%',
-              top: 0,
+              width: '100%',
+              minWidth: '50px',
+              top: '-25px',
               border: 'none',
               padding: '2px',
               fontSize: 'small',
