@@ -140,7 +140,7 @@ function CustomModeler() {
         Import XML
       </Button>
 
-      {/* <Button
+      <Button
         colorScheme="teal"
         size="md"
         className="mx-[5px]"
@@ -166,7 +166,7 @@ function CustomModeler() {
         }}>
         Save JSON
       </Button>
-       */}
+
       <Button
         colorScheme="orange"
         size="md"

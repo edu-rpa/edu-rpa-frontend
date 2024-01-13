@@ -34,6 +34,7 @@ const initProcess = (
   processID: string,
   xml: string,
   processName: string,
+  processDesc: string,
   processType: string
 ): Process => {
   return {
@@ -41,6 +42,7 @@ const initProcess = (
     xml: xml,
     processName: processName,
     processType: processType,
+    processDesc: processDesc,
     activities: [
       {
         activityID: 'StartEvent_0vr9as6',

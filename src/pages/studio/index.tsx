@@ -39,11 +39,13 @@ import {
 import { useRouter } from 'next/router';
 import { deleteVariableById } from '@/utils/variableService';
 import AutomationTemplateImage from '@/assets/images/AutomationTemplate.jpg';
+import { useMutation } from '@tanstack/react-query';
 
 export default function Studio() {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
+  const descRepf = useRef<HTMLInputElement>(null);
   const finalRef = useRef<HTMLInputElement>(null);
   const [processList, setProcessList] = useState([]);
   const [processType, setProcessType] = useState('free');
@@ -112,6 +114,7 @@ export default function Studio() {
       processID,
       xml,
       initialRef.current?.value as string,
+      descRepf.current?.value as string,
       processType
     );
     setLocalStorageObject(LocalStorage.PROCESS_LIST, [
@@ -188,6 +191,10 @@ export default function Studio() {
                 <FormControl>
                   <FormLabel>Process name</FormLabel>
                   <Input ref={initialRef} placeholder="Process name" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Description</FormLabel>
+                  <Input ref={descRepf} placeholder="Your description" />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Category</FormLabel>
