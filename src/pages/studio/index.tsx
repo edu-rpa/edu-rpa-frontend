@@ -39,7 +39,10 @@ import {
 import { useRouter } from 'next/router';
 import { deleteVariableById } from '@/utils/variableService';
 import AutomationTemplateImage from '@/assets/images/AutomationTemplate.jpg';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { CreateProcessDto } from '@/dtos/processDto';
+import processApi from '@/apis/processApi';
+import { QUERY_KEY } from '@/constants/queryKey';
 
 export default function Studio() {
   const router = useRouter();
@@ -47,35 +50,57 @@ export default function Studio() {
   const initialRef = useRef<HTMLInputElement>(null);
   const descRepf = useRef<HTMLInputElement>(null);
   const finalRef = useRef<HTMLInputElement>(null);
-  const [processList, setProcessList] = useState([]);
   const [processType, setProcessType] = useState('free');
   const [selectFilter, setSelectFilter] = useState('all');
 
+  const { data: countProcess, isLoading: countProcessLoading } = useQuery({
+    queryKey: [QUERY_KEY.PROCESS_COUNT],
+    queryFn: () => processApi.getNumberOfProcess(),
+  });
+
+  // TODO: update pagination
+  const limit = countProcess ?? 0;
+  const page = 1;
+
+  const { data: allProcess } = useQuery({
+    queryKey: [QUERY_KEY.PROCESS_LIST],
+    queryFn: () => processApi.getAllProcess(limit, page),
+  });
+
+  const syncBackendToLocalStorage = () => {
+    return allProcess
+      ? allProcess.map((item: any) => {
+          return {
+            processID: item.id,
+            processName: item.name,
+            processDesc: item.description,
+            processType: 'free',
+            xml: '',
+            activities: [],
+            variables: [],
+          };
+        })
+      : [];
+  };
+
   useEffect(() => {
     const getProcessStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
-    if (!getProcessStorage) {
-      localStorage.setItem(LocalStorage.PROCESS_LIST, JSON.stringify([]));
+    if (getProcessStorage.length == 0) {
+      localStorage.setItem(
+        LocalStorage.PROCESS_LIST,
+        JSON.stringify(syncBackendToLocalStorage())
+      );
     } else {
       console.log('Process Storage', getProcessStorage);
-      setProcessList(getProcessStorage);
     }
-  }, []);
+  }, [allProcess]);
 
   useEffect(() => {
     const variableStorage = localStorage.getItem(LocalStorage.VARIABLE_LIST);
     if (!variableStorage) {
       localStorage.setItem(LocalStorage.VARIABLE_LIST, JSON.stringify([]));
     } else {
-      const processStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
-      const variableStorage = getLocalStorageObject(LocalStorage.VARIABLE_LIST);
-      const processList = processStorage.map((item: Process) => item.processID);
-      const filteredVariableStorage = variableStorage.filter(
-        (variable: VariableItem) => processList.includes(variable.processID)
-      );
-      setLocalStorageObject(
-        LocalStorage.VARIABLE_LIST,
-        filteredVariableStorage
-      );
+      preProcessingVariableList();
       console.log(
         'Variable Storage',
         getLocalStorageObject(LocalStorage.VARIABLE_LIST)
@@ -83,15 +108,25 @@ export default function Studio() {
     }
   }, []);
 
+  const preProcessingVariableList = () => {
+    const processStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
+    const variableStorage = getLocalStorageObject(LocalStorage.VARIABLE_LIST);
+    const processList = processStorage.map((item: Process) => item.processID);
+    const filteredVariableStorage = variableStorage.filter(
+      (variable: VariableItem) => processList.includes(variable.processID)
+    );
+    setLocalStorageObject(LocalStorage.VARIABLE_LIST, filteredVariableStorage);
+  };
+
   const formatData =
-    processList &&
-    processList.map((item: Process) => {
+    allProcess &&
+    allProcess?.map((item: any) => {
       return {
-        id: item.processID,
-        name: item.processName,
-        ptype: item.processType,
+        id: item.id,
+        name: item.name,
+        ptype: item.description,
         owner: 'You',
-        last_modified: formatDate(new Date()),
+        last_modified: item.updatedAt,
       };
     });
 
@@ -99,13 +134,21 @@ export default function Studio() {
     header: [
       'Process ID',
       'Process Name',
-      'Process Type',
+      'Process Description',
       'Owner',
       'Last Modified',
       'Actions',
     ],
     data: formatData ?? [],
   };
+
+  const handleCreateProcessWithApi = useMutation({
+    mutationFn: async (payload: CreateProcessDto) => {
+      return await processApi.createProcess(payload);
+    },
+    onSuccess: () => {},
+    onError: () => {},
+  });
 
   const handleCreateNewProcess = () => {
     const processID = generateProcessID();
@@ -118,9 +161,19 @@ export default function Studio() {
       processType
     );
     setLocalStorageObject(LocalStorage.PROCESS_LIST, [
-      ...processList,
+      ...getLocalStorageObject(LocalStorage.PROCESS_LIST),
       initialProcess,
     ]);
+
+    // add to backend
+    const createProcessPayloadAPI = {
+      id: initialProcess.processID,
+      name: initialProcess.processName,
+      description: initialProcess.processDesc,
+      xml: initialProcess.xml,
+    };
+    handleCreateProcessWithApi.mutate(createProcessPayloadAPI as any);
+
     router.push(`/studio/modeler/${processID}`);
   };
 
@@ -229,6 +282,7 @@ export default function Studio() {
             onDownload={handleDownloadProcessByID}
             onDelete={handleDeleteProcessByID}
             onEdit={handleEditProcessByID}
+            isLoading={countProcessLoading}
           />
         </div>
       </SidebarContent>

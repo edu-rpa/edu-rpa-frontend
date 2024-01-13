@@ -4,7 +4,7 @@ import { Variable } from './variable';
 export interface Process {
   processID: string;
   xml: string;
-  processName: string | null;
+  processName: string;
   processType?: string;
   processDesc?: string;
   activities: Activity[];

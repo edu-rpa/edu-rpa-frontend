@@ -83,7 +83,7 @@ const getIndexByProcessID = (processID: string) => {
   return currLocalStorage.findIndex((x: Process) => x.processID === processID);
 };
 
-const replaceLocalStorage = (processID: string, newObj: Process) => {
+const updateProcessInProcessList = (processID: string, newObj: Process) => {
   const index = getIndexByProcessID(processID);
   const currLocalStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
   currLocalStorage[index] = newObj;
@@ -110,7 +110,7 @@ export {
   updateActivityInProcess,
   initProcess,
   defaultXML,
-  replaceLocalStorage,
+  updateProcessInProcessList,
   updateLocalStorage,
   deleteProcessById,
 };

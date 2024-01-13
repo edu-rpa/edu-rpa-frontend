@@ -6,9 +6,11 @@ import {
 import apiBase from './config';
 import { ProcessResponse } from '@/interfaces/process';
 
-const getAllProcess = async () => {
+const getAllProcess = async (limit: number, page: number) => {
   return await apiBase
-    .get(`${process.env.NEXT_PUBLIC_DEV_API}/processes`)
+    .get(
+      `${process.env.NEXT_PUBLIC_DEV_API}/processes?limit=${limit}&page=${page}`
+    )
     .then((res: any) => {
       return res.data;
     });

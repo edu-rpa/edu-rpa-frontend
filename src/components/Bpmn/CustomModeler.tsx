@@ -1,6 +1,6 @@
 import { useBpmn } from '@/hooks/useBpmn';
 import { BpmnJsReactHandle } from '@/interfaces/bpmnJsReact.interface';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import BpmnJsReact from './BpmnJsReact';
 import {
   Box,
@@ -12,11 +12,10 @@ import {
 import ModelerSideBar from './ModelerSidebar';
 import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
 import { useToast } from '@chakra-ui/react';
-import { useParams } from 'next/navigation';
 import { setLocalStorageObject } from '@/utils/localStorageService';
 import {
   getProcessFromLocalStorage,
-  replaceLocalStorage,
+  updateProcessInProcessList,
 } from '@/utils/processService';
 import { useRouter } from 'next/router';
 import VariablesSideBar from './VariablesSideBar/VariablesSideBar';
@@ -27,6 +26,12 @@ import { FaPlay } from 'react-icons/fa';
 import { MdPublish } from 'react-icons/md';
 import { IoMdShare } from 'react-icons/io';
 
+import { useParams } from 'next/navigation';
+import { QUERY_KEY } from '@/constants/queryKey';
+import processApi from '@/apis/processApi';
+import { useQuery } from '@tanstack/react-query';
+import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
+
 function CustomModeler() {
   const router = useRouter();
   const ref = useRef<BpmnJsReactHandle>(null);
@@ -36,6 +41,29 @@ function CustomModeler() {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef<HTMLInputElement>(null);
+
+  const { data: processDetailByID, isLoading } = useQuery({
+    queryKey: [QUERY_KEY.PROCESS_DETAIL],
+    queryFn: () => processApi.getProcessByID(params.id as string),
+  });
+
+  // sync data from api to localStorage
+  useEffect(() => {
+    if (!processDetailByID) return;
+    const currentProcessID = getProcessFromLocalStorage(processId);
+    if (currentProcessID.xml != '') return;
+    const updateStorageByID = {
+      ...currentProcessID,
+      xml: processDetailByID.xml,
+      variables: processDetailByID.variables,
+      activities: processDetailByID.activities,
+    };
+    const replaceStorageSnapshot = updateProcessInProcessList(
+      processId,
+      updateStorageByID
+    );
+    setLocalStorageObject(LocalStorage.PROCESS_LIST, replaceStorageSnapshot);
+  }, [processDetailByID]);
 
   const handleImportBPMN = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
@@ -54,7 +82,7 @@ function CustomModeler() {
             xml: xml,
             activities: activities,
           };
-          const replaceStorageSnapshot = replaceLocalStorage(
+          const replaceStorageSnapshot = updateProcessInProcessList(
             processId,
             newImportStorage
           );
@@ -78,6 +106,10 @@ function CustomModeler() {
       reader.readAsText(file);
     }
   };
+
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
 
   return (
     <div className="mt-[20px]">
