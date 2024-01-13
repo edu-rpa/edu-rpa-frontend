@@ -117,8 +117,8 @@ export default function TestimonialHome() {
             <TestimonialContent>
               <TestimonialHeading>Saving Time</TestimonialHeading>
               <TestimonialText>
-                Thanks to these time-saving techniques, I've reclaimed hours in
-                my day and achieved more than ever before!
+                Thanks to these time-saving techniques, I&apos;ve reclaimed
+                hours in my day and achieved more than ever before!
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
@@ -133,8 +133,8 @@ export default function TestimonialHome() {
             <TestimonialContent>
               <TestimonialHeading>Intuitive Design</TestimonialHeading>
               <TestimonialText>
-                It's made my daily tasks feel effortless and enjoyable, and I
-                couldn't be happier with the user experience it provides.
+                It&apos;s made my daily tasks feel effortless and enjoyable, and
+                I couldn&apos;t be happier with the user experience it provides.
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar

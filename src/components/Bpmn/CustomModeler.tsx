@@ -103,6 +103,9 @@ function CustomModeler() {
           </h1>
         </Box>
         <Stack direction="row" spacing={4}>
+          <Button leftIcon={<FaPlay />} colorScheme="blue" variant="solid">
+            Save All
+          </Button>
           <Button leftIcon={<FaPlay />} colorScheme="teal" variant="solid">
             Run
           </Button>
