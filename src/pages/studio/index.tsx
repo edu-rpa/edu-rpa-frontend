@@ -17,6 +17,7 @@ import {
   ModalOverlay,
   Select,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import TemplateCard from '@/components/TemplateCard/TemplateCard';
@@ -39,10 +40,12 @@ import {
 import { useRouter } from 'next/router';
 import { deleteVariableById } from '@/utils/variableService';
 import AutomationTemplateImage from '@/assets/images/AutomationTemplate.jpg';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { CreateProcessDto } from '@/dtos/processDto';
 import processApi from '@/apis/processApi';
 import { QUERY_KEY } from '@/constants/queryKey';
+import { useBpmn } from '@/hooks/useBpmn';
+import { useDispatch } from 'react-redux';
 
 export default function Studio() {
   const router = useRouter();
@@ -52,6 +55,9 @@ export default function Studio() {
   const finalRef = useRef<HTMLInputElement>(null);
   const [processType, setProcessType] = useState('free');
   const [selectFilter, setSelectFilter] = useState('all');
+  const toast = useToast();
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const queryClient = new QueryClient();
 
   const { data: countProcess, isLoading: countProcessLoading } = useQuery({
     queryKey: [QUERY_KEY.PROCESS_COUNT],
@@ -150,6 +156,26 @@ export default function Studio() {
     onError: () => {},
   });
 
+  const handleDeleteProcessWithApi = useMutation({
+    mutationFn: async (id: string) => {
+      return await processApi.deleteProcessByID(id);
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries([QUERY_KEY.PROCESS_LIST] as any);
+      router.reload();
+    },
+  });
+
+  const handleInsertToBackend = (initialProcess: any) => {
+    const createProcessPayloadAPI = {
+      id: initialProcess.processID,
+      name: initialProcess.processName,
+      description: initialProcess.processDesc,
+      xml: initialProcess.xml,
+    };
+    handleCreateProcessWithApi.mutate(createProcessPayloadAPI as any);
+  };
+
   const handleCreateNewProcess = () => {
     const processID = generateProcessID();
     const xml = defaultXML(processID);
@@ -166,13 +192,7 @@ export default function Studio() {
     ]);
 
     // add to backend
-    const createProcessPayloadAPI = {
-      id: initialProcess.processID,
-      name: initialProcess.processName,
-      description: initialProcess.processDesc,
-      xml: initialProcess.xml,
-    };
-    handleCreateProcessWithApi.mutate(createProcessPayloadAPI as any);
+    handleInsertToBackend(initialProcess);
 
     router.push(`/studio/modeler/${processID}`);
   };
@@ -182,7 +202,7 @@ export default function Studio() {
     const variableListAfterDelete = deleteVariableById(processID);
     setLocalStorageObject(LocalStorage.PROCESS_LIST, processListAfterDelete);
     setLocalStorageObject(LocalStorage.VARIABLE_LIST, variableListAfterDelete);
-    router.reload();
+    handleDeleteProcessWithApi.mutate(processID);
   };
 
   const handleEditProcessByID = (processID: string) => {
@@ -192,6 +212,62 @@ export default function Studio() {
   const handleDownloadProcessByID = (processID: string) => {
     const processXML = getProcessFromLocalStorage(processID).xml;
     exportFile(processXML, `${processID}.xml`);
+  };
+
+  const handleImportBPMN = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files ? event.target.files[0] : null;
+
+    if (!file) {
+      throw new Error('No file selected.');
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = async (e) => {
+      try {
+        const xml = e.target?.result as string;
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xml, 'text/xml');
+        const bpmnNamespace = 'http://www.omg.org/spec/BPMN/20100524/MODEL';
+        const processElement = xmlDoc.getElementsByTagNameNS(
+          bpmnNamespace,
+          'process'
+        )[0];
+        const processID = processElement.getAttribute('id');
+
+        const importProcess = {
+          processName: 'Name of file',
+          processType: 'free',
+          processDesc: 'Import XML',
+          processID: processID,
+          xml: xml,
+          activities: [],
+          variables: {},
+        };
+
+        setLocalStorageObject(LocalStorage.PROCESS_LIST, [
+          ...getLocalStorageObject(LocalStorage.PROCESS_LIST),
+          importProcess,
+        ]);
+        handleInsertToBackend(importProcess);
+        router.push(`/studio/modeler/${processID}`);
+      } catch (error) {
+        console.error('Error during XML file import:', error);
+        toast({
+          title: 'Error during XML file import',
+          description: 'Please check the XML file and try again.',
+          position: 'top-right',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+        });
+        throw error;
+      }
+    };
+
+    reader.readAsText(file);
   };
 
   return (
@@ -227,7 +303,24 @@ export default function Studio() {
             <Button colorScheme="teal" onClick={onOpen}>
               New Process
             </Button>
-            <Button variant="outline" colorScheme="teal">
+            <input
+              type="file"
+              id="myFile"
+              name="filename"
+              className="hidden"
+              ref={inputFileRef}
+              onChange={handleImportBPMN}
+            />
+            <Button
+              variant="outline"
+              colorScheme="teal"
+              onClick={() => {
+                if (inputFileRef.current) {
+                  inputFileRef.current.click();
+                } else {
+                  console.error('BPMN file not found!');
+                }
+              }}>
               Import Process
             </Button>
           </div>

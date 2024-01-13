@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react';
 import ModelerSideBar from './ModelerSidebar';
 import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
-import { useToast } from '@chakra-ui/react';
 import { setLocalStorageObject } from '@/utils/localStorageService';
 import {
   getProcessFromLocalStorage,
@@ -29,83 +28,58 @@ import { IoMdShare } from 'react-icons/io';
 import { useParams } from 'next/navigation';
 import { QUERY_KEY } from '@/constants/queryKey';
 import processApi from '@/apis/processApi';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
+import { CreateProcessDto } from '@/dtos/processDto';
 
 function CustomModeler() {
   const router = useRouter();
   const ref = useRef<BpmnJsReactHandle>(null);
   const params = useParams();
   const bpmnReactJs = useBpmn();
-  const [processId, setProcessID] = useState(params.id as string);
-  const toast = useToast();
+  const processID = params.id;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const inputFileRef = useRef<HTMLInputElement>(null);
+
+  const handleCreateProcessWithApi = useMutation({
+    mutationFn: async (payload: CreateProcessDto) => {
+      return await processApi.createProcess(payload);
+    },
+    onSuccess: () => {},
+    onError: () => {},
+  });
+
+  const handleInsertToBackend = (initialProcess: any) => {
+    const createProcessPayloadAPI = {
+      id: initialProcess.processID,
+      name: initialProcess.processName,
+      description: initialProcess.processDesc,
+      xml: initialProcess.xml,
+    };
+    handleCreateProcessWithApi.mutate(createProcessPayloadAPI as any);
+  };
 
   const { data: processDetailByID, isLoading } = useQuery({
     queryKey: [QUERY_KEY.PROCESS_DETAIL],
-    queryFn: () => processApi.getProcessByID(params.id as string),
+    queryFn: () => processApi.getProcessByID(processID as string),
   });
 
   // sync data from api to localStorage
   useEffect(() => {
     if (!processDetailByID) return;
-    const currentProcessID = getProcessFromLocalStorage(processId);
-    if (currentProcessID.xml != '') return;
+    const currentprocessID = getProcessFromLocalStorage(processID as string);
+    if (currentprocessID.xml != '') return;
     const updateStorageByID = {
-      ...currentProcessID,
+      ...currentprocessID,
       xml: processDetailByID.xml,
       variables: processDetailByID.variables,
       activities: processDetailByID.activities,
     };
     const replaceStorageSnapshot = updateProcessInProcessList(
-      processId,
+      processID as string,
       updateStorageByID
     );
     setLocalStorageObject(LocalStorage.PROCESS_LIST, replaceStorageSnapshot);
   }, [processDetailByID]);
-
-  const handleImportBPMN = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null;
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        try {
-          const xml = e.target?.result;
-          await bpmnReactJs.importXML(xml as string);
-          const elementList = bpmnReactJs.getElementList();
-          const processID = elementList[0].activityID;
-          const activities = elementList.slice(1);
-          const newImportStorage = {
-            ...getProcessFromLocalStorage(processId),
-            processID: processID,
-            xml: xml,
-            activities: activities,
-          };
-          const replaceStorageSnapshot = updateProcessInProcessList(
-            processId,
-            newImportStorage
-          );
-          setLocalStorageObject(
-            LocalStorage.PROCESS_LIST,
-            replaceStorageSnapshot
-          );
-          setProcessID(processID);
-          router.push(`/studio/modeler/${processID}`);
-        } catch (err) {
-          toast({
-            title: 'File is not a XML file',
-            description: 'Please import XML/BPMN files',
-            position: 'top-right',
-            status: 'error',
-            duration: 2000,
-            isClosable: true,
-          });
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -125,7 +99,7 @@ function CustomModeler() {
             icon={<ChevronLeftIcon />}
           />
           <h1 className="text-primary font-bold text-2xl mx-[20px]">
-            {processId}
+            {processID}
           </h1>
         </Box>
         <Stack direction="row" spacing={4}>
@@ -150,27 +124,6 @@ function CustomModeler() {
           modeler={bpmnReactJs}
         />
       )}
-      <input
-        type="file"
-        id="myFile"
-        name="filename"
-        className="hidden"
-        ref={inputFileRef}
-        onChange={handleImportBPMN}
-      />
-      <Button
-        colorScheme="teal"
-        size="md"
-        className="mx-[5px]"
-        onClick={() => {
-          if (inputFileRef.current) {
-            inputFileRef.current.click();
-          } else {
-            console.error('BPMN file not found!');
-          }
-        }}>
-        Import XML
-      </Button>
 
       <Button
         colorScheme="teal"
@@ -178,7 +131,7 @@ function CustomModeler() {
         className="mx-[5px]"
         onClick={async () => {
           const res = await bpmnReactJs.saveXML();
-          exportFile(res.xml as string, `${processId}.xml`);
+          exportFile(res.xml as string, `${processID}.xml`);
           console.log(res.xml);
         }}>
         Save XML
@@ -193,7 +146,7 @@ function CustomModeler() {
           const jsonProcess = stringifyCyclicObject(
             bpmnParser.parseXML(res.xml as string)
           );
-          exportFile(jsonProcess, `${processId}.json`);
+          exportFile(jsonProcess, `${processID}.json`);
           console.log(bpmnParser.parseXML(res.xml as string));
         }}>
         Save JSON
@@ -204,17 +157,19 @@ function CustomModeler() {
         size="md"
         className="mx-[5px]"
         onClick={() => {
-          const processProperties = getProcessFromLocalStorage(processId);
+          const processProperties = getProcessFromLocalStorage(
+            processID as string
+          );
           console.log(processProperties);
           delete processProperties['xml'];
           exportFile(
             JSON.stringify(processProperties),
-            `${processId}_properties.json`
+            `${processID}_properties.json`
           );
         }}>
         Save Properties
       </Button>
-      <VariablesSideBar processID={processId} />
+      <VariablesSideBar processID={processID as string} />
       <br />
     </div>
   );

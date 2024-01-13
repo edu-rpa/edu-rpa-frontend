@@ -68,6 +68,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   }, []);
 
   useEffect(() => {
+    console.log('Curr Process', currentProcess);
     if (!currentProcess.xml) return;
     bpmnEditor?.importXML(currentProcess.xml);
     bpmnEditor?.on('import.done', (event: any) => {
