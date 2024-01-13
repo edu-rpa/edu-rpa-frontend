@@ -48,6 +48,7 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
             activities: activityList.slice(1),
           };
           const newLocalStorage = updateLocalStorage(newObj);
+          console.log(newLocalStorage);
           setLocalStorageObject(LocalStorage.PROCESS_LIST, newLocalStorage);
         };
         await updateModelerAndLocalStorage();

@@ -8,6 +8,7 @@ import {
   IconButton,
   Stack,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import ModelerSideBar from './ModelerSidebar';
 import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
@@ -22,6 +23,7 @@ import { LocalStorage } from '@/constants/localStorage';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { exportFile, stringifyCyclicObject } from '@/utils/common';
 import { FaPlay } from 'react-icons/fa';
+import { FaSave } from 'react-icons/fa';
 import { MdPublish } from 'react-icons/md';
 import { IoMdShare } from 'react-icons/io';
 
@@ -30,33 +32,16 @@ import { QUERY_KEY } from '@/constants/queryKey';
 import processApi from '@/apis/processApi';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
-import { CreateProcessDto } from '@/dtos/processDto';
+import { SaveProcessDto } from '@/dtos/processDto';
 
 function CustomModeler() {
   const router = useRouter();
   const ref = useRef<BpmnJsReactHandle>(null);
   const params = useParams();
   const bpmnReactJs = useBpmn();
+  const toast = useToast();
   const processID = params.id;
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const handleCreateProcessWithApi = useMutation({
-    mutationFn: async (payload: CreateProcessDto) => {
-      return await processApi.createProcess(payload);
-    },
-    onSuccess: () => {},
-    onError: () => {},
-  });
-
-  const handleInsertToBackend = (initialProcess: any) => {
-    const createProcessPayloadAPI = {
-      id: initialProcess.processID,
-      name: initialProcess.processName,
-      description: initialProcess.processDesc,
-      xml: initialProcess.xml,
-    };
-    handleCreateProcessWithApi.mutate(createProcessPayloadAPI as any);
-  };
 
   const { data: processDetailByID, isLoading } = useQuery({
     queryKey: [QUERY_KEY.PROCESS_DETAIL],
@@ -67,7 +52,6 @@ function CustomModeler() {
   useEffect(() => {
     if (!processDetailByID) return;
     const currentprocessID = getProcessFromLocalStorage(processID as string);
-    if (currentprocessID.xml != '') return;
     const updateStorageByID = {
       ...currentprocessID,
       xml: processDetailByID.xml,
@@ -80,6 +64,30 @@ function CustomModeler() {
     );
     setLocalStorageObject(LocalStorage.PROCESS_LIST, replaceStorageSnapshot);
   }, [processDetailByID]);
+
+  const handleSaveAll = useMutation({
+    mutationFn: async (payload: SaveProcessDto) => {
+      return await processApi.saveProcessByID(processID as string, payload);
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Save all changes sucessfully!',
+        status: 'success',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'There are some errors, try again !',
+        status: 'error',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+    },
+  });
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -103,7 +111,21 @@ function CustomModeler() {
           </h1>
         </Box>
         <Stack direction="row" spacing={4}>
-          <Button leftIcon={<FaPlay />} colorScheme="blue" variant="solid">
+          <Button
+            leftIcon={<FaSave />}
+            colorScheme="blue"
+            variant="solid"
+            onClick={() => {
+              const processProperties = getProcessFromLocalStorage(
+                processID as string
+              );
+              const payload = {
+                xml: processProperties.xml,
+                activities: processProperties.activities,
+                variables: processProperties.variables,
+              };
+              handleSaveAll.mutate(payload);
+            }}>
             Save All
           </Button>
           <Button leftIcon={<FaPlay />} colorScheme="teal" variant="solid">
@@ -112,7 +134,7 @@ function CustomModeler() {
           <Button leftIcon={<MdPublish />} colorScheme="orange" variant="solid">
             Publish
           </Button>
-          <Button leftIcon={<IoMdShare />} colorScheme="blue" variant="solid">
+          <Button leftIcon={<IoMdShare />} colorScheme="red" variant="solid">
             Share
           </Button>
         </Stack>
@@ -139,7 +161,7 @@ function CustomModeler() {
         }}>
         Save XML
       </Button>
-      <Button
+      {/* <Button
         colorScheme="blue"
         size="md"
         className="mx-[5px]"
@@ -163,7 +185,6 @@ function CustomModeler() {
           const processProperties = getProcessFromLocalStorage(
             processID as string
           );
-          console.log(processProperties);
           delete processProperties['xml'];
           exportFile(
             JSON.stringify(processProperties),
@@ -171,7 +192,7 @@ function CustomModeler() {
           );
         }}>
         Save Properties
-      </Button>
+      </Button> */}
       <VariablesSideBar processID={processID as string} />
       <br />
     </div>

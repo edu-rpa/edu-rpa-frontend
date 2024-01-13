@@ -238,7 +238,7 @@ export default function Studio() {
         const processID = processElement.getAttribute('id');
 
         const importProcess = {
-          processName: 'Name of file',
+          processName: processID,
           processType: 'free',
           processDesc: 'Import XML',
           processID: processID,
