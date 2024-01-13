@@ -23,11 +23,13 @@ import {
 import ReactPaginate from 'react-paginate';
 import { IoDocumentText } from 'react-icons/io5';
 import { FaPlay } from 'react-icons/fa';
+import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 
 interface TableProps {
   header: string[];
   data: any[];
   maxRows?: number;
+  isLoading?: boolean;
   onView?: (id: string) => void;
   onDownload?: (id: string) => void;
   onDelete?: (id: string) => void;
@@ -46,6 +48,10 @@ const CustomTable = (props: TableProps) => {
   const currentData = props.data.slice(startIndex, endIndex);
 
   if (currentData.length == 0) return <Box></Box>;
+
+  if (props.isLoading) {
+    return <LoadingIndicator />;
+  }
 
   const renderTableCell = (type: string, value: string) => {
     switch (type) {

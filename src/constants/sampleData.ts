@@ -2,7 +2,7 @@ import { formatDate } from '@/utils/common';
 
 const formatTime = formatDate(new Date());
 
-export const connectionData = [
+const connectionData = [
   {
     name: 'Google Drive',
     connectionID: '2023-09-17T06:55:54.536',
@@ -84,3 +84,4 @@ export const connectionData = [
     id: 'slack',
   },
 ];
+export default connectionData;

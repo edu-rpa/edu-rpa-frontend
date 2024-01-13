@@ -17,6 +17,7 @@ import {
   ModalOverlay,
   Select,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import TemplateCard from '@/components/TemplateCard/TemplateCard';
@@ -39,24 +40,58 @@ import {
 import { useRouter } from 'next/router';
 import { deleteVariableById } from '@/utils/variableService';
 import AutomationTemplateImage from '@/assets/images/AutomationTemplate.jpg';
+import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import { CreateProcessDto } from '@/dtos/processDto';
+import processApi from '@/apis/processApi';
+import { QUERY_KEY } from '@/constants/queryKey';
 
 export default function Studio() {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
+  const descRepf = useRef<HTMLInputElement>(null);
   const finalRef = useRef<HTMLInputElement>(null);
-  const [processList, setProcessList] = useState([]);
   const [processType, setProcessType] = useState('free');
   const [selectFilter, setSelectFilter] = useState('all');
+  const toast = useToast();
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const queryClient = new QueryClient();
+
+  const { data: countProcess, isLoading: countProcessLoading } = useQuery({
+    queryKey: [QUERY_KEY.PROCESS_COUNT],
+    queryFn: () => processApi.getNumberOfProcess(),
+  });
+
+  // TODO: update pagination
+  const limit = countProcess ?? 0;
+  const page = 1;
+
+  const { data: allProcess } = useQuery({
+    queryKey: [QUERY_KEY.PROCESS_LIST],
+    queryFn: () => processApi.getAllProcess(limit, page),
+  });
+
+  const syncBackendToLocalStorage = () => {
+    return allProcess
+      ? allProcess.map((item: any) => {
+          return {
+            processID: item.id,
+            processName: item.name,
+            processDesc: item.description,
+            processType: 'free',
+            xml: '',
+            activities: [],
+            variables: [],
+          };
+        })
+      : [];
+  };
 
   useEffect(() => {
-    const getProcessStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
-    if (!getProcessStorage) {
-      localStorage.setItem(LocalStorage.PROCESS_LIST, JSON.stringify([]));
-    } else {
-      console.log('Process Storage', getProcessStorage);
-      setProcessList(getProcessStorage);
-    }
+    localStorage.setItem(
+      LocalStorage.PROCESS_LIST,
+      JSON.stringify(syncBackendToLocalStorage())
+    );
   }, []);
 
   useEffect(() => {
@@ -64,16 +99,7 @@ export default function Studio() {
     if (!variableStorage) {
       localStorage.setItem(LocalStorage.VARIABLE_LIST, JSON.stringify([]));
     } else {
-      const processStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
-      const variableStorage = getLocalStorageObject(LocalStorage.VARIABLE_LIST);
-      const processList = processStorage.map((item: Process) => item.processID);
-      const filteredVariableStorage = variableStorage.filter(
-        (variable: VariableItem) => processList.includes(variable.processID)
-      );
-      setLocalStorageObject(
-        LocalStorage.VARIABLE_LIST,
-        filteredVariableStorage
-      );
+      preProcessingVariableList();
       console.log(
         'Variable Storage',
         getLocalStorageObject(LocalStorage.VARIABLE_LIST)
@@ -81,15 +107,25 @@ export default function Studio() {
     }
   }, []);
 
+  const preProcessingVariableList = () => {
+    const processStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
+    const variableStorage = getLocalStorageObject(LocalStorage.VARIABLE_LIST);
+    const processList = processStorage.map((item: Process) => item.processID);
+    const filteredVariableStorage = variableStorage.filter(
+      (variable: VariableItem) => processList.includes(variable.processID)
+    );
+    setLocalStorageObject(LocalStorage.VARIABLE_LIST, filteredVariableStorage);
+  };
+
   const formatData =
-    processList &&
-    processList.map((item: Process) => {
+    allProcess &&
+    allProcess?.map((item: any) => {
       return {
-        id: item.processID,
-        name: item.processName,
-        ptype: item.processType,
+        id: item.id,
+        name: item.name,
+        ptype: item.description,
         owner: 'You',
-        last_modified: formatDate(new Date()),
+        last_modified: item.updatedAt,
       };
     });
 
@@ -97,12 +133,40 @@ export default function Studio() {
     header: [
       'Process ID',
       'Process Name',
-      'Process Type',
+      'Process Description',
       'Owner',
       'Last Modified',
       'Actions',
     ],
     data: formatData ?? [],
+  };
+
+  const handleCreateProcessWithApi = useMutation({
+    mutationFn: async (payload: CreateProcessDto) => {
+      return await processApi.createProcess(payload);
+    },
+    onSuccess: () => {},
+    onError: () => {},
+  });
+
+  const handleDeleteProcessWithApi = useMutation({
+    mutationFn: async (id: string) => {
+      return await processApi.deleteProcessByID(id);
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries([QUERY_KEY.PROCESS_LIST] as any);
+      router.reload();
+    },
+  });
+
+  const handleInsertToBackend = (initialProcess: any) => {
+    const createProcessPayloadAPI = {
+      id: initialProcess.processID,
+      name: initialProcess.processName,
+      description: initialProcess.processDesc,
+      xml: initialProcess.xml,
+    };
+    handleCreateProcessWithApi.mutate(createProcessPayloadAPI as any);
   };
 
   const handleCreateNewProcess = () => {
@@ -112,12 +176,17 @@ export default function Studio() {
       processID,
       xml,
       initialRef.current?.value as string,
+      descRepf.current?.value as string,
       processType
     );
     setLocalStorageObject(LocalStorage.PROCESS_LIST, [
-      ...processList,
+      ...getLocalStorageObject(LocalStorage.PROCESS_LIST),
       initialProcess,
     ]);
+
+    // add to backend
+    handleInsertToBackend(initialProcess);
+
     router.push(`/studio/modeler/${processID}`);
   };
 
@@ -126,7 +195,7 @@ export default function Studio() {
     const variableListAfterDelete = deleteVariableById(processID);
     setLocalStorageObject(LocalStorage.PROCESS_LIST, processListAfterDelete);
     setLocalStorageObject(LocalStorage.VARIABLE_LIST, variableListAfterDelete);
-    router.reload();
+    handleDeleteProcessWithApi.mutate(processID);
   };
 
   const handleEditProcessByID = (processID: string) => {
@@ -136,6 +205,62 @@ export default function Studio() {
   const handleDownloadProcessByID = (processID: string) => {
     const processXML = getProcessFromLocalStorage(processID).xml;
     exportFile(processXML, `${processID}.xml`);
+  };
+
+  const handleImportBPMN = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files ? event.target.files[0] : null;
+
+    if (!file) {
+      throw new Error('No file selected.');
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = async (e) => {
+      try {
+        const xml = e.target?.result as string;
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xml, 'text/xml');
+        const bpmnNamespace = 'http://www.omg.org/spec/BPMN/20100524/MODEL';
+        const processElement = xmlDoc.getElementsByTagNameNS(
+          bpmnNamespace,
+          'process'
+        )[0];
+        const processID = processElement.getAttribute('id');
+
+        const importProcess = {
+          processName: processID,
+          processType: 'free',
+          processDesc: 'Import XML',
+          processID: processID,
+          xml: xml,
+          activities: [],
+          variables: {},
+        };
+
+        setLocalStorageObject(LocalStorage.PROCESS_LIST, [
+          ...getLocalStorageObject(LocalStorage.PROCESS_LIST),
+          importProcess,
+        ]);
+        handleInsertToBackend(importProcess);
+        router.push(`/studio/modeler/${processID}`);
+      } catch (error) {
+        console.error('Error during XML file import:', error);
+        toast({
+          title: 'Error during XML file import',
+          description: 'Please check the XML file and try again.',
+          position: 'top-right',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+        });
+        throw error;
+      }
+    };
+
+    reader.readAsText(file);
   };
 
   return (
@@ -171,7 +296,24 @@ export default function Studio() {
             <Button colorScheme="teal" onClick={onOpen}>
               New Process
             </Button>
-            <Button variant="outline" colorScheme="teal">
+            <input
+              type="file"
+              id="myFile"
+              name="filename"
+              className="hidden"
+              ref={inputFileRef}
+              onChange={handleImportBPMN}
+            />
+            <Button
+              variant="outline"
+              colorScheme="teal"
+              onClick={() => {
+                if (inputFileRef.current) {
+                  inputFileRef.current.click();
+                } else {
+                  console.error('BPMN file not found!');
+                }
+              }}>
               Import Process
             </Button>
           </div>
@@ -188,6 +330,10 @@ export default function Studio() {
                 <FormControl>
                   <FormLabel>Process name</FormLabel>
                   <Input ref={initialRef} placeholder="Process name" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Description</FormLabel>
+                  <Input ref={descRepf} placeholder="Your description" />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Category</FormLabel>
@@ -222,6 +368,7 @@ export default function Studio() {
             onDownload={handleDownloadProcessByID}
             onDelete={handleDeleteProcessByID}
             onEdit={handleEditProcessByID}
+            isLoading={countProcessLoading}
           />
         </div>
       </SidebarContent>

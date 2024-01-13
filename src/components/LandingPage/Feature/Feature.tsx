@@ -75,10 +75,10 @@ export default function FeatureHome() {
           What we offers
         </Heading>
         <Text color={'gray.600'} fontSize={{ base: 'sm', sm: 'lg' }}>
-          In today's fast-paced business environment, efficiency and innovation
-          are at the forefront of success. Our suite of services is designed to
-          revolutionize how you work, offering customized solutions that drive
-          productivity and growth.
+          In today&apos;s fast-paced business environment, efficiency and
+          innovation are at the forefront of success. Our suite of services is
+          designed to revolutionize how you work, offering customized solutions
+          that drive productivity and growth.
         </Text>
       </Stack>
 

@@ -25,6 +25,9 @@ import 'bpmn-font/dist/css/bpmn-embedded.css';
 import removeUnsupportedBpmnFunctions from './removeTrackPad';
 import { useParams } from 'next/navigation';
 import { getProcessFromLocalStorage } from '@/utils/processService';
+import { QUERY_KEY } from '@/constants/queryKey';
+import processApi from '@/apis/processApi';
+import { useQuery } from '@tanstack/react-query';
 
 const BpmnJsModeler: ForwardRefRenderFunction<
   BpmnJsReactHandle,
@@ -39,8 +42,12 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   ref
 ) => {
   const params = useParams();
-  const currentProcess = getProcessFromLocalStorage(params.id as string);
   const [bpmnEditor, setBpmnEditor] = useState<CamundaBpmnModeler | null>(null);
+
+  const { data: processDetail, isLoading } = useQuery({
+    queryKey: [QUERY_KEY.PROCESS_DETAIL],
+    queryFn: () => processApi.getProcessByID(params.id as string),
+  });
 
   useEffect(() => {
     const newModeler = new CamundaBpmnModeler({
@@ -68,8 +75,8 @@ const BpmnJsModeler: ForwardRefRenderFunction<
   }, []);
 
   useEffect(() => {
-    if (!currentProcess.xml) return;
-    bpmnEditor?.importXML(currentProcess.xml);
+    if (isLoading && !processDetail) return;
+    bpmnEditor?.importXML(processDetail?.xml as string);
     bpmnEditor?.on('import.done', (event: any) => {
       const { error, warning } = event;
       if (error) {
