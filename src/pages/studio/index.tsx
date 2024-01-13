@@ -44,8 +44,6 @@ import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { CreateProcessDto } from '@/dtos/processDto';
 import processApi from '@/apis/processApi';
 import { QUERY_KEY } from '@/constants/queryKey';
-import { useBpmn } from '@/hooks/useBpmn';
-import { useDispatch } from 'react-redux';
 
 export default function Studio() {
   const router = useRouter();
@@ -90,16 +88,11 @@ export default function Studio() {
   };
 
   useEffect(() => {
-    const getProcessStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
-    if (getProcessStorage.length == 0) {
-      localStorage.setItem(
-        LocalStorage.PROCESS_LIST,
-        JSON.stringify(syncBackendToLocalStorage())
-      );
-    } else {
-      console.log('Process Storage', getProcessStorage);
-    }
-  }, [allProcess]);
+    localStorage.setItem(
+      LocalStorage.PROCESS_LIST,
+      JSON.stringify(syncBackendToLocalStorage())
+    );
+  }, []);
 
   useEffect(() => {
     const variableStorage = localStorage.getItem(LocalStorage.VARIABLE_LIST);

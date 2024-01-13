@@ -33,6 +33,9 @@ import processApi from '@/apis/processApi';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 import { SaveProcessDto } from '@/dtos/processDto';
+import { useDispatch, useSelector } from 'react-redux';
+import { bpmnSelector } from '@/redux/selector';
+import { isSavedChange } from '@/redux/slice/bpmnSlice';
 
 function CustomModeler() {
   const router = useRouter();
@@ -40,8 +43,10 @@ function CustomModeler() {
   const params = useParams();
   const bpmnReactJs = useBpmn();
   const toast = useToast();
+  const dispatch = useDispatch();
   const processID = params.id;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const isSavedChanges = useSelector(bpmnSelector);
 
   const { data: processDetailByID, isLoading } = useQuery({
     queryKey: [QUERY_KEY.PROCESS_DETAIL],
@@ -77,6 +82,7 @@ function CustomModeler() {
         duration: 1000,
         isClosable: true,
       });
+      dispatch(isSavedChange(true));
     },
     onError: () => {
       toast({
@@ -107,7 +113,10 @@ function CustomModeler() {
             icon={<ChevronLeftIcon />}
           />
           <h1 className="text-primary font-bold text-2xl mx-[20px]">
-            {processID}
+            {processID}{' '}
+            {!isSavedChanges.isSaved && (
+              <span className="text-red-500">{'*'}</span>
+            )}
           </h1>
         </Box>
         <Stack direction="row" spacing={4}>

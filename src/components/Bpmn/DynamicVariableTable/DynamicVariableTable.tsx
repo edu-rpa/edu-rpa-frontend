@@ -11,6 +11,8 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { Variable, VariableType } from '@/types/variable';
+import { useDispatch } from 'react-redux';
+import { isSavedChange } from '@/redux/slice/bpmnSlice';
 
 interface VariableTableProps {
   variableList: Variable[];
@@ -18,6 +20,7 @@ interface VariableTableProps {
 }
 
 const DynamicVariableTable = (props: VariableTableProps) => {
+  const dispatch = useDispatch();
   const handleAddRow = () => {
     const newRow: Variable = {
       id: props.variableList.length + 1,
@@ -26,6 +29,7 @@ const DynamicVariableTable = (props: VariableTableProps) => {
       type: VariableType.String,
     };
     props.setVariableList([...props.variableList, newRow]);
+    dispatch(isSavedChange(false));
   };
 
   const handleEditRow = (
