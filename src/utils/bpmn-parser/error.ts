@@ -12,6 +12,7 @@ export class VariableError extends Error {
 
 
 export enum BpmnParseErrorCode {
+  "Variable Not Exist" = "Variable Not Exist",
   "Invalid Property" = "Invalid Property",
   "Have 2 else branch - missing condition" = "Have 2 else branch - missing condition",
   "Activity name must be specified" = "Activity name must be specified",

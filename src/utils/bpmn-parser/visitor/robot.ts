@@ -17,13 +17,22 @@ export class Keyword extends BodyItem {
     super();
   }
   toJSON() {
-    let args = this.args.map((iten) => iten.toJSON());
-    let assigns: string[] = [];
-    if (assigns.length > 0) {
-      for (let i = 0; i < this.args.length - 1; i++) {
-        assigns.push(this.args[i].toJSON());
+    let args = this.args.map((item) => item.toJSON());
+    let assignsVarName = this.assigns.map((item) => {
+      let i = item.toJSON()
+      if (typeof i === "string") {
+        return i
+      }else {
+        return i.name
       }
-      assigns.push(this.assigns.at(-1)?.toJSON() + "=");
+    });
+
+    let assigns: string[] = []
+    if (assignsVarName.length > 0) {
+      for (let i = 0; i < assignsVarName.length - 1; i++) {
+        assigns.push(assignsVarName[i]);
+      }
+      assigns.push(assignsVarName.at(-1) + "=");
     }
     return {
       name: this.name,
@@ -47,11 +56,17 @@ export class ProcessVariable {
     public type?: string
   ) {
     if(/[^\w\s]/.test(name)) {
+      console.log(name)
       throw new VariableError(VariableErrorCode["Invalid Variable Name - Variable Contain Special Character"], this.name)
     }
   }
   toJSON() {
-    if (!this.value) return this.name = "${"+this.name.replace(/[^\w\s]/gi, '')+"}" ;
+    if (!this.value) {
+      this.name = "${"+this.name.replace(/[^\w\s]/gi, '')+"}" ;
+      if(this.type === "string") {
+        this.value = ""
+      }
+    }
     else if (Array.isArray(this.value)) {
       if (this.type !== "list")
         throw new VariableError(
@@ -59,7 +74,7 @@ export class ProcessVariable {
           this.name
         );
       this.value = this.value.map((v) => JSON.stringify(v));
-      this.name = "@{"+this.name.replace(/[^\w\s]/gi, '')+"}" 
+      this.name = "@{"+this.name.replace(/[^\w\s]/gi, '')+"}"
     } else if (typeof this.value === "object") {
       if (this.type !== "dictionary")
         throw new VariableError(
@@ -128,7 +143,13 @@ export class For extends BodyItem {
   toJSON() {
     return {
       type: "FOR",
-      variables: this.variables,
+      variables: this.variables.map((v) => {
+        let i = v.toJSON()
+        if(typeof i === "string") 
+          return i
+        else 
+          return i.name
+      }),
       flavor: this.flavor,
       values: this.values.map((v) => v.toJSON()),
       body: this.body.map((item) => item.toJSON()),

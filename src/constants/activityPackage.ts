@@ -8,6 +8,42 @@ export const ActivityTemplates = [
     library: 'RPA.Cloud.Google',
     activityTemplates: [
       {
+        templateId: 'drive.dowload_files',
+        displayName: 'Dowload Files',
+        description: 'Dowload Files From Drive Folders',
+        iconCode: 'FaGoogleDrive',
+        service: 'Google Drive',
+        type: 'activity',
+        keyword: 'Download Drive Files',
+        library: 'RPA.Cloud.Google',
+        arguments: {
+          Connection: {
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
+            value: null,
+          },
+          'Folder name': {
+            type: 'string',
+            description: 'The name of the folder',
+            keywordArg: 'source',
+            value: '',
+          },
+          'Query': {
+            type: 'string',
+            description: 'Define the file type to dowload',
+            keywordArg: 'query',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'Files',
+          assignedTo: null,
+          type: 'list',
+          description:
+            'List of dowloaded files \'s name',
+        },
+      },
+      {
         templateId: 'drive.create_folder',
         displayName: 'Create folder',
         description: 'Create a Google Drive folder in a given directory',
@@ -705,7 +741,7 @@ export const ActivityTemplates = [
         type: 'subprocess',
         arguments: {
           List: {
-            type: 'list',
+            type: 'string',
             description: 'List of value',
             value: [],
           },
