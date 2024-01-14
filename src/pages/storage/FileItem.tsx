@@ -6,9 +6,10 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 interface FileItemProps {
   name: string;
   onClick: (name: string) => void;
+  isLoading?: boolean;
 }
 
-const FileItem: React.FC<FileItemProps> = ({ name, onClick }) => {
+const FileItem: React.FC<FileItemProps> = ({ name, onClick, isLoading }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const isDirectory = name.endsWith('/');
@@ -23,7 +24,7 @@ const FileItem: React.FC<FileItemProps> = ({ name, onClick }) => {
 
   return (
     <div
-      className={`flex flex-col justify-center items-center cursor-pointer ${isHovered ? 'bg-gray-300' : ''}`}
+      className={`flex flex-col justify-center items-center cursor-pointer ${isHovered ? 'bg-gray-300' : ''} ${isLoading ? 'opacity-50' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={() => onClick(name)}

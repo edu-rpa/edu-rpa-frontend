@@ -24,3 +24,15 @@ export const createFolder = async (path: string): Promise<string> => {
       return res.data;
     });
 }
+
+export const getPresignedUrl = async (fileKey: string): Promise<{ url: string }> => {
+  return await apiBase
+    .get(`${process.env.NEXT_PUBLIC_AWS_API_GATEWAY_URL}/file-storage/presigned-url`, {
+      params: {
+        file_key: fileKey,
+      },
+    })
+    .then((res: any) => {
+      return res.data;
+    });
+}

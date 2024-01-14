@@ -17,6 +17,7 @@ import FileItem from './FileItem';
 import {
   getFiles,
   createFolder,
+  getPresignedUrl,
 } from '@/apis/fileStorageApi';
 import {
   Breadcrumb,
@@ -32,6 +33,7 @@ export default function Storage() {
   const [currentPath, setCurrentPath] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingCreateFolder, setIsLoadingCreateFolder] = useState<boolean>(false);
+  const [isLoadingGetPresignedUrl, setIsLoadingGetPresignedUrl] = useState<boolean>(false);
   const [selectedDates, setSelectedDates] = useState<Date[]>([
     new Date(),
     new Date(),
@@ -81,7 +83,14 @@ export default function Storage() {
     if (name.endsWith('/')) {
       setCurrentPath(`${currentPath}${name}`);
     } else {
-      console.log('open file', name);
+      setIsLoadingGetPresignedUrl(true);
+      getPresignedUrl(`${currentPath}${name}`)
+        .then((res) => {
+          window.open(res.url, '_blank');
+        })
+        .finally(() => {
+          setIsLoadingGetPresignedUrl(false);
+        });
     }
   };
 
@@ -190,6 +199,7 @@ export default function Storage() {
                 <FileItem
                   key={file}
                   name={file}
+                  isLoading={isLoadingGetPresignedUrl}
                   onClick={handleFileItemClick}
                 />
               ))}
