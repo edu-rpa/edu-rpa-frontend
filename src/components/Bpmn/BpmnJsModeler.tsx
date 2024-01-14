@@ -54,10 +54,10 @@ const BpmnJsModeler: ForwardRefRenderFunction<
         bindTo: window,
       },
       additionalModules: [
-        {
-          __init__: ['customContextPadProvider'],
-          customContextPadProvider: ['type', removeUnsupportedBpmnFunctions()],
-        },
+        // {
+        //   __init__: ['customContextPadProvider'],
+        //   customContextPadProvider: ['type', removeUnsupportedBpmnFunctions()],
+        // },
         BpmnColorPickerModule,
         CliModule,
         gridModule,
