@@ -27,6 +27,7 @@ import {
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import CreateFolderModal from './CreateFolderModal';
+import FileUploadModal from './FileUploadModal';
 
 export default function Storage() {
   const [files, setFiles] = useState<string[]>([]);
@@ -43,6 +44,11 @@ export default function Storage() {
     isOpen: isOpenCreateFolderModal, 
     onOpen: onOpenCreateFolderModal, 
     onClose: onCloseCreateFolderModal 
+  } = useDisclosure();
+  const { 
+    isOpen: isOpenFileUploadModal, 
+    onOpen: onOpenFileUploadModal, 
+    onClose: onCloseFileUploadModal 
   } = useDisclosure();
 
   const handleCreateFolder = (folderName: string) => {
@@ -94,8 +100,20 @@ export default function Storage() {
     }
   };
 
+  const handleCloseFileUploadModal = () => {
+    onCloseFileUploadModal();
+    setIsLoading(true);
+    getFiles(currentPath)
+      .then((res) => {
+        setFiles(res.filter((file) => file !== ''));
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   const handleClickUpload = () => {
-    console.log('upload file');
+    onOpenFileUploadModal();
   };
 
   const handleClickCreateFolder = () => {
@@ -187,6 +205,12 @@ export default function Storage() {
           isLoading={isLoadingCreateFolder}
           onClose={onCloseCreateFolderModal}
           handleCreateFolder={handleCreateFolder}
+        />
+
+        <FileUploadModal
+          isOpen={isOpenFileUploadModal}
+          onClose={handleCloseFileUploadModal}
+          path={currentPath}
         />
 
         {isLoading

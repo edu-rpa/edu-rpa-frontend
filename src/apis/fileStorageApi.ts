@@ -36,3 +36,30 @@ export const getPresignedUrl = async (fileKey: string): Promise<{ url: string }>
       return res.data;
     });
 }
+
+export const uploadFile = async (
+  path: string,
+  file: File
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const fileKey = `${path}${file.name}`;
+
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onload = () => {
+      apiBase
+        .post(`${process.env.NEXT_PUBLIC_AWS_API_GATEWAY_URL}/file-storage`, reader.result, {
+          headers: {
+            'Content-Type': file.type,
+          },
+          params: {
+            file_key: fileKey,
+          },
+        })
+        .then((response: any) => response.data)
+        .then((data: any) => resolve(data))
+        .catch((error: any) => reject(error));
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};
