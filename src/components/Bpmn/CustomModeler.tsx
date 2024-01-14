@@ -12,7 +12,10 @@ import {
 } from '@chakra-ui/react';
 import ModelerSideBar from './ModelerSidebar';
 import { BpmnParser } from '@/utils/bpmn-parser/bpmn-parser.util';
-import { setLocalStorageObject } from '@/utils/localStorageService';
+import {
+  getLocalStorageObject,
+  setLocalStorageObject,
+} from '@/utils/localStorageService';
 import {
   getProcessFromLocalStorage,
   updateProcessInProcessList,
@@ -21,12 +24,15 @@ import { useRouter } from 'next/router';
 import VariablesSideBar from './VariablesSideBar/VariablesSideBar';
 import { LocalStorage } from '@/constants/localStorage';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
-import { exportFile } from '@/utils/common';
+import { exportFile, stringifyCyclicObject } from '@/utils/common';
 import { FaPlay } from 'react-icons/fa';
 import { FaSave } from 'react-icons/fa';
 import { MdPublish } from 'react-icons/md';
 import { IoMdShare } from 'react-icons/io';
-import { getVariableItemFromLocalStorage } from '@/utils/variableService';
+import {
+  getVariableItemFromLocalStorage,
+  replaceVariableStorage,
+} from '@/utils/variableService';
 
 import { useParams } from 'next/navigation';
 import { QUERY_KEY } from '@/constants/queryKey';
@@ -37,6 +43,14 @@ import { SaveProcessDto } from '@/dtos/processDto';
 import { useDispatch, useSelector } from 'react-redux';
 import { bpmnSelector } from '@/redux/selector';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
+
+interface OriginalObject {
+  [key: string]: {
+    type: string;
+    isArgument: boolean;
+    defaultValue: string | number;
+  };
+}
 
 function CustomModeler() {
   const router = useRouter();
@@ -54,9 +68,22 @@ function CustomModeler() {
     queryFn: () => processApi.getProcessByID(processID as string),
   });
 
+  const convertObjectToArray = (originalObject: OriginalObject) => {
+    return Object.entries(originalObject).map(
+      ([name, { type, isArgument, defaultValue }], id) => ({
+        id: id + 1,
+        name,
+        value: defaultValue.toString(),
+        isArgument,
+        type,
+      })
+    );
+  };
+
   // sync data from api to localStorage
   useEffect(() => {
     if (!processDetailByID) return;
+    console.log('Detail', convertObjectToArray(processDetailByID.variables));
     const currentprocessID = getProcessFromLocalStorage(processID as string);
     const updateStorageByID = {
       ...currentprocessID,
@@ -69,6 +96,18 @@ function CustomModeler() {
       updateStorageByID
     );
     setLocalStorageObject(LocalStorage.PROCESS_LIST, replaceStorageSnapshot);
+  }, [processDetailByID]);
+
+  useEffect(() => {
+    if (!processDetailByID) return;
+    const payloadStorage = {
+      processID: processID,
+      variables: convertObjectToArray(processDetailByID.variables),
+    };
+    setLocalStorageObject(LocalStorage.VARIABLE_LIST, [
+      ...getLocalStorageObject(LocalStorage.VARIABLE_LIST),
+      payloadStorage,
+    ]);
   }, [processDetailByID]);
 
   const handleSaveAll = useMutation({
@@ -168,11 +207,10 @@ function CustomModeler() {
           const res = await bpmnReactJs.saveXML();
           exportFile(res.xml as string, `${processID}.xml`);
           console.log(res.xml);
-        }}
-      >
+        }}>
         Save XML
       </Button>
-      {/* <Button
+      <Button
         colorScheme="blue"
         size="md"
         className="mx-[5px]"
@@ -184,8 +222,7 @@ function CustomModeler() {
           );
           exportFile(jsonProcess, `${processID}.json`);
           console.log(bpmnParser.parseXML(res.xml as string));
-        }}
-      >
+        }}>
         Save JSON
       </Button>
 
@@ -197,13 +234,13 @@ function CustomModeler() {
           const processProperties = getProcessFromLocalStorage(
             processID as string
           );
+          console.log(processProperties);
           delete processProperties['xml'];
           exportFile(
             JSON.stringify(processProperties),
             `${processID}_properties.json`
           );
-        }}
-      >
+        }}>
         Save Properties
       </Button>
 
@@ -214,17 +251,22 @@ function CustomModeler() {
         onClick={async () => {
           const res = await bpmnReactJs.saveXML();
           const bpmnParser = new BpmnParser();
-          const processProperties = getProcessFromLocalStorage(processId).activities;
-          const variableList = getVariableItemFromLocalStorage(processId).variables;
-          const process = bpmnParser.parse(res.xml as string, processProperties, variableList);
-          console.log(process)
-        }}
-      >
+          const processProperties = getProcessFromLocalStorage(
+            processID as string
+          ).activities;
+          const variableList = getVariableItemFromLocalStorage(
+            processID as string
+          ).variables;
+          const process = bpmnParser.parse(
+            res.xml as string,
+            processProperties,
+            variableList
+          );
+          console.log(process);
+        }}>
         Compile Robot
       </Button>
 
-      <VariablesSideBar processID={processId} />
-      </Button> */}
       <VariablesSideBar processID={processID as string} />
       <br />
     </div>

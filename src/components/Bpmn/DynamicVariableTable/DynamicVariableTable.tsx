@@ -9,10 +9,12 @@ import {
   Button,
   Input,
   Select,
+  Switch,
 } from '@chakra-ui/react';
 import { Variable, VariableType } from '@/types/variable';
 import { useDispatch } from 'react-redux';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
+import { v4 as uuidv4 } from 'uuid';
 
 interface VariableTableProps {
   variableList: Variable[];
@@ -21,12 +23,29 @@ interface VariableTableProps {
 
 const DynamicVariableTable = (props: VariableTableProps) => {
   const dispatch = useDispatch();
+
+  const defaultValue = {
+    [VariableType.String]: '',
+    [VariableType.Number]: '0',
+    [VariableType.Boolean]: 'false',
+    [VariableType.File]: '',
+    [VariableType.List]: '[]',
+    [VariableType.Dictionary]: '{}',
+    [VariableType.Connection]: '',
+  };
+
+  const [selectedType, setSelectedType] = useState<VariableType>(
+    VariableType.String
+  );
+
   const handleAddRow = () => {
+    const defaultTypeValue = defaultValue[selectedType] ?? '';
     const newRow: Variable = {
-      id: props.variableList.length + 1,
+      id: uuidv4(),
       name: '',
-      value: '',
-      type: VariableType.String,
+      value: defaultTypeValue,
+      isArgument: false,
+      type: selectedType,
     };
     props.setVariableList([...props.variableList, newRow]);
     dispatch(isSavedChange(false));
@@ -34,19 +53,31 @@ const DynamicVariableTable = (props: VariableTableProps) => {
 
   const handleEditRow = (
     index: number,
-    field: 'name' | 'value' | 'type',
-    value: string
+    field: 'name' | 'value' | 'type' | 'isArgument',
+    value: string | boolean
   ) => {
     const updatedData = [...props.variableList];
-    updatedData[index][field] = value;
+
+    if (field === 'isArgument') {
+      updatedData[index][field] = value as boolean;
+    } else {
+      updatedData[index][field] = value as string;
+    }
+
     props.setVariableList(updatedData);
   };
 
-  const handleRemoveRow = (index: number) => {
-    const updatedData = props.variableList.filter((_, i) => i !== index);
-    updatedData.forEach((item, i) => {
-      item.id = i + 1;
-    });
+  const handleRemoveRow = (id: string) => {
+    const updatedData = props.variableList.filter((row) => row.id !== id);
+    props.setVariableList(updatedData);
+  };
+
+  const handleTypeChange = (index: number, newType: VariableType) => {
+    setSelectedType(newType);
+    const updatedData = [...props.variableList];
+    const defaultTypeValue = defaultValue[newType] ?? '';
+    updatedData[index].type = newType;
+    updatedData[index].value = defaultTypeValue;
     props.setVariableList(updatedData);
   };
 
@@ -62,6 +93,7 @@ const DynamicVariableTable = (props: VariableTableProps) => {
             <Th>Name</Th>
             <Th>Value</Th>
             <Th>Type</Th>
+            <Th>Is Argument</Th>
             <Th>Actions</Th>
           </Tr>
         </Thead>
@@ -87,9 +119,9 @@ const DynamicVariableTable = (props: VariableTableProps) => {
               </Td>
               <Td>
                 <Select
-                  defaultValue={row.type}
+                  value={row.type}
                   onChange={(e) => {
-                    handleEditRow(index, 'type', e.target.value);
+                    handleTypeChange(index, e.target.value as VariableType);
                   }}>
                   <option value={VariableType.String}>String</option>
                   <option value={VariableType.Number}>Number</option>
@@ -101,10 +133,19 @@ const DynamicVariableTable = (props: VariableTableProps) => {
                 </Select>
               </Td>
               <Td>
+                <Switch
+                  colorScheme="teal"
+                  isChecked={row.isArgument}
+                  onChange={(e) => {
+                    handleEditRow(index, 'isArgument', e.target.checked);
+                  }}
+                />
+              </Td>
+              <Td>
                 <Button
                   colorScheme="red"
                   size="sm"
-                  onClick={() => handleRemoveRow(index)}>
+                  onClick={() => handleRemoveRow(row.id)}>
                   Remove
                 </Button>
               </Td>

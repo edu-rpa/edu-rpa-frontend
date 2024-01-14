@@ -30,7 +30,6 @@ import CustomDatePicker from '@/components/CustomDatePicker/ CustomDatePicker';
 import { LocalStorage } from '@/constants/localStorage';
 import { ArgumentProps, PropertiesProps } from '@/types/property';
 import { getVariableItemFromLocalStorage } from '@/utils/variableService';
-import { Variable } from '@/utils/bpmn-parser/visitor/robot';
 import TextAutoComplete from '@/components/Input/AutoComplete/TextAutoComplete';
 import {
   getActivityByService,
@@ -47,6 +46,7 @@ import BoundingBoxBlock from '@/components/BoundingBox/BoundingBoxBlock';
 import { Rectangle } from '@/types/boundingBox';
 import { useDispatch } from 'react-redux';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
+import { Variable } from '@/types/variable';
 
 interface PropertiesSideBarProps {
   isOpen: boolean;
