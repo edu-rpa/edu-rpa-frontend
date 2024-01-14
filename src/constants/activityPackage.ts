@@ -28,7 +28,7 @@ export const ActivityTemplates = [
             keywordArg: 'source',
             value: '',
           },
-          'Query': {
+          Query: {
             type: 'string',
             description: 'Define the file type to dowload',
             keywordArg: 'query',
@@ -39,8 +39,7 @@ export const ActivityTemplates = [
           displayName: 'Files',
           assignedTo: null,
           type: 'list',
-          description:
-            'List of dowloaded files \'s name',
+          description: "List of dowloaded files 's name",
         },
       },
       {

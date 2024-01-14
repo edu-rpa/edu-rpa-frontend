@@ -53,6 +53,35 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
           };
           const newLocalStorage = updateLocalStorage(newObj);
           setLocalStorageObject(LocalStorage.PROCESS_LIST, newLocalStorage);
+
+          // const existingActivities =
+          //   getProcessFromLocalStorage(processID).activities || [];
+
+          // const updatedActivities = activityList.reduce(
+          //   (result: any, newActivity: any) => {
+          //     const existingIndex = existingActivities.findIndex(
+          //       (existingActivity: any) =>
+          //         existingActivity.activityID === newActivity.activityID
+          //     );
+
+          //     if (existingIndex !== -1) {
+          //       result.push(existingActivities[existingIndex]);
+          //     } else {
+          //       result.push(newActivity);
+          //     }
+          //     return result;
+          //   },
+          //   []
+          // );
+
+          // const newObj = {
+          //   ...getProcessFromLocalStorage(processID),
+          //   xml: xml.xml,
+          //   activities: updatedActivities,
+          // };
+
+          // const newLocalStorage = updateLocalStorage(newObj);
+          // setLocalStorageObject(LocalStorage.PROCESS_LIST, newLocalStorage);
         };
         await updateModelerAndLocalStorage();
         dispatch(isSavedChange(false));
