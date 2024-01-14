@@ -14,5 +14,19 @@ interface PropertiesDetails {
 }
 
 export interface Arguments {
-    [key: string] : string;
+    [key: string] : AgumentProperties;
+}
+
+interface AgumentProperties {
+    type: string;
+    description: string;
+    keywordArg?: string;
+    value?: string;
+}
+
+export interface ProcessVariables {
+    id: number;
+    name: string;
+    type: string;
+    value: string;
 }

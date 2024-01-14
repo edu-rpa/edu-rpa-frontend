@@ -1,0 +1,117 @@
+{
+  "processID": "Process_1jqmW5U",
+  "processName": "David",
+  "activities": [
+    {
+      "activityID": "StartEvent_0vr9as6",
+      "activityType": "bpmn:StartEvent",
+      "properties": {}
+    },
+    {
+      "activityID": "Activity_110mni4",
+      "activityType": "bpmn:Task",
+      "properties": {}
+    },
+    {
+      "activityID": "Event_14mwyv7",
+      "activityType": "bpmn:EndEvent",
+      "properties": {}
+    },
+    {
+      "activityID": "Activity_0rcsfaj",
+      "activityType": "bpmn:Task",
+      "properties": {}
+    },
+    {
+      "activityID": "Event_1mens5i",
+      "activityType": "bpmn:StartEvent",
+      "properties": {}
+    },
+    {
+      "activityID": "Event_0wqbmaw",
+      "activityType": "bpmn:EndEvent",
+      "properties": {}
+    },
+    {
+      "activityID": "Activity_1wojxqu",
+      "activityType": "bpmn:Task",
+      "properties": {
+        "activityPackage": "Google Workspace",
+        "serviceName": "Google Drive",
+        "activityName": "Create folder",
+        "arguments": {
+          "Connection": "a",
+          "Folder name": "a",
+          "Parent Folder Path": "a",
+          "Overwrite if folder exists": "a"
+        }
+      }
+    },
+    {
+      "activityID": "Activity_04ooeee",
+      "activityType": "bpmn:Task",
+      "properties": {
+        "activityPackage": "Google Workspace",
+        "serviceName": "Google Drive",
+        "activityName": "Create folder",
+        "arguments": {
+          "Folder name": "a",
+          "Parent Folder Path": "a",
+          "Overwrite if folder exists": "a",
+          "Connection": "a"
+        }
+      }
+    },
+    {
+      "activityID": "Flow_1fsrpl3",
+      "activityType": "bpmn:SequenceFlow",
+      "properties": {}
+    },
+    {
+      "activityID": "Flow_16ge7ke",
+      "activityType": "bpmn:SequenceFlow",
+      "properties": {}
+    },
+    {
+      "activityID": "Flow_0wg0km0",
+      "activityType": "bpmn:SequenceFlow",
+      "properties": {}
+    },
+    {
+      "activityID": "Flow_1n04kn4",
+      "activityType": "bpmn:SequenceFlow",
+      "properties": {}
+    },
+    {
+      "activityID": "Flow_0j2or04",
+      "activityType": "bpmn:SequenceFlow",
+      "properties": {}
+    },
+    {
+      "activityID": "Activity_0q44pxx",
+      "activityType": "bpmn:SubProcess",
+      "properties": {
+        "activityPackage": "Control",
+        "serviceName": "For Each",
+        "activityName": "For each ... in ...",
+        "arguments": { "List": "${emails}", "Item": "${email}" }
+      }
+    },
+    {
+      "activityID": "Event_1slu96m",
+      "activityType": "bpmn:StartEvent",
+      "properties": {}
+    },
+    {
+      "activityID": "Flow_04n9qzv",
+      "activityType": "bpmn:SequenceFlow",
+      "properties": {}
+    },
+    {
+      "activityID": "Flow_0qxc73l",
+      "activityType": "bpmn:SequenceFlow",
+      "properties": {}
+    }
+  ],
+  "variables": []
+}

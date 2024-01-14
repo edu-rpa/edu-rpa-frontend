@@ -60,6 +60,12 @@ const getProcessFromLocalStorage = (processID: string) => {
   );
 };
 
+const getVariablesFromLocalStorage = (processID: string) => {
+  return getLocalStorageObject(LocalStorage.VARIABLE_LIST).find(
+    (process: Process) => process.processID === processID
+  );
+};
+
 const updateLocalStorage = (newObj: Process) => {
   const oldObj = getLocalStorageObject(LocalStorage.PROCESS_LIST);
   const res = oldObj.map(
@@ -106,6 +112,7 @@ const deleteProcessById = (processID: string) => {
 export {
   generateProcessID,
   getProcessFromLocalStorage,
+  getVariablesFromLocalStorage,
   getActivityInProcess,
   updateActivityInProcess,
   initProcess,

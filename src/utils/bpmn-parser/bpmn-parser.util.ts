@@ -11,7 +11,8 @@ import {
 } from "./model/bpmn";
 
 import { ConcreteGraphVisitor, ConcreteSequenceVisitor } from "./visitor";
-import { Properties } from './model/properties.model';
+import { ProcessVariables, Properties } from './model/properties.model';
+import { Variable } from '@/types/variable';
 
 var convert = require('xml-js');
 var options = { ignoreComment: true, alwaysChildren: true };
@@ -19,7 +20,7 @@ var options = { ignoreComment: true, alwaysChildren: true };
 export class BpmnParser {
   constructor() {}
 
-  public parse(xml: string, properties: Properties[]) {
+  public parse(xml: string, properties: Properties[], variables: Variable[]) {
     // Convert XML to JSON Format
     let result = convert.xml2js(xml, options);
     let bpmn: Bpmn = Convert.toBpmn(JSON.stringify(result));
@@ -37,8 +38,12 @@ export class BpmnParser {
     let g = new ConcreteGraphVisitor(bpmnProcess);
     let sequence = g.buildGraph().buildBasicBlock();
 
-    let robot = new ConcreteSequenceVisitor(sequence, properties).parse();
-    return robot.toJSON();
+    let robot = new ConcreteSequenceVisitor(sequence, properties, variables).parse();
+    try {
+      return robot.toJSON(); 
+    } catch (error) {
+      throw error
+    }
   }
 
   public parseXML(xml: string) {

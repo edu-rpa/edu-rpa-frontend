@@ -11,7 +11,6 @@ describe("BPMN Parser Test", () => {
       let properties = JSON.parse(fs.readFileSync(propertiesFileName, 'utf8'));
 
       let robot = new BpmnParser().parse(xml, properties["activities"]);
-      console.log(robot)
       writeResult(bpmnFileName, robot);
     });
     it("Test Branch", () => {
@@ -22,7 +21,16 @@ describe("BPMN Parser Test", () => {
       let properties = JSON.parse(fs.readFileSync(propertiesFileName, 'utf8'));
 
       let robot = new BpmnParser().parse(xml, properties["activities"]);
-      console.log(robot)
+      writeResult(bpmnFileName, robot);
+    });
+    it("Test Loop", () => {
+      let testcase = 3;
+      let bpmnFileName = `${root}/${testcase}.xml`;
+      let propertiesFileName = `${root}/${testcase}.json`;
+      let xml = fs.readFileSync(bpmnFileName, 'utf8');
+      let properties = JSON.parse(fs.readFileSync(propertiesFileName, 'utf8'));
+
+      let robot = new BpmnParser().parse(xml, properties["activities"]);
       writeResult(bpmnFileName, robot);
     });
 });

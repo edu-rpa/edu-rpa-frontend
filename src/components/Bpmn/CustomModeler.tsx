@@ -21,11 +21,12 @@ import { useRouter } from 'next/router';
 import VariablesSideBar from './VariablesSideBar/VariablesSideBar';
 import { LocalStorage } from '@/constants/localStorage';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
-import { exportFile, stringifyCyclicObject } from '@/utils/common';
+import { exportFile } from '@/utils/common';
 import { FaPlay } from 'react-icons/fa';
 import { FaSave } from 'react-icons/fa';
 import { MdPublish } from 'react-icons/md';
 import { IoMdShare } from 'react-icons/io';
+import { getVariableItemFromLocalStorage } from '@/utils/variableService';
 
 import { useParams } from 'next/navigation';
 import { QUERY_KEY } from '@/constants/queryKey';
@@ -167,7 +168,8 @@ function CustomModeler() {
           const res = await bpmnReactJs.saveXML();
           exportFile(res.xml as string, `${processID}.xml`);
           console.log(res.xml);
-        }}>
+        }}
+      >
         Save XML
       </Button>
       {/* <Button
@@ -182,7 +184,8 @@ function CustomModeler() {
           );
           exportFile(jsonProcess, `${processID}.json`);
           console.log(bpmnParser.parseXML(res.xml as string));
-        }}>
+        }}
+      >
         Save JSON
       </Button>
 
@@ -199,8 +202,28 @@ function CustomModeler() {
             JSON.stringify(processProperties),
             `${processID}_properties.json`
           );
-        }}>
+        }}
+      >
         Save Properties
+      </Button>
+
+      <Button
+        colorScheme="blue"
+        size="md"
+        className="mx-[5px]"
+        onClick={async () => {
+          const res = await bpmnReactJs.saveXML();
+          const bpmnParser = new BpmnParser();
+          const processProperties = getProcessFromLocalStorage(processId).activities;
+          const variableList = getVariableItemFromLocalStorage(processId).variables;
+          const process = bpmnParser.parse(res.xml as string, processProperties, variableList);
+          console.log(process)
+        }}
+      >
+        Compile Robot
+      </Button>
+
+      <VariablesSideBar processID={processId} />
       </Button> */}
       <VariablesSideBar processID={processID as string} />
       <br />
