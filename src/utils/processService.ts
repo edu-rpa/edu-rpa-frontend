@@ -68,7 +68,7 @@ const getVariablesFromLocalStorage = (processID: string) => {
 
 const updateLocalStorage = (newObj: Process) => {
   const oldObj = getLocalStorageObject(LocalStorage.PROCESS_LIST);
-  const res = oldObj.map(
+  const res = oldObj?.map(
     (obj: Process) => [newObj].find((o) => o.processID === obj.processID) || obj
   );
   return res;
@@ -77,7 +77,7 @@ const updateLocalStorage = (newObj: Process) => {
 const updateActivityInProcess = (processID: string, newObj: Activity) => {
   const getProcessByID = getProcessFromLocalStorage(processID);
   const oldObj = getProcessByID?.activities;
-  const res = oldObj.map(
+  const res = oldObj?.map(
     (obj: Activity) =>
       [newObj].find((o) => o.activityID === obj.activityID) || obj
   );

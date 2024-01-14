@@ -66,33 +66,35 @@ export default function Studio() {
   const limit = countProcess ?? 0;
   const page = 1;
 
-  const { data: allProcess } = useQuery({
+  const { data: allProcess, isLoading: isLoadingProcess } = useQuery({
     queryKey: [QUERY_KEY.PROCESS_LIST],
     queryFn: () => processApi.getAllProcess(limit, page),
   });
 
   const syncBackendToLocalStorage = () => {
-    return allProcess
-      ? allProcess.map((item: any) => {
-          return {
-            processID: item.id,
-            processName: item.name,
-            processDesc: item.description,
-            processType: 'free',
-            xml: '',
-            activities: [],
-            variables: [],
-          };
-        })
-      : [];
+    return (
+      allProcess &&
+      allProcess?.map((item: any) => {
+        return {
+          processID: item.id,
+          processName: item.name,
+          processDesc: item.description,
+          processType: 'free',
+          xml: '',
+          activities: [],
+          variables: [],
+        };
+      })
+    );
   };
 
   useEffect(() => {
+    if (isLoadingProcess) return;
     localStorage.setItem(
       LocalStorage.PROCESS_LIST,
       JSON.stringify(syncBackendToLocalStorage())
     );
-  }, []);
+  }, [isLoadingProcess]);
 
   useEffect(() => {
     const variableStorage = localStorage.getItem(LocalStorage.VARIABLE_LIST);
@@ -105,7 +107,7 @@ export default function Studio() {
         getLocalStorageObject(LocalStorage.VARIABLE_LIST)
       );
     }
-  }, []);
+  }, [isLoadingProcess]);
 
   const preProcessingVariableList = () => {
     const processStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
@@ -349,7 +351,7 @@ export default function Studio() {
               </ModalBody>
               <ModalFooter>
                 <Button
-                  colorScheme="blue"
+                  colorScheme="teal"
                   mr={3}
                   onClick={handleCreateNewProcess}>
                   Save

@@ -40,15 +40,15 @@ export default function VariablesSideBar(props: VariablesSideBarProps) {
   );
 
   useEffect(() => {
-    const currentVariables = getVariableItemFromLocalStorage(
-      params.id as string
-    );
-    if (currentVariables) {
-      setVariableList(currentVariables.variables);
-    } else {
-      setVariableList([]);
+    if (variableList.length > 0) {
+      setVariableList((prevVariableList) => {
+        if (prevVariableList !== variableList) {
+          return variableList;
+        }
+        return prevVariableList;
+      });
     }
-  }, [params.id]);
+  }, [variableList]);
 
   const convertToRefactoredObject = (variableList: any) => {
     return variableList?.variables
@@ -81,10 +81,10 @@ export default function VariablesSideBar(props: VariablesSideBarProps) {
         props.processID,
         currentVariable
       );
-      const variableListByID = getVariableItemFromLocalStorage(props.processID);
       setLocalStorageObject(LocalStorage.VARIABLE_LIST, newStorage);
-      setVariableList(variableListByID.variables);
+      const variableListByID = getVariableItemFromLocalStorage(props.processID);
 
+      setVariableList(variableListByID.variables);
       const processProperties = getProcessFromLocalStorage(
         props.processID as string
       );
