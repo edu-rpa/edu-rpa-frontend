@@ -29,8 +29,26 @@ const deleteVariableById = (processID: string) => {
   );
 };
 
+const convertToRefactoredObject = (variableList: any) => {
+  return variableList?.variables
+    .map((variable: any) => ({
+      [variable.name]: {
+        type: variable.type,
+        isArgument: variable.isArgument,
+        defaultValue: variable.value,
+      },
+    }))
+    .reduce((acc: any, variable: any) => {
+      const variableName = Object.keys(variable)[0];
+      acc[variableName] = variable[variableName];
+      return acc;
+    }, {});
+};
+
 export {
   getVariableItemFromLocalStorage,
+  getIndexVariableStorage,
   replaceVariableStorage,
   deleteVariableById,
+  convertToRefactoredObject,
 };

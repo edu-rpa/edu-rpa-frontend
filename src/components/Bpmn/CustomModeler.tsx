@@ -30,8 +30,9 @@ import { FaSave } from 'react-icons/fa';
 import { MdPublish } from 'react-icons/md';
 import { IoMdShare } from 'react-icons/io';
 import {
+  convertToRefactoredObject,
+  getIndexVariableStorage,
   getVariableItemFromLocalStorage,
-  replaceVariableStorage,
 } from '@/utils/variableService';
 
 import { useParams } from 'next/navigation';
@@ -48,7 +49,7 @@ interface OriginalObject {
   [key: string]: {
     type: string;
     isArgument: boolean;
-    defaultValue: string | number;
+    defaultValue: string;
   };
 }
 
@@ -70,10 +71,10 @@ function CustomModeler() {
 
   const convertObjectToArray = (originalObject: OriginalObject) => {
     return Object.entries(originalObject).map(
-      ([name, { type, isArgument, defaultValue }], id) => ({
-        id: id + 1,
+      ([name, { type, isArgument, defaultValue }], index) => ({
+        id: index + 1,
         name,
-        value: defaultValue.toString(),
+        value: defaultValue,
         isArgument,
         type,
       })
@@ -83,7 +84,6 @@ function CustomModeler() {
   // sync data from api to localStorage
   useEffect(() => {
     if (!processDetailByID) return;
-    console.log('Detail', convertObjectToArray(processDetailByID.variables));
     const currentprocessID = getProcessFromLocalStorage(processID as string);
     const updateStorageByID = {
       ...currentprocessID,
@@ -100,15 +100,29 @@ function CustomModeler() {
 
   useEffect(() => {
     if (!processDetailByID) return;
+    const indexLocalStorage = getIndexVariableStorage(processID as string);
     const payloadStorage = {
       processID: processID,
       variables: convertObjectToArray(processDetailByID.variables),
     };
-    setLocalStorageObject(LocalStorage.VARIABLE_LIST, [
-      ...getLocalStorageObject(LocalStorage.VARIABLE_LIST),
-      payloadStorage,
-    ]);
-  }, [processDetailByID]);
+    console.log('Payload Storage', payloadStorage);
+    const currentLocalStorageList = getLocalStorageObject(
+      LocalStorage.VARIABLE_LIST
+    );
+
+    if (indexLocalStorage === undefined) {
+      setLocalStorageObject(LocalStorage.VARIABLE_LIST, [
+        ...currentLocalStorageList,
+        payloadStorage,
+      ]);
+    } else {
+      currentLocalStorageList[indexLocalStorage] = payloadStorage;
+      setLocalStorageObject(
+        LocalStorage.VARIABLE_LIST,
+        currentLocalStorageList
+      );
+    }
+  }, [processDetailByID, processID]);
 
   const handleSaveAll = useMutation({
     mutationFn: async (payload: SaveProcessDto) => {
@@ -168,12 +182,27 @@ function CustomModeler() {
               const processProperties = getProcessFromLocalStorage(
                 processID as string
               );
-              const payload = {
-                xml: processProperties.xml,
-                activities: processProperties.activities,
-                variables: processProperties.variables,
-              };
-              handleSaveAll.mutate(payload);
+              if (!processProperties) {
+                toast({
+                  title: 'There are some erros, please refresh the page!',
+                  status: 'error',
+                  position: 'top-right',
+                  duration: 1000,
+                  isClosable: true,
+                });
+              } else {
+                const variableListByID = getVariableItemFromLocalStorage(
+                  processID as string
+                );
+                const refactoredVariables =
+                  convertToRefactoredObject(variableListByID);
+                const payload = {
+                  xml: processProperties.xml,
+                  activities: processProperties.activities,
+                  variables: refactoredVariables,
+                };
+                handleSaveAll.mutate(payload);
+              }
             }}>
             Save All
           </Button>
