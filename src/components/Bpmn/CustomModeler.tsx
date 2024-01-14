@@ -199,7 +199,7 @@ function CustomModeler() {
                 const payload = {
                   xml: processProperties.xml,
                   activities: processProperties.activities,
-                  variables: refactoredVariables,
+                  variables: refactoredVariables ?? {},
                 };
                 handleSaveAll.mutate(payload);
               }
