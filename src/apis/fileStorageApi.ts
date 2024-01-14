@@ -12,3 +12,15 @@ export const getFiles = async (path: string): Promise<string[]> => {
       return res.data;
     });
 }
+
+export const createFolder = async (path: string): Promise<string> => {
+  return await apiBase
+    .post(`${process.env.NEXT_PUBLIC_AWS_API_GATEWAY_URL}/file-storage/folder`, {}, {
+      params: {
+        path,
+      },
+    })
+    .then((res: any) => {
+      return res.data;
+    });
+}

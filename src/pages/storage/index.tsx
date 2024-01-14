@@ -9,12 +9,14 @@ import {
   InputGroup,
   InputLeftElement,
   Select,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { ChevronRightIcon, SearchIcon } from '@chakra-ui/icons';
 import { RangeDatepicker } from 'chakra-dayzed-datepicker';
 import FileItem from './FileItem';
 import {
   getFiles,
+  createFolder,
 } from '@/apis/fileStorageApi';
 import {
   Breadcrumb,
@@ -23,15 +25,35 @@ import {
 } from '@chakra-ui/react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import CreateFolderModal from './CreateFolderModal';
 
 export default function Storage() {
   const [files, setFiles] = useState<string[]>([]);
   const [currentPath, setCurrentPath] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingCreateFolder, setIsLoadingCreateFolder] = useState<boolean>(false);
   const [selectedDates, setSelectedDates] = useState<Date[]>([
     new Date(),
     new Date(),
   ]);
+
+  const { 
+    isOpen: isOpenCreateFolderModal, 
+    onOpen: onOpenCreateFolderModal, 
+    onClose: onCloseCreateFolderModal 
+  } = useDisclosure();
+
+  const handleCreateFolder = (folderName: string) => {
+    setIsLoadingCreateFolder(true);
+    createFolder(`${currentPath}${folderName}/`)
+      .then(() => {
+        onCloseCreateFolderModal();
+        setCurrentPath(`${currentPath}${folderName}/`);
+      })
+      .finally(() => {
+        setIsLoadingCreateFolder(false);
+      });
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -68,7 +90,7 @@ export default function Storage() {
   };
 
   const handleClickCreateFolder = () => {
-    console.log('create folder');
+    onOpenCreateFolderModal();
   };
 
   return (
@@ -150,6 +172,13 @@ export default function Storage() {
             />
           </div>
         </div>
+
+        <CreateFolderModal
+          isOpen={isOpenCreateFolderModal}
+          isLoading={isLoadingCreateFolder}
+          onClose={onCloseCreateFolderModal}
+          handleCreateFolder={handleCreateFolder}
+        />
 
         {isLoading
           ? <div className="w-90 m-auto flex justify-center items-center">
