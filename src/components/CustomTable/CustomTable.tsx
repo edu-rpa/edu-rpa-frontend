@@ -23,10 +23,13 @@ import {
 import ReactPaginate from 'react-paginate';
 import { IoDocumentText } from 'react-icons/io5';
 import { FaPlay } from 'react-icons/fa';
+import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 
 interface TableProps {
   header: string[];
   data: any[];
+  maxRows?: number;
+  isLoading?: boolean;
   onView?: (id: string) => void;
   onDownload?: (id: string) => void;
   onDelete?: (id: string) => void;
@@ -34,6 +37,7 @@ interface TableProps {
   onRun?: (id: string) => void;
   onViewFile?: (id: string) => void;
 }
+const DEFAULT_MAX_ROWS = 6;
 
 const CustomTable = (props: TableProps) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -42,7 +46,12 @@ const CustomTable = (props: TableProps) => {
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = props.data.slice(startIndex, endIndex);
+
   if (currentData.length == 0) return <Box></Box>;
+
+  if (props.isLoading) {
+    return <LoadingIndicator />;
+  }
 
   const renderTableCell = (type: string, value: string) => {
     switch (type) {
@@ -97,7 +106,7 @@ const CustomTable = (props: TableProps) => {
               }}
               onClick={() => props.onView && props.onView(item.id)}>
               {Object.keys(item).map((key, columnIndex) =>
-                columnIndex < 5 ? (
+                columnIndex < (props.maxRows ?? DEFAULT_MAX_ROWS) ? (
                   <Td key={key}>{renderTableCell(key, item[key])}</Td>
                 ) : null
               )}
@@ -107,75 +116,55 @@ const CustomTable = (props: TableProps) => {
                     <IconButton
                       bg="white"
                       aria-label="Run"
-                      icon={
-                        <FaPlay
-                          color="#319795"
-                          onClick={(e: any) => {
-                            e.stopPropagation();
-                            props.onRun && props.onRun(item.id);
-                          }}
-                        />
-                      }
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        props.onRun && props.onRun(item.id);
+                      }}
+                      icon={<FaPlay color="#319795" />}
                     />
                   )}
                   {props.onViewFile && (
                     <IconButton
                       bg="white"
-                      aria-label="Delete item"
-                      icon={
-                        <ViewIcon
-                          color="#319795"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            props.onViewFile && props.onViewFile(item.id);
-                          }}
-                        />
-                      }
+                      aria-label="View Item"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        props.onViewFile && props.onViewFile(item.id);
+                      }}
+                      icon={<ViewIcon color="#319795" />}
                     />
                   )}
                   {props.onDownload && (
                     <IconButton
                       bg="white"
                       aria-label="Download"
-                      icon={
-                        <DownloadIcon
-                          color="#319795"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            props.onDownload && props.onDownload(item.id);
-                          }}
-                        />
-                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        props.onDownload && props.onDownload(item.id);
+                      }}
+                      icon={<DownloadIcon color="#319795" />}
                     />
                   )}
                   {props.onEdit && (
                     <IconButton
                       bg="white"
                       aria-label="Edit item"
-                      icon={
-                        <EditIcon
-                          color="#319795"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            props.onEdit && props.onEdit(item.id);
-                          }}
-                        />
-                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        props.onEdit && props.onEdit(item.id);
+                      }}
+                      icon={<EditIcon color="#319795" />}
                     />
                   )}
                   {props.onDelete && (
                     <IconButton
                       bg="white"
                       aria-label="Delete item"
-                      icon={
-                        <DeleteIcon
-                          color="#319795"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            props.onDelete && props.onDelete(item.id);
-                          }}
-                        />
-                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        props.onDelete && props.onDelete(item.id);
+                      }}
+                      icon={<DeleteIcon color="#319795" />}
                     />
                   )}
                 </HStack>

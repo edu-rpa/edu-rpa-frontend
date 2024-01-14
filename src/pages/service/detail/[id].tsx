@@ -26,7 +26,7 @@ import {
   getProcessFromLocalStorage,
 } from '@/utils/processService';
 import { deleteVariableById } from '@/utils/variableService';
-import SampleImage from '@/assets/images/AutomationTemplate.jpg';
+import AutomationTemplateImage from '@/assets/images/AutomationTemplate.jpg';
 
 const ServiceDetail = () => {
   const router = useRouter();
@@ -47,12 +47,20 @@ const ServiceDetail = () => {
         id: item.processID,
         name: item.processName,
         owner: 'You',
+        ptype: item.processType,
         last_modified: formatDate(new Date()),
       };
     });
 
   const tableProps = {
-    header: ['Process ID', 'Process Name', 'Owner', 'Last Modified', 'Actions'],
+    header: [
+      'Process ID',
+      'Process Name',
+      'Process Type',
+      'Owner',
+      'Last Modified',
+      'Actions',
+    ],
     data: formatData ?? [],
   };
 
@@ -74,14 +82,17 @@ const ServiceDetail = () => {
   };
 
   return (
-    <Container maxW="container.xl" className="bg-white h-[100vh]">
-      <Box className="flex justify-between items-center w-90 m-auto">
+    <Container
+      maxW="container.xl"
+      className="fixed top-0 left-0 right-0 bottom-0 bg-white overflow-y-auto">
+      <Box className="flex justify-between items-center">
         <IconButton
           colorScheme="teal"
           aria-label="Prev to home"
           variant="outline"
           isRound={true}
           size="lg"
+          className="ml-[40px]"
           onClick={() => router.push('/service')}
           icon={<ChevronLeftIcon />}
         />
@@ -114,7 +125,7 @@ const ServiceDetail = () => {
         </Text>
       </Box>
       <Box>
-        <SidebarContent className="w-[70vw]">
+        <SidebarContent className="w-[80vw] m-auto">
           <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
             Process List
           </h1>
@@ -143,30 +154,32 @@ const ServiceDetail = () => {
             />
           </div>
         </SidebarContent>
-        <SidebarContent className="w-[70vw]">
+      </Box>
+      <Box className="w-[80vw] m-auto">
+        <SidebarContent className="w-[80vw] m-auto">
           <h1 className="px-[20px] ml-[30px] font-bold text-2xl text-[#319795]">
             Google Drive Templates
           </h1>
           <div className="grid grid-cols-3 gap-[15px] w-90 m-auto">
             <TemplateCard
-              image={SampleImage}
+              image={AutomationTemplateImage}
               title="Grading 100 English Exams from sample document"
-              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+              description="Evaluating 100 English Exam Papers from the provided sample document, ensuring accuracy and fairness throughout the grading process..."
             />
             <TemplateCard
-              image={SampleImage}
+              image={AutomationTemplateImage}
               title="Get 100 emails from Inbox"
-              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+              description="Retrieve 100 emails from your Inbox, managing and organizing your electronic correspondence efficiently and effectively..."
             />
             <TemplateCard
-              image={SampleImage}
+              image={AutomationTemplateImage}
               title="Export Data To Google Sheet"
-              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+              description="Seamlessly transfer your data directly to Google Sheets with our intuitive export feature. Whether you're managing extensive datasets, tracking project progress, or analyzing financial records, our tool ensures your information is synchronized in real-time."
             />
             <TemplateCard
-              image={SampleImage}
+              image={AutomationTemplateImage}
               title="Extract Text From An Image"
-              description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et..."
+              description="Unlock the hidden potential of your images with our cutting-edge templates. It's your gateway to converting visual content into actionable text, making information more accessible and versatile than ever before."
             />
           </div>
         </SidebarContent>

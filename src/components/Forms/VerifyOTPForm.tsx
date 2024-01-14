@@ -7,18 +7,19 @@ import {
   PinInputField,
   useToast,
 } from '@chakra-ui/react';
-import React, { useState } from 'react'; // Import useState
+import React, { useEffect, useState } from 'react'; // Import useState
 import BaseForm from './BaseForm';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector } from '@/redux/selector';
 import { useMutation } from '@tanstack/react-query';
 import { ResendOtpDto, VerifyOtpDto } from '@/dtos/authDto';
-import authApi from '@/apis/auth';
+import authApi from '@/apis/authApi';
 import { removeInfo } from '@/redux/slice/authSlice';
 
 export default function VerifyOTPForm() {
   const { email } = useSelector(authSelector);
+  const [countdown, setCountdown] = useState(300);
   const dispatch = useDispatch();
   const router = useRouter();
   const toast = useToast();
@@ -29,6 +30,13 @@ export default function VerifyOTPForm() {
     newOtpValues[index] = value;
     setOtpValues(newOtpValues);
   };
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
 
   const handleOtpSubmit = useMutation({
     mutationFn: async (payload: VerifyOtpDto) => {
@@ -43,6 +51,7 @@ export default function VerifyOTPForm() {
         isClosable: true,
       });
       dispatch(removeInfo());
+      setCountdown(300);
       router.push('/auth/login');
     },
     onError: () => {
@@ -98,7 +107,13 @@ export default function VerifyOTPForm() {
               ))}
             </PinInput>
           </HStack>
-          <div className="w-3/5 m-auto mt-[20px]">
+          <div className="w-3/5 m-auto mt-[20px] text-center">
+            {countdown > 0 && (
+              <p className="text-[15px] my-[10px] text-primary">
+                {Math.floor(countdown / 60)}:
+                {('0' + (countdown % 60)).slice(-2)}
+              </p>
+            )}
             <Button
               className="w-full"
               colorScheme="teal"

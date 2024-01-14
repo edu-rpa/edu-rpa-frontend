@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropertiesSideBar from './PropertiesSideBar/PropertiesSideBar';
 import {
   getActivityInProcess,
@@ -7,6 +7,8 @@ import {
 } from '@/utils/processService';
 import { setLocalStorageObject } from '@/utils/localStorageService';
 import { LocalStorage } from '@/constants/localStorage';
+import { useDispatch } from 'react-redux';
+import { isSavedChange } from '@/redux/slice/bpmnSlice';
 
 interface ModelerSideBarProps {
   isOpen: boolean;
@@ -23,7 +25,9 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
     properties: {},
   });
 
-  React.useEffect(() => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
     props.modeler.bpmnModeler.on('selection.changed', async (event: any) => {
       if (!event.newSelection[0]) return;
       const eventInfo = event.newSelection[0].businessObject;
@@ -51,6 +55,7 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
           setLocalStorageObject(LocalStorage.PROCESS_LIST, newLocalStorage);
         };
         await updateModelerAndLocalStorage();
+        dispatch(isSavedChange(false));
       }
       setActivityItem(currentActivity);
     });

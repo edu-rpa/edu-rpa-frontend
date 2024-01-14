@@ -22,6 +22,10 @@ import {
 } from '@/utils/localStorageService';
 import { LocalStorage } from '@/constants/localStorage';
 import { useParams } from 'next/navigation';
+import {
+  getProcessFromLocalStorage,
+  updateProcessInProcessList,
+} from '@/utils/processService';
 
 interface VariablesSideBarProps {
   processID: string;
@@ -46,6 +50,22 @@ export default function VariablesSideBar(props: VariablesSideBarProps) {
     }
   }, [params.id]);
 
+  const convertToRefactoredObject = (variableList: any) => {
+    return variableList?.variables
+      .map((variable: any) => ({
+        [variable.name]: {
+          type: variable.type,
+          isArgument: false,
+          defaultValue: parseInt(variable.value, 10),
+        },
+      }))
+      .reduce((acc: any, variable: any) => {
+        const variableName = Object.keys(variable)[0];
+        acc[variableName] = variable[variableName];
+        return acc;
+      }, {});
+  };
+
   const handleBlur = () => {
     const currentVariable = {
       processID: props.processID,
@@ -61,10 +81,25 @@ export default function VariablesSideBar(props: VariablesSideBarProps) {
         props.processID,
         currentVariable
       );
+      const variableListByID = getVariableItemFromLocalStorage(props.processID);
       setLocalStorageObject(LocalStorage.VARIABLE_LIST, newStorage);
-      setVariableList(
-        getVariableItemFromLocalStorage(props.processID).variables
+      setVariableList(variableListByID.variables);
+
+      const processProperties = getProcessFromLocalStorage(
+        props.processID as string
       );
+
+      const refactoredVariables = convertToRefactoredObject(variableListByID);
+
+      const updateStorageByID = {
+        ...processProperties,
+        variables: refactoredVariables,
+      };
+      const replaceStorageSnapshot = updateProcessInProcessList(
+        props.processID as string,
+        updateStorageByID
+      );
+      setLocalStorageObject(LocalStorage.PROCESS_LIST, replaceStorageSnapshot);
     }
   };
 

@@ -39,8 +39,8 @@ export default function ContactUsHome() {
           Contact Us
         </Heading>
         <Text color={'gray.600'} fontSize={{ base: 'sm', sm: 'lg' }}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis
-          obcaecati ut cupiditate pariatur, dignissimos, placeat amet officiis.
+          Feel free to reach out to us anytime. We&apos;re here to assist you
+          with any questions or concerns you may have.
         </Text>
       </Stack>
       <Container maxW="full" m={0} centerContent overflow="hidden">
@@ -64,32 +64,29 @@ export default function ContactUsHome() {
                         <Button
                           size="md"
                           height="48px"
-                          width="200px"
                           variant="ghost"
                           color="#319795"
                           _hover={{ bg: '#4FD1C5', color: 'white' }}
                           leftIcon={<MdPhone size="20px" />}>
-                          +91-988888888
+                          0852531027
                         </Button>
                         <Button
                           size="md"
                           height="48px"
-                          width="200px"
                           variant="ghost"
                           color="#319795"
                           _hover={{ bg: '#4FD1C5', color: 'white' }}
                           leftIcon={<MdEmail size="20px" />}>
-                          hello@abc.com
+                          edurpa.contact@gmail.com
                         </Button>
                         <Button
                           size="md"
                           height="48px"
-                          width="200px"
                           variant="ghost"
                           color="#319795"
                           _hover={{ bg: '#4FD1C5', color: 'white' }}
                           leftIcon={<MdLocationOn size="20px" />}>
-                          Karnavati, India
+                          268 Ly Thuong Kiet, HCMC, Viet Nam
                         </Button>
                       </VStack>
                     </Box>

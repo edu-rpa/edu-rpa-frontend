@@ -33,12 +33,16 @@ const defaultXML = (processID: string) => {
 const initProcess = (
   processID: string,
   xml: string,
-  processName: string
+  processName: string,
+  processDesc: string,
+  processType: string
 ): Process => {
   return {
     processID: processID,
     xml: xml,
     processName: processName,
+    processType: processType,
+    processDesc: processDesc,
     activities: [
       {
         activityID: 'StartEvent_0vr9as6',
@@ -85,7 +89,7 @@ const getIndexByProcessID = (processID: string) => {
   return currLocalStorage.findIndex((x: Process) => x.processID === processID);
 };
 
-const replaceLocalStorage = (processID: string, newObj: Process) => {
+const updateProcessInProcessList = (processID: string, newObj: Process) => {
   const index = getIndexByProcessID(processID);
   const currLocalStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
   currLocalStorage[index] = newObj;
@@ -93,7 +97,7 @@ const replaceLocalStorage = (processID: string, newObj: Process) => {
 };
 
 const getActivityInProcess = (processID: string, activityID: string) => {
-  return getProcessFromLocalStorage(processID).activities.find(
+  return getProcessFromLocalStorage(processID)?.activities.find(
     (activity: Activity) => activity.activityID === activityID
   );
 };
@@ -113,7 +117,7 @@ export {
   updateActivityInProcess,
   initProcess,
   defaultXML,
-  replaceLocalStorage,
+  updateProcessInProcessList,
   updateLocalStorage,
   deleteProcessById,
 };

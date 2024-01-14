@@ -32,6 +32,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       '/profile',
       '/service',
       '/storage',
+      '/document-template',
     ];
     if (path.startsWith('/auth')) {
       return HeaderLayout;

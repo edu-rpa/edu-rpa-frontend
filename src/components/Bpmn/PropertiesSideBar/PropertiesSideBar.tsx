@@ -45,6 +45,8 @@ import IconImage from '@/components/IconImage/IconImage';
 import Image from 'next/image';
 import BoundingBoxBlock from '@/components/BoundingBox/BoundingBoxBlock';
 import { Rectangle } from '@/types/boundingBox';
+import { useDispatch } from 'react-redux';
+import { isSavedChange } from '@/redux/slice/bpmnSlice';
 
 interface PropertiesSideBarProps {
   isOpen: boolean;
@@ -88,6 +90,7 @@ export default function PropertiesSideBar({
   const variableStorage = currentVariableStorage?.variables.map(
     (variable: Variable) => variable.name
   );
+  const dispatch = useDispatch();
 
   const handleReset = () => {
     setDefault();
@@ -232,6 +235,7 @@ export default function PropertiesSideBar({
 
               const renderStepTwo = () => {
                 const services = getDistinctService(activityTemplates);
+                console.log('Services', services);
                 return (
                   <div className="my-[20px] grid grid-cols-2 gap-[20px] w-90 mx-auto">
                     {packageName === displayName &&
@@ -272,7 +276,10 @@ export default function PropertiesSideBar({
                     <Tooltip label={activity.description}>
                       <Button
                         className="my-[10px]"
-                        onClick={() => setActivity(activity.displayName)}>
+                        onClick={() => {
+                          setActivity(activity.displayName);
+                          dispatch(isSavedChange(false));
+                        }}>
                         {activity.displayName}
                       </Button>
                     </Tooltip>

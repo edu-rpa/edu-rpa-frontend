@@ -10,13 +10,20 @@ import {
 import { deleteProcessById } from '@/utils/processService';
 import { deleteVariableById } from '@/utils/variableService';
 import { SearchIcon } from '@chakra-ui/icons';
-import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
+import {
+  Box,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Select,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 export default function Robot() {
   const router = useRouter();
   const [processList, setProcessList] = useState([]);
+  const [selectFilter, setSelectFilter] = useState('all');
   useEffect(() => {
     const getProcessStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
     if (getProcessStorage) {
@@ -30,13 +37,21 @@ export default function Robot() {
       return {
         id: item.processID.replace('Process', 'Robot'),
         name: item.processName?.replace('Process', 'Robot'),
+        rType: item.processType,
         owner: 'You',
         last_modified: formatDate(new Date()),
       };
     });
 
   const tableProps = {
-    header: ['Robot ID', 'Robot Name', 'Owner', 'Last Modified', 'Actions'],
+    header: [
+      'Robot ID',
+      'Robot Name',
+      'Robot Type',
+      'Owner',
+      'Last Modified',
+      'Actions',
+    ],
     data: formatData ?? [],
   };
 
@@ -75,7 +90,23 @@ export default function Robot() {
             <InputLeftElement pointerEvents="none">
               <SearchIcon color="gray.500" />
             </InputLeftElement>
-            <Input bg="white.300" type="text" placeholder="Search..." />
+            <Input
+              width="30vw"
+              bg="white.300"
+              type="text"
+              placeholder="Search..."
+            />
+            <Box className="w-[15vw] ml-[20px]">
+              <Select
+                defaultValue="all"
+                onChange={(e) => setSelectFilter(e.target.value)}>
+                <option value="ocr">OCR</option>
+                <option value="email-processing">Email Processing</option>
+                <option value="google-workspace">Google Workpace</option>
+                <option value="free">Free</option>
+                <option value="all">All</option>
+              </Select>
+            </Box>
           </InputGroup>
         </div>
 
