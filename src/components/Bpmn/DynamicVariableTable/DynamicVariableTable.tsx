@@ -14,7 +14,6 @@ import {
 import { Variable, VariableType } from '@/types/variable';
 import { useDispatch } from 'react-redux';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
-import { v4 as uuidv4 } from 'uuid';
 
 interface VariableTableProps {
   variableList: Variable[];
@@ -39,14 +38,15 @@ const DynamicVariableTable = (props: VariableTableProps) => {
   );
 
   const handleAddRow = () => {
-    const defaultTypeValue = defaultValue[selectedType] ?? '';
+    const defaultTypeValue = defaultValue[VariableType.String] ?? '';
     const newRow: Variable = {
-      id: uuidv4(),
+      id: props.variableList.length + 1,
       name: '',
       value: defaultTypeValue,
       isArgument: false,
-      type: selectedType,
+      type: VariableType.String,
     };
+
     props.setVariableList([...props.variableList, newRow]);
     dispatch(isSavedChange(false));
   };
@@ -57,28 +57,31 @@ const DynamicVariableTable = (props: VariableTableProps) => {
     value: string | boolean
   ) => {
     const updatedData = [...props.variableList];
-
     if (field === 'isArgument') {
       updatedData[index][field] = value as boolean;
     } else {
-      updatedData[index][field] = value as string;
+      updatedData[index][field] =
+        field === 'value' ? value ?? '' : (value as string);
     }
-
-    props.setVariableList(updatedData);
+    props.setVariableList([...updatedData]);
   };
 
-  const handleRemoveRow = (id: string) => {
+  const handleRemoveRow = (id: number) => {
     const updatedData = props.variableList.filter((row) => row.id !== id);
-    props.setVariableList(updatedData);
+    const updatedDataWithSequentialIds = updatedData.map((row, index) => ({
+      ...row,
+      id: index + 1,
+    }));
+    props.setVariableList([...updatedDataWithSequentialIds]);
   };
 
   const handleTypeChange = (index: number, newType: VariableType) => {
     setSelectedType(newType);
     const updatedData = [...props.variableList];
-    const defaultTypeValue = defaultValue[newType] ?? '';
+    const defaultTypeValue = (defaultValue[newType] as string) ?? '';
     updatedData[index].type = newType;
     updatedData[index].value = defaultTypeValue;
-    props.setVariableList(updatedData);
+    props.setVariableList([...updatedData]);
   };
 
   return (

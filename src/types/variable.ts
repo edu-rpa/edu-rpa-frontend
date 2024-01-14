@@ -9,7 +9,7 @@ export enum VariableType {
 }
 
 export interface Variable {
-  id: string;
+  id: number;
   name: string;
   value: any;
   isArgument: boolean;

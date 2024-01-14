@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
@@ -13,6 +12,7 @@ import {
 import DynamicVariableTable from '@/components/Bpmn/DynamicVariableTable/DynamicVariableTable';
 import { Variable } from '@/types/variable';
 import {
+  convertToRefactoredObject,
   getVariableItemFromLocalStorage,
   replaceVariableStorage,
 } from '@/utils/variableService';
@@ -21,7 +21,6 @@ import {
   setLocalStorageObject,
 } from '@/utils/localStorageService';
 import { LocalStorage } from '@/constants/localStorage';
-import { useParams } from 'next/navigation';
 import {
   getProcessFromLocalStorage,
   updateProcessInProcessList,
@@ -34,7 +33,6 @@ interface VariablesSideBarProps {
 export default function VariablesSideBar(props: VariablesSideBarProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialStorage = getVariableItemFromLocalStorage(props.processID);
-  const params = useParams();
   const [variableList, setVariableList] = useState<Variable[]>(
     initialStorage ? initialStorage.variables : []
   );
@@ -49,22 +47,6 @@ export default function VariablesSideBar(props: VariablesSideBarProps) {
       });
     }
   }, [variableList]);
-
-  const convertToRefactoredObject = (variableList: any) => {
-    return variableList?.variables
-      .map((variable: any) => ({
-        [variable.name]: {
-          type: variable.type,
-          isArgument: false,
-          defaultValue: parseInt(variable.value, 10),
-        },
-      }))
-      .reduce((acc: any, variable: any) => {
-        const variableName = Object.keys(variable)[0];
-        acc[variableName] = variable[variableName];
-        return acc;
-      }, {});
-  };
 
   const handleBlur = () => {
     const currentVariable = {
