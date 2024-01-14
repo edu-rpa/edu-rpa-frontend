@@ -13,8 +13,6 @@ import {
   BpmnJsReactProps,
 } from '@/interfaces/bpmnJsReact.interface';
 //@ts-ignore
-import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
-//@ts-ignore
 import CliModule from 'bpmn-js-cli';
 //@ts-ignore
 import BpmnColorPickerModule from 'bpmn-js-color-picker';
@@ -56,12 +54,11 @@ const BpmnJsModeler: ForwardRefRenderFunction<
         bindTo: window,
       },
       additionalModules: [
-        {
-          __init__: ['customContextPadProvider'],
-          customContextPadProvider: ['type', removeUnsupportedBpmnFunctions()],
-        },
+        // {
+        //   __init__: ['customContextPadProvider'],
+        //   customContextPadProvider: ['type', removeUnsupportedBpmnFunctions()],
+        // },
         BpmnColorPickerModule,
-        propertiesProviderModule,
         CliModule,
         gridModule,
       ],

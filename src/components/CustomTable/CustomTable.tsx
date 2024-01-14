@@ -53,6 +53,10 @@ const CustomTable = (props: TableProps) => {
     return <LoadingIndicator />;
   }
 
+  const handlePageChange = (selected: any) => {
+    setCurrentPage(selected.selected);
+  };
+
   const renderTableCell = (type: string, value: string) => {
     switch (type) {
       case 'status':
@@ -175,11 +179,17 @@ const CustomTable = (props: TableProps) => {
       </Table>
       <ReactPaginate
         previousLabel={
-          <IconButton aria-label="Previous" icon={<ChevronLeftIcon />} />
+          <IconButton aria-label="Previous">
+            <ChevronLeftIcon />
+          </IconButton>
         }
-        nextLabel={<IconButton aria-label="Next" icon={<ChevronRightIcon />} />}
+        nextLabel={
+          <IconButton aria-label="Next">
+            <ChevronRightIcon />
+          </IconButton>
+        }
         pageCount={pageCount}
-        onPageChange={(selected) => setCurrentPage(selected.selected)}
+        onPageChange={handlePageChange}
         containerClassName={'flex justify-end items-center m-4 gap-[5px]'}
         previousLinkClassName={'font-bold'}
         nextLinkClassName={'font-bold'}
