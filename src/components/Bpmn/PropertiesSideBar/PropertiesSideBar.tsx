@@ -476,13 +476,14 @@ export default function PropertiesSideBar({
                               innerValue.type === 'string'
                             ) {
                               return (
-                                <Input
+                                <TextAutoComplete
                                   key={innerKey}
                                   type="text"
                                   value={formValues[innerKey]?.value ?? ''}
-                                  onChange={(e) =>
-                                    handleInputChange(innerKey, e.target.value)
+                                  onChange={(newValue: string) =>
+                                    handleInputChange(innerKey, newValue)
                                   }
+                                  recommendedWords={variableStorage}
                                 />
                               );
                             } else if (
