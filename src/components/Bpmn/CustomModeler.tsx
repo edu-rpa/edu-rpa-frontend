@@ -239,7 +239,7 @@ function CustomModeler() {
         }}>
         Save XML
       </Button>
-      <Button
+      {/* <Button
         colorScheme="blue"
         size="md"
         className="mx-[5px]"
@@ -271,27 +271,36 @@ function CustomModeler() {
           );
         }}>
         Save Properties
-      </Button>
+      </Button> */}
 
       <Button
         colorScheme="blue"
         size="md"
         className="mx-[5px]"
         onClick={async () => {
-          const res = await bpmnReactJs.saveXML();
-          const bpmnParser = new BpmnParser();
-          const processProperties = getProcessFromLocalStorage(
-            processID as string
-          ).activities;
-          const variableList = getVariableItemFromLocalStorage(
-            processID as string
-          ).variables;
-          const process = bpmnParser.parse(
-            res.xml as string,
-            processProperties,
-            variableList
-          );
-          console.log(process);
+          try {
+            const bpmnParser = new BpmnParser();
+            const processProperties = getProcessFromLocalStorage(
+              processID as string
+            );
+            const variableList = getVariableItemFromLocalStorage(
+              processID as string
+            );
+            const robotCode = bpmnParser.parse(
+              processProperties.xml,
+              processProperties.activities,
+              variableList ? variableList.variables : []
+            );
+            console.log(robotCode);
+          } catch (error) {
+            toast({
+              title: (error as Error).message,
+              status: 'error',
+              position: 'bottom-right',
+              duration: 1000,
+              isClosable: true,
+            });
+          }
         }}>
         Compile Robot
       </Button>
