@@ -124,6 +124,8 @@ const ProfilePage: React.FC = () => {
                   id="email"
                   type="email"
                   placeholder="Your email"
+                  backgroundColor="gray.200"
+                  disabled={true}
                   defaultValue={userInfo && userInfo.email}
                   {...register('email')}
                 />

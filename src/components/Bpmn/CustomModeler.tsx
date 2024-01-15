@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   IconButton,
-  Stack,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
@@ -25,10 +24,7 @@ import VariablesSideBar from './VariablesSideBar/VariablesSideBar';
 import { LocalStorage } from '@/constants/localStorage';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { exportFile, stringifyCyclicObject } from '@/utils/common';
-import { FaPlay } from 'react-icons/fa';
-import { FaSave } from 'react-icons/fa';
-import { MdPublish } from 'react-icons/md';
-import { IoMdShare } from 'react-icons/io';
+
 import {
   convertToRefactoredObject,
   getIndexVariableStorage,
@@ -44,6 +40,7 @@ import { SaveProcessDto } from '@/dtos/processDto';
 import { useDispatch, useSelector } from 'react-redux';
 import { bpmnSelector } from '@/redux/selector';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
+import FunctionalTabBar from './FunctionalTabBar/FunctionalTabBar';
 
 interface OriginalObject {
   [key: string]: {
@@ -124,7 +121,7 @@ function CustomModeler() {
     }
   }, [processDetailByID, processID]);
 
-  const handleSaveAll = useMutation({
+  const mutateSaveAll = useMutation({
     mutationFn: async (payload: SaveProcessDto) => {
       return await processApi.saveProcessByID(processID as string, payload);
     },
@@ -148,6 +145,61 @@ function CustomModeler() {
       });
     },
   });
+
+  const handleSaveAll = () => {
+    const processProperties = getProcessFromLocalStorage(processID as string);
+    if (!processProperties) {
+      toast({
+        title: 'There are some erros, please refresh the page!',
+        status: 'error',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+    } else {
+      const variableListByID = getVariableItemFromLocalStorage(
+        processID as string
+      );
+      const refactoredVariables = convertToRefactoredObject(variableListByID);
+      const payload = {
+        xml: processProperties.xml,
+        activities: processProperties.activities,
+        variables: refactoredVariables ?? {},
+      };
+      mutateSaveAll.mutate(payload);
+    }
+  };
+
+  const compileRobotCode = (processID: string) => {
+    try {
+      const bpmnParser = new BpmnParser();
+      const processProperties = getProcessFromLocalStorage(processID as string);
+      const variableList = getVariableItemFromLocalStorage(processID as string);
+      const robotCode = bpmnParser.parse(
+        processProperties.xml,
+        processProperties.activities,
+        variableList ? variableList.variables : []
+      );
+
+      toast({
+        title: 'Compile Successfully!',
+        status: 'success',
+        position: 'bottom-right',
+        duration: 1000,
+        isClosable: true,
+      });
+      console.log('Robot code', robotCode);
+      return robotCode;
+    } catch (error) {
+      toast({
+        title: (error as Error).message,
+        status: 'error',
+        position: 'bottom-right',
+        duration: 1000,
+        isClosable: true,
+      });
+    }
+  };
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -173,49 +225,11 @@ function CustomModeler() {
             )}
           </h1>
         </Box>
-        <Stack direction="row" spacing={4}>
-          <Button
-            leftIcon={<FaSave />}
-            colorScheme="blue"
-            variant="solid"
-            onClick={() => {
-              const processProperties = getProcessFromLocalStorage(
-                processID as string
-              );
-              if (!processProperties) {
-                toast({
-                  title: 'There are some erros, please refresh the page!',
-                  status: 'error',
-                  position: 'top-right',
-                  duration: 1000,
-                  isClosable: true,
-                });
-              } else {
-                const variableListByID = getVariableItemFromLocalStorage(
-                  processID as string
-                );
-                const refactoredVariables =
-                  convertToRefactoredObject(variableListByID);
-                const payload = {
-                  xml: processProperties.xml,
-                  activities: processProperties.activities,
-                  variables: refactoredVariables ?? {},
-                };
-                handleSaveAll.mutate(payload);
-              }
-            }}>
-            Save All
-          </Button>
-          <Button leftIcon={<FaPlay />} colorScheme="teal" variant="solid">
-            Run
-          </Button>
-          <Button leftIcon={<MdPublish />} colorScheme="orange" variant="solid">
-            Publish
-          </Button>
-          <Button leftIcon={<IoMdShare />} colorScheme="red" variant="solid">
-            Share
-          </Button>
-        </Stack>
+        <FunctionalTabBar
+          processID={processID as string}
+          genRobotCode={compileRobotCode}
+          onSaveAll={handleSaveAll}
+        />
       </Box>
 
       <BpmnJsReact mode="edit" useBpmnJsReact={bpmnReactJs} ref={ref} />
@@ -277,31 +291,7 @@ function CustomModeler() {
         colorScheme="blue"
         size="md"
         className="mx-[5px]"
-        onClick={async () => {
-          try {
-            const bpmnParser = new BpmnParser();
-            const processProperties = getProcessFromLocalStorage(
-              processID as string
-            );
-            const variableList = getVariableItemFromLocalStorage(
-              processID as string
-            );
-            const robotCode = bpmnParser.parse(
-              processProperties.xml,
-              processProperties.activities,
-              variableList ? variableList.variables : []
-            );
-            console.log(robotCode);
-          } catch (error) {
-            toast({
-              title: (error as Error).message,
-              status: 'error',
-              position: 'bottom-right',
-              duration: 1000,
-              isClosable: true,
-            });
-          }
-        }}>
+        onClick={async () => compileRobotCode(processID as string)}>
         Compile Robot
       </Button>
 

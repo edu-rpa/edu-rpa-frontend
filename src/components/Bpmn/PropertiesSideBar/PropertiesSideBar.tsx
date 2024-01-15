@@ -479,6 +479,7 @@ export default function PropertiesSideBar({
                                 <TextAutoComplete
                                   key={innerKey}
                                   type="text"
+                                  placeholder="Your value"
                                   value={formValues[innerKey]?.value ?? ''}
                                   onChange={(newValue: string) =>
                                     handleInputChange(innerKey, newValue)
