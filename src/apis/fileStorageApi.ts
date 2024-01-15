@@ -37,6 +37,18 @@ export const getPresignedUrl = async (fileKey: string): Promise<{ url: string }>
     });
 }
 
+export const deleteFile = async (fileKey: string): Promise<string> => {
+  return await apiBase
+    .delete(`${process.env.NEXT_PUBLIC_AWS_API_GATEWAY_URL}/file-storage`, {
+      params: {
+        file_key: fileKey,
+      },
+    })
+    .then((res: any) => {
+      return res.data;
+    });
+}
+
 export const uploadFile = async (
   path: string,
   file: File

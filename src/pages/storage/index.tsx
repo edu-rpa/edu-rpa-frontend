@@ -18,6 +18,7 @@ import {
   getFiles,
   createFolder,
   getPresignedUrl,
+  deleteFile,
 } from '@/apis/fileStorageApi';
 import {
   Breadcrumb,
@@ -28,6 +29,8 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import CreateFolderModal from './CreateFolderModal';
 import FileUploadModal from './FileUploadModal';
+import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import { set } from 'react-hook-form';
 
 export default function Storage() {
   const [files, setFiles] = useState<string[]>([]);
@@ -35,6 +38,8 @@ export default function Storage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingCreateFolder, setIsLoadingCreateFolder] = useState<boolean>(false);
   const [isLoadingGetPresignedUrl, setIsLoadingGetPresignedUrl] = useState<boolean>(false);
+  const [isLoadingDeleteFile, setIsLoadingDeleteFile] = useState<boolean>(false);
+  const [selectedFileToDelete, setSelectedFileToDelete] = useState<string>('');
   const [selectedDates, setSelectedDates] = useState<Date[]>([
     new Date(),
     new Date(),
@@ -49,6 +54,11 @@ export default function Storage() {
     isOpen: isOpenFileUploadModal, 
     onOpen: onOpenFileUploadModal, 
     onClose: onCloseFileUploadModal 
+  } = useDisclosure();
+  const { 
+    isOpen: isOpenConfirmDeleteModal, 
+    onOpen: onOpenConfirmDeleteModal, 
+    onClose: onCloseConfirmDeleteModal 
   } = useDisclosure();
 
   const handleCreateFolder = (folderName: string) => {
@@ -119,6 +129,36 @@ export default function Storage() {
   const handleClickCreateFolder = () => {
     onOpenCreateFolderModal();
   };
+
+  const handleClickDeleteFile = (name: string) => {
+    setSelectedFileToDelete(`${currentPath}${name}`);
+    onOpenConfirmDeleteModal();
+  };
+
+  const handleConfirmDelete = async () => {
+    setIsLoadingDeleteFile(true);
+    const isDirectory = selectedFileToDelete.endsWith('/');
+    if (isDirectory) {
+      const files = await getFiles(selectedFileToDelete);
+      if (files.some((file) => file !== '')) {
+        alert('The folder is not empty');
+        setIsLoadingDeleteFile(false);
+        return;
+      }
+    }
+
+    try {
+      await deleteFile(selectedFileToDelete);
+      onCloseConfirmDeleteModal();
+      setIsLoading(true);
+      const res = await getFiles(currentPath);
+      setFiles(res.filter((file) => file !== ''));
+    } catch (error: any) {
+      alert(error);
+    }
+    setIsLoading(false);
+    setIsLoadingDeleteFile(false);
+  }
 
   return (
     <div className="mb-[200px]">
@@ -213,6 +253,15 @@ export default function Storage() {
           path={currentPath}
         />
 
+        <ConfirmModal
+          isOpen={isOpenConfirmDeleteModal}
+          onClose={onCloseConfirmDeleteModal}
+          title={`Delete ${selectedFileToDelete.endsWith('/')? 'folder':'file'}?`}
+          content={`delete ${selectedFileToDelete}`}
+          onConfirm={handleConfirmDelete}
+          isLoading={isLoadingDeleteFile}
+        />
+
         {isLoading
           ? <div className="w-90 m-auto flex justify-center items-center">
             <Button colorScheme="teal" disabled className='m-auto' isLoading>Loading...</Button>
@@ -225,6 +274,7 @@ export default function Storage() {
                   name={file}
                   isLoading={isLoadingGetPresignedUrl}
                   onClick={handleFileItemClick}
+                  onClickDelete={handleClickDeleteFile}
                 />
               ))}
             </div>
