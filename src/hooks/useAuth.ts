@@ -1,10 +1,14 @@
+import { LocalStorage } from '@/constants/localStorage';
+
 const useAuth = () => {
   const setAuthToken = () => {
-    localStorage.setItem('accessToken-edu-rpa', '123456');
+    localStorage.setItem(LocalStorage.ACCESS_TOKEN, 'Guest');
   };
 
   const removeAuthToken = () => {
-    localStorage.removeItem('accessToken-edu-rpa');
+    localStorage.removeItem(LocalStorage.ACCESS_TOKEN);
+    localStorage.removeItem(LocalStorage.PROCESS_LIST);
+    localStorage.removeItem(LocalStorage.VARIABLE_LIST);
   };
 
   return { setAuthToken, removeAuthToken };
