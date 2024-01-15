@@ -4,6 +4,7 @@ import { Box, Input, Text } from '@chakra-ui/react';
 interface TextAutoCompleteProps {
   type: string;
   value: string;
+  placeholder?: string;
   onChange: (newValue: string) => void;
   recommendedWords: string[];
 }
@@ -28,7 +29,7 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
         value={props.value}
         onChange={handleInputChange}
         onFocus={() => setIsDropdownOpen(true)}
-        placeholder="Type or select variables"
+        placeholder={props.placeholder || 'Type or select variables'}
       />
       {isDropdownOpen &&
         props.recommendedWords &&
