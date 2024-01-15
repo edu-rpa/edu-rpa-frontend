@@ -26,6 +26,7 @@ import { getProcessFromLocalStorage } from '@/utils/processService';
 import { QUERY_KEY } from '@/constants/queryKey';
 import processApi from '@/apis/processApi';
 import { useQuery } from '@tanstack/react-query';
+import CustomContextPadProvider from './CustomContextPadProvider';
 
 const BpmnJsModeler: ForwardRefRenderFunction<
   BpmnJsReactHandle,
@@ -54,10 +55,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
         bindTo: window,
       },
       additionalModules: [
-        // {
-        //   __init__: ['customContextPadProvider'],
-        //   customContextPadProvider: ['type', removeUnsupportedBpmnFunctions()],
-        // },
+        CustomContextPadProvider,
         BpmnColorPickerModule,
         CliModule,
         gridModule,
