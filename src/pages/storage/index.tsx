@@ -186,7 +186,7 @@ export default function Storage() {
               <BreadcrumbLink
                 color="#319795"
                 onClick={() => {
-                  setCurrentPath(currentPath.split('/').slice(0, index + 1).join('/'));
+                  setCurrentPath(currentPath.split('/').slice(0, index + 1).join('/') + '/');
                 }}
               >
                 {path}
