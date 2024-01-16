@@ -6,3 +6,7 @@ export interface UserDto {
   provider: string;
   providerId: string | null;
 }
+
+export interface UpdateProfileDto {
+  name: string;
+}

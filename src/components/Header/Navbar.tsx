@@ -18,22 +18,32 @@ import Image from 'next/image';
 import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
 import Logo from '@/assets/images/logo.png';
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useAuth from '@/hooks/useAuth';
+import { setUser } from '@/redux/slice/userSlice';
+import { userSelector } from '@/redux/selector';
 
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEY } from '@/constants/queryKey';
 import userApi from '@/apis/userApi';
+import { useEffect } from 'react';
 
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const user = useSelector(userSelector);
   const { removeAuthToken } = useAuth();
 
   const { data: userInfo } = useQuery({
     queryKey: [QUERY_KEY.ME],
     queryFn: () => userApi.getMe(),
   });
+
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(setUser(userInfo));
+    }
+  }, [userInfo]);
 
   return (
     <Flex
@@ -79,16 +89,16 @@ const Navbar = () => {
                 <Avatar
                   size="sm"
                   bg="gray.500"
-                  src={userInfo && userInfo.avatarUrl}
+                  src={user.avatarUrl}
                 />
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
                   alignItems="flex-start"
                   spacing="1px"
                   ml="2">
-                  <Text fontSize="sm">{userInfo && userInfo.name}</Text>
+                  <Text fontSize="sm">{user.name}</Text>
                   <Text fontSize="xs" color="gray.600">
-                    {userInfo && userInfo.email}
+                    {user.email}
                   </Text>
                 </VStack>
                 <Box display={{ base: 'none', md: 'flex' }}>
