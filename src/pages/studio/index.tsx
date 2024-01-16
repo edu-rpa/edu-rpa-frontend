@@ -44,6 +44,7 @@ import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { CreateProcessDto } from '@/dtos/processDto';
 import processApi from '@/apis/processApi';
 import { QUERY_KEY } from '@/constants/queryKey';
+import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 
 export default function Studio() {
   const router = useRouter();
@@ -147,8 +148,12 @@ export default function Studio() {
     mutationFn: async (payload: CreateProcessDto) => {
       return await processApi.createProcess(payload);
     },
-    onSuccess: () => {},
-    onError: () => {},
+    onSuccess: () => {
+      console.log('Process import sucessfully');
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
   const handleDeleteProcessWithApi = useMutation({
@@ -157,6 +162,13 @@ export default function Studio() {
     },
     onSuccess: () => {
       queryClient.refetchQueries([QUERY_KEY.PROCESS_LIST] as any);
+      toast({
+        title: 'Delete item sucessfully!',
+        status: 'success',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
       router.reload();
     },
   });
@@ -168,6 +180,7 @@ export default function Studio() {
       description: initialProcess.processDesc,
       xml: initialProcess.xml,
     };
+    console.log('Import payload', createProcessPayloadAPI);
     handleCreateProcessWithApi.mutate(createProcessPayloadAPI as any);
   };
 
@@ -246,6 +259,7 @@ export default function Studio() {
           ...getLocalStorageObject(LocalStorage.PROCESS_LIST),
           importProcess,
         ]);
+
         handleInsertToBackend(importProcess);
         router.push(`/studio/modeler/${processID}`);
       } catch (error) {
@@ -264,6 +278,10 @@ export default function Studio() {
 
     reader.readAsText(file);
   };
+
+  if (handleDeleteProcessWithApi.isPending) {
+    return <LoadingIndicator />;
+  }
 
   return (
     <div className="mb-[200px]">
@@ -352,11 +370,14 @@ export default function Studio() {
               <ModalFooter>
                 <Button
                   colorScheme="teal"
+                  variant="outline"
                   mr={3}
-                  onClick={handleCreateNewProcess}>
+                  onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button colorScheme="teal" onClick={handleCreateNewProcess}>
                   Save
                 </Button>
-                <Button onClick={onClose}>Cancel</Button>
               </ModalFooter>
             </ModalContent>
           </Modal>

@@ -16,6 +16,7 @@ import {
   InputGroup,
   InputLeftElement,
   Select,
+  useToast,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -24,6 +25,7 @@ export default function Robot() {
   const router = useRouter();
   const [processList, setProcessList] = useState([]);
   const [selectFilter, setSelectFilter] = useState('all');
+  const toast = useToast();
   useEffect(() => {
     const getProcessStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
     if (getProcessStorage) {
@@ -61,6 +63,13 @@ export default function Robot() {
     const variableListAfterDelete = deleteVariableById(processID);
     setLocalStorageObject(LocalStorage.PROCESS_LIST, processListAfterDelete);
     setLocalStorageObject(LocalStorage.VARIABLE_LIST, variableListAfterDelete);
+    toast({
+      title: 'Delete item sucessfully!',
+      status: 'success',
+      position: 'top-right',
+      duration: 1000,
+      isClosable: true,
+    });
     router.reload();
   };
 

@@ -1,5 +1,5 @@
-import { CreateDocumentTemplateDto } from "@/dtos/documentTemplateDto";
-import { DocumentTemplateType } from "@/interfaces/enums/document-template-type"
+import { CreateDocumentTemplateDto } from '@/dtos/documentTemplateDto';
+import { DocumentTemplateType } from '@/interfaces/enums/document-template-type';
 import {
   Modal,
   ModalOverlay,
@@ -12,14 +12,16 @@ import {
   Select,
   ModalFooter,
   Button,
-  Input
-} from "@chakra-ui/react"
-import { useState } from "react";
+  Input,
+} from '@chakra-ui/react';
+import { useState } from 'react';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  handleCreateNewDocumentTemplate: (createDocumentTemplateDto: CreateDocumentTemplateDto) => void;
+  handleCreateNewDocumentTemplate: (
+    createDocumentTemplateDto: CreateDocumentTemplateDto
+  ) => void;
 }
 
 const CreateDocumentTemplateModal: React.FC<Props> = ({
@@ -27,16 +29,15 @@ const CreateDocumentTemplateModal: React.FC<Props> = ({
   onClose,
   handleCreateNewDocumentTemplate,
 }) => {
-  const [createDocumentTemplate, setCreateDocumentTemplate] = useState<CreateDocumentTemplateDto>({
-    name: '',
-    description: '',
-    type: DocumentTemplateType.IMAGE,
-  });
+  const [createDocumentTemplate, setCreateDocumentTemplate] =
+    useState<CreateDocumentTemplateDto>({
+      name: '',
+      description: '',
+      type: DocumentTemplateType.IMAGE,
+    });
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create new document template</ModalHeader>
@@ -47,7 +48,12 @@ const CreateDocumentTemplateModal: React.FC<Props> = ({
             <Input
               placeholder="Document template name"
               value={createDocumentTemplate.name}
-              onChange={(e) => setCreateDocumentTemplate({ ...createDocumentTemplate, name: e.target.value })}
+              onChange={(e) =>
+                setCreateDocumentTemplate({
+                  ...createDocumentTemplate,
+                  name: e.target.value,
+                })
+              }
             />
           </FormControl>
           <FormControl>
@@ -55,30 +61,44 @@ const CreateDocumentTemplateModal: React.FC<Props> = ({
             <Input
               placeholder="Description"
               value={createDocumentTemplate.description}
-              onChange={(e) => setCreateDocumentTemplate({ ...createDocumentTemplate, description: e.target.value })}
+              onChange={(e) =>
+                setCreateDocumentTemplate({
+                  ...createDocumentTemplate,
+                  description: e.target.value,
+                })
+              }
             />
           </FormControl>
           <FormControl>
             <FormLabel>Type</FormLabel>
             <Select
               value={createDocumentTemplate.type}
-              onChange={(e) => setCreateDocumentTemplate({ ...createDocumentTemplate, type: e.target.value as DocumentTemplateType })}>
+              onChange={(e) =>
+                setCreateDocumentTemplate({
+                  ...createDocumentTemplate,
+                  type: e.target.value as DocumentTemplateType,
+                })
+              }>
               <option value={DocumentTemplateType.IMAGE}>Image</option>
             </Select>
           </FormControl>
         </ModalBody>
         <ModalFooter>
           <Button
-            colorScheme="blue"
+            colorScheme="teal"
             mr={3}
-            onClick={() => handleCreateNewDocumentTemplate(createDocumentTemplate)}>
+            onClick={() =>
+              handleCreateNewDocumentTemplate(createDocumentTemplate)
+            }>
             Create
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button variant="outline" colorScheme="teal" onClick={onClose}>
+            Cancel
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
-  )
-}
+  );
+};
 
 export default CreateDocumentTemplateModal;

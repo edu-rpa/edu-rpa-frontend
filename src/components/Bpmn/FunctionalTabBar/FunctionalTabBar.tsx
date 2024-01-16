@@ -1,4 +1,7 @@
+import robotApi from '@/apis/robotApi';
 import TextAutoComplete from '@/components/Input/AutoComplete/TextAutoComplete';
+import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
+import { CreateRobotDto } from '@/dtos/robotDto';
 import {
   Button,
   FormControl,
@@ -13,7 +16,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  useToast,
 } from '@chakra-ui/react';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 import React, { useRef, useState } from 'react';
 import { FaPlay, FaSave } from 'react-icons/fa';
 import { IoMdShare } from 'react-icons/io';
@@ -31,6 +37,25 @@ export default function FunctionalTabBar(props: FunctionalTabBarProps) {
 
   const initialRef = useRef<HTMLInputElement>(null);
   const finalRef = useRef(null);
+  const toast = useToast();
+  const router = useRouter();
+
+  const handleCreateRobotWithApi = useMutation({
+    mutationFn: async (payload: CreateRobotDto) => {
+      return await robotApi.createRobot(payload);
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Create robot successfully!',
+        status: 'success',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+      router.push('/robot');
+    },
+    onError: () => {},
+  });
 
   const handlePublish = async () => {
     try {
@@ -38,15 +63,19 @@ export default function FunctionalTabBar(props: FunctionalTabBarProps) {
       const robotCode = await props.genRobotCode(props.processID);
 
       const publishPayload = {
-        robotName,
-        processID: props.processID,
-        robotCode: JSON.stringify(robotCode),
+        name: robotName,
+        processId: props.processID as string,
+        code: JSON.stringify(robotCode),
       };
-      console.log('Publish', publishPayload);
+      handleCreateRobotWithApi.mutate(publishPayload);
     } catch (error) {
       console.error('Error in publishing:', error);
     }
   };
+
+  if (handleCreateRobotWithApi.isPending) {
+    return <LoadingIndicator />;
+  }
 
   const PublishRobotModal = () => {
     return (
@@ -71,9 +100,11 @@ export default function FunctionalTabBar(props: FunctionalTabBarProps) {
         </ModalBody>
 
         <ModalFooter>
+          <Button mr={3} colorScheme="teal" variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
           <Button
             colorScheme="teal"
-            mr={3}
             onClick={async () => {
               if (modalType === 'publish') {
                 await handlePublish();
@@ -81,7 +112,6 @@ export default function FunctionalTabBar(props: FunctionalTabBarProps) {
             }}>
             Save
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
         </ModalFooter>
       </ModalContent>
     );
@@ -107,10 +137,10 @@ export default function FunctionalTabBar(props: FunctionalTabBarProps) {
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="teal" mr={3}>
-            Save
+          <Button mr={3} colorScheme="teal" variant="outline" onClick={onClose}>
+            Cancel
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button colorScheme="teal">Save</Button>
         </ModalFooter>
       </ModalContent>
     );

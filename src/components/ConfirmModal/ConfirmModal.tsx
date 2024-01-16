@@ -7,7 +7,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
 interface Props {
   title: string;
@@ -27,30 +27,28 @@ const ConfirmModal: React.FC<Props> = ({
   onConfirm,
 }) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
-        <ModalBody pb={6}>
-          Are you sure you want to: {content}?
-        </ModalBody>
+        <ModalBody pb={6}>Are you sure you want to: {content}?</ModalBody>
         <ModalFooter>
           <Button
-            colorScheme="blue"
+            colorScheme="teal"
             mr={3}
             disabled={isLoading}
             isLoading={isLoading}
             onClick={onConfirm}>
             Confirm
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button variant="outline" colorScheme="teal" onClick={onClose}>
+            Cancel
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
-  )
-}
+  );
+};
 
 export default ConfirmModal;

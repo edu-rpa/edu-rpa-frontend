@@ -11,14 +11,11 @@ import {
   FormLabel,
   useToast,
 } from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
 import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
-import { QUERY_KEY } from '@/constants/queryKey';
 import userApi from '@/apis/userApi';
-import { useQuery } from '@tanstack/react-query';
 import { setUser } from '@/redux/slice/userSlice';
-import { useDispatch, useSelector } from 'react-redux';
 import { userSelector } from '@/redux/selector';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface ProfileFormData {
   fullName: string;
@@ -32,7 +29,8 @@ const ProfilePage: React.FC = () => {
   const user = useSelector(userSelector);
   const [userName, setUserName] = useState<string>('');
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [isLoadingUpdateProfile, setIsLoadingUpdateProfile] = useState<boolean>(false);
+  const [isLoadingUpdateProfile, setIsLoadingUpdateProfile] =
+    useState<boolean>(false);
 
   useEffect(() => {
     setUserName(user.name);
@@ -62,7 +60,9 @@ const ProfilePage: React.FC = () => {
     if (file) {
       const userFromApi = await userApi.uploadAvatar(file);
       // NOTE: if user is set to userFromApi completely, the avatarUrl will stay the same and the new avatar will not be displayed (or it will be displayed after a hard refresh)
-      dispatch(setUser({ ...userFromApi, avatarUrl: URL.createObjectURL(file) }));
+      dispatch(
+        setUser({ ...userFromApi, avatarUrl: URL.createObjectURL(file) })
+      );
     }
   };
 
@@ -132,8 +132,11 @@ const ProfilePage: React.FC = () => {
               colorScheme="teal"
               isLoading={isLoadingUpdateProfile}
               onClick={handleUpdateProfile}
-              disabled={isLoadingUpdateProfile || userName === user.name || userName === ''}
-            >
+              disabled={
+                isLoadingUpdateProfile ||
+                userName === user.name ||
+                userName === ''
+              }>
               Save
             </Button>
           </Stack>

@@ -11,6 +11,16 @@ import {
   HStack,
   Tag,
   Text,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useToast,
 } from '@chakra-ui/react';
 import {
   DownloadIcon,
@@ -46,6 +56,9 @@ const CustomTable = (props: TableProps) => {
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = props.data.slice(startIndex, endIndex);
+  const toast = useToast();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (currentData.length == 0) return <Box></Box>;
 
@@ -161,15 +174,46 @@ const CustomTable = (props: TableProps) => {
                     />
                   )}
                   {props.onDelete && (
-                    <IconButton
-                      bg="white"
-                      aria-label="Delete item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        props.onDelete && props.onDelete(item.id);
-                      }}
-                      icon={<DeleteIcon color="#319795" />}
-                    />
+                    <Box>
+                      <IconButton
+                        bg="white"
+                        aria-label="Delete item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpen();
+                        }}
+                        icon={<DeleteIcon color="#319795" />}
+                      />
+                      <Modal isOpen={isOpen} onClose={onClose}>
+                        <ModalOverlay />
+                        <ModalContent>
+                          <ModalHeader>Confirmation Delete</ModalHeader>
+                          <ModalCloseButton />
+                          <ModalBody>
+                            <Text>Are you sure to delete this item ?</Text>
+                            <Text>
+                              This action is irreversible and you will not be
+                              able to restore the item afterward.
+                            </Text>
+                          </ModalBody>
+
+                          <ModalFooter>
+                            <Button variant="outline" mr={3} onClick={onClose}>
+                              Cancel
+                            </Button>
+                            <Button
+                              colorScheme="red"
+                              onClick={() => {
+                                props.onDelete && props.onDelete(item.id);
+
+                                onClose();
+                              }}>
+                              Detele
+                            </Button>
+                          </ModalFooter>
+                        </ModalContent>
+                      </Modal>
+                    </Box>
                   )}
                 </HStack>
               </Td>

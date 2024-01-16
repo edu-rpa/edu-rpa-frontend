@@ -128,7 +128,7 @@ export default function BoundingBoxBlock({
                   {rect.top.toFixed(2)}, Right: {rect.right.toFixed(2)}, Bottom:{' '}
                   {rect.bottom.toFixed(2)}]
                   <Button
-                    colorScheme="teal"
+                    colorScheme="red"
                     size="md"
                     className="m-[10px]"
                     onClick={() => handleDeleteRectangle(index)}>
@@ -139,8 +139,15 @@ export default function BoundingBoxBlock({
             </ul>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
+            <Button
+              colorScheme="teal"
+              variant="outline"
+              mr={3}
+              onClick={onClose}>
+              Cancel
+            </Button>
+            <Button colorScheme="teal" mr={3} onClick={onClose}>
+              Save
             </Button>
           </ModalFooter>
         </ModalContent>
