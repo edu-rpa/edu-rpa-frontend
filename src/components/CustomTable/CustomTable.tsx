@@ -11,6 +11,16 @@ import {
   HStack,
   Tag,
   Text,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useToast,
 } from '@chakra-ui/react';
 import {
   DownloadIcon,
@@ -18,12 +28,12 @@ import {
   DeleteIcon,
   ChevronRightIcon,
   ChevronLeftIcon,
-  ViewIcon,
 } from '@chakra-ui/icons';
 import ReactPaginate from 'react-paginate';
 import { IoDocumentText } from 'react-icons/io5';
 import { FaPlay } from 'react-icons/fa';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
+import { FaCode } from 'react-icons/fa6';
 
 interface TableProps {
   header: string[];
@@ -46,6 +56,9 @@ const CustomTable = (props: TableProps) => {
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = props.data.slice(startIndex, endIndex);
+  const toast = useToast();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (currentData.length == 0) return <Box></Box>;
 
@@ -73,7 +86,10 @@ const CustomTable = (props: TableProps) => {
         return (
           <Box className="flex justify-between">
             <Box className="flex justify-between">
-              <IoDocumentText size="20px" className="hover:opacity-80" />
+              <IoDocumentText
+                size="20px"
+                className="hover:opacity-80 hover:cursor-pointer"
+              />
               <Text className="text-[16px] ml-[10px]">{value}</Text>
             </Box>
             <Box></Box>
@@ -135,7 +151,7 @@ const CustomTable = (props: TableProps) => {
                         e.stopPropagation();
                         props.onViewFile && props.onViewFile(item.id);
                       }}
-                      icon={<ViewIcon color="#319795" />}
+                      icon={<FaCode color="#319795" />}
                     />
                   )}
                   {props.onDownload && (
@@ -155,21 +171,55 @@ const CustomTable = (props: TableProps) => {
                       aria-label="Edit item"
                       onClick={(e) => {
                         e.stopPropagation();
-                        props.onEdit && props.onEdit(item.id);
+                        if (item.processID) {
+                          props.onEdit && props.onEdit(item.processID);
+                        } else {
+                          props.onEdit && props.onEdit(item.id);
+                        }
                       }}
                       icon={<EditIcon color="#319795" />}
                     />
                   )}
                   {props.onDelete && (
-                    <IconButton
-                      bg="white"
-                      aria-label="Delete item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        props.onDelete && props.onDelete(item.id);
-                      }}
-                      icon={<DeleteIcon color="#319795" />}
-                    />
+                    <Box>
+                      <IconButton
+                        bg="white"
+                        aria-label="Delete item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpen();
+                        }}
+                        icon={<DeleteIcon color="#319795" />}
+                      />
+                      <Modal isOpen={isOpen} onClose={onClose}>
+                        <ModalOverlay />
+                        <ModalContent>
+                          <ModalHeader>Confirmation Delete</ModalHeader>
+                          <ModalCloseButton />
+                          <ModalBody>
+                            <Text>Are you sure to delete this item ?</Text>
+                            <Text>
+                              This action is irreversible and you will not be
+                              able to restore the item afterward.
+                            </Text>
+                          </ModalBody>
+
+                          <ModalFooter>
+                            <Button variant="outline" mr={3} onClick={onClose}>
+                              Cancel
+                            </Button>
+                            <Button
+                              colorScheme="red"
+                              onClick={() => {
+                                props.onDelete && props.onDelete(item.id);
+                                onClose();
+                              }}>
+                              Detele
+                            </Button>
+                          </ModalFooter>
+                        </ModalContent>
+                      </Modal>
+                    </Box>
                   )}
                 </HStack>
               </Td>

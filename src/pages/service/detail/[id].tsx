@@ -8,6 +8,7 @@ import {
   InputGroup,
   InputLeftElement,
   Input,
+  useToast,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { ChevronLeftIcon, SearchIcon } from '@chakra-ui/icons';
@@ -30,6 +31,7 @@ import AutomationTemplateImage from '@/assets/images/AutomationTemplate.jpg';
 
 const ServiceDetail = () => {
   const router = useRouter();
+  const toast = useToast();
 
   const [processList, setProcessList] = useState([]);
 
