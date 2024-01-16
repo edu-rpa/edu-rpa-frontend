@@ -5,10 +5,23 @@ import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { useParams } from 'next/navigation';
 import robotCode from '../../../constants/robotCode';
 import CodeViewer from '@/components/CodeViewer/CodeViewer';
+import { useQuery } from '@tanstack/react-query';
+import { QUERY_KEY } from '@/constants/queryKey';
+import robotApi from '@/apis/robotApi';
+import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 
 const RobotCode = () => {
   const router = useRouter();
   const params = useParams();
+
+  const { data: robotDetail, isLoading } = useQuery({
+    queryKey: [QUERY_KEY.PROCESS_DETAIL],
+    queryFn: () => robotApi.getRobotByID(params.id as string),
+  });
+
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
 
   return (
     <Container maxW="container.xl" className="bg-white h-[100vh]">
@@ -47,7 +60,7 @@ const RobotCode = () => {
         <Text>ID: {params && params.id} </Text>
       </Box>
       <Box className="w-90 m-auto">
-        <CodeViewer code={robotCode} language="robot" />
+        <CodeViewer code={robotDetail.code} language="robot" />
       </Box>
     </Container>
   );

@@ -25,13 +25,13 @@ const getNumberOfRobot = async () => {
     });
 };
 
-//   const getRobotByID = async (id: string): Promise<RobotResponse> => {
-//     return await apiBase
-//       .get(`${process.env.NEXT_PUBLIC_DEV_API}/robot/${id}`)
-//       .then((res: any) => {
-//         return res.data;
-//       });
-//   };
+const getRobotByID = async (id: string) => {
+  return await apiBase
+    .get(`${process.env.NEXT_PUBLIC_DEV_API}/robot/${id}`)
+    .then((res: any) => {
+      return res.data;
+    });
+};
 
 //   const updateRobotByID = async (id: string, payload: UpdateRobotDto) => {
 //     return await apiBase
@@ -61,7 +61,7 @@ const robotApi = {
   getAllRobot,
   createRobot,
   getNumberOfRobot,
-  //   getRobotByID,
+  getRobotByID,
   //   updateRobotByID,
   //   deleteRobotByID,
   //   saveRobotByID,

@@ -28,12 +28,12 @@ import {
   DeleteIcon,
   ChevronRightIcon,
   ChevronLeftIcon,
-  ViewIcon,
 } from '@chakra-ui/icons';
 import ReactPaginate from 'react-paginate';
 import { IoDocumentText } from 'react-icons/io5';
 import { FaPlay } from 'react-icons/fa';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
+import { FaCode } from 'react-icons/fa6';
 
 interface TableProps {
   header: string[];
@@ -86,7 +86,10 @@ const CustomTable = (props: TableProps) => {
         return (
           <Box className="flex justify-between">
             <Box className="flex justify-between">
-              <IoDocumentText size="20px" className="hover:opacity-80" />
+              <IoDocumentText
+                size="20px"
+                className="hover:opacity-80 hover:cursor-pointer"
+              />
               <Text className="text-[16px] ml-[10px]">{value}</Text>
             </Box>
             <Box></Box>
@@ -148,7 +151,7 @@ const CustomTable = (props: TableProps) => {
                         e.stopPropagation();
                         props.onViewFile && props.onViewFile(item.id);
                       }}
-                      icon={<ViewIcon color="#319795" />}
+                      icon={<FaCode color="#319795" />}
                     />
                   )}
                   {props.onDownload && (
@@ -168,7 +171,11 @@ const CustomTable = (props: TableProps) => {
                       aria-label="Edit item"
                       onClick={(e) => {
                         e.stopPropagation();
-                        props.onEdit && props.onEdit(item.id);
+                        if (item.processID) {
+                          props.onEdit && props.onEdit(item.processID);
+                        } else {
+                          props.onEdit && props.onEdit(item.id);
+                        }
                       }}
                       icon={<EditIcon color="#319795" />}
                     />
@@ -205,7 +212,6 @@ const CustomTable = (props: TableProps) => {
                               colorScheme="red"
                               onClick={() => {
                                 props.onDelete && props.onDelete(item.id);
-
                                 onClose();
                               }}>
                               Detele

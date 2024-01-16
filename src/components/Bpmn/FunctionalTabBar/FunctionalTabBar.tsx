@@ -2,6 +2,7 @@ import robotApi from '@/apis/robotApi';
 import TextAutoComplete from '@/components/Input/AutoComplete/TextAutoComplete';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import { CreateRobotDto } from '@/dtos/robotDto';
+import { useSaveShortcut } from '@/hooks/useSaveShortCut';
 import {
   Button,
   FormControl,
@@ -34,6 +35,8 @@ interface FunctionalTabBarProps {
 export default function FunctionalTabBar(props: FunctionalTabBarProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalType, setType] = useState('publish');
+  // Ctrl + S for save
+  useSaveShortcut(props.onSaveAll);
 
   const initialRef = useRef<HTMLInputElement>(null);
   const finalRef = useRef(null);
