@@ -27,6 +27,7 @@ import authApi from '@/apis/authApi';
 import useAuth from '@/hooks/useAuth';
 import { setLocalStorageObject } from '@/utils/localStorageService';
 import { LocalStorage } from '@/constants/localStorage';
+import { LoginSuccessResponse } from '@/interfaces/auth';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -50,21 +51,23 @@ export default function LoginForm() {
     onSubmit: (values, actions) => {},
   });
 
+  const onLoginSuccess = (data: LoginSuccessResponse) => {
+    toast({
+      title: 'Login successfully!',
+      status: 'success',
+      position: 'top-right',
+      duration: 1000,
+      isClosable: true,
+    });
+    setLocalStorageObject(LocalStorage.ACCESS_TOKEN, data.accessToken);
+    router.push('/');
+  };
+
   const handleLogin = useMutation({
     mutationFn: async (payload: LoginDto) => {
       return await authApi.login(payload);
     },
-    onSuccess: (data) => {
-      toast({
-        title: 'Login successfully !',
-        status: 'success',
-        position: 'top-right',
-        duration: 1000,
-        isClosable: true,
-      });
-      setLocalStorageObject(LocalStorage.ACCESS_TOKEN, data?.accessToken);
-      router.push('/');
-    },
+    onSuccess: onLoginSuccess,
     onError: () => {
       toast({
         title: 'There are some errors in form. Please check carefully !',
@@ -75,6 +78,13 @@ export default function LoginForm() {
       });
     },
   });
+
+  const handleSigninWithGoogle = async () => {
+    window.open(
+      `${process.env.NEXT_PUBLIC_DEV_API}/auth/google`,
+      '_self',
+    );
+  }
 
   return (
     <BaseForm>
@@ -162,10 +172,7 @@ export default function LoginForm() {
           className="w-full"
           colorScheme="teal"
           variant="outline"
-          onClick={() => {
-            setAuthToken();
-            router.push('/home');
-          }}
+          onClick={handleSigninWithGoogle}
           leftIcon={<SVGIcon svgComponent={GoogleIcon} />}>
           Sign in with Google
         </Button>

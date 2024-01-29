@@ -84,6 +84,14 @@ export default function SignUpForm(props: SignUpFormProps) {
       formik.setValues({ email, password, name });
     }
   }, []);
+
+  const handleSigninWithGoogle = async () => {
+    window.open(
+      `${process.env.NEXT_PUBLIC_DEV_API}/auth/google`,
+      '_self',
+    );
+  };
+
   return (
     <div className="w-40 mb-[80px]">
       <BaseForm>
@@ -96,6 +104,7 @@ export default function SignUpForm(props: SignUpFormProps) {
             <Button
               colorScheme="teal"
               variant="outline"
+              onClick={handleSigninWithGoogle}
               leftIcon={<SVGIcon svgComponent={GoogleIcon} />}>
               Sign up with Google
             </Button>
