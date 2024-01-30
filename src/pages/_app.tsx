@@ -30,7 +30,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       '/studio',
       '/robot',
       '/profile',
-      '/service',
+      '/integration-service',
       '/storage',
       '/document-template',
     ];

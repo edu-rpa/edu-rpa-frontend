@@ -21,7 +21,7 @@ const sidebarItems = [
   { path: '/home', name: 'Home', icon: FaHome },
   { path: '/studio', name: 'Studio', icon: RiFlowChart },
   { path: '/robot', name: 'Robot', icon: FaRobot },
-  { path: '/service', name: 'Integration Service', icon: IoIosRocket },
+  { path: '/integration-service', name: 'Integration Service', icon: IoIosRocket },
   { path: '/storage', name: 'Storage', icon: FaFile },
   { path: '/document-template', name: 'Document Template', icon: FaFileInvoice },
 ];
