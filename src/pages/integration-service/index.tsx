@@ -1,6 +1,5 @@
 import { formatDate } from '@/utils/common';
-import React, { useRef, useState } from 'react';
-import connectionData from '../../constants/serviceData';
+import React, { useRef, useState, useEffect } from 'react';
 import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
 import {
   Box,
@@ -8,61 +7,97 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Select,
-  Text,
+  Tooltip,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
+import { QuestionIcon, SearchIcon } from '@chakra-ui/icons';
 import CustomTable from '@/components/CustomTable/CustomTable';
 import { useRouter } from 'next/router';
-import GoogleDriveIcon from '@/assets/images/services/icons8-google-drive-96.png';
-import GmailIcon from '@/assets/images/services/icons8-gmail-96.png';
-import GoogleSheetIcon from '@/assets/images/services/icons8-google-sheets-96.png';
-import ConditionIcon from '@/assets/images/services/icons8-rule-64.png';
-import LoopIcon from '@/assets/images/services/icons8-repeat-100.png';
-import NavigationIcon from '@/assets/images/services/icons8-navigation-100-2.png';
-import BrowserEventIcon from '@/assets/images/services/icons8-search-in-browser-100.png';
-import TextExtractionIcon from '@/assets/images/services/icons8-image-100.png';
-import IconImage from '@/components/IconImage/IconImage';
+import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
+import connectionApi from '@/apis/connectionApi';
+import { Connection } from '@/interfaces/connection';
+import { CreateNewConnectionModal } from './CreateNewConnectionModal';
+import { providerData } from '@/constants/providerData';
+
+const integrationServiceExplain = 'With integration service, you can create connections to other services. Connections can be used by robots to perform tasks on your behalf.';
 
 export default function Service() {
   const router = useRouter();
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const initialRef = useRef<HTMLInputElement>(null);
-  const finalRef = useRef<HTMLInputElement>(null);
-  const [selectFilter, setSelectFilter] = useState('all');
+  const [providerFilter, setProviderFilter] = useState(router.query.provider? router.query.provider as AuthorizationProvider : '');
+  const [connectionData, setConnectionData] = useState<Connection[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const tableProps = {
-    header: ['Service', 'Connection ID', 'Owner', 'Last Modified', 'Status'],
+    header: ['Service', 'Connection name', 'Created at', 'Status'],
     data: connectionData,
   };
+  const errorMessage = router.query.error;
+  const successMessage = router.query.message;
+
   const handleViewService = (serviceID: string) => {
     router.push(`/service/detail/${serviceID}`);
   };
 
-  const servicesIcon = [
-    { label: 'Google Drive', icon: GoogleDriveIcon },
-    { label: 'Gmail', icon: GmailIcon },
-    { label: 'Google Sheet', icon: GoogleSheetIcon },
-    { label: 'Condition', icon: ConditionIcon },
-    { label: 'Loop', icon: LoopIcon },
-    { label: 'Navigation', icon: NavigationIcon },
-    { label: 'Browser Event', icon: BrowserEventIcon },
-    { label: 'Text Extraction', icon: TextExtractionIcon },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await connectionApi.queryConnections();
+        setConnectionData(data);
+      } catch (error) {
+        console.log(error);
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (errorMessage) {
+      toast({
+        title: `Error: ${errorMessage}`,
+        status: 'error',
+        position: 'top-right',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  }, [errorMessage]);
+
+  useEffect(() => {
+    if (successMessage) {
+      toast({
+        title: `Success: ${successMessage}`,
+        status: 'success',
+        position: 'top-right',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  }, [successMessage]);
+
+  if (providerFilter) {
+    tableProps.data = tableProps.data.filter(
+      (connection) => connection.provider === providerFilter
+    );
+  }
 
   return (
     <div className="mb-[200px]">
       <SidebarContent>
-        <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
-          Connection List
-        </h1>
+        <div className="flex flex-start">
+          <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
+            Connection List
+          </h1>
+          <Tooltip hasArrow label={integrationServiceExplain} bg='gray.300' color='black'>
+            <QuestionIcon />
+          </Tooltip>
+        </div>
+
         <div className="flex justify-between w-90 mx-auto my-[30px]">
           <InputGroup>
             <InputLeftElement pointerEvents="none">
@@ -76,11 +111,22 @@ export default function Service() {
             />
             <Box className="w-[15vw] ml-[20px]">
               <Select
-                defaultValue="all"
-                onChange={(e) => setSelectFilter(e.target.value)}>
-                <option value="connected">Connected</option>
-                <option value="unconnected">Unconnected</option>
-                <option value="all">All</option>
+                defaultValue=""
+                onChange={(e) => {
+                  setProviderFilter(e.target.value);
+                  router.push({
+                    pathname: router.pathname,
+                    query: { provider: e.target.value },
+                  });
+                }}>
+                <option value="">All services</option>
+                {Object.values(AuthorizationProvider).map((provider) => {
+                  return (
+                    <option key={provider} value={provider}>
+                      {provider}
+                    </option>
+                  );
+                })}
               </Select>
             </Box>
           </InputGroup>
@@ -89,44 +135,27 @@ export default function Service() {
               New Connection
             </Button>
           </div>
-          <Modal
-            initialFocusRef={initialRef}
-            finalFocusRef={finalRef}
-            isOpen={isOpen}
-            onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Create new connection</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody pb={6}>
-                <div className="grid grid-cols-3 gap-[15px]">
-                  {servicesIcon.map((service) => {
-                    return (
-                      <div key={service.label}>
-                        <IconImage icon={service.icon} label={service.label} />
-                      </div>
-                    );
-                  })}
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button colorScheme="blue" mr={3}>
-                  Create
-                </Button>
-                <Button onClick={onClose}>Cancel</Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+          
+          <CreateNewConnectionModal isOpen={isOpen} onClose={onClose} />
         </div>
 
-        <div className="w-90 m-auto">
+        {tableProps.data.length > 0
+        ? <div className="w-90 m-auto">
           <CustomTable
             header={tableProps.header}
             maxRows={5}
             data={tableProps.data}
             onView={handleViewService}
+            isLoading={isLoading}
           />
         </div>
+        : <div className="w-90 m-auto flex justify-center items-center">
+          <div className="text-center">
+            <div className="text-2xl font-bold">No connections</div>
+            <div className="text-gray-500">Create a new connection to help you integrate with other services</div>
+          </div>
+        </div>
+        }
       </SidebarContent>
     </div>
   );

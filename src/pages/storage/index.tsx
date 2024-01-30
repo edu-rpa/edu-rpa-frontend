@@ -9,9 +9,10 @@ import {
   InputGroup,
   InputLeftElement,
   Select,
+  Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
-import { ChevronRightIcon, SearchIcon } from '@chakra-ui/icons';
+import { ChevronRightIcon, QuestionIcon, SearchIcon } from '@chakra-ui/icons';
 import { RangeDatepicker } from 'chakra-dayzed-datepicker';
 import FileItem from './FileItem';
 import {
@@ -30,7 +31,8 @@ import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import CreateFolderModal from './CreateFolderModal';
 import FileUploadModal from './FileUploadModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
-import { set } from 'react-hook-form';
+
+const storageExplain = 'File storage is a place where you can store your files. Robots can access these files to perform their tasks.';
 
 export default function Storage() {
   const [files, setFiles] = useState<string[]>([]);
@@ -163,9 +165,14 @@ export default function Storage() {
   return (
     <div className="mb-[200px]">
       <SidebarContent>
-        <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
-          File Storage
-        </h1>
+        <div className="flex flex-start">
+          <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
+            File Storage
+          </h1>
+          <Tooltip hasArrow label={storageExplain} bg='gray.300' color='black'>
+            <QuestionIcon />
+          </Tooltip>
+        </div>
         <Breadcrumb
           separator={<ChevronRightIcon color='gray.500' />}
           spacing="8px"

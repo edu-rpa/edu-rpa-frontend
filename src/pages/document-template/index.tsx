@@ -148,8 +148,9 @@ export default function DocumentTemplateList() {
         </div>
 
         {documentTemplates.length === 0 && (
-          <div className="flex justify-center items-center">
-            <h1 className="text-2xl">No document template found</h1>
+          <div className="flex flex-col justify-center items-center">
+            <h1 className="text-2xl font-bold">No document template found</h1>
+            <div className="text-gray-500">Create a new document template to help you automate document-related tasks</div>
           </div>
         )}
 
