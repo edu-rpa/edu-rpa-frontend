@@ -13,13 +13,13 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { QuestionIcon, SearchIcon } from '@chakra-ui/icons';
-import CustomTable from '@/components/CustomTable/CustomTable';
 import { useRouter } from 'next/router';
 import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
 import connectionApi from '@/apis/connectionApi';
 import { Connection } from '@/interfaces/connection';
 import { CreateNewConnectionModal } from './CreateNewConnectionModal';
 import { providerData } from '@/constants/providerData';
+import ConnectionTable from './ConnectionTable';
 
 const integrationServiceExplain = 'With integration service, you can create connections to other services. Connections can be used by robots to perform tasks on your behalf.';
 
@@ -32,7 +32,7 @@ export default function Service() {
   const [isLoading, setIsLoading] = useState(false);
   
   const tableProps = {
-    header: ['Service', 'Connection name', 'Created at', 'Status'],
+    header: ['Service', 'Connection name', 'Created at', 'Status', 'Action'],
     data: connectionData,
   };
   const errorMessage = router.query.error;
@@ -141,13 +141,7 @@ export default function Service() {
 
         {tableProps.data.length > 0
         ? <div className="w-90 m-auto">
-          <CustomTable
-            header={tableProps.header}
-            maxRows={5}
-            data={tableProps.data}
-            onView={handleViewService}
-            isLoading={isLoading}
-          />
+          <ConnectionTable {...tableProps} isLoading={isLoading} />
         </div>
         : <div className="w-90 m-auto flex justify-center items-center">
           <div className="text-center">
