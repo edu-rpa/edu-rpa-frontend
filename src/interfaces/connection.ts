@@ -4,4 +4,5 @@ export interface Connection {
   provider: AuthorizationProvider;
   name: string;
   createdAt: Date;
+  [key: string]: any;
 }

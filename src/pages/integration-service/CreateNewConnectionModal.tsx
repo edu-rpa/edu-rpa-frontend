@@ -58,9 +58,6 @@ export const CreateNewConnectionModal: React.FC<Props> = ({
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" mr={3}>
-            Create
-          </Button>
           <Button onClick={onClose}>Cancel</Button>
         </ModalFooter>
       </ModalContent>
