@@ -1,4 +1,4 @@
-import { ActivityTemplates } from '@/constants/activityPackage';
+import { ActivityPackages } from '@/constants/activityPackage';
 import { Activity } from '@/types/activity';
 import { setLocalStorageObject } from '@/utils/localStorageService';
 import {
@@ -72,7 +72,6 @@ export default function PropertiesSideBar({
   const {
     sideBarState,
     setPackage,
-    setService,
     getTitleStep,
     setActivity,
     setBack,
@@ -151,7 +150,7 @@ export default function PropertiesSideBar({
   };
 
   const handleUpdateProperties = () => {
-    if (sideBarState.currentStep < 4) return;
+    if (sideBarState.currentStep < 3) return;
     const payload = {
       activityPackage: sideBarState.packageName,
       serviceName: sideBarState.serviceName,
@@ -216,9 +215,9 @@ export default function PropertiesSideBar({
               Name: {activityItem.activityName}
             </h1>
 
-            {ActivityTemplates.map((item) => {
-              const { _id, displayName, activityTemplates, description } = item;
-              const { currentStep, packageName, serviceName, activityName } =
+            {ActivityPackages.map((activityPackage) => {
+              const { _id, displayName, activityTemplates, description } = activityPackage;
+              const { currentStep, packageName, activityName } =
                 sideBarState;
 
               const renderStepOne = () => (
@@ -233,27 +232,6 @@ export default function PropertiesSideBar({
                 </Tooltip>
               );
 
-              const renderStepTwo = () => {
-                const services = getDistinctService(activityTemplates);
-                console.log('Services', services);
-                return (
-                  <div className="my-[20px] grid grid-cols-2 gap-[20px] w-90 mx-auto">
-                    {packageName === displayName &&
-                      services.map((service: string) => {
-                        return (
-                          <div key={service}>
-                            <IconImage
-                              icon={getServiceIcon(service) as any}
-                              label={service}
-                              onClick={() => setService(service)}
-                            />
-                          </div>
-                        );
-                      })}
-                  </div>
-                );
-              };
-
               const setDefaultValue = (
                 paramKey: string,
                 paramValue: ArgumentProps,
@@ -266,12 +244,8 @@ export default function PropertiesSideBar({
                 };
               };
 
-              const renderStepThree = () => {
-                const activities = getActivityByService(
-                  activityTemplates,
-                  serviceName
-                );
-                return activities.map((activity: any) => (
+              const renderStepTwo = () => {
+                return displayName === packageName && activityTemplates.map((activity: any) => (
                   <div key={activity.displayName}>
                     <Tooltip label={activity.description}>
                       <Button
@@ -519,7 +493,7 @@ export default function PropertiesSideBar({
                 }
               };
 
-              const renderStepFour = () => {
+              const renderStepThree = () => {
                 const activityInfo = getArgumentsByActivity(
                   activityTemplates,
                   activityName
@@ -588,7 +562,6 @@ export default function PropertiesSideBar({
                   {currentStep === 1 && renderStepOne()}
                   {currentStep === 2 && renderStepTwo()}
                   {currentStep === 3 && renderStepThree()}
-                  {currentStep === 4 && renderStepFour()}
                 </div>
               );
             })}

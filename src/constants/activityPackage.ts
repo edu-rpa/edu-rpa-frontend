@@ -1,10 +1,9 @@
-export const ActivityTemplates = [
+export const ActivityPackages = [
   {
-    _id: 'google_workspace',
-    displayName: 'Google Workspace',
+    _id: 'google_drive',
+    displayName: 'Google Drive',
     description:
-      'Help you integrate your work with Google Workspace applications (like Google Drive)',
-    iconCode: 'FcGoogle',
+      'Help you integrate your work with Google Drive',
     library: 'RPA.Cloud.Google',
     activityTemplates: [
       {
@@ -12,7 +11,6 @@ export const ActivityTemplates = [
         displayName: 'Create folder',
         description: 'Create a Google Drive folder in a given directory',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Create Drive Directory',
         arguments: {
@@ -47,10 +45,8 @@ export const ActivityTemplates = [
         displayName: 'Dowload Files',
         description: 'Dowload Files From Drive Folders',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Download Drive Files',
-        library: 'RPA.Cloud.Google',
         arguments: {
           Connection: {
             type: 'connection.Google Drive',
@@ -82,7 +78,6 @@ export const ActivityTemplates = [
         displayName: 'For each file in folder',
         description: 'Iterates over a list of files in a Google Drive folder',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'subprocess',
         arguments: {
           Connection: {
@@ -96,14 +91,18 @@ export const ActivityTemplates = [
             value: '',
           },
         },
-        return: null,
+        variable: {
+          name: 'File',
+          type: 'dictionary',
+          description:
+            'The file. This is a dictionary, contains: id (file id), url (file url), name (file name), is_folder, mimeType (file mime type), size (file size), modifiedTime (file modified time)',
+        },
       },
       {
         templateId: 'drive.get_file_list_in_folder',
         displayName: 'Get file list in folder',
         description: 'Get a list of files in a given folder in Google Drive',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Search Drive Files',
         arguments: {
@@ -138,7 +137,6 @@ export const ActivityTemplates = [
         displayName: 'Get a file/folder',
         description: 'Get a file/folder in Google Drive',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Get Drive File By Id',
         arguments: {
@@ -167,7 +165,6 @@ export const ActivityTemplates = [
         displayName: 'Delete file/folder',
         description: 'Delete a file/folder in Google Drive',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Delete Drive File',
         arguments: {
@@ -195,7 +192,6 @@ export const ActivityTemplates = [
         displayName: 'Move file/folder',
         description: 'Move a file/folder to another folder in Google Drive',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Move Drive File',
         arguments: {
@@ -229,7 +225,6 @@ export const ActivityTemplates = [
         displayName: 'Share a file/folder',
         description: 'Share a file/folder in Google Drive',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Add Drive Share',
         arguments: {
@@ -271,12 +266,20 @@ export const ActivityTemplates = [
             'The share response. This is a dictionary, contains: file_id, permission_id',
         },
       },
+    ],
+  },
+  {
+    _id: 'gmail',
+    displayName: 'Gmail',
+    description:
+      'Help you integrate your work with Gmail',
+    library: 'RPA.Cloud.Google',
+    activityTemplates: [
       {
         templateId: 'gmail.send_email',
         displayName: 'Send email',
         description: 'Send an email to other people using Gmail',
         iconCode: 'FaEnvelope',
-        service: 'Gmail',
         type: 'activity',
         keyword: 'Send Message',
         arguments: {
@@ -323,7 +326,6 @@ export const ActivityTemplates = [
         displayName: 'For each email',
         description: 'Iterates over a list of email',
         iconCode: 'FaEnvelope',
-        service: 'Gmail',
         type: 'subprocess',
         arguments: {
           Connection: {
@@ -368,14 +370,18 @@ export const ActivityTemplates = [
             value: null,
           },
         },
-        return: null,
+        variable: {
+          name: 'Email',
+          type: 'dictionary',
+          description:
+            'The email. This is a dictionary, contains: id (email id), from (email from), to (email to), cc (email cc), bcc (email bcc), subject (email subject), body (email body), attachments (email attachments)',
+        },
       },
       {
         templateId: 'gmail.list_emails',
         displayName: 'Get list emails',
         description: 'List emails in a given folder in Gmail',
         iconCode: 'FaEnvelope',
-        service: 'Gmail',
         type: 'activity',
         keyword: 'List Messages',
         arguments: {
@@ -417,12 +423,20 @@ export const ActivityTemplates = [
             'A list of emails. Each email is a dictionary, contains: id (email id), from (email from), to (email to), cc (email cc), bcc (email bcc), subject (email subject), body (email body), attachments (email attachments)',
         },
       },
+    ],
+  },
+  {
+    _id: 'google_sheets',
+    displayName: 'Google Sheets',
+    description:
+      'Help you integrate your work with Google Sheets',
+    library: 'RPA.Cloud.Google',
+    activityTemplates: [
       {
         templateId: 'sheet.create_spreadsheet',
         displayName: 'Create SpreadSheet',
         description: 'Create SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Create Spreadsheet',
         arguments: {
@@ -450,7 +464,6 @@ export const ActivityTemplates = [
         displayName: 'For Each Sheet',
         description: 'Iterates over a list of Sheet in a Spreadsheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'subprocess',
         arguments: {
           Connection: {
@@ -465,14 +478,18 @@ export const ActivityTemplates = [
             value: '',
           },
         },
-        return: null,
+        variable: {
+          name: 'Sheet',
+          type: 'dictionary',
+          description:
+            'The sheet. This is a dictionary, contains: id (sheet id), title (sheet title), index (sheet index), sheetType (sheet type), gridProperties (sheet grid properties)',
+        },
       },
       {
         templateId: 'sheet.get_spreadsheet_by_id',
         displayName: 'Get SpreadSheet By Id',
         description: 'Get SpreadSheet By Id in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Get Spreadsheet Basic Information',
         arguments: {
@@ -501,7 +518,6 @@ export const ActivityTemplates = [
         displayName: 'Add sheet',
         description: 'Add sheet to a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Create Sheet',
         arguments: {
@@ -530,7 +546,6 @@ export const ActivityTemplates = [
         displayName: 'Delete sheet',
         description: 'Delete sheet from a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Delete Sheet',
         arguments: {
@@ -559,7 +574,6 @@ export const ActivityTemplates = [
         displayName: 'Rename sheet',
         description: 'Rename sheet of a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Rename Sheet',
         arguments: {
@@ -595,7 +609,6 @@ export const ActivityTemplates = [
         description:
           'Write Data To Sheet in a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Update Sheet Values',
         arguments: {
@@ -631,7 +644,6 @@ export const ActivityTemplates = [
         description:
           'Read Data From Sheet in a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Get Sheet Values',
         arguments: {
@@ -666,7 +678,6 @@ export const ActivityTemplates = [
         description:
           'Clear Data From Sheet in a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Clear Sheet Values',
         arguments: {
@@ -696,7 +707,6 @@ export const ActivityTemplates = [
     _id: 'control',
     displayName: 'Control',
     description: 'Help you control the execution flow of your robot',
-    iconCode: 'MdControlCamera',
     activityTemplates: [
       {
         templateId: 'if',
@@ -704,29 +714,22 @@ export const ActivityTemplates = [
         description:
           'If a condition is met, then execute a set of activities, otherwise execute another set of activities',
         iconCode: 'AiOutlineBranches',
-        service: 'Condition',
         type: 'gateway',
         arguments: {
-          Condition: {
-            type: 'expression.logic',
-            description: 'The condition to execute',
-            value: {
-              left: {
-                type: 'string',
-                description: 'The left operand',
-                value: '',
-              },
-              operator: {
-                type: 'enum.operator.logic',
-                description: 'The operator',
-                value: '=',
-              },
-              right: {
-                type: 'string',
-                description: 'The right operand',
-                value: '',
-              },
-            },
+          left: {
+            type: 'expression',
+            description: 'The left operand',
+            value: '',
+          },
+          operator: {
+            type: 'enum.operator.logic',
+            description: 'The operator',
+            value: '=',
+          },
+          right: {
+            type: 'expression',
+            description: 'The right operand',
+            value: '',
           },
         },
         return: null,
@@ -736,21 +739,19 @@ export const ActivityTemplates = [
         displayName: 'For each',
         description: 'Execute a set of activities for each item in a list',
         iconCode: 'ImLoop2',
-        service: 'Loop',
         type: 'subprocess',
         arguments: {
           List: {
-            type: 'string',
+            type: 'list',
             description: 'List of value',
             value: [],
           },
-          Item: {
-            type: 'string',
-            description: 'The initial variable for the loop',
-            value: '',
-          },
         },
-        return: null,
+        variable: {
+          name: 'Item',
+          type: 'any',
+          description: 'The item in the list',
+        },
       },
     ],
   },
@@ -759,14 +760,12 @@ export const ActivityTemplates = [
     displayName: 'Browser automation',
     description:
       'Help you automate tasks that need to be done in a web browser (like Chrome)',
-    iconCode: 'TbBrowserCheck',
     library: 'RPA.Browser.Playwright',
     activityTemplates: [
       {
         templateId: 'use_browser',
         displayName: 'Use browser',
         description: 'Open a browser and use it to execute a set of activities',
-        service: 'Navigation',
         iconCode: 'GoBrowser',
         type: 'subprocess',
         keyword: 'New Browser',
@@ -778,7 +777,6 @@ export const ActivityTemplates = [
         displayName: 'Go to URL',
         description: 'Go to a given URL in the current browser tab',
         iconCode: 'GoBrowser',
-        service: 'Navigation',
         type: 'activity',
         keyword: 'Go To',
         arguments: {
@@ -797,7 +795,6 @@ export const ActivityTemplates = [
         description: 'Click on a given element in the current browser tab',
         iconCode: 'FaMousePointer',
         type: 'activity',
-        service: 'Browser Event',
         keyword: 'Click',
         arguments: {
           Element: {
@@ -816,7 +813,6 @@ export const ActivityTemplates = [
           'Type a given text into a given element in the current browser tab',
         iconCode: 'FaKeyboard',
         type: 'activity',
-        service: 'Browser Event',
         keyword: 'Fill Text',
         arguments: {
           Element: {
@@ -841,7 +837,6 @@ export const ActivityTemplates = [
           'Get the text of a given element in the current browser tab',
         iconCode: 'FaFont',
         type: 'activity',
-        service: 'Browser Event',
         keyword: 'Get Text',
         arguments: {
           Element: {
@@ -865,31 +860,9 @@ export const ActivityTemplates = [
     displayName: 'Document automation',
     description:
       'Help you automate tasks related to documents (traditional paper documents or digital documents like PDFs) with the help of AI',
-    iconCode: 'FaFileAlt',
+    library: 'EduRPA.Document',
     activityTemplates: [
-      {
-        templateId: 'ocr.bbox_annotation',
-        displayName: 'Bounding Box Annotation',
-        description: 'Select bounding box  for marking image annotations',
-        iconCode: 'FaImage',
-        service: 'OCR',
-        type: 'activity',
-        keyword: 'Text Extraction',
-        arguments: {
-          'File URL': {
-            type: 'bbox.file',
-            description: 'Import image and draw bounding box',
-            value: null,
-          },
-          'Bounding Box Values': {
-            type: 'bbox.value',
-            description: 'The list of bounding box value',
-            keywordArg: 'annotations',
-            value: null,
-          },
-        },
-        return: null,
-      },
+      
     ],
   },
 ];

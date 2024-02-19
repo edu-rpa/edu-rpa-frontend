@@ -45,8 +45,12 @@ const getLibrary = (packageName: string) => {
 
 const getPackageIcon = (displayName: string) => {
   switch (displayName) {
-    case 'Google Workspace':
-      return GoogleWorkpaceIcon;
+    case 'Google Drive':
+      return GoogleDriveIcon;
+    case 'Gmail':
+      return GmailIcon;
+    case 'Google Sheets':
+      return GoogleSheetIcon;
     case 'Control':
       return ControlIcon;
     case 'Browser automation':
