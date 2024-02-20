@@ -10,6 +10,8 @@ import LoopIcon from '@/assets/images/services/icons8-repeat-100.png';
 import NavigationIcon from '@/assets/images/services/icons8-navigation-100-2.png';
 import BrowserEventIcon from '@/assets/images/services/icons8-search-in-browser-100.png';
 import TextExtractionIcon from '@/assets/images/services/icons8-image-100.png';
+import VariableIcon from '@/assets/images/services/icons8-variable-96.png';
+import FileStorageIcon from '@/assets/images/services/icons8-file-storage-96.png';
 
 const getDistinctService = (data: any) => {
   const services = data
@@ -57,6 +59,10 @@ const getPackageIcon = (displayName: string) => {
       return BrowserAutomationIcon;
     case 'Document automation':
       return DocumentAutomationIcon;
+    case 'Data manipulation':
+      return VariableIcon;
+    case 'File storage':
+      return FileStorageIcon;
     default:
       return null;
   }

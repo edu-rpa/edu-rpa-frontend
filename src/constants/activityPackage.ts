@@ -74,6 +74,47 @@ export const ActivityPackages = [
         },
       },
       {
+        templateId: 'drive.upload_file',
+        displayName: 'Upload file',
+        description: 'Upload a file from robot\'s file system to Google Drive',
+        iconCode: 'FaGoogleDrive',
+        type: 'activity',
+        keyword: 'Upload Drive File',
+        arguments: {
+          Connection: {
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
+            value: '' 
+          },
+          "File name": {
+            type: 'string',
+            keywordArg: 'filename',
+            value: ''
+          },
+          "Folder Path": {
+            type: "string",
+            keywordArg: 'folder',
+            value: ''
+          },
+          "Overwrite": {
+            type: 'boolean',
+            keywordArg: 'overwrite',
+            value: false
+          },
+          "Make Folder": {
+            type: 'boolean',
+            keywordArg: 'make_dir',
+            value: false
+          }
+        },
+        return: {
+          displayName: "File id",
+          assignedTo: null,
+          type: "string",
+          description: "The uploaded file id"
+        }
+      },
+      {
         templateId: 'drive.for_each_file_in_folder',
         displayName: 'For each file in folder',
         description: 'Iterates over a list of files in a Google Drive folder',
@@ -756,6 +797,99 @@ export const ActivityPackages = [
     ],
   },
   {
+    _id: 'data_manipulation',
+    displayName: 'Data manipulation',
+    description: 'Help you manipulate data in your robot',
+    activityTemplates: [
+      {
+        templateId: 'set_variable',
+        displayName: 'Set variable',
+        description: 'Set the value of a variable',
+        iconCode: 'FaEquals',
+        type: 'activity',
+        keyword: 'Set Variable',
+        arguments: {
+          Variable: {
+            type: 'variable',
+            description: 'The variable to set the value to',
+            keywordArg: 'variable',
+            value: '',
+          },
+          Value: {
+            type: 'any',
+            description: 'The value to set to the variable',
+            keywordArg: 'value',
+            value: '',
+          },
+        },
+        return: null,
+      },
+      {
+        templateId: 'add_to_list',
+        displayName: 'Add to list',
+        description: 'Add an item to a list',
+        iconCode: 'FaListUl',
+        type: 'activity',
+        keyword: 'Add To List',
+        arguments: {
+          List: {
+            type: 'list',
+            description: 'The list',
+            keywordArg: 'list',
+            value: [],
+          },
+          Item: {
+            type: 'any',
+            description: 'The item to add to the list',
+            keywordArg: 'item',
+            value: '',
+          },
+        },
+        return: null,
+      },
+      {
+        templateId: 'remove_from_list',
+        displayName: 'Remove from list',
+        description: 'Remove an item from a list',
+        iconCode: 'FaListUl',
+        type: 'activity',
+        keyword: 'Remove From List',
+        arguments: {
+          List: {
+            type: 'list',
+            description: 'The list',
+            keywordArg: 'list',
+            value: [],
+          },
+          Item: {
+            type: 'any',
+            description: 'The item to remove from the list',
+            keywordArg: 'item',
+            value: '',
+          },
+        },
+        return: null,
+      },
+      {
+        templateId: 'clear_list',
+        displayName: 'Clear list',
+        description: 'Clear all items in a list',
+        iconCode: 'FaListUl',
+        type: 'activity',
+        keyword: 'Clear List',
+        arguments: {
+          List: {
+            type: 'list',
+            description: 'The list',
+            keywordArg: 'list',
+            value: [],
+          },
+        },
+        return: null,
+      },
+    ],
+  },
+  {
     _id: 'browser_automation',
     displayName: 'Browser automation',
     description:
@@ -862,7 +996,126 @@ export const ActivityPackages = [
       'Help you automate tasks related to documents (traditional paper documents or digital documents like PDFs) with the help of AI',
     library: 'EduRPA.Document',
     activityTemplates: [
-      
+      {
+        templateId: 'extract_data_from_document',
+        displayName: 'Extract data from document',
+        description: 'Extract data from a document using Document template',
+        iconCode: 'FaFileAlt',
+        type: 'activity',
+        keyword: 'Extract Data',
+        arguments: {
+          Document: {
+            type: 'string',
+            description: 'The document file name to extract data from',
+            keywordArg: 'document',
+            value: '',
+          },
+          'Document template': {
+            type: 'DocumentTemplate',
+            description: 'The document template',
+            keywordArg: 'template',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'Data',
+          assignedTo: null,
+          type: 'dictionary',
+          description: 'The extracted data from the document',
+        },
+      },
+      {
+        templateId: 'generate_grade_report',
+        displayName: 'Generate grade report',
+        description: 'Generate a grade report from a list of extracted data',
+        iconCode: 'FaFileAlt',
+        type: 'activity',
+        keyword: 'Generate Grade Report',
+        arguments: {
+          Data: {
+            type: 'list',
+            description: 'The list of extracted data',
+            keywordArg: 'data',
+            value: [],
+          },
+          'Correct answer': {
+            type: 'dictionary',
+            description: 'The correct answer',
+            keywordArg: 'correct_answer',
+            value: {},
+          },
+        },
+        return: {
+          displayName: 'Grade report file name',
+          assignedTo: null,
+          type: 'string',
+          description: 'The generated grade report file name',
+        },
+      }
+    ],
+  },
+  {
+    _id: 'file_storage',
+    displayName: 'File storage',
+    description: 'Help you store and retrieve files in the platform\'s file storage',
+    library: 'EduRPA.FileStorage',
+    activityTemplates: [
+      {
+        templateId: 'upload_file',
+        displayName: 'Upload file',
+        description: 'Upload a file to the platform\'s file storage',
+        iconCode: 'FaFileUpload',
+        type: 'activity',
+        keyword: 'Upload File',
+        arguments: {
+          File: {
+            type: 'string',
+            description: 'The file to upload',
+            keywordArg: 'file',
+            value: '',
+          },
+          'File name': {
+            type: 'string',
+            description: 'The name of the file',
+            keywordArg: 'file_name',
+            value: '',
+          },
+          'Folder path': {
+            type: 'string',
+            description: 'The path of the folder to store the file',
+            keywordArg: 'folder_path',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'File path',
+          assignedTo: null,
+          type: 'string',
+          description: 'The uploaded file path',
+        },
+      },
+      {
+        templateId: 'download_file',
+        displayName: 'Download file',
+        description: 'Download a file from the platform\'s file storage',
+        iconCode: 'FaFileDownload',
+        type: 'activity',
+        keyword: 'Download File',
+        arguments: {
+          'File path': {
+            type: 'string',
+            description: 'The path of the file to download',
+            keywordArg: 'file_path',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'File name',
+          assignedTo: null,
+          type: 'string',
+          description: 'The downloaded file name',
+        },
+      },
     ],
   },
 ];
