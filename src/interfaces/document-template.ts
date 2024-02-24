@@ -1,4 +1,4 @@
-import { Rectangle } from "@/types/boundingBox";
+import { DataTemplate, Rectangle } from "@/types/boundingBox";
 import { DocumentTemplateType } from "./enums/document-template-type";
 
 export interface DocumentTemplate {
@@ -10,7 +10,7 @@ export interface DocumentTemplate {
 
 export interface DocumentTemplateDetail {
   _id: string;
-  dataTemplate: Rectangle[];
+  dataTemplate: DataTemplate;
 }
 
 export interface SampleDocumentUrl {
