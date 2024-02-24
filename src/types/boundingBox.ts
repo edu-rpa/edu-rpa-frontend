@@ -3,5 +3,9 @@ export type Rectangle = {
   top: number;
   right: number;
   bottom: number;
-  label?: string;
+};
+
+
+export type DataTemplate = {
+  [label: string]: Rectangle;
 };

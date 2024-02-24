@@ -103,11 +103,17 @@ export default function DocumentTemplateList() {
     if (!selectedDocumentTemplate) return;
     await documentTemplateApi.saveDocumentTemplate(selectedDocumentTemplate.id, saveDocumentTemplateDto);
     onCloseDetailModal();
+    setSelectedDocumentTemplate(undefined);
   };
 
   const handleDeleteDocumentTemplate = async (documentTemplateId: string) => {
     await documentTemplateApi.deleteDocumentTemplate(documentTemplateId);
     setDocumentTemplates(documentTemplates.filter((documentTemplate) => documentTemplate.id !== documentTemplateId));
+  };
+
+  const handleCloseDetailModal = () => {
+    onCloseDetailModal();
+    setSelectedDocumentTemplate(undefined);
   };
 
   return (
@@ -162,7 +168,7 @@ export default function DocumentTemplateList() {
 
         <DetailDocumentTemplateModal
           isOpen={isOpenDetailModal}
-          onClose={onCloseDetailModal}
+          onClose={handleCloseDetailModal}
           documentTemplate={selectedDocumentTemplate}
           handleSaveDocumentTemplate={handleSaveDocumentTemplate}
         />

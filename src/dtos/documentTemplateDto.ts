@@ -1,5 +1,5 @@
 import { DocumentTemplateType } from "@/interfaces/enums/document-template-type";
-import { Rectangle } from "@/types/boundingBox";
+import { DataTemplate, Rectangle } from "@/types/boundingBox";
 
 export interface CreateDocumentTemplateDto {
   name: string;
@@ -8,7 +8,7 @@ export interface CreateDocumentTemplateDto {
 }
 
 export interface SaveDocumentTemplateDto {
-  dataTemplate: Rectangle[];
+  dataTemplate: DataTemplate;
 }
 
 export interface EditDocumentTemplateDto {
