@@ -1,25 +1,28 @@
-import { Rectangle } from '@/types/boundingBox';
+import { DataTemplate, Rectangle } from '@/types/boundingBox';
 import React, { useState, useEffect } from 'react';
 
 type BoundingBoxProps = {
   imageUrl: string;
-  rectangles: Rectangle[];
-  onNewRectangle: (newRectangles: Rectangle | Rectangle[]) => void;
+  dataTemplate: DataTemplate;
+  onNewRectangle: (newRectangles: Rectangle) => void;
+  onLabelChange: (oldLabel: string, newLabel: string, event: React.ChangeEvent<HTMLInputElement>) => void;
   onErrorImage?: () => void;
 };
 
 const BoundingBox: React.FC<BoundingBoxProps> = ({
   imageUrl,
-  rectangles,
+  dataTemplate,
   onNewRectangle,
+  onLabelChange,
   onErrorImage,
 }) => {
   const [currentRect, setCurrentRect] = useState<Rectangle | null>(null);
   const [drawing, setDrawing] = useState(false);
+  const [oldLabelToChange, setOldLabelToChange] = useState('');
 
   useEffect(() => {
     setCurrentRect(null);
-  }, [rectangles]);
+  }, [dataTemplate]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -53,7 +56,7 @@ const BoundingBox: React.FC<BoundingBoxProps> = ({
 
   const handleMouseUp = () => {
     if (currentRect && currentRect.left !== currentRect.right) {
-      onNewRectangle([...rectangles, { ...currentRect, label: '' }]);
+      onNewRectangle(currentRect);
     }
     setCurrentRect(null);
     setDrawing(false);
@@ -61,12 +64,9 @@ const BoundingBox: React.FC<BoundingBoxProps> = ({
 
   const handleLabelChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    oldLabel: string,
   ) => {
-    const updatedRectangles = rectangles.map((rect, idx) =>
-      idx === index ? { ...rect, label: event.target.value } : rect
-    );
-    onNewRectangle(updatedRectangles);
+    setOldLabelToChange(oldLabel);
   };
 
   const getStyle = (rect: Rectangle) => {
@@ -94,25 +94,34 @@ const BoundingBox: React.FC<BoundingBoxProps> = ({
         className=""
         onError={onErrorImage}
       />
-      {rectangles.map((rect, index) => (
-        <div key={index} style={getStyle(rect)}>
-          <input
-            type="text"
-            value={rect.label || ''}
-            onChange={(e) => handleLabelChange(e, index)}
-            style={{
-              position: 'absolute',
-              width: '100%',
-              minWidth: '50px',
-              top: '-25px',
-              border: 'none',
-              padding: '2px',
-              fontSize: 'small',
-            }}
-            placeholder="Label"
-          />
-        </div>
-      ))}
+      {Object.keys(dataTemplate).map((label, index) => {
+        const rect = dataTemplate[label];
+        return (
+          <div key={index} style={getStyle(rect)}>
+            <input
+              type="text"
+              defaultValue={label}
+              onChange={(e) => handleLabelChange(e, label)}
+              onBlur={(e) => onLabelChange(oldLabelToChange, e.target.value, e)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.currentTarget.blur();
+                }
+              }}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                minWidth: '50px',
+                top: '-25px',
+                border: 'none',
+                padding: '2px',
+                fontSize: 'small',
+              }}
+              placeholder="Label"
+            />
+          </div>
+        )
+      })}
       {currentRect && <div style={getStyle(currentRect)} />}
     </div>
   );

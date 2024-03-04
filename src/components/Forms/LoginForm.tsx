@@ -81,7 +81,7 @@ export default function LoginForm() {
 
   const handleSigninWithGoogle = async () => {
     window.open(
-      `${process.env.NEXT_PUBLIC_DEV_API}/auth/google`,
+      `${process.env.NEXT_PUBLIC_DEV_API}/auth/google?redirectUrl=${process.env.NEXT_PUBLIC_URL}/auth/login`,
       '_self',
     );
   }

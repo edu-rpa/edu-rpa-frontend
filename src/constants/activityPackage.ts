@@ -1,10 +1,9 @@
-export const ActivityTemplates = [
+export const ActivityPackages = [
   {
-    _id: 'google_workspace',
-    displayName: 'Google Workspace',
+    _id: 'google_drive',
+    displayName: 'Google Drive',
     description:
-      'Help you integrate your work with Google Workspace applications (like Google Drive)',
-    iconCode: 'FcGoogle',
+      'Help you integrate your work with Google Drive',
     library: 'RPA.Cloud.Google',
     activityTemplates: [
       {
@@ -12,7 +11,6 @@ export const ActivityTemplates = [
         displayName: 'Create folder',
         description: 'Create a Google Drive folder in a given directory',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Create Drive Directory',
         arguments: {
@@ -47,10 +45,8 @@ export const ActivityTemplates = [
         displayName: 'Dowload Files',
         description: 'Dowload Files From Drive Folders',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Download Drive Files',
-        library: 'RPA.Cloud.Google',
         arguments: {
           Connection: {
             type: 'connection.Google Drive',
@@ -78,11 +74,51 @@ export const ActivityTemplates = [
         },
       },
       {
+        templateId: 'drive.upload_file',
+        displayName: 'Upload file',
+        description: 'Upload a file from robot\'s file system to Google Drive',
+        iconCode: 'FaGoogleDrive',
+        type: 'activity',
+        keyword: 'Upload Drive File',
+        arguments: {
+          Connection: {
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
+            value: '' 
+          },
+          "File name": {
+            type: 'string',
+            keywordArg: 'filename',
+            value: ''
+          },
+          "Folder Path": {
+            type: "string",
+            keywordArg: 'folder',
+            value: ''
+          },
+          "Overwrite": {
+            type: 'boolean',
+            keywordArg: 'overwrite',
+            value: false
+          },
+          "Make Folder": {
+            type: 'boolean',
+            keywordArg: 'make_dir',
+            value: false
+          }
+        },
+        return: {
+          displayName: "File id",
+          assignedTo: null,
+          type: "string",
+          description: "The uploaded file id"
+        }
+      },
+      {
         templateId: 'drive.for_each_file_in_folder',
         displayName: 'For each file in folder',
         description: 'Iterates over a list of files in a Google Drive folder',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'subprocess',
         arguments: {
           Connection: {
@@ -96,14 +132,18 @@ export const ActivityTemplates = [
             value: '',
           },
         },
-        return: null,
+        variable: {
+          name: 'File',
+          type: 'dictionary',
+          description:
+            'The file. This is a dictionary, contains: id (file id), url (file url), name (file name), is_folder, mimeType (file mime type), size (file size), modifiedTime (file modified time)',
+        },
       },
       {
         templateId: 'drive.get_file_list_in_folder',
         displayName: 'Get file list in folder',
         description: 'Get a list of files in a given folder in Google Drive',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Search Drive Files',
         arguments: {
@@ -138,7 +178,6 @@ export const ActivityTemplates = [
         displayName: 'Get a file/folder',
         description: 'Get a file/folder in Google Drive',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Get Drive File By Id',
         arguments: {
@@ -167,7 +206,6 @@ export const ActivityTemplates = [
         displayName: 'Delete file/folder',
         description: 'Delete a file/folder in Google Drive',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Delete Drive File',
         arguments: {
@@ -195,7 +233,6 @@ export const ActivityTemplates = [
         displayName: 'Move file/folder',
         description: 'Move a file/folder to another folder in Google Drive',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Move Drive File',
         arguments: {
@@ -229,7 +266,6 @@ export const ActivityTemplates = [
         displayName: 'Share a file/folder',
         description: 'Share a file/folder in Google Drive',
         iconCode: 'FaGoogleDrive',
-        service: 'Google Drive',
         type: 'activity',
         keyword: 'Add Drive Share',
         arguments: {
@@ -271,12 +307,20 @@ export const ActivityTemplates = [
             'The share response. This is a dictionary, contains: file_id, permission_id',
         },
       },
+    ],
+  },
+  {
+    _id: 'gmail',
+    displayName: 'Gmail',
+    description:
+      'Help you integrate your work with Gmail',
+    library: 'RPA.Cloud.Google',
+    activityTemplates: [
       {
         templateId: 'gmail.send_email',
         displayName: 'Send email',
         description: 'Send an email to other people using Gmail',
         iconCode: 'FaEnvelope',
-        service: 'Gmail',
         type: 'activity',
         keyword: 'Send Message',
         arguments: {
@@ -323,7 +367,6 @@ export const ActivityTemplates = [
         displayName: 'For each email',
         description: 'Iterates over a list of email',
         iconCode: 'FaEnvelope',
-        service: 'Gmail',
         type: 'subprocess',
         arguments: {
           Connection: {
@@ -368,14 +411,18 @@ export const ActivityTemplates = [
             value: null,
           },
         },
-        return: null,
+        variable: {
+          name: 'Email',
+          type: 'dictionary',
+          description:
+            'The email. This is a dictionary, contains: id (email id), from (email from), to (email to), cc (email cc), bcc (email bcc), subject (email subject), body (email body), attachments (email attachments)',
+        },
       },
       {
         templateId: 'gmail.list_emails',
         displayName: 'Get list emails',
         description: 'List emails in a given folder in Gmail',
         iconCode: 'FaEnvelope',
-        service: 'Gmail',
         type: 'activity',
         keyword: 'List Messages',
         arguments: {
@@ -417,12 +464,20 @@ export const ActivityTemplates = [
             'A list of emails. Each email is a dictionary, contains: id (email id), from (email from), to (email to), cc (email cc), bcc (email bcc), subject (email subject), body (email body), attachments (email attachments)',
         },
       },
+    ],
+  },
+  {
+    _id: 'google_sheets',
+    displayName: 'Google Sheets',
+    description:
+      'Help you integrate your work with Google Sheets',
+    library: 'RPA.Cloud.Google',
+    activityTemplates: [
       {
         templateId: 'sheet.create_spreadsheet',
         displayName: 'Create SpreadSheet',
         description: 'Create SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Create Spreadsheet',
         arguments: {
@@ -450,7 +505,6 @@ export const ActivityTemplates = [
         displayName: 'For Each Sheet',
         description: 'Iterates over a list of Sheet in a Spreadsheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'subprocess',
         arguments: {
           Connection: {
@@ -465,14 +519,18 @@ export const ActivityTemplates = [
             value: '',
           },
         },
-        return: null,
+        variable: {
+          name: 'Sheet',
+          type: 'dictionary',
+          description:
+            'The sheet. This is a dictionary, contains: id (sheet id), title (sheet title), index (sheet index), sheetType (sheet type), gridProperties (sheet grid properties)',
+        },
       },
       {
         templateId: 'sheet.get_spreadsheet_by_id',
         displayName: 'Get SpreadSheet By Id',
         description: 'Get SpreadSheet By Id in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Get Spreadsheet Basic Information',
         arguments: {
@@ -501,7 +559,6 @@ export const ActivityTemplates = [
         displayName: 'Add sheet',
         description: 'Add sheet to a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Create Sheet',
         arguments: {
@@ -530,7 +587,6 @@ export const ActivityTemplates = [
         displayName: 'Delete sheet',
         description: 'Delete sheet from a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Delete Sheet',
         arguments: {
@@ -559,7 +615,6 @@ export const ActivityTemplates = [
         displayName: 'Rename sheet',
         description: 'Rename sheet of a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Rename Sheet',
         arguments: {
@@ -595,7 +650,6 @@ export const ActivityTemplates = [
         description:
           'Write Data To Sheet in a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Update Sheet Values',
         arguments: {
@@ -631,7 +685,6 @@ export const ActivityTemplates = [
         description:
           'Read Data From Sheet in a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Get Sheet Values',
         arguments: {
@@ -666,7 +719,6 @@ export const ActivityTemplates = [
         description:
           'Clear Data From Sheet in a given SpreadSheet in Google Sheet',
         iconCode: 'FaFileSpreadsheet',
-        service: 'Google Sheet',
         type: 'activity',
         keyword: 'Clear Sheet Values',
         arguments: {
@@ -696,7 +748,6 @@ export const ActivityTemplates = [
     _id: 'control',
     displayName: 'Control',
     description: 'Help you control the execution flow of your robot',
-    iconCode: 'MdControlCamera',
     activityTemplates: [
       {
         templateId: 'if',
@@ -704,29 +755,22 @@ export const ActivityTemplates = [
         description:
           'If a condition is met, then execute a set of activities, otherwise execute another set of activities',
         iconCode: 'AiOutlineBranches',
-        service: 'Condition',
         type: 'gateway',
         arguments: {
-          Condition: {
-            type: 'expression.logic',
-            description: 'The condition to execute',
-            value: {
-              left: {
-                type: 'string',
-                description: 'The left operand',
-                value: '',
-              },
-              operator: {
-                type: 'enum.operator.logic',
-                description: 'The operator',
-                value: '=',
-              },
-              right: {
-                type: 'string',
-                description: 'The right operand',
-                value: '',
-              },
-            },
+          left: {
+            type: 'expression',
+            description: 'The left operand',
+            value: '',
+          },
+          operator: {
+            type: 'enum.operator.logic',
+            description: 'The operator',
+            value: '=',
+          },
+          right: {
+            type: 'expression',
+            description: 'The right operand',
+            value: '',
           },
         },
         return: null,
@@ -736,18 +780,109 @@ export const ActivityTemplates = [
         displayName: 'For each',
         description: 'Execute a set of activities for each item in a list',
         iconCode: 'ImLoop2',
-        service: 'Loop',
         type: 'subprocess',
         arguments: {
           List: {
-            type: 'string',
+            type: 'list',
             description: 'List of value',
             value: [],
           },
-          Item: {
-            type: 'string',
-            description: 'The initial variable for the loop',
+        },
+        variable: {
+          name: 'Item',
+          type: 'any',
+          description: 'The item in the list',
+        },
+      },
+    ],
+  },
+  {
+    _id: 'data_manipulation',
+    displayName: 'Data manipulation',
+    description: 'Help you manipulate data in your robot',
+    activityTemplates: [
+      {
+        templateId: 'set_variable',
+        displayName: 'Set variable',
+        description: 'Set the value of a variable',
+        iconCode: 'FaEquals',
+        type: 'activity',
+        keyword: 'Set Variable',
+        arguments: {
+          Variable: {
+            type: 'variable',
+            description: 'The variable to set the value to',
+            keywordArg: 'variable',
             value: '',
+          },
+          Value: {
+            type: 'any',
+            description: 'The value to set to the variable',
+            keywordArg: 'value',
+            value: '',
+          },
+        },
+        return: null,
+      },
+      {
+        templateId: 'add_to_list',
+        displayName: 'Add to list',
+        description: 'Add an item to a list',
+        iconCode: 'FaListUl',
+        type: 'activity',
+        keyword: 'Add To List',
+        arguments: {
+          List: {
+            type: 'list',
+            description: 'The list',
+            keywordArg: 'list',
+            value: [],
+          },
+          Item: {
+            type: 'any',
+            description: 'The item to add to the list',
+            keywordArg: 'item',
+            value: '',
+          },
+        },
+        return: null,
+      },
+      {
+        templateId: 'remove_from_list',
+        displayName: 'Remove from list',
+        description: 'Remove an item from a list',
+        iconCode: 'FaListUl',
+        type: 'activity',
+        keyword: 'Remove From List',
+        arguments: {
+          List: {
+            type: 'list',
+            description: 'The list',
+            keywordArg: 'list',
+            value: [],
+          },
+          Item: {
+            type: 'any',
+            description: 'The item to remove from the list',
+            keywordArg: 'item',
+            value: '',
+          },
+        },
+        return: null,
+      },
+      {
+        templateId: 'clear_list',
+        displayName: 'Clear list',
+        description: 'Clear all items in a list',
+        iconCode: 'FaListUl',
+        type: 'activity',
+        keyword: 'Clear List',
+        arguments: {
+          List: {
+            type: 'list',
+            description: 'The list',
+            keywordArg: 'list',
+            value: [],
           },
         },
         return: null,
@@ -759,14 +894,12 @@ export const ActivityTemplates = [
     displayName: 'Browser automation',
     description:
       'Help you automate tasks that need to be done in a web browser (like Chrome)',
-    iconCode: 'TbBrowserCheck',
     library: 'RPA.Browser.Playwright',
     activityTemplates: [
       {
         templateId: 'use_browser',
         displayName: 'Use browser',
         description: 'Open a browser and use it to execute a set of activities',
-        service: 'Navigation',
         iconCode: 'GoBrowser',
         type: 'subprocess',
         keyword: 'New Browser',
@@ -778,7 +911,6 @@ export const ActivityTemplates = [
         displayName: 'Go to URL',
         description: 'Go to a given URL in the current browser tab',
         iconCode: 'GoBrowser',
-        service: 'Navigation',
         type: 'activity',
         keyword: 'Go To',
         arguments: {
@@ -797,7 +929,6 @@ export const ActivityTemplates = [
         description: 'Click on a given element in the current browser tab',
         iconCode: 'FaMousePointer',
         type: 'activity',
-        service: 'Browser Event',
         keyword: 'Click',
         arguments: {
           Element: {
@@ -816,7 +947,6 @@ export const ActivityTemplates = [
           'Type a given text into a given element in the current browser tab',
         iconCode: 'FaKeyboard',
         type: 'activity',
-        service: 'Browser Event',
         keyword: 'Fill Text',
         arguments: {
           Element: {
@@ -841,7 +971,6 @@ export const ActivityTemplates = [
           'Get the text of a given element in the current browser tab',
         iconCode: 'FaFont',
         type: 'activity',
-        service: 'Browser Event',
         keyword: 'Get Text',
         arguments: {
           Element: {
@@ -865,30 +994,127 @@ export const ActivityTemplates = [
     displayName: 'Document automation',
     description:
       'Help you automate tasks related to documents (traditional paper documents or digital documents like PDFs) with the help of AI',
-    iconCode: 'FaFileAlt',
+    library: 'EduRPA.Document',
     activityTemplates: [
       {
-        templateId: 'ocr.bbox_annotation',
-        displayName: 'Bounding Box Annotation',
-        description: 'Select bounding box  for marking image annotations',
-        iconCode: 'FaImage',
-        service: 'OCR',
+        templateId: 'extract_data_from_document',
+        displayName: 'Extract data from document',
+        description: 'Extract data from a document using Document template',
+        iconCode: 'FaFileAlt',
         type: 'activity',
-        keyword: 'Text Extraction',
+        keyword: 'Extract Data',
         arguments: {
-          'File URL': {
-            type: 'bbox.file',
-            description: 'Import image and draw bounding box',
-            value: null,
+          Document: {
+            type: 'string',
+            description: 'The document file name to extract data from',
+            keywordArg: 'document',
+            value: '',
           },
-          'Bounding Box Values': {
-            type: 'bbox.value',
-            description: 'The list of bounding box value',
-            keywordArg: 'annotations',
-            value: null,
+          'Document template': {
+            type: 'DocumentTemplate',
+            description: 'The document template',
+            keywordArg: 'template',
+            value: '',
           },
         },
-        return: null,
+        return: {
+          displayName: 'Data',
+          assignedTo: null,
+          type: 'dictionary',
+          description: 'The extracted data from the document',
+        },
+      },
+      {
+        templateId: 'generate_grade_report',
+        displayName: 'Generate grade report',
+        description: 'Generate a grade report from a list of extracted data',
+        iconCode: 'FaFileAlt',
+        type: 'activity',
+        keyword: 'Generate Grade Report',
+        arguments: {
+          Data: {
+            type: 'list',
+            description: 'The list of extracted data',
+            keywordArg: 'data',
+            value: [],
+          },
+          'Correct answer': {
+            type: 'dictionary',
+            description: 'The correct answer',
+            keywordArg: 'correct_answer',
+            value: {},
+          },
+        },
+        return: {
+          displayName: 'Grade report file name',
+          assignedTo: null,
+          type: 'string',
+          description: 'The generated grade report file name',
+        },
+      }
+    ],
+  },
+  {
+    _id: 'file_storage',
+    displayName: 'File storage',
+    description: 'Help you store and retrieve files in the platform\'s file storage',
+    library: 'EduRPA.FileStorage',
+    activityTemplates: [
+      {
+        templateId: 'upload_file',
+        displayName: 'Upload file',
+        description: 'Upload a file to the platform\'s file storage',
+        iconCode: 'FaFileUpload',
+        type: 'activity',
+        keyword: 'Upload File',
+        arguments: {
+          File: {
+            type: 'string',
+            description: 'The file to upload',
+            keywordArg: 'file',
+            value: '',
+          },
+          'File name': {
+            type: 'string',
+            description: 'The name of the file',
+            keywordArg: 'file_name',
+            value: '',
+          },
+          'Folder path': {
+            type: 'string',
+            description: 'The path of the folder to store the file',
+            keywordArg: 'folder_path',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'File path',
+          assignedTo: null,
+          type: 'string',
+          description: 'The uploaded file path',
+        },
+      },
+      {
+        templateId: 'download_file',
+        displayName: 'Download file',
+        description: 'Download a file from the platform\'s file storage',
+        iconCode: 'FaFileDownload',
+        type: 'activity',
+        keyword: 'Download File',
+        arguments: {
+          'File path': {
+            type: 'string',
+            description: 'The path of the file to download',
+            keywordArg: 'file_path',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'File name',
+          assignedTo: null,
+          type: 'string',
+          description: 'The downloaded file name',
+        },
       },
     ],
   },
