@@ -27,4 +27,30 @@ const stringifyCyclicObject = (content: any) => {
   });
 };
 
-export { formatDate, exportFile, stringifyCyclicObject };
+const toastError = (toast: any, message: string) => {
+  toast({
+    title: 'Error',
+    description: message,
+    status: 'error',
+    duration: 3000,
+    isClosable: true,
+  });
+};
+
+const toastSuccess = (toast: any, message: string) => {
+  toast({
+    title: 'Success',
+    description: message,
+    status: 'success',
+    duration: 3000,
+    isClosable: true,
+  });
+};
+
+export { 
+  formatDate, 
+  exportFile, 
+  stringifyCyclicObject, 
+  toastError, 
+  toastSuccess
+};

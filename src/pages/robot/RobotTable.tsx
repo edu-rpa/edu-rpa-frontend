@@ -33,10 +33,11 @@ import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import { Robot } from '@/interfaces/robot';
 import { RobotRow } from './RobotRow';
 import { ScheduleModal } from './ScheduleModal';
+import { toastError, toastSuccess } from '@/utils/common';
 
 interface RobotTableProps {
   header: string[];
-  data: Robot[];
+  data: Omit<Robot, 'userId'>[];
   maxRows?: number;
   isLoading?: boolean;
 }
@@ -54,7 +55,7 @@ const RobotTable = (props: RobotTableProps) => {
     processId: '',
     processVersion: 0,
   });
-  const [robotData, setRobotData] = useState<Robot[]>(props.data);
+  const robotData = props.data;
   const itemsPerPage = 5;
   const pageCount = Math.ceil(robotData.length / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
@@ -85,12 +86,7 @@ const RobotTable = (props: RobotTableProps) => {
 
   const handleRemoveRobot = async (userId: number, processId: string, processVersion: number) => {
     // TODO: remove robot
-    toast({
-      title: 'Robot removed',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
+    toastError(toast, 'This feature is not implemented yet');
   };
 
   const handleSelectForRemove = (userId: number, processId: string, processVersion: number) => {

@@ -16,6 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import RobotTable from './RobotTable';
+import { Robot } from '@/interfaces/robot';
 
 export default function Robot() {
   const router = useRouter();
@@ -44,12 +45,12 @@ export default function Robot() {
     return <LoadingIndicator />;
   }
 
-  const formatData =
+  const formatData: Omit<Robot, 'userId'>[] =
     allRobot &&
     allRobot.map((item: any) => {
       return {
         name: item.name,
-        processID: item.processId,
+        processId: item.processId,
         processVersion: item.processVersion,
         createdAt: item.createdAt,
       };

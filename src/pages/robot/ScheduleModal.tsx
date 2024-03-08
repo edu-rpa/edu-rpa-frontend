@@ -6,8 +6,16 @@ import {
   ModalCloseButton, 
   ModalBody, 
   ModalFooter, 
-  Button 
+  Button,
+  useToast,
 } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import robotApi from "@/apis/robotApi";
+import LoadingIndicator from "@/components/LoadingIndicator/LoadingIndicator";
+import { ScheduleForm } from "./ScheduleForm";
+import { useSelector, useDispatch } from "react-redux";
+import { scheduleSelector } from "@/redux/selector";
+import { ScheduleState, setSchedule, setScheduleName } from "@/redux/slice/scheduleSlice";
 
 interface Props {
   isOpen: boolean;
@@ -17,6 +25,14 @@ interface Props {
   processVersion: number;
 }
 
+const generateExpression = (schedule: ScheduleState) => {
+  if (schedule.type === 'at') {
+    return `at(${schedule.datetime}:00)`
+  }
+
+  return `cron(${schedule.minute} ${schedule.hour} ${schedule.dayOfMonth} ${schedule.month} ${schedule.dayOfWeek} ${schedule.year})`;
+}
+
 export const ScheduleModal = ({
   isOpen,
   onClose,
@@ -24,6 +40,72 @@ export const ScheduleModal = ({
   processId,
   processVersion,
 }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingAction, setIsLoadingAction] = useState(false);
+  
+  const schedule = useSelector(scheduleSelector);
+  const dispatch = useDispatch();
+  const toast = useToast();
+
+  const toastError = (message: string) => {
+    toast({
+      title: "Error",
+      description: message,
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  const toastSuccess = (message: string) => {
+    toast({
+      title: "Success",
+      description: message,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const res = await robotApi.getSchedule(userId, processId, processVersion);
+        if (res.Name) {
+          dispatch(setSchedule(res));
+        }
+      } catch (error) {
+        toastError('Failed to fetch schedule');
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [userId, processId, processVersion]);
+
+  const handleCreateSchedule = async () => {
+    setIsLoadingAction(true);
+    try {
+      await robotApi.createSchedule(userId, processId, processVersion, {
+        schedule_expression: generateExpression(schedule),
+        schedule_expression_timezone: schedule.timezone,
+      });
+      toastSuccess('Schedule created');
+      setScheduleName(`edu-rpa-robot-schedule.${userId}.${processId}.${processVersion}`);
+    } catch (error) {
+      toastError('Failed to create schedule');
+    }
+    setIsLoadingAction(false);
+  };
+
+  const handleUpdateSchedule = async () => {
+    console.log('Update', schedule);
+  };
+
+  const handleDeleteSchedule = async () => {
+    console.log('Delete', schedule);
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -33,12 +115,32 @@ export const ScheduleModal = ({
         <ModalHeader>Schedule robot</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          
+          {
+            isLoading ? (
+              <LoadingIndicator />
+            ) : (
+              <>
+                {schedule.name? 'Edit schedule': 'Create schedule'}
+                <ScheduleForm />
+              </>
+            )
+          }
         </ModalBody>
         <ModalFooter>
+          {
+            schedule.name ? (
+              <>
+                <Button isLoading={isLoadingAction} colorScheme="blue" onClick={handleUpdateSchedule}>Save</Button>
+                <Button isLoading={isLoadingAction} colorScheme="red" onClick={handleDeleteSchedule}>Delete</Button>
+              </>
+            ) : (
+              <Button isLoading={isLoadingAction}  colorScheme="blue" onClick={handleCreateSchedule}>Create</Button>
+            )
+          }
           <Button onClick={onClose}>Cancel</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
   )
 }
+
