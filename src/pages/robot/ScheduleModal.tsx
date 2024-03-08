@@ -15,7 +15,12 @@ import LoadingIndicator from "@/components/LoadingIndicator/LoadingIndicator";
 import { ScheduleForm } from "./ScheduleForm";
 import { useSelector, useDispatch } from "react-redux";
 import { scheduleSelector } from "@/redux/selector";
-import { ScheduleState, setSchedule, setScheduleName } from "@/redux/slice/scheduleSlice";
+import { 
+  ScheduleState, 
+  setSchedule, 
+  setScheduleName, 
+  resetSchedule,
+} from "@/redux/slice/scheduleSlice";
 
 interface Props {
   isOpen: boolean;
@@ -91,7 +96,7 @@ export const ScheduleModal = ({
         schedule_expression_timezone: schedule.timezone,
       });
       toastSuccess('Schedule created');
-      setScheduleName(`edu-rpa-robot-schedule.${userId}.${processId}.${processVersion}`);
+      dispatch(setScheduleName(`edu-rpa-robot-schedule.${userId}.${processId}.${processVersion}`));
     } catch (error) {
       toastError('Failed to create schedule');
     }
@@ -99,11 +104,29 @@ export const ScheduleModal = ({
   };
 
   const handleUpdateSchedule = async () => {
-    console.log('Update', schedule);
+    setIsLoadingAction(true);
+    try {
+      await robotApi.updateSchedule(userId, processId, processVersion, {
+        schedule_expression: generateExpression(schedule),
+        schedule_expression_timezone: schedule.timezone,
+      });
+      toastSuccess('Schedule updated');
+    } catch (error) {
+      toastError('Failed to update schedule');
+    }
+    setIsLoadingAction(false);
   };
 
   const handleDeleteSchedule = async () => {
-    console.log('Delete', schedule);
+    setIsLoadingAction(true);
+    try {
+      await robotApi.deleteSchedule(userId, processId, processVersion);
+      toastSuccess('Schedule deleted');
+      dispatch(resetSchedule());
+    } catch (error) {
+      toastError('Failed to delete schedule');
+    }
+    setIsLoadingAction(false);
   };
 
   return (

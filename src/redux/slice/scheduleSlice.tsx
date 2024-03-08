@@ -16,7 +16,7 @@ export interface ScheduleState {
 
 const initialState: ScheduleState = {
   name: '',
-  type: 'cron',
+  type: 'at',
   timezone: 'UTC+00:00',
   datetime: '',
   minute: '*',
@@ -89,6 +89,19 @@ const scheduleSlice = createSlice({
     setYear: (state, action: PayloadAction<string>) => {
       state.year = action.payload;
     },
+
+    resetSchedule: (state) => {
+      state.name = '';
+      state.type = 'at';
+      state.timezone = 'UTC+00:00';
+      state.datetime = '';
+      state.minute = '*';
+      state.hour = '*';
+      state.dayOfMonth = '*';
+      state.month = '*';
+      state.dayOfWeek = '*';
+      state.year = '*';
+    },
   },
 });
 
@@ -103,7 +116,8 @@ export const {
   setDayOfMonth, 
   setMonth, 
   setDayOfWeek, 
-  setYear 
+  setYear,
+  resetSchedule,
 } = scheduleSlice.actions;
 
 export default scheduleSlice;
