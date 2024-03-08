@@ -97,6 +97,15 @@ export default function Robot() {
           </InputGroup>
         </div>
 
+        {tableProps.data.length === 0 && (
+          <div className="w-90 m-auto flex justify-center items-center">
+            <div className="text-center">
+              <div className="text-2xl font-bold">No robots here</div>
+              <div className="text-gray-500">Publish a robot from your existing processes.</div>
+            </div>
+          </div>
+        )}
+
         <div className="w-90 m-auto">
           <RobotTable
             header={tableProps.header}
