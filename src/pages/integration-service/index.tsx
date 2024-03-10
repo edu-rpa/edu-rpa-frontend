@@ -19,8 +19,8 @@ import connectionApi from '@/apis/connectionApi';
 import { Connection } from '@/interfaces/connection';
 
 import { providerData } from '@/constants/providerData';
-import ConnectionTable from './ConnectionTable';
-import CreateNewConnectionModal from './CreateNewConnectionModal';
+import ConnectionTable from '@/components/Connection/ConnectionTable';
+import CreateNewConnectionModal from '@/components/Connection/CreateNewConnectionModal';
 
 const integrationServiceExplain =
   'With integration service, you can create connections to other services. Connections can be used by robots to perform tasks on your behalf.';
