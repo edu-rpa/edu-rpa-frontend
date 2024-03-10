@@ -26,21 +26,34 @@ import { userSelector } from '@/redux/selector';
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEY } from '@/constants/queryKey';
 import userApi from '@/apis/userApi';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { getLocalStorageObject } from '@/utils/localStorageService';
+import { LocalStorage } from '@/constants/localStorage';
 
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector(userSelector);
+  const [userInfo, setUserInfo] = useState<any>(null);
   const { removeAuthToken } = useAuth();
 
-  const { data: userInfo } = useQuery({
-    queryKey: [QUERY_KEY.ME],
-    queryFn: () => userApi.getMe(),
-  });
+  useEffect(() => {
+    const accessToken = getLocalStorageObject(LocalStorage.ACCESS_TOKEN);
+    if (accessToken.length != 0) {
+      const fetchUserData = async () => {
+        try {
+          const userData = await userApi.getMe();
+          setUserInfo(userData);
+        } catch (error) {
+          console.error('Failed to fetch user data', error);
+        }
+      };
+      fetchUserData();
+    }
+  }, [userInfo]);
 
   useEffect(() => {
-    if (userInfo) {
+    if (userInfo && userInfo.length != 0) {
       dispatch(setUser(userInfo));
     }
   }, [userInfo]);
@@ -86,11 +99,7 @@ const Navbar = () => {
           <Menu>
             <MenuButton py={2} transition="all 0.3s">
               <HStack>
-                <Avatar
-                  size="sm"
-                  bg="gray.500"
-                  src={user.avatarUrl}
-                />
+                <Avatar size="sm" bg="gray.500" src={user.avatarUrl} />
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
                   alignItems="flex-start"
