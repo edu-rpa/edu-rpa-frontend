@@ -31,9 +31,9 @@ import {
 import ReactPaginate from 'react-paginate';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import { Robot } from '@/interfaces/robot';
-import { RobotRow } from './RobotRow';
-import { ScheduleModal } from './ScheduleModal';
 import { toastError, toastSuccess } from '@/utils/common';
+import RobotRow from './RobotRow';
+import ScheduleModal from './ScheduleModal';
 
 interface RobotTableProps {
   header: string[];
@@ -63,10 +63,10 @@ const RobotTable = (props: RobotTableProps) => {
   const currentData = robotData.slice(startIndex, endIndex);
   const toast = useToast();
 
-  const { 
-    isOpen: isOpenForRemove, 
-    onOpen: onOpenForRemove, 
-    onClose: onCloseForRemove 
+  const {
+    isOpen: isOpenForRemove,
+    onOpen: onOpenForRemove,
+    onClose: onCloseForRemove,
   } = useDisclosure();
   const {
     isOpen: isOpenForSchedule,
@@ -84,17 +84,29 @@ const RobotTable = (props: RobotTableProps) => {
     setCurrentPage(selected.selected);
   };
 
-  const handleRemoveRobot = async (userId: number, processId: string, processVersion: number) => {
+  const handleRemoveRobot = async (
+    userId: number,
+    processId: string,
+    processVersion: number
+  ) => {
     // TODO: remove robot
     toastError(toast, 'This feature is not implemented yet');
   };
 
-  const handleSelectForRemove = (userId: number, processId: string, processVersion: number) => {
+  const handleSelectForRemove = (
+    userId: number,
+    processId: string,
+    processVersion: number
+  ) => {
     setSelectedForRemove({ userId, processId, processVersion });
     onOpenForRemove();
   };
 
-  const handleSelectForSchedule = (userId: number, processId: string, processVersion: number) => {
+  const handleSelectForSchedule = (
+    userId: number,
+    processId: string,
+    processVersion: number
+  ) => {
     setSelectedForSchedule({ userId, processId, processVersion });
     onOpenForSchedule();
   };
@@ -133,10 +145,12 @@ const RobotTable = (props: RobotTableProps) => {
           <ModalBody>
             <Text>Are you sure to remove this robot ?</Text>
             <Text fontWeight={'bold'}>
-              Process ID: {selectedForRemove.processId}, Version: {selectedForRemove.processVersion}
+              Process ID: {selectedForRemove.processId}, Version:{' '}
+              {selectedForRemove.processVersion}
             </Text>
             <Text>
-              This action will stop the robot if it is running and remove it from the system.  
+              This action will stop the robot if it is running and remove it
+              from the system.
             </Text>
           </ModalBody>
 
@@ -147,7 +161,11 @@ const RobotTable = (props: RobotTableProps) => {
             <Button
               colorScheme="red"
               onClick={() => {
-                handleRemoveRobot(selectedForRemove.userId, selectedForRemove.processId, selectedForRemove.processVersion);
+                handleRemoveRobot(
+                  selectedForRemove.userId,
+                  selectedForRemove.processId,
+                  selectedForRemove.processVersion
+                );
                 onCloseForRemove();
               }}>
               Remove

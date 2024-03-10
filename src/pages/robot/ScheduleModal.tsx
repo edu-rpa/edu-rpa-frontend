@@ -1,26 +1,26 @@
-import { 
-  Modal, 
-  ModalOverlay, 
-  ModalContent, 
-  ModalHeader, 
-  ModalCloseButton, 
-  ModalBody, 
-  ModalFooter, 
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
   Button,
   useToast,
-} from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import robotApi from "@/apis/robotApi";
-import LoadingIndicator from "@/components/LoadingIndicator/LoadingIndicator";
-import { ScheduleForm } from "./ScheduleForm";
-import { useSelector, useDispatch } from "react-redux";
-import { scheduleSelector } from "@/redux/selector";
-import { 
-  ScheduleState, 
-  setSchedule, 
-  setScheduleName, 
+} from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+import robotApi from '@/apis/robotApi';
+import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
+import { useSelector, useDispatch } from 'react-redux';
+import { scheduleSelector } from '@/redux/selector';
+import {
+  ScheduleState,
+  setSchedule,
+  setScheduleName,
   resetSchedule,
-} from "@/redux/slice/scheduleSlice";
+} from '@/redux/slice/scheduleSlice';
+import ScheduleForm from './ScheduleForm';
 
 interface Props {
   isOpen: boolean;
@@ -32,13 +32,13 @@ interface Props {
 
 const generateExpression = (schedule: ScheduleState) => {
   if (schedule.type === 'at') {
-    return `at(${schedule.datetime}:00)`
+    return `at(${schedule.datetime}:00)`;
   }
 
   return `cron(${schedule.minute} ${schedule.hour} ${schedule.dayOfMonth} ${schedule.month} ${schedule.dayOfWeek} ${schedule.year})`;
-}
+};
 
-export const ScheduleModal = ({
+const ScheduleModal = ({
   isOpen,
   onClose,
   userId,
@@ -47,16 +47,16 @@ export const ScheduleModal = ({
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingAction, setIsLoadingAction] = useState(false);
-  
+
   const schedule = useSelector(scheduleSelector);
   const dispatch = useDispatch();
   const toast = useToast();
 
   const toastError = (message: string) => {
     toast({
-      title: "Error",
+      title: 'Error',
       description: message,
-      status: "error",
+      status: 'error',
       duration: 3000,
       isClosable: true,
     });
@@ -64,9 +64,9 @@ export const ScheduleModal = ({
 
   const toastSuccess = (message: string) => {
     toast({
-      title: "Success",
+      title: 'Success',
       description: message,
-      status: "success",
+      status: 'success',
       duration: 3000,
       isClosable: true,
     });
@@ -76,7 +76,11 @@ export const ScheduleModal = ({
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const res = await robotApi.getSchedule(userId, processId, processVersion);
+        const res = await robotApi.getSchedule(
+          userId,
+          processId,
+          processVersion
+        );
         if (res.Name) {
           dispatch(setSchedule(res));
         }
@@ -96,7 +100,11 @@ export const ScheduleModal = ({
         schedule_expression_timezone: schedule.timezone,
       });
       toastSuccess('Schedule created');
-      dispatch(setScheduleName(`edu-rpa-robot-schedule.${userId}.${processId}.${processVersion}`));
+      dispatch(
+        setScheduleName(
+          `edu-rpa-robot-schedule.${userId}.${processId}.${processVersion}`
+        )
+      );
     } catch (error) {
       toastError('Failed to create schedule');
     }
@@ -130,40 +138,50 @@ export const ScheduleModal = ({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Schedule robot</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          {
-            isLoading ? (
-              <LoadingIndicator />
-            ) : (
-              <>
-                {schedule.name? 'Edit schedule': 'Create schedule'}
-                <ScheduleForm />
-              </>
-            )
-          }
+          {isLoading ? (
+            <LoadingIndicator />
+          ) : (
+            <>
+              {schedule.name ? 'Edit schedule' : 'Create schedule'}
+              <ScheduleForm />
+            </>
+          )}
         </ModalBody>
         <ModalFooter>
-          {
-            schedule.name ? (
-              <>
-                <Button isLoading={isLoadingAction} colorScheme="blue" onClick={handleUpdateSchedule}>Save</Button>
-                <Button isLoading={isLoadingAction} colorScheme="red" onClick={handleDeleteSchedule}>Delete</Button>
-              </>
-            ) : (
-              <Button isLoading={isLoadingAction}  colorScheme="blue" onClick={handleCreateSchedule}>Create</Button>
-            )
-          }
+          {schedule.name ? (
+            <>
+              <Button
+                isLoading={isLoadingAction}
+                colorScheme="blue"
+                onClick={handleUpdateSchedule}>
+                Save
+              </Button>
+              <Button
+                isLoading={isLoadingAction}
+                colorScheme="red"
+                onClick={handleDeleteSchedule}>
+                Delete
+              </Button>
+            </>
+          ) : (
+            <Button
+              isLoading={isLoadingAction}
+              colorScheme="blue"
+              onClick={handleCreateSchedule}>
+              Create
+            </Button>
+          )}
           <Button onClick={onClose}>Cancel</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
-  )
-}
+  );
+};
 
+export default ScheduleModal;

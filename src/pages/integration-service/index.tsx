@@ -17,20 +17,26 @@ import { useRouter } from 'next/router';
 import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
 import connectionApi from '@/apis/connectionApi';
 import { Connection } from '@/interfaces/connection';
-import { CreateNewConnectionModal } from './CreateNewConnectionModal';
+
 import { providerData } from '@/constants/providerData';
 import ConnectionTable from './ConnectionTable';
+import CreateNewConnectionModal from './CreateNewConnectionModal';
 
-const integrationServiceExplain = 'With integration service, you can create connections to other services. Connections can be used by robots to perform tasks on your behalf.';
+const integrationServiceExplain =
+  'With integration service, you can create connections to other services. Connections can be used by robots to perform tasks on your behalf.';
 
 export default function Service() {
   const router = useRouter();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [providerFilter, setProviderFilter] = useState(router.query.provider? router.query.provider as AuthorizationProvider : '');
+  const [providerFilter, setProviderFilter] = useState(
+    router.query.provider
+      ? (router.query.provider as AuthorizationProvider)
+      : ''
+  );
   const [connectionData, setConnectionData] = useState<Connection[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const tableProps = {
     header: ['Service', 'Connection name', 'Created at', 'Status', 'Action'],
     data: connectionData,
@@ -93,7 +99,11 @@ export default function Service() {
           <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
             Connection List
           </h1>
-          <Tooltip hasArrow label={integrationServiceExplain} bg='gray.300' color='black'>
+          <Tooltip
+            hasArrow
+            label={integrationServiceExplain}
+            bg="gray.300"
+            color="black">
             <QuestionIcon />
           </Tooltip>
         </div>
@@ -135,21 +145,25 @@ export default function Service() {
               New Connection
             </Button>
           </div>
-          
+
           <CreateNewConnectionModal isOpen={isOpen} onClose={onClose} />
         </div>
 
-        {tableProps.data.length > 0
-        ? <div className="w-90 m-auto">
-          <ConnectionTable {...tableProps} isLoading={isLoading} />
-        </div>
-        : <div className="w-90 m-auto flex justify-center items-center">
-          <div className="text-center">
-            <div className="text-2xl font-bold">No connections</div>
-            <div className="text-gray-500">Create a new connection to help you integrate with other services</div>
+        {tableProps.data.length > 0 ? (
+          <div className="w-90 m-auto">
+            <ConnectionTable {...tableProps} isLoading={isLoading} />
           </div>
-        </div>
-        }
+        ) : (
+          <div className="w-90 m-auto flex justify-center items-center">
+            <div className="text-center">
+              <div className="text-2xl font-bold">No connections</div>
+              <div className="text-gray-500">
+                Create a new connection to help you integrate with other
+                services
+              </div>
+            </div>
+          </div>
+        )}
       </SidebarContent>
     </div>
   );

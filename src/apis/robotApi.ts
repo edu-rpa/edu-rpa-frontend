@@ -1,4 +1,8 @@
-import { CreateRobotDto, CreateScheduleDto, UpdateScheduleDto } from '@/dtos/robotDto';
+import {
+  CreateRobotDto,
+  CreateScheduleDto,
+  UpdateScheduleDto,
+} from '@/dtos/robotDto';
 import apiBase from './config';
 import { Schedule } from '@/interfaces/robot';
 
@@ -34,15 +38,25 @@ const getRobotByID = async (id: string) => {
     });
 };
 
-const geRobotDetail = async (userId: number, processId: string, version: number) => {
+const getRobotDetail = async (
+  userId: number,
+  processId: string,
+  version: number
+) => {
   return await apiBase
-    .get(`${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/robot/detail?user_id=${userId}&process_id=${processId}&version=${version}`)
+    .get(
+      `${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/robot/detail?user_id=${userId}&process_id=${processId}&version=${version}`
+    )
     .then((res: any) => {
       return res.data;
     });
 };
 
-const stopRobot = async (userId: number, processId: string, version: number) => {
+const stopRobot = async (
+  userId: number,
+  processId: string,
+  version: number
+) => {
   return await apiBase
     .post(`${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/robot/stop`, {
       user_id: userId.toString(),
@@ -66,27 +80,45 @@ const runRobot = async (userId: number, processId: string, version: number) => {
     });
 };
 
-const getSchedule = async (userId: number, processId: string, version: number): Promise<Schedule> => {
+const getSchedule = async (
+  userId: number,
+  processId: string,
+  version: number
+): Promise<Schedule> => {
   return await apiBase
-    .get(`${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/schedule?user_id=${userId}&process_id=${processId}&version=${version}`)
+    .get(
+      `${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/schedule?user_id=${userId}&process_id=${processId}&version=${version}`
+    )
     .then((res: any) => {
       return res.data;
     });
 };
 
-const deleteSchedule = async (userId: number, processId: string, version: number) => {
+const deleteSchedule = async (
+  userId: number,
+  processId: string,
+  version: number
+) => {
   return await apiBase
-    .post(`${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/schedule/delete`, {
-      user_id: userId.toString(),
-      process_id: processId,
-      version: version,
-    })
+    .post(
+      `${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/schedule/delete`,
+      {
+        user_id: userId.toString(),
+        process_id: processId,
+        version: version,
+      }
+    )
     .then((res: any) => {
       return res.data;
     });
 };
 
-const createSchedule = async (userId: number, processId: string, version: number, createScheduleDto: CreateScheduleDto) => {
+const createSchedule = async (
+  userId: number,
+  processId: string,
+  version: number,
+  createScheduleDto: CreateScheduleDto
+) => {
   return await apiBase
     .post(`${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/schedule`, {
       user_id: userId.toString(),
@@ -99,7 +131,12 @@ const createSchedule = async (userId: number, processId: string, version: number
     });
 };
 
-const updateSchedule = async (userId: number, processId: string, version: number, updateScheduleDto: UpdateScheduleDto) => {
+const updateSchedule = async (
+  userId: number,
+  processId: string,
+  version: number,
+  updateScheduleDto: UpdateScheduleDto
+) => {
   return await apiBase
     .put(`${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/schedule`, {
       user_id: userId.toString(),
@@ -117,7 +154,7 @@ const robotApi = {
   createRobot,
   getNumberOfRobot,
   getRobotByID,
-  geRobotDetail,
+  getRobotDetail,
   stopRobot,
   runRobot,
   getSchedule,

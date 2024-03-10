@@ -7,22 +7,22 @@ import {
   Radio,
   Input,
   Box,
-} from "@chakra-ui/react";
-import { useSelector, useDispatch } from "react-redux";
-import { scheduleSelector } from "@/redux/selector";
-import { 
-  setScheduleType, 
-  setDatetime, 
-  setMinute, 
-  setHour, 
-  setDayOfMonth, 
-  setMonth, 
-  setDayOfWeek, 
-  setYear, 
-  setTimezone
-} from "@/redux/slice/scheduleSlice";
+} from '@chakra-ui/react';
+import { useSelector, useDispatch } from 'react-redux';
+import { scheduleSelector } from '@/redux/selector';
+import {
+  setScheduleType,
+  setDatetime,
+  setMinute,
+  setHour,
+  setDayOfMonth,
+  setMonth,
+  setDayOfWeek,
+  setYear,
+  setTimezone,
+} from '@/redux/slice/scheduleSlice';
 
-export const ScheduleForm = () => {
+const ScheduleForm = () => {
   const schedule = useSelector(scheduleSelector);
   const dispatch = useDispatch();
 
@@ -33,17 +33,23 @@ export const ScheduleForm = () => {
         <Select
           value={schedule.timezone}
           onChange={(e) => dispatch(setTimezone(e.target.value))}>
-          {
-            Array(24).fill(0).map((_, idx) => (
-              <option key={idx} value={`UTC+${idx < 10 ? '0' + idx : idx}:00`}>{`UTC+${idx < 10 ? '0' + idx : idx}:00`}</option>
-            ))
-          }
+          {Array(24)
+            .fill(0)
+            .map((_, idx) => (
+              <option
+                key={idx}
+                value={`UTC+${idx < 10 ? '0' + idx : idx}:00`}>{`UTC+${
+                idx < 10 ? '0' + idx : idx
+              }:00`}</option>
+            ))}
         </Select>
       </FormControl>
 
       <FormControl>
         <FormLabel>Schedule Type</FormLabel>
-        <RadioGroup value={schedule.type} onChange={(value) => dispatch(setScheduleType(value))}>
+        <RadioGroup
+          value={schedule.type}
+          onChange={(value) => dispatch(setScheduleType(value))}>
           <Stack direction="row">
             <Radio value="at">One-off</Radio>
             <Radio value="cron">Recurring</Radio>
@@ -57,7 +63,8 @@ export const ScheduleForm = () => {
           <Input
             type="datetime-local"
             value={schedule.datetime}
-            onChange={(e) => dispatch(setDatetime(e.target.value))} />
+            onChange={(e) => dispatch(setDatetime(e.target.value))}
+          />
         </FormControl>
       ) : (
         <Box>
@@ -124,4 +131,5 @@ export const ScheduleForm = () => {
       )}
     </Box>
   );
-}
+};
+export default ScheduleForm;
