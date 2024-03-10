@@ -3,6 +3,7 @@ import GoogleDriveIcon from '@/assets/images/services/icons8-google-drive-96.png
 import GmailIcon from '@/assets/images/services/icons8-gmail-96.png';
 import GoogleSheetIcon from '@/assets/images/services/icons8-google-sheets-96.png';
 import GoogleClassroomIcon from '@/assets/images/services/icons8-google-classroom-96.png';
+import GoogleFormsIcon from '@/assets/images/services/icons8-google-forms-96.png';
 import { StaticImageData } from "next/image";
 
 export const providerData: {
@@ -29,5 +30,10 @@ export const providerData: {
       name: AuthorizationProvider.G_CLASSROOM,
       slug: 'classroom',
       icon: GoogleClassroomIcon,
+    },
+    {
+      name: AuthorizationProvider.G_FORMS,
+      slug: 'forms',
+      icon: GoogleFormsIcon,
     },
   ];
