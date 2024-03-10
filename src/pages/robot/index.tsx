@@ -15,7 +15,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import RobotTable from './RobotTable';
+import RobotTable from '@/components/Robot/RobotTable';
 import { Robot } from '@/interfaces/robot';
 
 export default function Robot() {

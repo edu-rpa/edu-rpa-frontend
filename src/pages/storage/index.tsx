@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { ChevronRightIcon, QuestionIcon, SearchIcon } from '@chakra-ui/icons';
 import { RangeDatepicker } from 'chakra-dayzed-datepicker';
-import FileItem from './FileItem';
+import FileItem from '@/components/FileStorage/FileItem';
 import {
   getFiles,
   createFolder,
@@ -28,8 +28,8 @@ import {
 } from '@chakra-ui/react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-import CreateFolderModal from './CreateFolderModal';
-import FileUploadModal from './FileUploadModal';
+import CreateFolderModal from '@/components/FileStorage/CreateFolderModal';
+import FileUploadModal from '@/components/FileStorage/FileUploadModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 
 const storageExplain = 'File storage is a place where you can store your files. Robots can access these files to perform their tasks.';
