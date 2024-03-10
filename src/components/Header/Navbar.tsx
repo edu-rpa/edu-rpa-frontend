@@ -50,7 +50,7 @@ const Navbar = () => {
       };
       fetchUserData();
     }
-  }, [userInfo]);
+  }, []);
 
   useEffect(() => {
     if (userInfo && userInfo.length != 0) {
