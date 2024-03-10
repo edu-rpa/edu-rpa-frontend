@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 export default function Header() {
   const router = useRouter();
   return (
-    <div className="bg-[#fff] w-full shadow-header fixed top-0 left-0 z-10">
+    <div className="bg-[#fff] w-full shadow-header fixed top-0 left-0 z-10 p-3">
       <div className="w-11/12 m-auto flex justify-between">
         <Image
           src={Logo}

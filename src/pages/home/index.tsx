@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
 import HeroHome from '@/components/LandingPage/Hero/Hero';
 import FeatureHome from '@/components/LandingPage/Feature/Feature';

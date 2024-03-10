@@ -85,6 +85,7 @@ const Navbar = () => {
           height={150}
           alt="Logo"
           className="ml-[10px] hover:cursor-pointer"
+          onClick={() => router.push('/')}
         />
       </Box>
 

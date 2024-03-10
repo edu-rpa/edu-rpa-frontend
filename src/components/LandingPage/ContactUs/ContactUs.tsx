@@ -30,11 +30,12 @@ import { BsGithub, BsDiscord, BsPerson } from 'react-icons/bs';
 
 export default function ContactUsHome() {
   return (
-    <Box>
+    <Box bgColor={'white'}>
       <Stack spacing={4} as={Container} maxW={'3xl'} textAlign={'center'}>
         <Heading
           fontSize={{ base: '2xl', sm: '4xl' }}
           fontWeight={'bold'}
+          mt={10}
           color="teal.500">
           Contact Us
         </Heading>

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useAuth from '@/hooks/useAuth';
+import { getLocalStorageObject } from '@/utils/localStorageService';
+import { LocalStorage } from '@/constants/localStorage';
 
 interface Props {
   children?: React.ReactNode;
@@ -9,9 +11,9 @@ interface Props {
 const PrivateRoute = ({ children }: Props) => {
   const router = useRouter();
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = getLocalStorageObject(LocalStorage.ACCESS_TOKEN);
     if (!accessToken) {
-      router.push('/auth/login');
+      router.push('/');
     }
   }, []);
   return children;

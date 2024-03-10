@@ -42,7 +42,7 @@ function PriceWrapper(props: Props) {
 
 export default function PricingHome() {
   return (
-    <Box py={12}>
+    <Box py={12} bgColor={'white'}>
       <VStack spacing={2} textAlign="center">
         <Heading as="h1" fontSize="4xl" color="teal.500">
           Plans that fit your need

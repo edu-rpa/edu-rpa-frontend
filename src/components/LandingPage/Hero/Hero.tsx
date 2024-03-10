@@ -17,7 +17,7 @@ import { FaPlayCircle } from 'react-icons/fa';
 
 export default function HeroHome() {
   return (
-    <Container maxW={'7xl'}>
+    <Container maxW={'8xl'} bgColor={'white'}>
       <Stack
         align={'center'}
         spacing={{ base: 8, md: 10 }}
@@ -29,21 +29,7 @@ export default function HeroHome() {
             lineHeight={1.1}
             fontWeight={600}
             fontSize={{ base: '3xl', sm: '4xl', lg: '5xl' }}>
-            <Text
-              as={'span'}
-              position={'relative'}
-              _after={{
-                content: "''",
-                width: 'full',
-                height: '30%',
-                position: 'absolute',
-                bottom: 1,
-                left: 0,
-                bg: '#319795',
-                zIndex: -1,
-              }}>
-              More automation,
-            </Text>
+            <Text as={'span'}>More automation,</Text>
             <br />
             <Text as={'span'} color={'#319795'} fontSize={55}>
               better education
@@ -91,15 +77,6 @@ export default function HeroHome() {
           align={'center'}
           position={'relative'}
           w={'full'}>
-          <Blob
-            w={'150%'}
-            h={'150%'}
-            position={'absolute'}
-            top={'-20%'}
-            left={0}
-            zIndex={-1}
-            color={useColorModeValue('#4FD1C5', '#4FD1C5')}
-          />{' '}
           <Box
             position={'relative'}
             height={'300px'}
