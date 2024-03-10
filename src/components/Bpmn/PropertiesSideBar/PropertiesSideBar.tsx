@@ -42,7 +42,6 @@ import {
 import { usePropertiesSidebar } from '@/hooks/usePropertiesSidebar';
 import IconImage from '@/components/IconImage/IconImage';
 import Image from 'next/image';
-import BoundingBoxBlock from '@/components/BoundingBox/BoundingBoxBlock';
 import { Rectangle } from '@/types/boundingBox';
 import { useDispatch } from 'react-redux';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
@@ -216,9 +215,9 @@ export default function PropertiesSideBar({
             </h1>
 
             {ActivityPackages.map((activityPackage) => {
-              const { _id, displayName, activityTemplates, description } = activityPackage;
-              const { currentStep, packageName, activityName } =
-                sideBarState;
+              const { _id, displayName, activityTemplates, description } =
+                activityPackage;
+              const { currentStep, packageName, activityName } = sideBarState;
 
               const renderStepOne = () => (
                 <Tooltip label={description}>
@@ -245,20 +244,23 @@ export default function PropertiesSideBar({
               };
 
               const renderStepTwo = () => {
-                return displayName === packageName && activityTemplates.map((activity: any) => (
-                  <div key={activity.displayName}>
-                    <Tooltip label={activity.description}>
-                      <Button
-                        className="my-[10px]"
-                        onClick={() => {
-                          setActivity(activity.displayName);
-                          dispatch(isSavedChange(false));
-                        }}>
-                        {activity.displayName}
-                      </Button>
-                    </Tooltip>
-                  </div>
-                ));
+                return (
+                  displayName === packageName &&
+                  activityTemplates.map((activity: any) => (
+                    <div key={activity.displayName}>
+                      <Tooltip label={activity.description}>
+                        <Button
+                          className="my-[10px]"
+                          onClick={() => {
+                            setActivity(activity.displayName);
+                            dispatch(isSavedChange(false));
+                          }}>
+                          {activity.displayName}
+                        </Button>
+                      </Tooltip>
+                    </div>
+                  ))
+                );
               };
 
               const initDefaultValue = (type: string) => {
@@ -345,23 +347,6 @@ export default function PropertiesSideBar({
                           formValues[paramKey].value = e.target.checked;
                         }}
                         id={paramKey}
-                      />
-                    );
-                  case 'bbox.file':
-                    return (
-                      <BoundingBoxBlock
-                        rectangles={rectangles}
-                        setRectangles={setRectangles}
-                        imageUrl={imageUrl}
-                        setImageUrl={setImageUrl}
-                      />
-                    );
-
-                  case 'bbox.value':
-                    return (
-                      <Input
-                        type="text"
-                        value={JSON.stringify(formatBoundingBox(rectangles))}
                       />
                     );
 
