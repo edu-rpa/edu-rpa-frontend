@@ -118,7 +118,7 @@ export default function TestimonialHome() {
             fontSize={18}
             color={'gray.600'}>
             Client expectations are always the foremost priority guiding our
-            platform's continuous improvement and enhancement.
+            platform to continuous improvement and enhancement.
           </Text>
         </Stack>
         <Stack
