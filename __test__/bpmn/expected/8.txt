@@ -1,9 +1,0 @@
-IF: Gateway_0uqg7tr
-	Activity_1536xo5 - Get Title Assign to ${title}
-ELSE:
-	Activity_0pkjxtm - Open Browser
-
-IF: Gateway_1lapo23
-	Activity_0huj85s - Get Title Assign to ${title}
-ELSE:
-	Activity_0v6f170 - Open Browser
