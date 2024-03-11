@@ -1,4 +1,4 @@
-name: GitHub Actions Vercel Production Deployment
+name: EduRPA Platform Production Deployment
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
