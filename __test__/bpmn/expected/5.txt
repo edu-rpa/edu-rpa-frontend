@@ -1,0 +1,14 @@
+IF: Gateway_0uqg7tr
+	Activity_0pkjxtm - Open Browser
+ELSE:
+	[Empty]
+
+Activity_1536xo5 - Get Title Assign to ${title}
+IF: Gateway_0sc92or
+	Activity_1gusysf - Log Screen
+	Activity_173a9c7 - Click "Dịch vụ Internet"
+ELSE:
+	Activity_0m9hqf4 - Log Screen
+	Activity_0p2itoz - Click "Thảo luận"
+
+Activity_012ckfs - Close Browser
