@@ -9,6 +9,11 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 
+import VinhAvatar from '@/assets/images/Vinh.jpg';
+import KhanhAvatar from '@/assets/images/Khanh.jpg';
+import AnAvatar from '@/assets/images/An.jpg';
+import { StaticImageData } from 'next/image';
+
 interface Props {
   children: React.ReactNode;
 }
@@ -85,13 +90,13 @@ const TestimonialAvatar = ({
   name,
   title,
 }: {
-  src: string;
+  src: StaticImageData;
   name: string;
   title: string;
 }) => {
   return (
     <Flex align={'center'} mt={8} direction={'column'}>
-      <Avatar src={src} mb={2} />
+      <Avatar src={src.src} mb={2} />
       <Stack spacing={-1} align={'center'}>
         <Text fontWeight={600}>{name}</Text>
         <Text fontSize={'sm'} color={useColorModeValue('gray.600', 'gray.400')}>
@@ -108,57 +113,57 @@ export default function TestimonialHome() {
       <Container maxW={'7xl'} p={10} as={Stack} spacing={12}>
         <Stack spacing={0} align={'center'}>
           <Heading color="teal.500">Our Clients Speak</Heading>
-          <Text>We have been working with clients around the world</Text>
+          <Text
+            className="w-60 m-auto text-center my-[15px]"
+            fontSize={18}
+            color={'gray.600'}>
+            Client expectations are always the foremost priority guiding our
+            platform's continuous improvement and enhancement.
+          </Text>
         </Stack>
         <Stack
           direction={{ base: 'column', md: 'row' }}
           spacing={{ base: 10, md: 4, lg: 10 }}>
           <Testimonial>
             <TestimonialContent>
+              <TestimonialHeading>Easy To Use</TestimonialHeading>
+              <TestimonialText>
+                Thanks to this platform, I can now effortlessly automate the
+                creation of e-learning exams, grade them, and receive the
+                results in Gmail with just a few clicks.
+              </TestimonialText>
+            </TestimonialContent>
+            <TestimonialAvatar
+              src={AnAvatar}
+              name={'Duc An'}
+              title={'High School Teacher'}
+            />
+          </Testimonial>
+          <Testimonial>
+            <TestimonialContent>
               <TestimonialHeading>Saving Time</TestimonialHeading>
               <TestimonialText>
-                Thanks to these time-saving techniques, I&apos;ve reclaimed
-                hours in my day and achieved more than ever before!
+                Applying AI in automatic grading is a good idea, it helps me
+                save a lot of time and effort.
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
-              src={
-                'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
-              }
-              name={'Jane Cooper'}
-              title={'Office Manager'}
+              src={VinhAvatar}
+              name={'Dai Vinh'}
+              title={'Online Teacher'}
             />
           </Testimonial>
           <Testimonial>
             <TestimonialContent>
-              <TestimonialHeading>Intuitive Design</TestimonialHeading>
+              <TestimonialHeading>Outstanding Service</TestimonialHeading>
               <TestimonialText>
-                It&apos;s made my daily tasks feel effortless and enjoyable, and
-                I couldn&apos;t be happier with the user experience it provides.
+                Outstanding service that far exceeded my expectations, with a
+                team that went above and beyond. Truly exceptional!
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
-              src={
-                'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
-              }
-              name={'Jane Cooper'}
-              title={'Teacher'}
-            />
-          </Testimonial>
-          <Testimonial>
-            <TestimonialContent>
-              <TestimonialHeading>Mindblowing Service</TestimonialHeading>
-              <TestimonialText>
-                The mind-blowing service I received exceeded all my
-                expectations. The team went above and beyond to ensure my needs
-                were not only met but surpassed. Truly exceptional!
-              </TestimonialText>
-            </TestimonialContent>
-            <TestimonialAvatar
-              src={
-                'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
-              }
-              name={'Jane Cooper'}
+              src={KhanhAvatar}
+              name={'Quang Khanh'}
               title={'Student'}
             />
           </Testimonial>

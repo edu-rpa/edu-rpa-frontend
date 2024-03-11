@@ -86,11 +86,11 @@ export default function PricingHome() {
               </ListItem>
               <ListItem>
                 <ListIcon as={FaCheckCircle} color="green.500" />
-                1TB robot function storage.
+                1GB robot function storage.
               </ListItem>
               <ListItem>
                 <ListIcon as={FaCheckCircle} color="green.500" />
-                2TB file storage.
+                2GB file storage.
               </ListItem>
             </List>
             <Box w="80%" pt={7}>
@@ -147,11 +147,11 @@ export default function PricingHome() {
                 </ListItem>
                 <ListItem>
                   <ListIcon as={FaCheckCircle} color="green.500" />
-                  3TB robot function storage.
+                  3GB robot function storage.
                 </ListItem>
                 <ListItem>
                   <ListIcon as={FaCheckCircle} color="green.500" />
-                  2TB file storage.
+                  2GB file storage.
                 </ListItem>
               </List>
               <Box w="80%" pt={7}>
@@ -190,11 +190,11 @@ export default function PricingHome() {
               </ListItem>
               <ListItem>
                 <ListIcon as={FaCheckCircle} color="green.500" />
-                5TB robot function storage.
+                5GB robot function storage.
               </ListItem>
               <ListItem>
                 <ListIcon as={FaCheckCircle} color="green.500" />
-                4TB file storage.
+                4GB file storage.
               </ListItem>
             </List>
             <Box w="80%" pt={7}>

@@ -9,7 +9,7 @@ import {
   Icon,
   Link,
 } from '@chakra-ui/react';
-import { FaGithub, FaEnvelope, FaPhone } from 'react-icons/fa';
+import { FaGithub, FaEnvelope, FaLinkedin } from 'react-icons/fa';
 import Image from 'next/image';
 import VinhAvatar from '@/assets/images/Vinh.jpg';
 import KhanhAvatar from '@/assets/images/Khanh.jpg';
@@ -21,7 +21,7 @@ interface TeamMemberCardProps {
   imageSrc: any;
   githubUrl: string;
   email: string;
-  phoneNumber: string;
+  linkedInUrl: string;
 }
 
 const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
@@ -30,7 +30,7 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
   imageSrc,
   githubUrl,
   email,
-  phoneNumber,
+  linkedInUrl,
 }) => (
   <VStack
     bg={'gray.50'}
@@ -56,15 +56,18 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
     <Text fontSize="md" color="gray.500">
       {title}
     </Text>
-    <HStack mt={4} spacing={4} justifyContent="center">
+    <Text fontSize="md" color="gray.600">
+      Software Engineer
+    </Text>
+    <HStack mt={4} spacing={10}>
       <Link href={githubUrl} isExternal>
-        <Icon as={FaGithub} w={6} h={6} _hover={{ color: 'gray.600' }} />
+        <Icon as={FaGithub} w={6} h={6} _hover={{ color: '#4FD1C5' }} />
       </Link>
       <Link href={`mailto:${email}`} isExternal>
-        <Icon as={FaEnvelope} w={6} h={6} _hover={{ color: 'gray.600' }} />
+        <Icon as={FaEnvelope} w={6} h={6} _hover={{ color: '#4FD1C5' }} />
       </Link>
-      <Link href={`tel:${phoneNumber}`} isExternal>
-        <Icon as={FaPhone} w={6} h={6} _hover={{ color: 'gray.600' }} />
+      <Link href={linkedInUrl} isExternal>
+        <Icon as={FaLinkedin} w={6} h={6} _hover={{ color: '#4FD1C5' }} />
       </Link>
     </HStack>
   </VStack>
@@ -80,42 +83,43 @@ const OurTeamSection: React.FC = () => (
         mb={5}
         textAlign="center"
         color="teal.500">
-        Our Team
+        Who We Are
       </Heading>
       <Text
         className="w-60 m-auto text-center my-[10px]"
         color={'gray.600'}
         fontSize={{ base: 'sm', sm: 'lg' }}>
-        Our team combines expertise and passion to deliver exceptional service,
-        setting the bar for outstanding quality through diverse knowledge and
-        wholehearted commitment.
+        We are a thesis team majoring in Computer Science from VNU-HCMUT, Viet
+        Nam. This platform represents our wholehearted contribution to the
+        community by applying RPA technology into the digital transformation of
+        education.
       </Text>
     </Box>
 
     <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
       <TeamMemberCard
         name="Huỳnh Đại Vinh"
-        title="Team Leader"
+        title="MT20KHTN, VNU-HCMUT"
         imageSrc={VinhAvatar}
-        githubUrl="https://github.com/alicejohnson"
-        email="alice.johnson@example.com"
-        phoneNumber="+1234567890"
+        githubUrl="https://github.com/02david20"
+        email="vinh.huynhdavid2002@hcmut.edu.vn"
+        linkedInUrl="https://www.linkedin.com/in/vinh-hu%E1%BB%B3nh-3617511a7/"
       />
       <TeamMemberCard
         name="Nguyễn Đức An"
-        title="Team Member"
+        title="MT20KHTN, VNU-HCMUT"
         imageSrc={AnAvatar}
-        githubUrl="https://github.com/bobsmith"
-        email="bob.smith@example.com"
-        phoneNumber="+1234567891"
+        githubUrl="https://github.com/anduckhmt146"
+        email="an.nguyenduc1406@hcmut.edu.vn"
+        linkedInUrl="https://www.linkedin.com/in/anduckhmt146/"
       />
       <TeamMemberCard
         name="Nguyễn Quang Khánh"
-        title="Team Member"
+        title="MT20KHTN, VNU-HCMUT"
         imageSrc={KhanhAvatar}
-        githubUrl="https://github.com/carolwilliams"
-        email="carol.williams@example.com"
-        phoneNumber="+1234567892"
+        githubUrl="https://github.com/devquangkhanh09"
+        email="khanh.nguyenqk09@hcmut.edu.vn"
+        linkedInUrl="https://www.linkedin.com/in/quang-khanh-nguyen/"
       />
     </SimpleGrid>
   </Box>

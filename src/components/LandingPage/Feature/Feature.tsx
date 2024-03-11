@@ -11,11 +11,11 @@ import {
 } from '@chakra-ui/react';
 import { ReactElement } from 'react';
 import {
-  FcAbout,
-  FcAssistant,
+  FcDoughnutChart,
+  FcFlowChart,
   FcCollaboration,
-  FcDonate,
-  FcManager,
+  FcTodoList,
+  FcReading,
 } from 'react-icons/fc';
 
 interface CardProps {
@@ -73,23 +73,22 @@ export default function FeatureHome() {
           fontWeight={'bold'}
           mt={5}
           color="teal.500">
-          What we offers
+          What We Offers
         </Heading>
         <Text color={'gray.600'} fontSize={{ base: 'sm', sm: 'lg' }}>
-          In today&apos;s fast-paced business environment, efficiency and
-          innovation are at the forefront of success. Our suite of services is
-          designed to revolutionize how you work, offering customized solutions
-          that drive productivity and growth.
+          EduRPA introduces the power of RPA to the educational sector,
+          automates essential tasks, facilitating a digital transformation in
+          e-learning.
         </Text>
       </Stack>
 
       <Container maxW={'5xl'} mt={12}>
         <Flex flexWrap="wrap" gridGap={6} justify="center">
           <Card
-            heading={'Process Modeling'}
-            icon={<Icon as={FcAssistant} w={10} h={10} />}
+            heading={'Design Workflow'}
+            icon={<Icon as={FcFlowChart} w={10} h={10} />}
             description={
-              'Optimize your operations with our advanced process modeling techniques. Our tools help you visualize, analyze your workflows, ensuring that you achieve maximum efficiency and quality in every aspect of your business.'
+              'Our platform helps you to visualize, analyze your workflows in a user-friendly interface.'
             }
             href={'#'}
           />
@@ -97,31 +96,31 @@ export default function FeatureHome() {
             heading={'Robot Automation'}
             icon={<Icon as={FcCollaboration} w={10} h={10} />}
             description={
-              'Embrace the future with our robotic automation services. We provide intelligent systems that automate repetitive tasks, reduce human error, and free up your team to focus on strategic initiatives that propel your business forward.'
+              'Robots helps you to automate repetitive tasks, reduce human error, integrate with AI technology.'
             }
             href={'#'}
           />
           <Card
-            heading={'Intelligent Grading'}
-            icon={<Icon as={FcDonate} w={10} h={10} />}
+            heading={'Quiz Transformation'}
+            icon={<Icon as={FcTodoList} w={10} h={10} />}
             description={
-              'Our intelligent grading system utilizes AI to provide instant, accurate assessments. Ideal for educational institutions and training departments, this tool ensures that evaluations are fair, consistent, and objective.'
+              'Transform your traditional exams, whether in Word, PDF, or paper format into quiz in Google Forms.'
             }
             href={'#'}
           />
           <Card
-            heading={'Email Processing'}
-            icon={<Icon as={FcManager} w={10} h={10} />}
+            heading={'E-learning Configuration'}
+            icon={<Icon as={FcReading} w={10} h={10} />}
             description={
-              'Transform the way your business handles task assignments with our robust Email Processing service. Our system organizes your incoming messages and autonomously executes tasks.'
+              'Manage eLearning environments, including teachers, students, and materials in Google Classroom.'
             }
             href={'#'}
           />
           <Card
-            heading={'Chat Bot'}
-            icon={<Icon as={FcAbout} w={10} h={10} />}
+            heading={'Grading Intelligence'}
+            icon={<Icon as={FcDoughnutChart} w={10} h={10} />}
             description={
-              'Improve customer engagement with our AI-powered chatbots. They provide instant support, answer queries, and ensure that your customers receive the attention they deserve at any time of the day.'
+              'Our intelligent grading system utilizes AI to provide instant, accurate assessments. '
             }
             href={'#'}
           />

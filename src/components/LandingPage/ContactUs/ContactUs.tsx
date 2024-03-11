@@ -26,7 +26,7 @@ import {
   MdFacebook,
   MdOutlineEmail,
 } from 'react-icons/md';
-import { BsGithub, BsDiscord, BsPerson } from 'react-icons/bs';
+import { BsGithub, BsYoutube, BsPerson } from 'react-icons/bs';
 
 export default function ContactUsHome() {
   return (
@@ -109,20 +109,23 @@ export default function ContactUsHome() {
                         size="lg"
                         _hover={{ bg: '#4FD1C5', color: 'white' }}
                         icon={<BsGithub size="28px" />}
+                        onClick={() =>
+                          window.open('https://github.com/edu-rpa')
+                        }
                       />
                       <IconButton
                         aria-label="discord"
                         variant="ghost"
                         size="lg"
                         _hover={{ bg: '#4FD1C5', color: 'white' }}
-                        icon={<BsDiscord size="28px" />}
+                        icon={<BsYoutube size="28px" />}
                       />
                     </HStack>
                   </Box>
                 </WrapItem>
                 <WrapItem>
                   <Box bg="white" borderRadius="lg">
-                    <Box m={8} color="#0B0E3F">
+                    <Box m={8} color="#0B0E3F" paddingX={3}>
                       <VStack spacing={5}>
                         <FormControl id="name">
                           <FormLabel>Your Name</FormLabel>
