@@ -80,7 +80,6 @@ export default function Studio() {
           processID: item.id,
           processName: item.name,
           processDesc: item.description,
-          processType: 'free',
           xml: '',
           activities: [],
           variables: [],
@@ -126,9 +125,10 @@ export default function Studio() {
       return {
         id: item.id,
         name: item.name,
-        ptype: item.description,
-        owner: 'You',
+        description: item.description,
+        sharedBy: item.sharedByUser? item.sharedByUser.name : '',
         last_modified: item.updatedAt,
+        version: item.version,
       };
     });
 
@@ -137,8 +137,9 @@ export default function Studio() {
       'Process ID',
       'Process Name',
       'Process Description',
-      'Owner',
+      'Shared By',
       'Last Modified',
+      'Version',
       'Actions',
     ],
     data: formatData ?? [],
@@ -279,7 +280,7 @@ export default function Studio() {
     reader.readAsText(file);
   };
 
-  if (handleDeleteProcessWithApi.isPending) {
+  if (isLoadingProcess || handleDeleteProcessWithApi.isPending) {
     return <LoadingIndicator />;
   }
 
@@ -355,17 +356,6 @@ export default function Studio() {
                   <FormLabel>Description</FormLabel>
                   <Input ref={descRepf} placeholder="Your description" />
                 </FormControl>
-                <FormControl>
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    defaultValue="free"
-                    onChange={(e) => setProcessType(e.target.value)}>
-                    <option value="ocr">OCR</option>
-                    <option value="email-processing">Email Processing</option>
-                    <option value="google-workspace">Google Workpace</option>
-                    <option value="free">Free</option>
-                  </Select>
-                </FormControl>
               </ModalBody>
               <ModalFooter>
                 <Button
@@ -394,6 +384,15 @@ export default function Studio() {
             isLoading={countProcessLoading}
           />
         </div>
+
+        {tableProps.data.length === 0 && !isLoadingProcess && (
+          <div className="w-90 m-auto flex justify-center items-center">
+            <div className="text-center">
+              <div className="text-2xl font-bold">No processes here</div>
+              <div className="text-gray-500">Create a new process or use the templates below</div>
+            </div>
+          </div>
+        )}
       </SidebarContent>
       <SidebarContent>
         <h1 className="px-[20px] ml-[30px] font-bold text-2xl text-[#319795]">

@@ -64,6 +64,16 @@ const saveProcessByID = async (id: string, payload: SaveProcessDto) => {
     });
 };
 
+const shareProcessToEmails = async (id: string, emails: string[]) => {
+  return await apiBase
+    .post(`${process.env.NEXT_PUBLIC_DEV_API}/processes/${id}/share`, {
+      emails,
+    })
+    .then((res: any) => {
+      return res.data;
+    });
+};
+
 const processApi = {
   getAllProcess,
   createProcess,
@@ -72,6 +82,7 @@ const processApi = {
   updateProcessByID,
   deleteProcessByID,
   saveProcessByID,
+  shareProcessToEmails,
 };
 
 export default processApi;

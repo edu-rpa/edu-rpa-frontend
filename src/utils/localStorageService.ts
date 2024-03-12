@@ -1,6 +1,14 @@
 const getLocalStorageObject = (key: string) => {
   const currentStorage = localStorage.getItem(key);
-  return currentStorage ? JSON.parse(currentStorage) : [];
+  if (!currentStorage) {
+    return [];
+  }
+  try {
+    return JSON.parse(currentStorage);
+  } catch (e) {
+    console.error(`Error parsing storage for key "${key}". Returning empty array.`, e);
+    return [];
+  }
 };
 
 const setLocalStorageObject = (key: string, value: object[] | string) => {
