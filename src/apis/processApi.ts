@@ -74,6 +74,14 @@ const shareProcessToEmails = async (id: string, emails: string[]) => {
     });
 };
 
+const getSharedToOfProcess = async (id: string) => {
+  return await apiBase
+    .get(`${process.env.NEXT_PUBLIC_DEV_API}/processes/${id}/shared`)
+    .then((res: any) => {
+      return res.data;
+    });
+};
+
 const processApi = {
   getAllProcess,
   createProcess,
@@ -83,6 +91,7 @@ const processApi = {
   deleteProcessByID,
   saveProcessByID,
   shareProcessToEmails,
+  getSharedToOfProcess,
 };
 
 export default processApi;

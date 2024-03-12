@@ -43,6 +43,19 @@ export const ShareWithModal = ({
 
   const toast = useToast();
 
+  const getSharedToOfProcess = async () => {
+    try {
+      const res = await processApi.getSharedToOfProcess(processID);
+      setShared(res.map((item: any) => item.user.email));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getSharedToOfProcess();
+  }, []);
+
   const handleKeyDown = (e: any) => {
     if (e.key === 'Enter' && email !== '') {
       setEmails([...emails, email]);
@@ -62,11 +75,12 @@ export const ShareWithModal = ({
     try {
       const res = await processApi.shareProcessToEmails(processID, emails);
       toastSuccess(toast, 'Share process successfully');
-      onClose();
+      setEmails([]);
     } catch (error) {
       console.log(error);
       toastError(toast, 'Share process failed');
     }
+    getSharedToOfProcess();
     setLoading(false);
   }
 
@@ -85,6 +99,7 @@ export const ShareWithModal = ({
         )}
         <FormControl>
           <FormLabel>Emails</FormLabel>
+          Press Enter to add email
           <Input
             placeholder="Emails"
             value={email}
