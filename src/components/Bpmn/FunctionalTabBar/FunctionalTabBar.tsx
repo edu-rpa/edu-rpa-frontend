@@ -25,6 +25,7 @@ import React, { useRef, useState } from 'react';
 import { FaPlay, FaSave } from 'react-icons/fa';
 import { IoMdShare } from 'react-icons/io';
 import { MdPublish } from 'react-icons/md';
+import { ShareWithModal } from './ShareWithModal';
 
 interface FunctionalTabBarProps {
   processID: string;
@@ -120,35 +121,6 @@ export default function FunctionalTabBar(props: FunctionalTabBarProps) {
     );
   };
 
-  const ShareRobotModal = () => {
-    return (
-      <ModalContent>
-        <ModalHeader>Share with people</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody pb={6}>
-          <TextAutoComplete
-            type="text"
-            value={''}
-            placeholder="Share with emails"
-            onChange={() => {}}
-            recommendedWords={[
-              'an.nguyenduc1406@hcmut.edu.vn',
-              'vinh.huynhdavid2002@hcmut.edu.vn',
-              'khanh.nguyenqk09@hcmut.edu.vn',
-            ]}
-          />
-        </ModalBody>
-
-        <ModalFooter>
-          <Button mr={3} colorScheme="teal" variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button colorScheme="teal">Save</Button>
-        </ModalFooter>
-      </ModalContent>
-    );
-  };
-
   return (
     <Stack direction="row" spacing={4}>
       <Button
@@ -188,7 +160,9 @@ export default function FunctionalTabBar(props: FunctionalTabBarProps) {
         isOpen={isOpen}
         onClose={onClose}>
         <ModalOverlay />
-        {modalType == 'publish' ? <PublishRobotModal /> : <ShareRobotModal />}
+        {modalType == 'publish' 
+          ? <PublishRobotModal /> 
+          : <ShareWithModal onClose={onClose} processID={props.processID} />}
       </Modal>
     </Stack>
   );
