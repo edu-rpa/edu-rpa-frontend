@@ -35,6 +35,7 @@
     "date-fns": "^2.30.0",
     "dayzed": "^3.2.3",
     "diagram-js-grid": "^0.2.0",
+    "dotenv": "^16.4.5",
     "file-loader": "^6.2.0",
     "file-saver": "^2.0.5",
     "formik": "^2.4.5",

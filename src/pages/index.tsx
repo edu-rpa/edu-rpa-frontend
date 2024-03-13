@@ -17,16 +17,14 @@ export default function RootPage() {
   ];
 
   return (
-    <HeaderLayout>
-      <div className="bg-white-300 my-[150px] w-11/12 m-auto">
-        {componentsToRender.map((item) => {
-          return (
-            <div key={item.id} className="my-[30px]">
-              {item.component}
-            </div>
-          );
-        })}
-      </div>
-    </HeaderLayout>
+    <div className="bg-white-300 my-[150px] w-11/12 m-auto">
+      {componentsToRender.map((item) => {
+        return (
+          <div key={item.id} className="my-[30px]">
+            {item.component}
+          </div>
+        );
+      })}
+    </div>
   );
 }

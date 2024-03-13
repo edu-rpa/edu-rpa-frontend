@@ -11,5 +11,5 @@ const config = {
     return config;
   },
 };
-
+require('dotenv').config({ path: `./.env.${process.env.ENVIRONMENT}` });
 module.exports = config;

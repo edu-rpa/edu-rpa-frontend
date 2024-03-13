@@ -34,7 +34,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       '/storage',
       '/document-template',
     ];
-    if (path.startsWith('/auth')) {
+    if (path.startsWith('/auth') || path == '/') {
       return HeaderLayout;
     } else if (sidebarRoutes.includes(path)) {
       return SidebarLayout;

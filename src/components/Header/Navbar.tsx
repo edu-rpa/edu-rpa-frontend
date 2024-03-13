@@ -19,12 +19,9 @@ import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
 import Logo from '@/assets/images/logo.png';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import useAuth from '@/hooks/useAuth';
 import { setUser } from '@/redux/slice/userSlice';
 import { userSelector } from '@/redux/selector';
 
-import { useQuery } from '@tanstack/react-query';
-import { QUERY_KEY } from '@/constants/queryKey';
 import userApi from '@/apis/userApi';
 import { useEffect, useState } from 'react';
 import { getLocalStorageObject } from '@/utils/localStorageService';
@@ -35,7 +32,12 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const user = useSelector(userSelector);
   const [userInfo, setUserInfo] = useState<any>(null);
-  const { removeAuthToken } = useAuth();
+
+  const removeAuthToken = () => {
+    localStorage.removeItem(LocalStorage.ACCESS_TOKEN);
+    localStorage.removeItem(LocalStorage.PROCESS_LIST);
+    localStorage.removeItem(LocalStorage.VARIABLE_LIST);
+  };
 
   useEffect(() => {
     const accessToken = getLocalStorageObject(LocalStorage.ACCESS_TOKEN);
@@ -126,7 +128,7 @@ const Navbar = () => {
               <MenuDivider />
               <MenuItem
                 onClick={() => {
-                  router.push('/auth/login');
+                  router.push('/');
                   removeAuthToken();
                 }}>
                 Sign out

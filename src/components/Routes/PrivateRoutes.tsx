@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import useAuth from '@/hooks/useAuth';
 import { getLocalStorageObject } from '@/utils/localStorageService';
 import { LocalStorage } from '@/constants/localStorage';
 
@@ -12,8 +11,10 @@ const PrivateRoute = ({ children }: Props) => {
   const router = useRouter();
   useEffect(() => {
     const accessToken = getLocalStorageObject(LocalStorage.ACCESS_TOKEN);
-    if (!accessToken) {
+    if (accessToken.length == 0) {
       router.push('/');
+    } else {
+      router.push('/home');
     }
   }, []);
   return children;

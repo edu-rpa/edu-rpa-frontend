@@ -24,7 +24,6 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { LoginDto } from '@/dtos/authDto';
 import authApi from '@/apis/authApi';
-import useAuth from '@/hooks/useAuth';
 import { setLocalStorageObject } from '@/utils/localStorageService';
 import { LocalStorage } from '@/constants/localStorage';
 import { LoginSuccessResponse } from '@/interfaces/auth';
@@ -33,7 +32,6 @@ export default function LoginForm() {
   const router = useRouter();
   const toast = useToast();
   const [isVisible, setIsVisible] = useState(false);
-  const { setAuthToken } = useAuth();
 
   const formik = useFormik({
     initialValues: {
