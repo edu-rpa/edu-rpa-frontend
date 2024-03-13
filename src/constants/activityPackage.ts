@@ -2,8 +2,7 @@ export const ActivityPackages = [
   {
     _id: 'google_drive',
     displayName: 'Google Drive',
-    description:
-      'Help you integrate your work with Google Drive',
+    description: 'Help you integrate your work with Google Drive',
     library: 'RPA.Cloud.Google',
     activityTemplates: [
       {
@@ -76,7 +75,7 @@ export const ActivityPackages = [
       {
         templateId: 'drive.upload_file',
         displayName: 'Upload file',
-        description: 'Upload a file from robot\'s file system to Google Drive',
+        description: "Upload a file from robot's file system to Google Drive",
         iconCode: 'FaGoogleDrive',
         type: 'activity',
         keyword: 'Upload Drive File',
@@ -84,35 +83,35 @@ export const ActivityPackages = [
           Connection: {
             type: 'connection.Google Drive',
             description: 'Your connection ID with Google Drive',
-            value: '' 
+            value: '',
           },
-          "File name": {
+          'File name': {
             type: 'string',
             keywordArg: 'filename',
-            value: ''
+            value: '',
           },
-          "Folder Path": {
-            type: "string",
+          'Folder Path': {
+            type: 'string',
             keywordArg: 'folder',
-            value: ''
+            value: '',
           },
-          "Overwrite": {
+          Overwrite: {
             type: 'boolean',
             keywordArg: 'overwrite',
-            value: false
+            value: false,
           },
-          "Make Folder": {
+          'Make Folder': {
             type: 'boolean',
             keywordArg: 'make_dir',
-            value: false
-          }
+            value: false,
+          },
         },
         return: {
-          displayName: "File id",
+          displayName: 'File id',
           assignedTo: null,
-          type: "string",
-          description: "The uploaded file id"
-        }
+          type: 'string',
+          description: 'The uploaded file id',
+        },
       },
       {
         templateId: 'drive.for_each_file_in_folder',
@@ -312,8 +311,7 @@ export const ActivityPackages = [
   {
     _id: 'gmail',
     displayName: 'Gmail',
-    description:
-      'Help you integrate your work with Gmail',
+    description: 'Help you integrate your work with Gmail',
     library: 'RPA.Cloud.Google',
     activityTemplates: [
       {
@@ -468,9 +466,8 @@ export const ActivityPackages = [
   },
   {
     _id: 'google_sheets',
-    displayName: 'Google Sheets',
-    description:
-      'Help you integrate your work with Google Sheets',
+    displayName: 'Google Sheet',
+    description: 'Help you integrate your work with Google Sheets',
     library: 'RPA.Cloud.Google',
     activityTemplates: [
       {
@@ -737,6 +734,358 @@ export const ActivityPackages = [
             type: 'string',
             description: 'The range of the sheet',
             keywordArg: 'sheet_range',
+            value: '',
+          },
+        },
+        return: null,
+      },
+    ],
+  },
+  {
+    _id: 'google_classroom',
+    displayName: 'Google Classroom',
+    description: 'Help you integrate your work with Google Classroom',
+    library: 'EduRPA.GoogleClassroom',
+    activityTemplates: [
+      {
+        templateId: 'create_course',
+        displayName: 'Create Course',
+        description: 'Create new course for teacher',
+        type: 'activity',
+        keyword: 'Create Course',
+        arguments: {
+          'Course Name': {
+            type: 'string',
+            keywordArg: 'course_name',
+            description: 'Name of the created course',
+            value: '',
+          },
+          'Teacher Email': {
+            type: 'string',
+            keywordArg: 'teacher_email',
+            description: 'Email of teacher you would to invite',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'ID of Google Classroom Course',
+          assignedTo: null,
+          type: 'string',
+          description: 'The ID of Google Classroom Course',
+        },
+      },
+      {
+        templateId: 'get_course_id_by_course_name',
+        displayName: 'Get Course ID By Course Name',
+        description: 'Get Course ID By Course Name',
+        type: 'activity',
+        keyword: 'Get Course ID By Course Name',
+        arguments: {
+          'Course Name': {
+            type: 'string',
+            keywordArg: 'course_name',
+            description: 'Name of the course',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'ID of Google Classroom Course',
+          assignedTo: null,
+          type: 'string',
+          description: 'The ID of Google Classroom Course',
+        },
+      },
+      {
+        templateId: 'delete_course_by_id',
+        displayName: 'Delete Course By ID',
+        description: 'Delete Course By ID',
+        type: 'activity',
+        keyword: 'Delete Course By ID',
+        arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'course_id',
+            description: 'ID of the course',
+            value: '',
+          },
+        },
+        return: null,
+      },
+      {
+        templateId: 'create_assignment',
+        displayName: 'Create Assignment',
+        description: 'Create Assignment in a course of Google Classroom',
+        type: 'activity',
+        keyword: 'Create Assignment',
+        arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'course_id',
+            description: 'ID of the course',
+            value: '',
+          },
+          'Assignment Title': {
+            type: 'string',
+            keywordArg: 'assignment_title',
+            description: 'Title of the assignment',
+            value: '',
+          },
+          'Assignment Description': {
+            type: 'string',
+            keywordArg: 'assignment_description',
+            description: 'Description of the assignment',
+            value: '',
+          },
+          'Due Date': {
+            type: 'date',
+            keywordArg: 'due_date',
+            description: 'Due date of the assignment',
+            value: '',
+          },
+          'Assignment URL': {
+            type: 'string',
+            keywordArg: 'assignment_url',
+            description: 'URL of the assignment',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'ID of Google Classroom Assignment',
+          assignedTo: null,
+          type: 'string',
+          description: 'The ID of Google Classroom Assignment',
+        },
+      },
+      {
+        templateId: 'create_quiz_classroom',
+        displayName: 'Create Quiz',
+        description: 'Create Quiz in a course of Google Classroom',
+        type: 'activity',
+        keyword: 'Create Quiz',
+        arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'course_id',
+            description: 'ID of the course',
+            value: '',
+          },
+          'Quiz Title': {
+            type: 'string',
+            keywordArg: 'quiz_title',
+            description: 'Title of the quiz',
+            value: '',
+          },
+          'Quiz Description': {
+            type: 'string',
+            keywordArg: 'quiz_description',
+            description: 'Description of the quiz',
+            value: '',
+          },
+          'Quiz URL': {
+            type: 'string',
+            keywordArg: 'quiz_url',
+            description: 'URL of the quiz',
+            value: '',
+          },
+          'Max Points': {
+            type: 'number',
+            keywordArg: 'max_points',
+            description: 'Maximum points of the quiz',
+            value: 10,
+          },
+        },
+        return: {
+          displayName: 'ID of Google Classroom Quiz',
+          assignedTo: null,
+          type: 'string',
+          description: 'The ID of Google Classroom Quiz',
+        },
+      },
+      {
+        templateId: 'invite_student_course',
+        displayName: 'Invite Students To Course',
+        description: 'Invite Students To Course',
+        type: 'activity',
+        keyword: 'Invite Students To Course',
+        arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'course_id',
+            description: 'ID of the course',
+            value: '',
+          },
+          'List of student emails': {
+            type: 'list',
+            keywordArg: 'email_list',
+            description: 'List of student emails',
+            value: '',
+          },
+        },
+        return: null,
+      },
+      {
+        templateId: 'list_course_work_in_course',
+        displayName: 'List Coursework In Course',
+        description: 'List Coursework In Course',
+        type: 'activity',
+        keyword: 'List Coursework In Course',
+        arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'course_id',
+            description: 'ID of the course',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'List of Coursework In Course',
+          assignedTo: null,
+          type: 'list',
+          description: 'List of Coursework In Course',
+        },
+      },
+      {
+        templateId: 'get_coursework_id_by_title',
+        displayName: 'Get Coursework ID By Title',
+        description: 'Get Coursework ID By Title',
+        type: 'activity',
+        keyword: 'Get Coursework ID By Title',
+        arguments: {
+          'Course Title': {
+            type: 'string',
+            keywordArg: 'course_title',
+            description: 'Title of the course',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'Coursework ID of the course',
+          assignedTo: null,
+          type: 'string',
+          description: 'Coursework ID of the course',
+        },
+      },
+      {
+        templateId: 'list_submissions_of_coursework',
+        displayName: 'List Submissions Of Coursework',
+        description: 'List Submissions Of Coursework',
+        type: 'activity',
+        keyword: 'List Submissions Of Coursework',
+        arguments: {
+          'Coursework ID': {
+            type: 'string',
+            keywordArg: 'course_work_id',
+            description: 'ID of the coursework',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'Student submissions',
+          assignedTo: null,
+          type: 'list',
+          description: 'List of student submissions of the coursework',
+        },
+      },
+      {
+        templateId: 'get_submission_id_by_student_email',
+        displayName: 'Get Submission ID By Student Email',
+        description: 'Get Submission ID By Student Email',
+        type: 'activity',
+        keyword: 'Get Submission ID By Student Email',
+        arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'course_id',
+            description: 'ID of the course',
+            value: '',
+          },
+          'Coursework ID': {
+            type: 'string',
+            keywordArg: 'course_work_id',
+            description: 'ID of the coursework',
+            value: '',
+          },
+          'Student Email': {
+            type: 'string',
+            keywordArg: 'student_email',
+            description: 'Email of the student',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'ID of the submission',
+          assignedTo: null,
+          type: 'string',
+          description: 'ID of the submission',
+        },
+      },
+    ],
+  },
+  {
+    _id: 'google_form',
+    displayName: 'Google Form',
+    description: 'Help you integrate your work with Google Form',
+    library: 'EduRPA.GoogleForm',
+    activityTemplates: [
+      {
+        templateId: 'create_quiz_form',
+        displayName: 'Create Quiz Form',
+        description: 'Create quiz in google form',
+        type: 'activity',
+        keyword: 'Create Quiz',
+        arguments: {
+          'Form Name': {
+            type: 'string',
+            keywordArg: 'form_name',
+            description: 'Name of Google Form',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'ID of created quiz form',
+          assignedTo: null,
+          type: 'string',
+          description: 'The ID of created quiz form',
+        },
+      },
+      {
+        templateId: 'get_doc_id',
+        displayName: 'Get Google Doc ID From URL',
+        description: 'Get Google Doc ID from URL',
+        type: 'activity',
+        keyword: 'Get Google Doc ID',
+        arguments: {
+          URL: {
+            type: 'string',
+            keywordArg: 'doc_url',
+            description: 'URL of Google Doc',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'ID of Google Doc',
+          assignedTo: null,
+          type: 'string',
+          description: 'The ID of Google Doc',
+        },
+      },
+      {
+        templateId: 'transfer_quiz',
+        displayName: 'Transfer Google Doc To Quiz Form',
+        description: 'Transfer quiz from google doc to google form',
+        type: 'activity',
+        keyword: 'Transfer Quiz From Google Doc To Google Form',
+        arguments: {
+          DocID: {
+            type: 'string',
+            keywordArg: 'doc_id',
+            description: 'ID of Google Doc',
+            value: '',
+          },
+          FormID: {
+            type: 'string',
+            keywordArg: 'form_id',
+            description: 'ID of Google Form',
             value: '',
           },
         },
@@ -1051,19 +1400,20 @@ export const ActivityPackages = [
           type: 'string',
           description: 'The generated grade report file name',
         },
-      }
+      },
     ],
   },
   {
     _id: 'file_storage',
     displayName: 'File storage',
-    description: 'Help you store and retrieve files in the platform\'s file storage',
+    description:
+      "Help you store and retrieve files in the platform's file storage",
     library: 'EduRPA.FileStorage',
     activityTemplates: [
       {
         templateId: 'upload_file',
         displayName: 'Upload file',
-        description: 'Upload a file to the platform\'s file storage',
+        description: "Upload a file to the platform's file storage",
         iconCode: 'FaFileUpload',
         type: 'activity',
         keyword: 'Upload File',
@@ -1097,7 +1447,7 @@ export const ActivityPackages = [
       {
         templateId: 'download_file',
         displayName: 'Download file',
-        description: 'Download a file from the platform\'s file storage',
+        description: "Download a file from the platform's file storage",
         iconCode: 'FaFileDownload',
         type: 'activity',
         keyword: 'Download File',

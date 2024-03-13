@@ -11,9 +11,9 @@ import {
 } from '@chakra-ui/react';
 import { FaGithub, FaEnvelope, FaLinkedin } from 'react-icons/fa';
 import Image from 'next/image';
-import VinhAvatar from '@/assets/images/Vinh.jpg';
-import KhanhAvatar from '@/assets/images/Khanh.jpg';
-import AnAvatar from '@/assets/images/An.jpg';
+import VinhAvatar from '@/assets/images/teams/Vinh.jpg';
+import KhanhAvatar from '@/assets/images/teams/Khanh.jpg';
+import AnAvatar from '@/assets/images/teams/An.jpg';
 
 interface TeamMemberCardProps {
   name: string;

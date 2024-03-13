@@ -9,9 +9,9 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 
-import VinhAvatar from '@/assets/images/Vinh.jpg';
-import KhanhAvatar from '@/assets/images/Khanh.jpg';
-import AnAvatar from '@/assets/images/An.jpg';
+import VinhAvatar from '@/assets/images/teams/Vinh.jpg';
+import KhanhAvatar from '@/assets/images/teams/Khanh.jpg';
+import AnAvatar from '@/assets/images/teams/An.jpg';
 import { StaticImageData } from 'next/image';
 
 interface Props {

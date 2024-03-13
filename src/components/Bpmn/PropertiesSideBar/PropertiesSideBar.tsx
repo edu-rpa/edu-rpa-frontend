@@ -80,8 +80,6 @@ export default function PropertiesSideBar({
   const processID = params.id as string;
   const [formValues, setFormValues] = useState<FormValues>({});
   const [saveResult, setSaveResult] = useState<string | null>(null);
-  const [rectangles, setRectangles] = useState<Rectangle[]>([]);
-  const [imageUrl, setImageUrl] = useState('');
   const [isExist, setIsExist] = useState(false);
   const datePickerRef = useRef(null);
   const currentVariableStorage = getVariableItemFromLocalStorage(processID);
@@ -115,30 +113,10 @@ export default function PropertiesSideBar({
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    const fileUrl = 'File URL';
-    const bboxValues = 'Bounding Box Values';
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [bboxValues]: {
-        ...prevValues[bboxValues],
-        value: JSON.stringify(formatBoundingBox(rectangles)),
-      },
-      [fileUrl]: {
-        ...prevValues[fileUrl],
-        // value: imageUrl,
-        value:
-          'https://images.wallpapersden.com/image/download/artistic-landscape-view_bGhlaGmUmZqaraWkpJRrZWWtbWVl.jpg',
-      },
-    }));
-  }, [rectangles, setFormValues]);
-
   const handleGoBack = () => {
     setBack();
     setFormValues({});
     setSaveResult(null);
-    setRectangles([]);
-    setImageUrl('');
   };
 
   const handleInputChange = (key: string, value: any) => {
@@ -168,15 +146,6 @@ export default function PropertiesSideBar({
       activities: updateProperties,
     });
     setLocalStorageObject(LocalStorage.PROCESS_LIST, updateProcess);
-  };
-
-  const formatBoundingBox = (rectangles: Rectangle[]) => {
-    return rectangles.map((rect) => [
-      rect.top,
-      rect.left,
-      rect.bottom,
-      rect.right,
-    ]);
   };
 
   const headerIcon =
@@ -246,7 +215,7 @@ export default function PropertiesSideBar({
               const renderStepTwo = () => {
                 return (
                   displayName === packageName &&
-                  activityTemplates.map((activity: any) => (
+                  activityTemplates?.map((activity: any) => (
                     <div key={activity.displayName}>
                       <Tooltip label={activity.description}>
                         <Button

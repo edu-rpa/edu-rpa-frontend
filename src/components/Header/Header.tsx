@@ -15,6 +15,7 @@ export default function Header() {
           height={150}
           alt="Logo"
           className="hover:cursor-pointer"
+          onClick={() => router.push('/')}
         />
         <div className="flex justify-between items-center w-[200px]">
           <Button
