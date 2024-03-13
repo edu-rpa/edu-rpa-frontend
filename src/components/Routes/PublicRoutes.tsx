@@ -7,15 +7,15 @@ interface Props {
   children?: React.ReactNode;
 }
 
-const PrivateRoute = ({ children }: Props) => {
+const PublicRoute = ({ children }: Props) => {
   const router = useRouter();
   useEffect(() => {
     const accessToken = getLocalStorageObject(LocalStorage.ACCESS_TOKEN);
-    if (accessToken.length == 0) {
-      router.push('/');
+    if (accessToken.length != 0) {
+      router.push('/home');
     }
   }, []);
   return children;
 };
 
-export default PrivateRoute;
+export default PublicRoute;

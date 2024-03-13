@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
-import PrivateRoute from '../Routes/PrivateRoutes';
+import PublicRoute from '../Routes/PublicRoutes';
 
 interface Props {
   children?: React.ReactNode;
@@ -9,11 +9,11 @@ interface Props {
 
 function HeaderLayout({ children }: Props) {
   return (
-    <PrivateRoute>
+    <PublicRoute>
       <Header />
       {children}
       <Footer />
-    </PrivateRoute>
+    </PublicRoute>
   );
 }
 
