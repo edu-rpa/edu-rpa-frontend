@@ -1,5 +1,5 @@
 import robotApi from '@/apis/robotApi';
-import { Robot } from '@/interfaces/robot';
+import { Robot, TriggerType } from '@/interfaces/robot';
 import { userSelector } from '@/redux/selector';
 import {
   Tr,
@@ -14,7 +14,7 @@ import {
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import { FaPlay, FaStop } from 'react-icons/fa';
-import { GrSchedule } from 'react-icons/gr';
+import { IoMdSettings } from "react-icons/io";
 import { useSelector } from 'react-redux';
 import { toastError, toastSuccess } from '@/utils/common';
 
@@ -50,10 +50,11 @@ const mapStatusColor = (status: string) => {
 
 interface RobotRowProps {
   data: Omit<Robot, 'userId'>;
-  onSelectedForSchedule: (
+  onSelectedForConfigTrigger: (
     userId: number,
     processId: string,
-    processVersion: number
+    processVersion: number,
+    triggerType: TriggerType
   ) => void;
   onSelectedForRemove: (
     userId: number,
@@ -181,19 +182,23 @@ const RobotRow = (props: RobotRowProps) => {
                   handleStopRobot();
                 }}
               />
-              <IconButton
-                bg="white"
-                aria-label="Schedule robot"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  props.onSelectedForSchedule(
-                    user.id,
-                    data.processId,
-                    data.processVersion
-                  );
-                }}
-                icon={<GrSchedule color="#319795" />}
-              />
+              {data.triggerType !== TriggerType.MANUAL && (
+                <IconButton
+                  bg="white"
+                  aria-label="Configure trigger robot"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    props.onSelectedForConfigTrigger(
+                      user.id,
+                      data.processId,
+                      data.processVersion,
+                      data.triggerType
+                    );
+                  }}
+                  icon={<IoMdSettings color="#319795" />}
+                />
+              )}
+
               <IconButton
                 bg="white"
                 aria-label="Remove robot"

@@ -4,6 +4,7 @@ export interface Robot {
     processVersion: number;
     name: string;
     createdAt: Date;
+    triggerType: TriggerType;
     [key: string]: any;
 }
 
@@ -15,4 +16,19 @@ export interface Schedule {
     Name: string;
     ScheduleExpression: string;
     ScheduleExpressionTimezone: string;
+    Target: {
+        Input: string;
+    };
+    State: EventState;
+}
+
+export enum TriggerType {
+    SCHEDULE = 'schedule',
+    MANUAL = 'manual',
+    EVENT_GMAIL = 'event-gmail',
+}
+
+export enum EventState {
+    ENABLED = 'ENABLED',
+    DISABLED = 'DISABLED',
 }
