@@ -2,6 +2,7 @@ import {
   CreateRobotDto,
   CreateScheduleDto,
   UpdateScheduleDto,
+  EventSchedule,
 } from '@/dtos/robotDto';
 import apiBase from './config';
 import { Schedule } from '@/interfaces/robot';
@@ -149,6 +150,19 @@ const updateSchedule = async (
     });
 };
 
+const upsertEventSchedule = async (userId: number, processId: string, version: number, eventSchedule: EventSchedule) => {
+  return await apiBase
+    .post(`${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/event`, {
+      user_id: userId.toString(),
+      process_id: processId,
+      version: version,
+      event_schedule: eventSchedule,
+    })
+    .then((res: any) => {
+      return res.data;
+    });
+};
+
 const robotApi = {
   getAllRobot,
   createRobot,
@@ -161,6 +175,7 @@ const robotApi = {
   deleteSchedule,
   createSchedule,
   updateSchedule,
+  upsertEventSchedule,
 };
 
 export default robotApi;

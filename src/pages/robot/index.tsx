@@ -16,7 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import RobotTable from '@/components/Robot/RobotTable';
-import { Robot } from '@/interfaces/robot';
+import { Robot, TriggerType } from '@/interfaces/robot';
 
 export default function Robot() {
   const router = useRouter();
@@ -53,6 +53,7 @@ export default function Robot() {
         processId: item.processId,
         processVersion: item.processVersion,
         createdAt: item.createdAt,
+        triggerType: item.triggerType,
       };
     });
 
@@ -62,6 +63,7 @@ export default function Robot() {
       'Process ID',
       'Process Version',
       'Created At',
+      'Trigger Type',
       'Status',
       'Actions',
     ],

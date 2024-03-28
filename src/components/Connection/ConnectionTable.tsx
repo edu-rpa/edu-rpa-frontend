@@ -222,7 +222,7 @@ const ConnectionTable = (props: ConnectionTableProps) => {
         duration: 3000,
         isClosable: true,
       });
-      setConnectionData(connectionData.filter((item) => item.provider !== provider && item.name !== name));
+      setConnectionData(connectionData.filter((item) => item.provider !== provider || item.name !== name));
     } catch (error) {
       toast({
         title: 'Failed to remove connection',

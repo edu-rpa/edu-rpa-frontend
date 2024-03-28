@@ -21,6 +21,7 @@ import {
   resetSchedule,
 } from '@/redux/slice/scheduleSlice';
 import ScheduleForm from './ScheduleForm';
+import { toastError, toastSuccess } from '@/utils/common';
 
 interface Props {
   isOpen: boolean;
@@ -46,31 +47,10 @@ const ScheduleModal = ({
   processVersion,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingAction, setIsLoadingAction] = useState(false);
 
   const schedule = useSelector(scheduleSelector);
   const dispatch = useDispatch();
   const toast = useToast();
-
-  const toastError = (message: string) => {
-    toast({
-      title: 'Error',
-      description: message,
-      status: 'error',
-      duration: 3000,
-      isClosable: true,
-    });
-  };
-
-  const toastSuccess = (message: string) => {
-    toast({
-      title: 'Success',
-      description: message,
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,7 +65,7 @@ const ScheduleModal = ({
           dispatch(setSchedule(res));
         }
       } catch (error) {
-        toastError('Failed to fetch schedule');
+        toastError(toast, 'Failed to fetch schedule');
       }
       setIsLoading(false);
     };
@@ -93,77 +73,73 @@ const ScheduleModal = ({
   }, [userId, processId, processVersion]);
 
   const handleCreateSchedule = async () => {
-    setIsLoadingAction(true);
+    setIsLoading(true);
     try {
       await robotApi.createSchedule(userId, processId, processVersion, {
         schedule_expression: generateExpression(schedule),
         schedule_expression_timezone: schedule.timezone,
       });
-      toastSuccess('Schedule created');
+      toastSuccess(toast, 'Schedule created');
       dispatch(
         setScheduleName(
           `edu-rpa-robot-schedule.${userId}.${processId}.${processVersion}`
         )
       );
     } catch (error) {
-      toastError('Failed to create schedule');
+      toastError(toast, 'Failed to create schedule');
     }
-    setIsLoadingAction(false);
+    setIsLoading(false);
   };
 
   const handleUpdateSchedule = async () => {
-    setIsLoadingAction(true);
+    setIsLoading(true);
     try {
       await robotApi.updateSchedule(userId, processId, processVersion, {
         schedule_expression: generateExpression(schedule),
         schedule_expression_timezone: schedule.timezone,
       });
-      toastSuccess('Schedule updated');
+      toastSuccess(toast, 'Schedule updated');
     } catch (error) {
-      toastError('Failed to update schedule');
+      toastError(toast, 'Failed to update schedule');
     }
-    setIsLoadingAction(false);
+    setIsLoading(false);
   };
 
   const handleDeleteSchedule = async () => {
-    setIsLoadingAction(true);
+    setIsLoading(true);
     try {
       await robotApi.deleteSchedule(userId, processId, processVersion);
-      toastSuccess('Schedule deleted');
+      toastSuccess(toast, 'Schedule deleted');
       dispatch(resetSchedule());
     } catch (error) {
-      toastError('Failed to delete schedule');
+      toastError(toast, 'Failed to delete schedule');
     }
-    setIsLoadingAction(false);
+    setIsLoading(false);
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Schedule robot</ModalHeader>
+        <ModalHeader className='m-auto'>Schedule robot</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          {isLoading ? (
-            <LoadingIndicator />
-          ) : (
-            <>
-              {schedule.name ? 'Edit schedule' : 'Create schedule'}
-              <ScheduleForm />
-            </>
-          )}
+          {schedule.name ? 'Edit schedule' : 'Create schedule'}
+          <ScheduleForm />
         </ModalBody>
         <ModalFooter>
           {schedule.name ? (
             <>
               <Button
-                isLoading={isLoadingAction}
+                className="mr-2"
+                isLoading={isLoading}
                 colorScheme="blue"
                 onClick={handleUpdateSchedule}>
                 Save
               </Button>
               <Button
-                isLoading={isLoadingAction}
+                className='mr-2'
+                isLoading={isLoading}
                 colorScheme="red"
                 onClick={handleDeleteSchedule}>
                 Delete
@@ -171,7 +147,8 @@ const ScheduleModal = ({
             </>
           ) : (
             <Button
-              isLoading={isLoadingAction}
+              className="mr-2"
+              isLoading={isLoading}
               colorScheme="blue"
               onClick={handleCreateSchedule}>
               Create

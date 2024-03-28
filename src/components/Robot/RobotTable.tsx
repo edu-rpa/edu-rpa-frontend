@@ -30,10 +30,10 @@ import {
 } from '@chakra-ui/icons';
 import ReactPaginate from 'react-paginate';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
-import { Robot } from '@/interfaces/robot';
+import { Robot, TriggerType } from '@/interfaces/robot';
 import { toastError, toastSuccess } from '@/utils/common';
 import RobotRow from './RobotRow';
-import ScheduleModal from './ScheduleModal';
+import ConfigTriggerModal from './ConfigTriggerModal';
 
 interface RobotTableProps {
   header: string[];
@@ -50,10 +50,11 @@ const RobotTable = (props: RobotTableProps) => {
     processId: '',
     processVersion: 0,
   });
-  const [selectedForSchedule, setSelectedForSchedule] = useState({
+  const [selectedForConfigTrigger, setSelectedForConfigTrigger] = useState({
     userId: 0,
     processId: '',
     processVersion: 0,
+    triggerType: TriggerType.MANUAL,
   });
   const robotData = props.data;
   const itemsPerPage = 5;
@@ -69,9 +70,9 @@ const RobotTable = (props: RobotTableProps) => {
     onClose: onCloseForRemove,
   } = useDisclosure();
   const {
-    isOpen: isOpenForSchedule,
-    onOpen: onOpenForSchedule,
-    onClose: onCloseForSchedule,
+    isOpen: isOpenForConfigTrigger,
+    onOpen: onOpenForConfigTrigger,
+    onClose: onCloseForConfigTrigger,
   } = useDisclosure();
 
   if (currentData.length == 0) return <Box></Box>;
@@ -102,13 +103,14 @@ const RobotTable = (props: RobotTableProps) => {
     onOpenForRemove();
   };
 
-  const handleSelectForSchedule = (
+  const handleSelectForConfigTrigger = (
     userId: number,
     processId: string,
-    processVersion: number
+    processVersion: number,
+    triggerType: TriggerType
   ) => {
-    setSelectedForSchedule({ userId, processId, processVersion });
-    onOpenForSchedule();
+    setSelectedForConfigTrigger({ userId, processId, processVersion, triggerType });
+    onOpenForConfigTrigger();
   };
 
   return (
@@ -131,7 +133,7 @@ const RobotTable = (props: RobotTableProps) => {
               key={index}
               data={item}
               onSelectedForRemove={handleSelectForRemove}
-              onSelectedForSchedule={handleSelectForSchedule}
+              onSelectedForConfigTrigger={handleSelectForConfigTrigger}
             />
           ))}
         </Tbody>
@@ -174,12 +176,13 @@ const RobotTable = (props: RobotTableProps) => {
         </ModalContent>
       </Modal>
 
-      <ScheduleModal
-        isOpen={isOpenForSchedule}
-        onClose={onCloseForSchedule}
-        userId={selectedForSchedule.userId}
-        processId={selectedForSchedule.processId}
-        processVersion={selectedForSchedule.processVersion}
+      <ConfigTriggerModal
+        isOpen={isOpenForConfigTrigger}
+        onClose={onCloseForConfigTrigger}
+        userId={selectedForConfigTrigger.userId}
+        processId={selectedForConfigTrigger.processId}
+        processVersion={selectedForConfigTrigger.processVersion}
+        triggerType={selectedForConfigTrigger.triggerType}
       />
 
       <ReactPaginate
