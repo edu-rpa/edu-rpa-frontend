@@ -68,7 +68,7 @@ const TriggerEventGmailModal = ({
           const input = JSON.parse(schedule.Target.Input);
           setSelectedConnection(input.connection_name);
           setFilterEmail(input.filter);
-          setEnabled(input.state === EventState.ENABLED);
+          setEnabled(schedule.State === EventState.ENABLED);
         }
       } catch (error) {
         console.log(error);
