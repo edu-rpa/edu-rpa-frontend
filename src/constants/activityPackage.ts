@@ -1089,7 +1089,12 @@ export const ActivityPackages = [
             value: '',
           },
         },
-        return: null,
+        return: {
+          displayName: 'ID of Google Form',
+          assignedTo: null,
+          type: 'string',
+          description: 'The ID of Google Form',
+        },
       },
     ],
   },
