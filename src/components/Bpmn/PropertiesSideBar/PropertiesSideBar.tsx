@@ -42,7 +42,6 @@ import {
 import { usePropertiesSidebar } from '@/hooks/usePropertiesSidebar';
 import IconImage from '@/components/IconImage/IconImage';
 import Image from 'next/image';
-import { Rectangle } from '@/types/boundingBox';
 import { useDispatch } from 'react-redux';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
 import { Variable } from '@/types/variable';
@@ -84,7 +83,7 @@ export default function PropertiesSideBar({
   const datePickerRef = useRef(null);
   const currentVariableStorage = getVariableItemFromLocalStorage(processID);
   const variableStorage = currentVariableStorage?.variables.map(
-    (variable: Variable) => variable.name
+    (variable: Variable) => [variable.name, variable.type]
   );
   const dispatch = useDispatch();
 
@@ -151,6 +150,18 @@ export default function PropertiesSideBar({
   const headerIcon =
     getServiceIcon(sideBarState.serviceName) ||
     getPackageIcon(sideBarState.packageName);
+
+  const handleKeywordRobotFramework = (varName: string, varType: string) => {
+    let prefix = '${'
+    let suffix = '}'
+    if (varType === 'list') {
+      prefix = '@{'
+    } 
+    if (varType === 'dictionary') {
+      prefix = '&{';
+    }
+    return `${prefix}${varName}${suffix}`;
+  }
 
   return (
     <div>
@@ -297,6 +308,11 @@ export default function PropertiesSideBar({
                 switch (paramValue.type) {
                   case 'string':
                   case 'email':
+                  case 'any':
+                  case 'list':
+                  case 'variable':
+                  case 'dictionary':
+                  case 'DocumentTemplate':
                     return (
                       <TextAutoComplete
                         type="text"
@@ -337,8 +353,6 @@ export default function PropertiesSideBar({
                       variant: 'filled',
                       disabled: true,
                     });
-                  case 'list':
-                    return renderInput(paramKey, 'text');
                   case 'enum.shareType':
                     return renderSelect(paramKey, [
                       { value: 'user', label: 'User' },
@@ -360,88 +374,14 @@ export default function PropertiesSideBar({
                       { value: 'trash', label: 'Trash' },
                       { value: 'scheduled', label: 'Scheduled' },
                     ]);
-                  case 'expression.logic':
-                    if (
-                      paramValue.type === 'expression.logic' &&
-                      paramValue.value &&
-                      !isExist
-                    ) {
-                      Object.entries(paramValue.value).forEach(
-                        ([key, value]) => {
-                          if (
-                            value &&
-                            typeof value === 'object' &&
-                            'type' in value &&
-                            value.type === 'string'
-                          ) {
-                            formValues[key] = setDefaultValue(
-                              key,
-                              value as ArgumentProps,
-                              ''
-                            );
-                          } else if (
-                            value &&
-                            typeof value === 'object' &&
-                            'description' in value
-                          ) {
-                            formValues[key] = setDefaultValue(
-                              key,
-                              value as ArgumentProps,
-                              '='
-                            );
-                          }
-                        }
-                      );
-                    }
-                    return (
-                      <div className="grid grid-cols-3">
-                        {Object.entries(paramValue.value).map(
-                          ([innerKey, innerValue]) => {
-                            if (!innerValue) return null;
-                            if (
-                              typeof innerValue === 'object' &&
-                              'type' in innerValue &&
-                              innerValue.type === 'string'
-                            ) {
-                              return (
-                                <TextAutoComplete
-                                  key={innerKey}
-                                  type="text"
-                                  placeholder="Your value"
-                                  value={formValues[innerKey]?.value ?? ''}
-                                  onChange={(newValue: string) =>
-                                    handleInputChange(innerKey, newValue)
-                                  }
-                                  recommendedWords={variableStorage}
-                                />
-                              );
-                            } else if (
-                              typeof innerValue === 'object' &&
-                              'description' in innerValue
-                            ) {
-                              return (
-                                <Select
-                                  key={innerKey}
-                                  defaultValue={
-                                    formValues[innerKey]?.value ?? '='
-                                  }
-                                  onChange={(e) =>
-                                    handleInputChange(innerKey, e.target.value)
-                                  }>
-                                  <option value="=">=</option>
-                                  <option value="!=">!=</option>
-                                  <option value=">">{'>'}</option>
-                                  <option value="<">{'<'}</option>
-                                  <option value=">=">{'>='}</option>
-                                  <option value="<=">{'<='}</option>
-                                </Select>
-                              );
-                            }
-                            return null;
-                          }
-                        )}
-                      </div>
-                    );
+                  case 'enum.operator.logic':
+                    return renderSelect(paramKey, [
+                      { value: '>', label: '>' },
+                      { value: '<', label: '<' },
+                      { value: '=', label: '=' },
+                      { value: '>=', label: '>=' },
+                      { value: '<=', label: '<=' },
+                    ]);
                   default:
                     return null;
                 }
@@ -496,11 +436,17 @@ export default function PropertiesSideBar({
                               Choose Variable
                             </option>
                             {variableStorage &&
-                              variableStorage.map((variable: Variable) => (
+                              variableStorage.map((variable: any) => (
                                 <option
                                   key={variable.toString()}
-                                  value={'${' + variable.toString() + '}'}>
-                                  {'${' + variable.toString() + '}'}
+                                  value={handleKeywordRobotFramework(
+                                    variable[0],
+                                    variable[1]
+                                  )}>
+                                  {handleKeywordRobotFramework(
+                                    variable[0],
+                                    variable[1]
+                                  )}
                                 </option>
                               ))}
                           </Select>

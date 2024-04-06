@@ -373,7 +373,7 @@ export const ActivityPackages = [
             value: null,
           },
           'Email Folder Path': {
-            type: 'label_ids',
+            type: 'string',
             description: 'The source email folder path',
             value: [],
           },
@@ -384,7 +384,7 @@ export const ActivityPackages = [
             value: 100,
           },
           'From email': {
-            type: 'email',
+            type: 'string',
             description: 'Filter by source email',
             value: '',
           },
@@ -430,7 +430,7 @@ export const ActivityPackages = [
             value: null,
           },
           'Email Folder Path': {
-            type: 'list',
+            type: 'string',
             description: 'The source email folder path',
             keywordArg: 'label_ids',
             value: [],
@@ -668,7 +668,7 @@ export const ActivityPackages = [
             value: '',
           },
           Content: {
-            type: 'list',
+            type: 'string',
             description: 'The data written to the sheet',
             keywordArg: 'values',
             value: [],
@@ -1112,7 +1112,7 @@ export const ActivityPackages = [
         type: 'gateway',
         arguments: {
           left: {
-            type: 'expression',
+            type: 'variable',
             description: 'The left operand',
             value: '',
           },
@@ -1122,7 +1122,7 @@ export const ActivityPackages = [
             value: '=',
           },
           right: {
-            type: 'expression',
+            type: 'any',
             description: 'The right operand',
             value: '',
           },
@@ -1250,16 +1250,6 @@ export const ActivityPackages = [
       'Help you automate tasks that need to be done in a web browser (like Chrome)',
     library: 'RPA.Browser.Playwright',
     activityTemplates: [
-      {
-        templateId: 'use_browser',
-        displayName: 'Use browser',
-        description: 'Open a browser and use it to execute a set of activities',
-        iconCode: 'GoBrowser',
-        type: 'subprocess',
-        keyword: 'New Browser',
-        arguments: {},
-        return: null,
-      },
       {
         templateId: 'go_to_url',
         displayName: 'Go to URL',

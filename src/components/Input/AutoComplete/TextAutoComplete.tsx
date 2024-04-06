@@ -17,8 +17,16 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
     setIsDropdownOpen(false);
   };
 
-  const handleSelectWord = (word: string) => {
-    props.onChange('${' + word + '}');
+  const handleSelectWord = (varName: string, varType: string) => {
+     let prefix = '${';
+     let suffix = '}';
+     if (varType === 'list') {
+       prefix = '@{';
+     }
+     if (varType === 'dictionary') {
+       prefix = '&{';
+     }
+    props.onChange(`${prefix}${varName}${suffix}`);
     setIsDropdownOpen(false);
   };
 
@@ -47,7 +55,7 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
             {props.recommendedWords.map((word) => (
               <Text
                 key={word}
-                onClick={() => handleSelectWord(word)}
+                onClick={() => handleSelectWord(word[0], word[1])}
                 p={2}
                 _hover={{ bg: 'gray.100' }}
                 cursor="pointer"
