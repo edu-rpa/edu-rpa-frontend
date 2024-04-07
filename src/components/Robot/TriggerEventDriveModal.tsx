@@ -16,7 +16,6 @@ import {
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import robotApi from '@/apis/robotApi';
-import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import { toastError, toastSuccess } from '@/utils/common';
 import { EventState, TriggerType } from '@/interfaces/robot';
 import connectionApi from '@/apis/connectionApi';
@@ -33,7 +32,18 @@ interface Props {
   processVersion: number;
 }
 
-const TriggerEventGmailModal = ({
+const MIME_TYPES = {
+  'application/vnd.google-apps.form': 'Google Forms',
+  'application/vnd.google-apps.document': 'Google Docs',
+  'application/vnd.google-apps.spreadsheet': 'Google Sheets',
+  'application/vnd.google-apps.presentation': 'Google Slides',
+  'application/vnd.google-apps.folder': 'Google Drive Folder',
+  'image/jpeg': 'JPEG',
+  'image/png': 'PNG',
+  'application/pdf': 'PDF',
+};
+
+const TriggerEventDriveModal = ({
   isOpen,
   onClose,
   userId,
@@ -43,24 +53,24 @@ const TriggerEventGmailModal = ({
   const [isLoading, setIsLoading] = useState(false);
   const [connections, setConnections] = useState<string[]>([]);
   const [selectedConnection, setSelectedConnection] = useState('');
-  const [filterEmail, setFilterEmail] = useState({
-    from: '',
-    subject: '',
+  const [filterFile, setFilterFile] = useState({
+    name: '',
+    mime_type: '',
   });
   const [enabled, setEnabled] = useState(false);
 
   const toast = useToast();
-  const gmailProvider = providerData.find(
-    (provider) => provider.name === AuthorizationProvider.G_GMAIL
+  const driveProvider = providerData.find(
+    (provider) => provider.name === AuthorizationProvider.G_DRIVE
   );
-  const description = 'Configure your robot to trigger when new emails arrive in your Gmail account';
- 
+  const description = 'Configure your robot to trigger when new files/folders are added to your Google Drive';
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
         const connections = await connectionApi.queryConnections(
-          AuthorizationProvider.G_GMAIL
+          AuthorizationProvider.G_DRIVE
         );
         setConnections(connections.map((item) => item.name));
 
@@ -68,7 +78,7 @@ const TriggerEventGmailModal = ({
         if (schedule.Name) {
           const input = JSON.parse(schedule.Target.Input);
           setSelectedConnection(input.connection_name);
-          setFilterEmail(input.filter);
+          setFilterFile(input.filter);
           setEnabled(schedule.State === EventState.ENABLED);
         }
       } catch (error) {
@@ -84,9 +94,9 @@ const TriggerEventGmailModal = ({
     setIsLoading(true);
     try {
       await robotApi.upsertEventSchedule(userId, processId, processVersion, {
-        type: TriggerType.EVENT_GMAIL,
+        type: TriggerType.EVENT_DRIVE,
         connection_name: selectedConnection,
-        filter: filterEmail,
+        filter: filterFile,
         state: enabled ? EventState.ENABLED : EventState.DISABLED,
       } as FilterEventSchedule);
       toastSuccess(toast, 'Event trigger saved');
@@ -103,7 +113,7 @@ const TriggerEventGmailModal = ({
         <ModalHeader className='m-auto'>Trigger robot by event</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          <Image className='m-auto' src={gmailProvider!.icon} alt="Icon" width={50} height={50} />
+          <Image className='m-auto' src={driveProvider!.icon} alt="Icon" width={50} height={50} />
           <p>{description}</p>
           <FormControl>
             <FormLabel>Connection</FormLabel>
@@ -123,22 +133,30 @@ const TriggerEventGmailModal = ({
             </Select>
           </FormControl>
           <FormControl>
-            <FormLabel>From</FormLabel>
+            <FormLabel>Name</FormLabel>
             <Input
               type="text"
-              value={filterEmail.from}
-              onChange={(e) => setFilterEmail({ ...filterEmail, from: e.target.value })}
-              placeholder="From"
+              value={filterFile.name}
+              onChange={(e) => setFilterFile({ ...filterFile, name: e.target.value })}
+              placeholder="Name"
             />
           </FormControl>
           <FormControl>
-            <FormLabel>Subject</FormLabel>
-            <Input
-              type="text"
-              value={filterEmail.subject}
-              onChange={(e) => setFilterEmail({ ...filterEmail, subject: e.target.value })}
-              placeholder="Subject"
-            />
+            <FormLabel>Type</FormLabel>
+            <Select
+              value={filterFile.mime_type}
+              onChange={(e) => setFilterFile({ ...filterFile, mime_type: e.target.value })}>
+              {filterFile.mime_type === '' && (
+                <option value="" disabled>
+                  Select type
+                </option>
+              )}
+              {Object.entries(MIME_TYPES).map(([key, value]) => (
+                <option key={key} value={key}>
+                  {value}
+                </option>
+              ))}
+            </Select>
           </FormControl>
           <FormControl display="flex" alignItems="center">
             <FormLabel htmlFor="email-alerts" mb="0">
@@ -166,4 +184,4 @@ const TriggerEventGmailModal = ({
   );
 };
 
-export default TriggerEventGmailModal;
+export default TriggerEventDriveModal;

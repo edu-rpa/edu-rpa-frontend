@@ -16,14 +16,16 @@ import {
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import robotApi from '@/apis/robotApi';
-import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import { toastError, toastSuccess } from '@/utils/common';
 import { EventState, TriggerType } from '@/interfaces/robot';
 import connectionApi from '@/apis/connectionApi';
 import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
 import { providerData } from '@/constants/providerData';
 import Image from 'next/image';
-import { FilterEventSchedule } from '@/dtos/robotDto';
+import googleApi from '@/apis/googleApi';
+import { GoogleForm } from '@/interfaces/google';
+import { For } from '@/utils/bpmn-parser/visitor/robot';
+import { FormsEventSchedule } from '@/dtos/robotDto';
 
 interface Props {
   isOpen: boolean;
@@ -33,7 +35,7 @@ interface Props {
   processVersion: number;
 }
 
-const TriggerEventGmailModal = ({
+const TriggerEventFormsModal = ({
   isOpen,
   onClose,
   userId,
@@ -43,24 +45,22 @@ const TriggerEventGmailModal = ({
   const [isLoading, setIsLoading] = useState(false);
   const [connections, setConnections] = useState<string[]>([]);
   const [selectedConnection, setSelectedConnection] = useState('');
-  const [filterEmail, setFilterEmail] = useState({
-    from: '',
-    subject: '',
-  });
+  const [forms, setForms] = useState<GoogleForm[]>([]);
+  const [selectedForm, setSelectedForm] = useState('');
   const [enabled, setEnabled] = useState(false);
 
   const toast = useToast();
-  const gmailProvider = providerData.find(
-    (provider) => provider.name === AuthorizationProvider.G_GMAIL
+  const formsProvider = providerData.find(
+    (provider) => provider.name === AuthorizationProvider.G_FORMS
   );
-  const description = 'Configure your robot to trigger when new emails arrive in your Gmail account';
- 
+  const description = 'Configure your robot to trigger when new form submission is received';
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
         const connections = await connectionApi.queryConnections(
-          AuthorizationProvider.G_GMAIL
+          AuthorizationProvider.G_FORMS
         );
         setConnections(connections.map((item) => item.name));
 
@@ -68,7 +68,11 @@ const TriggerEventGmailModal = ({
         if (schedule.Name) {
           const input = JSON.parse(schedule.Target.Input);
           setSelectedConnection(input.connection_name);
-          setFilterEmail(input.filter);
+          if (input.connection_name) {
+            const forms = await googleApi.getForms(input.connection_name);
+            setForms(forms);
+          }
+          setSelectedForm(input.form_id);
           setEnabled(schedule.State === EventState.ENABLED);
         }
       } catch (error) {
@@ -80,15 +84,27 @@ const TriggerEventGmailModal = ({
     fetchData();
   }, [userId, processId, processVersion]);
 
+  useEffect(() => {
+    if (selectedConnection) {
+      const fetchData = async () => {
+        setIsLoading(true);
+        const forms = await googleApi.getForms(selectedConnection);
+        setForms(forms);
+        setIsLoading(false);
+      };
+      fetchData();
+    }
+  }, [selectedConnection]);
+
   const handleUpsertEventSchedule = async () => {
     setIsLoading(true);
     try {
       await robotApi.upsertEventSchedule(userId, processId, processVersion, {
-        type: TriggerType.EVENT_GMAIL,
+        type: TriggerType.EVENT_FORMS,
         connection_name: selectedConnection,
-        filter: filterEmail,
+        form_id: selectedForm,
         state: enabled ? EventState.ENABLED : EventState.DISABLED,
-      } as FilterEventSchedule);
+      } as FormsEventSchedule);
       toastSuccess(toast, 'Event trigger saved');
     } catch (error) {
       toastError(toast, 'Failed to create trigger');
@@ -103,7 +119,7 @@ const TriggerEventGmailModal = ({
         <ModalHeader className='m-auto'>Trigger robot by event</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          <Image className='m-auto' src={gmailProvider!.icon} alt="Icon" width={50} height={50} />
+          <Image className='m-auto' src={formsProvider!.icon} alt="Icon" width={50} height={50} />
           <p>{description}</p>
           <FormControl>
             <FormLabel>Connection</FormLabel>
@@ -123,22 +139,21 @@ const TriggerEventGmailModal = ({
             </Select>
           </FormControl>
           <FormControl>
-            <FormLabel>From</FormLabel>
-            <Input
-              type="text"
-              value={filterEmail.from}
-              onChange={(e) => setFilterEmail({ ...filterEmail, from: e.target.value })}
-              placeholder="From"
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Subject</FormLabel>
-            <Input
-              type="text"
-              value={filterEmail.subject}
-              onChange={(e) => setFilterEmail({ ...filterEmail, subject: e.target.value })}
-              placeholder="Subject"
-            />
+            <FormLabel>Form</FormLabel>
+            <Select
+              value={selectedForm}
+              onChange={(e) => setSelectedForm(e.target.value)}>
+              {selectedForm === '' && (
+                <option value="" disabled>
+                  Select form
+                </option>
+              )}
+              {forms.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </Select>
           </FormControl>
           <FormControl display="flex" alignItems="center">
             <FormLabel htmlFor="email-alerts" mb="0">
@@ -166,4 +181,4 @@ const TriggerEventGmailModal = ({
   );
 };
 
-export default TriggerEventGmailModal;
+export default TriggerEventFormsModal;

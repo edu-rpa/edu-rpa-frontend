@@ -98,6 +98,8 @@ export const PublishRobotModal = (props: Props) => {
             <option value={TriggerType.MANUAL}>Manual</option>
             <option value={TriggerType.SCHEDULE}>Schedule</option>
             <option value={TriggerType.EVENT_GMAIL}>New emails (Gmail)</option>
+            <option value={TriggerType.EVENT_DRIVE}>New files (Google Drive)</option>
+            <option value={TriggerType.EVENT_FORMS}>New forms (Google Forms)</option>
           </Select>
         </FormControl>
       </ModalBody>

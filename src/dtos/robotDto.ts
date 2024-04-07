@@ -17,8 +17,15 @@ export interface CreateScheduleDto {
 export interface EventSchedule {
   type: TriggerType;
   connection_name: string;
-  filter: any;
   state: EventState;
+}
+
+export interface FilterEventSchedule extends EventSchedule {
+  filter: any;
+}
+
+export interface FormsEventSchedule extends EventSchedule {
+  form_id: string;
 }
 
 export type UpdateScheduleDto = CreateScheduleDto;
