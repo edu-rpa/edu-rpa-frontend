@@ -9,9 +9,7 @@ import {
   Image,
   Icon,
   IconButton,
-  createIcon,
   IconProps,
-  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaPlayCircle } from 'react-icons/fa';
 
@@ -66,7 +64,7 @@ export default function HeroHome() {
               borderColor={'#319795'}
               fontWeight={'normal'}
               px={6}
-              leftIcon={<FaPlayCircle h={4} w={4} color={'#319795'} />}>
+              leftIcon={<FaPlayCircle height={4} width={4} color={'#319795'} />}>
               How It Works
             </Button>
           </Stack>
@@ -88,7 +86,7 @@ export default function HeroHome() {
               aria-label={'Play Button'}
               variant={'ghost'}
               _hover={{ bg: 'transparent' }}
-              icon={<FaPlayCircle w={12} h={12} />}
+              icon={<FaPlayCircle width={12} height={12} />}
               size={'lg'}
               color={'white'}
               position={'absolute'}

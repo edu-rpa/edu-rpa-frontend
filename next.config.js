@@ -10,6 +10,11 @@ const config = {
 
     return config;
   },
+  reactStrictMode: true,
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
 };
 require('dotenv').config({ path: `./.env.${process.env.ENVIRONMENT}` });
 module.exports = config;
