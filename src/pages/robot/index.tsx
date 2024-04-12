@@ -3,9 +3,10 @@ import CustomTable from '@/components/CustomTable/CustomTable';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
 import { QUERY_KEY } from '@/constants/queryKey';
-import { SearchIcon } from '@chakra-ui/icons';
+import { SearchIcon, RepeatIcon } from '@chakra-ui/icons';
 import {
   Box,
+  IconButton,
   Input,
   InputGroup,
   InputLeftElement,
@@ -17,8 +18,9 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import RobotTable from '@/components/Robot/RobotTable';
 import { Robot, TriggerType } from '@/interfaces/robot';
+import { toastError } from '@/utils/common';
 
-export default function Robot() {
+export default function RobotPage() {
   const router = useRouter();
   const [nameFilter, setNameFilter] = useState('');
   const [processFilter, setProcessFilter] = useState('all');
@@ -40,6 +42,11 @@ export default function Robot() {
 
   useEffect(() => {
   }, []);
+
+  const fetchData = async () => {
+    // TODO: implement refresh functionallity
+    toastError(toast, 'Refresh functionallity is not implemented yet');
+  };
 
   if (isLoadingRobot || countRobotLoading) {
     return <LoadingIndicator />;
@@ -95,6 +102,13 @@ export default function Robot() {
                 onChange={(e) => setProcessFilter(e.target.value)}>
                 <option value="mock">Mock process</option>
               </Select>
+            </Box>
+            <Box className="w-[15vw] ml-[20px]">
+              <IconButton
+                aria-label="Refresh"
+                icon={<RepeatIcon />}
+                onClick={fetchData}
+              />
             </Box>
           </InputGroup>
         </div>
