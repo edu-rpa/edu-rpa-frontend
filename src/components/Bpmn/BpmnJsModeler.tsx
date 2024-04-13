@@ -13,16 +13,12 @@ import {
   BpmnJsReactProps,
 } from '@/interfaces/bpmnJsReact.interface';
 //@ts-ignore
-import CliModule from 'bpmn-js-cli';
-//@ts-ignore
 import BpmnColorPickerModule from 'bpmn-js-color-picker';
 //@ts-ignore
 import gridModule from 'diagram-js-grid';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-font/dist/css/bpmn-embedded.css';
-import removeUnsupportedBpmnFunctions from './removeTrackPad';
 import { useParams } from 'next/navigation';
-import { getProcessFromLocalStorage } from '@/utils/processService';
 import { QUERY_KEY } from '@/constants/queryKey';
 import processApi from '@/apis/processApi';
 import { useQuery } from '@tanstack/react-query';
@@ -34,7 +30,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
 > = (
   {
     useBpmnJsReact,
-    height = '80vh',
+    height,
     onError = () => {},
     onShown = () => {},
   }: BpmnJsReactProps,
@@ -57,12 +53,9 @@ const BpmnJsModeler: ForwardRefRenderFunction<
       additionalModules: [
         CustomContextPadProvider,
         BpmnColorPickerModule,
-        CliModule,
         gridModule,
       ],
-      cli: {
-        bindTo: 'cli',
-      },
+      height: '80vh',
     });
     useBpmnJsReact?.setBpmnModeler(newModeler);
     setBpmnEditor(newModeler);
@@ -88,7 +81,7 @@ const BpmnJsModeler: ForwardRefRenderFunction<
 
   return (
     <div className="bpmn-wrapper">
-      <div id="bpmnview" style={{ height }}></div>
+      <div id="bpmnview"></div>
     </div>
   );
 };

@@ -10,7 +10,6 @@ const config = {
 
     return config;
   },
-  reactStrictMode: true,
   output: 'export',
   images: {
     unoptimized: true,
