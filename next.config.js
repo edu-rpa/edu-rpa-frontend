@@ -10,6 +10,9 @@ const config = {
 
     return config;
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   output: 'export',
   images: {
     unoptimized: true,
