@@ -9,6 +9,7 @@ import { setLocalStorageObject } from '@/utils/localStorageService';
 import { LocalStorage } from '@/constants/localStorage';
 import { useDispatch } from 'react-redux';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
+import { useParams } from 'next/navigation';
 
 interface ModelerSideBarProps {
   isOpen: boolean;
@@ -26,12 +27,13 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
   });
 
   const dispatch = useDispatch();
+  const params = useParams();
+  const processID = params.id as string;
 
   useEffect(() => {
     props.modeler.bpmnModeler.on('selection.changed', async (event: any) => {
       if (!event.newSelection[0]) return;
       const eventInfo = event.newSelection[0].businessObject;
-      const processID = eventInfo.$parent.id;
       const currentActivity = {
         activityID: eventInfo.id,
         activityName: eventInfo.name,
@@ -45,11 +47,12 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
       if (!isActivityExists) {
         const updateModelerAndLocalStorage = async () => {
           const xml = await props.modeler.saveXML();
-          const activityList = props.modeler.getElementList();
+          const activityList = props.modeler.getElementList(processID).slice(1);
+
           const newObj = {
             ...getProcessFromLocalStorage(processID),
             xml: xml.xml,
-            activities: activityList.slice(1),
+            activities: activityList,
           };
           const newLocalStorage = updateLocalStorage(newObj);
           setLocalStorageObject(LocalStorage.PROCESS_LIST, newLocalStorage);
@@ -60,24 +63,25 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
       setActivityItem(currentActivity);
     });
 
-     props.modeler.bpmnModeler.on(
-       'commandStack.shape.delete.executed',
-       async (event: any) => {
-         const updateModelerAndLocalStorage = async () => {
-           const xml = await props.modeler.saveXML();
-           const activityList = props.modeler.getElementList();
-           const newObj = {
-             ...getProcessFromLocalStorage(event.context.oldParent.id),
-             xml: xml.xml,
-             activities: activityList.slice(1),
-           };
-           const newLocalStorage = updateLocalStorage(newObj);
-           setLocalStorageObject(LocalStorage.PROCESS_LIST, newLocalStorage);
-         };
-         await updateModelerAndLocalStorage();
-         dispatch(isSavedChange(false));        
-       }
-     );
+    props.modeler.bpmnModeler.on(
+      'commandStack.shape.delete.executed',
+      async (event: any) => {
+        const updateModelerAndLocalStorage = async () => {
+          const xml = await props.modeler.saveXML();
+          const activityList = props.modeler.getElementList(processID).slice(1);
+
+          const newObj = {
+            ...getProcessFromLocalStorage(processID),
+            xml: xml.xml,
+            activities: activityList,
+          };
+          const newLocalStorage = updateLocalStorage(newObj);
+          setLocalStorageObject(LocalStorage.PROCESS_LIST, newLocalStorage);
+        };
+        await updateModelerAndLocalStorage();
+        dispatch(isSavedChange(false));
+      }
+    );
 
     props.modeler.bpmnModeler.on('element.dblclick', async (event: any) => {
       props.onOpen();

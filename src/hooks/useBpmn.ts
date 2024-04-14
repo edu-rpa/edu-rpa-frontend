@@ -7,6 +7,7 @@ import {
 import { BpmnJsReactHook } from '@/interfaces/BpmnJsReactHook';
 //@ts-ignore
 import { BpmnModeler as IBpmnModeler } from 'bpmn-js/lib/Modeler';
+import { getActivityInProcess } from '@/utils/processService';
 
 export const useBpmn: BpmnJsReactHook = () => {
   const [bpmnModeler, setBpmnModeler] =
@@ -42,12 +43,14 @@ export const useBpmn: BpmnJsReactHook = () => {
     return bpmnModeler.get('elementRegistry').getAll();
   };
 
-  const getElementList = () => {
+  const getElementList = (processID: string) => {
     return getElements().map((item: any) => {
+      const currentActivity = getActivityInProcess(processID, item.id);
+      const properties = currentActivity ? currentActivity.properties : {};
       return {
         activityID: item.id,
         activityType: item.type,
-        properties: {},
+        properties: properties,
       };
     });
   };

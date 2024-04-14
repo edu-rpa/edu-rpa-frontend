@@ -34,7 +34,7 @@ export type BpmnJsReactHook = () => {
   getAttribute: (id: string, attr: string) => any;
   setAttribute: (id: string, attr: string, value: any) => void;
   getElements: () => any;
-  getElementList: () => Activity[];
+  getElementList: (processID: string) => Activity[];
 
   getBusinessObject: (id: string) => any;
   getIncoming: (id: string) => any;
