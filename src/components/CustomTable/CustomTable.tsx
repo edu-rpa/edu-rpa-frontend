@@ -51,6 +51,9 @@ const DEFAULT_MAX_ROWS = 6;
 
 const CustomTable = (props: TableProps) => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [currentDeletingId, setCurrentDeletingId] = useState<string | null>(
+    null
+  );
   const itemsPerPage = 5;
   const pageCount = Math.ceil(props.data.length / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
@@ -68,6 +71,19 @@ const CustomTable = (props: TableProps) => {
 
   const handlePageChange = (selected: any) => {
     setCurrentPage(selected.selected);
+  };
+
+  const handleDeleteClick = (id: string) => {
+    setCurrentDeletingId(id);
+    onOpen();
+  };
+
+  const confirmDelete = () => {
+    if (currentDeletingId) {
+      props.onDelete(currentDeletingId);
+      onClose();
+      setCurrentDeletingId(null);
+    }
   };
 
   const renderTableCell = (type: string, value: string) => {
@@ -187,7 +203,7 @@ const CustomTable = (props: TableProps) => {
                         aria-label="Delete item"
                         onClick={(e) => {
                           e.stopPropagation();
-                          onOpen();
+                          handleDeleteClick(item.id);
                         }}
                         icon={<DeleteIcon color="#319795" />}
                       />
@@ -197,24 +213,20 @@ const CustomTable = (props: TableProps) => {
                           <ModalHeader>Confirmation Delete</ModalHeader>
                           <ModalCloseButton />
                           <ModalBody>
-                            <Text>Are you sure to delete this item ?</Text>
+                            <Text>
+                              Are you sure you want to delete this item?
+                            </Text>
                             <Text>
                               This action is irreversible and you will not be
                               able to restore the item afterward.
                             </Text>
                           </ModalBody>
-
                           <ModalFooter>
                             <Button variant="outline" mr={3} onClick={onClose}>
                               Cancel
                             </Button>
-                            <Button
-                              colorScheme="red"
-                              onClick={() => {
-                                props.onDelete && props.onDelete(item.id);
-                                onClose();
-                              }}>
-                              Detele
+                            <Button colorScheme="red" onClick={confirmDelete}>
+                              Delete
                             </Button>
                           </ModalFooter>
                         </ModalContent>

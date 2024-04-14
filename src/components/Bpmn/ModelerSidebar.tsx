@@ -64,7 +64,10 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
     });
 
     props.modeler.bpmnModeler.on(
-      'commandStack.shape.delete.executed',
+      [
+        'commandStack.shape.delete.executed',
+        'commandStack.connection.delete.executed',
+      ],
       async (event: any) => {
         const updateModelerAndLocalStorage = async () => {
           const xml = await props.modeler.saveXML();

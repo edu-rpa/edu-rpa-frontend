@@ -72,6 +72,8 @@ export default function Studio() {
     queryFn: () => processApi.getAllProcess(limit, page),
   });
 
+  console.log('All processes', allProcess);
+
   const syncBackendToLocalStorage = () => {
     return (
       allProcess &&
@@ -126,7 +128,7 @@ export default function Studio() {
         id: item.id,
         name: item.name,
         description: item.description,
-        sharedBy: item.sharedByUser? item.sharedByUser.name : '',
+        sharedBy: item.sharedByUser ? item.sharedByUser.name : '',
         last_modified: item.updatedAt,
         version: item.version,
       };
@@ -211,6 +213,7 @@ export default function Studio() {
     const variableListAfterDelete = deleteVariableById(processID);
     setLocalStorageObject(LocalStorage.PROCESS_LIST, processListAfterDelete);
     setLocalStorageObject(LocalStorage.VARIABLE_LIST, variableListAfterDelete);
+    console.log('Detele ProcessID', processID);
     handleDeleteProcessWithApi.mutate(processID);
   };
 
@@ -301,17 +304,6 @@ export default function Studio() {
               type="text"
               placeholder="Search..."
             />
-            <Box className="w-[15vw] ml-[20px]">
-              <Select
-                defaultValue="all"
-                onChange={(e) => setSelectFilter(e.target.value)}>
-                <option value="ocr">OCR</option>
-                <option value="email-processing">Email Processing</option>
-                <option value="google-workspace">Google Workpace</option>
-                <option value="free">Free</option>
-                <option value="all">All</option>
-              </Select>
-            </Box>
           </InputGroup>
           <div className="flex justify-between gap-[10px]">
             <Button colorScheme="teal" onClick={onOpen}>
@@ -389,7 +381,9 @@ export default function Studio() {
           <div className="w-90 m-auto flex justify-center items-center">
             <div className="text-center">
               <div className="text-2xl font-bold">No processes here</div>
-              <div className="text-gray-500">Create a new process or use the templates below</div>
+              <div className="text-gray-500">
+                Create a new process or use the templates below
+              </div>
             </div>
           </div>
         )}
