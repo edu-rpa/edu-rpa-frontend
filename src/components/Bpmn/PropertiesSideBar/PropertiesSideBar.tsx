@@ -129,12 +129,12 @@ export default function PropertiesSideBar({
     if (sideBarState.currentStep < 3) return;
     const payload = {
       activityPackage: sideBarState.packageName,
-      serviceName: sideBarState.serviceName,
       activityName: sideBarState.activityName,
       library: getLibrary(sideBarState.packageName),
       arguments: formValues,
       return: saveResult,
     };
+
     const updatePayload = {
       ...getActivityInProcess(processID, activityItem.activityID),
       properties: payload,
@@ -358,7 +358,6 @@ export default function PropertiesSideBar({
                   case 'number':
                     return renderInput(paramKey, 'number');
                   case 'connection.Google Drive':
-                    console.log('key', paramKey);
                     return renderConnectionSelect(
                       paramKey,
                       AuthorizationProvider.G_DRIVE

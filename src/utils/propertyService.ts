@@ -37,10 +37,20 @@ const getArgumentsByActivity = (data: any, activityName: string) => {
 
 const getLibrary = (packageName: string) => {
   switch (packageName) {
-    case 'Google Workspace':
+    case 'Google Drive':
+    case 'Gmail':
+    case 'Google Sheet':
       return 'RPA.Cloud.Google';
+    case 'Google Classroom':
+      return 'EduRPA.GoogleClassroom';
+    case 'Google Form':
+      return 'EduRPA.GoogleForm';
     case 'Browser automation':
       return 'RPA.Browser.Playwright';
+    case 'Document automation':
+      return 'EduRPA.Document';
+    case 'File storage':
+      return 'EduRPA.FileStorage';
     default:
       return null;
   }
