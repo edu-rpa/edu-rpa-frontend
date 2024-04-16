@@ -54,6 +54,7 @@ export const PublishRobotModal = (props: Props) => {
         name: robotName,
         processId: props.processID as string,
         code: JSON.stringify(robotCode),
+        providers: ["Google Drive"],
         triggerType: triggerType,
       };
       handleCreateRobotWithApi.mutate(publishPayload);

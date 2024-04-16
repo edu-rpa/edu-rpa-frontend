@@ -32,9 +32,7 @@ import { ArgumentProps, PropertiesProps } from '@/types/property';
 import { getVariableItemFromLocalStorage } from '@/utils/variableService';
 import TextAutoComplete from '@/components/Input/AutoComplete/TextAutoComplete';
 import {
-  getActivityByService,
   getArgumentsByActivity,
-  getDistinctService,
   getLibrary,
   getPackageIcon,
   getServiceIcon,
@@ -45,6 +43,8 @@ import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
 import { Variable } from '@/types/variable';
+import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
+import ConnectionOptions from './ConnectionSelect';
 
 interface PropertiesSideBarProps {
   isOpen: boolean;
@@ -129,12 +129,12 @@ export default function PropertiesSideBar({
     if (sideBarState.currentStep < 3) return;
     const payload = {
       activityPackage: sideBarState.packageName,
-      serviceName: sideBarState.serviceName,
       activityName: sideBarState.activityName,
       library: getLibrary(sideBarState.packageName),
       arguments: formValues,
       return: saveResult,
     };
+
     const updatePayload = {
       ...getActivityInProcess(processID, activityItem.activityID),
       properties: payload,
@@ -152,16 +152,16 @@ export default function PropertiesSideBar({
     getPackageIcon(sideBarState.packageName);
 
   const handleKeywordRobotFramework = (varName: string, varType: string) => {
-    let prefix = '${'
-    let suffix = '}'
+    let prefix = '${';
+    let suffix = '}';
     if (varType === 'list') {
-      prefix = '@{'
-    } 
+      prefix = '@{';
+    }
     if (varType === 'dictionary') {
       prefix = '&{';
     }
     return `${prefix}${varName}${suffix}`;
-  }
+  };
 
   return (
     <div>
@@ -293,6 +293,17 @@ export default function PropertiesSideBar({
                 </Select>
               );
 
+              const renderConnectionSelect = (
+                paramKey: string,
+                provider: AuthorizationProvider
+              ) => (
+                <ConnectionOptions
+                  value={formValues[paramKey]?.value ?? ''}
+                  onChange={(e) => handleInputChange(paramKey, e.target.value)}
+                  provider={provider}
+                />
+              );
+
               const renderProperty = (
                 paramKey: string,
                 paramValue: ArgumentProps
@@ -347,12 +358,20 @@ export default function PropertiesSideBar({
                   case 'number':
                     return renderInput(paramKey, 'number');
                   case 'connection.Google Drive':
+                    return renderConnectionSelect(
+                      paramKey,
+                      AuthorizationProvider.G_DRIVE
+                    );
                   case 'connection.Gmail':
+                    return renderConnectionSelect(
+                      paramKey,
+                      AuthorizationProvider.G_GMAIL
+                    );
                   case 'connection.Google Sheets':
-                    return renderInput(paramKey, 'text', {
-                      variant: 'filled',
-                      disabled: true,
-                    });
+                    return renderConnectionSelect(
+                      paramKey,
+                      AuthorizationProvider.G_SHEETS
+                    );
                   case 'enum.shareType':
                     return renderSelect(paramKey, [
                       { value: 'user', label: 'User' },
@@ -429,12 +448,10 @@ export default function PropertiesSideBar({
                           <FormLabel>Result Variable</FormLabel>
                           <Select
                             defaultValue={saveResult || ''}
+                            placeholder="Choose Variable"
                             onChange={(e) => {
                               setSaveResult(e.target.value);
                             }}>
-                            <option value="" disabled>
-                              Choose Variable
-                            </option>
                             {variableStorage &&
                               variableStorage.map((variable: any) => (
                                 <option

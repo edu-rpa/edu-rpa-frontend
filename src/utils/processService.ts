@@ -2,6 +2,8 @@ import { Process } from '@/types/process';
 import { getLocalStorageObject } from './localStorageService';
 import { Activity } from '@/types/activity';
 import { LocalStorage } from '@/constants/localStorage';
+import connectionApi from '@/apis/connectionApi';
+import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
 
 const generateProcessID = () => {
   return (
