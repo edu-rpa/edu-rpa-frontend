@@ -9,7 +9,7 @@
     "export": "next export",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest --config=jest.config.mjs"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",

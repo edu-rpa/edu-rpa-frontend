@@ -1,0 +1,29 @@
+{
+  "name": "",
+  "tests": {
+    "name": "Main",
+    "body": [
+      {
+        "name": "Set up OAuth token in vault",
+        "args": [
+          "token_file_path=/home/ec2-user/robot/devdata/6e04e34a931af89c89438d42957ec58811338a8e7f836474b2822ba320eff430.json"
+        ],
+        "assigns": []
+      },
+      {
+        "name": "Create folder",
+        "args": [],
+        "assigns": []
+      }
+    ]
+  },
+  "resource": {
+    "imports": [
+      {
+        "type": "LIBRARY",
+        "name": "RPA.Cloud.Google"
+      }
+    ],
+    "variables": []
+  }
+}

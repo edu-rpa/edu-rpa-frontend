@@ -1,0 +1,26 @@
+{
+  "name": "",
+  "tests": {
+    "name": "Main",
+    "body": [
+      {
+        "name": "Upload file",
+        "args": [
+          "file=asdasd"
+        ],
+        "assigns": []
+      },
+      {
+        "name": "Create folder",
+        "args": [
+          "folder=haha"
+        ],
+        "assigns": []
+      }
+    ]
+  },
+  "resource": {
+    "imports": [],
+    "variables": []
+  }
+}

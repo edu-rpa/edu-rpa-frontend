@@ -1,0 +1,53 @@
+{
+    "processID": "Process_B74HX79",
+    "processName": "Robot 123",
+    "processType": "free",
+    "processDesc": "",
+    "activities": [
+        {
+            "activityID": "StartEvent_0vr9as6",
+            "activityType": "bpmn:StartEvent",
+            "properties": {}
+        },
+        {
+            "activityID": "Event_1j2r3db",
+            "activityType": "bpmn:EndEvent",
+            "properties": {}
+        },
+        {
+            "activityID": "Flow_0v7yp0r",
+            "activityType": "bpmn:SequenceFlow",
+            "properties": {}
+        },
+        {
+            "activityID": "Activity_1ir4uei",
+            "activityType": "bpmn:Task",
+            "properties": {
+                "activityPackage": "Google Drive",
+                "activityName": "Create folder",
+                "library": "RPA.Cloud.Google",
+                "arguments": {
+                    "Connection": {
+                        "keywordArg": null,
+                        "value": "6e04e34a931af89c89438d42957ec58811338a8e7f836474b2822ba320eff430"
+                    },
+                    "Folder name": {
+                        "keywordArg": "folder",
+                        "value": ""
+                    },
+                    "Parent Folder Path": {
+                        "keywordArg": "parent_folder",
+                        "value": ""
+                    }
+                },
+                "return": null
+            }
+        },
+        {
+            "activityID": "Flow_0f422qf",
+            "activityType": "bpmn:SequenceFlow",
+            "properties": {}
+        }
+    ],
+    "variables": {}
+}

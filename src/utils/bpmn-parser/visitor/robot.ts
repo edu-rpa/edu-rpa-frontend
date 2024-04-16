@@ -42,6 +42,12 @@ export class Keyword extends BodyItem {
   }
 }
 
+export class GoogleCredentialKeyword extends Keyword {
+  constructor(credentialFilePath: string) {
+    super('Set up OAuth token in vault', [new Argument('token_file_path',credentialFilePath)], []);
+  }
+}
+
 export class Argument {
   constructor(public name: string, public value: string) {}
   toJSON() {
