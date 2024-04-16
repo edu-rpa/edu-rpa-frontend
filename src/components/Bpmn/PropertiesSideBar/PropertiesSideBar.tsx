@@ -32,9 +32,7 @@ import { ArgumentProps, PropertiesProps } from '@/types/property';
 import { getVariableItemFromLocalStorage } from '@/utils/variableService';
 import TextAutoComplete from '@/components/Input/AutoComplete/TextAutoComplete';
 import {
-  getActivityByService,
   getArgumentsByActivity,
-  getDistinctService,
   getLibrary,
   getPackageIcon,
   getServiceIcon,
@@ -154,16 +152,16 @@ export default function PropertiesSideBar({
     getPackageIcon(sideBarState.packageName);
 
   const handleKeywordRobotFramework = (varName: string, varType: string) => {
-    let prefix = '${'
-    let suffix = '}'
+    let prefix = '${';
+    let suffix = '}';
     if (varType === 'list') {
-      prefix = '@{'
-    } 
+      prefix = '@{';
+    }
     if (varType === 'dictionary') {
       prefix = '&{';
     }
     return `${prefix}${varName}${suffix}`;
-  }
+  };
 
   return (
     <div>
@@ -297,15 +295,14 @@ export default function PropertiesSideBar({
 
               const renderConnectionSelect = (
                 paramKey: string,
-                provider: AuthorizationProvider,
-                defaultValue: string = "Choose connection",
+                provider: AuthorizationProvider
               ) => (
                 <ConnectionOptions
-                  defaultValue={defaultValue}
+                  value={formValues[paramKey]?.value ?? ''}
                   onChange={(e) => handleInputChange(paramKey, e.target.value)}
-                  provider= {provider}
+                  provider={provider}
                 />
-              )
+              );
 
               const renderProperty = (
                 paramKey: string,
@@ -361,11 +358,21 @@ export default function PropertiesSideBar({
                   case 'number':
                     return renderInput(paramKey, 'number');
                   case 'connection.Google Drive':
-                    return renderConnectionSelect(paramKey, AuthorizationProvider.G_DRIVE, 'Choose your Drive Connection')
+                    console.log('key', paramKey);
+                    return renderConnectionSelect(
+                      paramKey,
+                      AuthorizationProvider.G_DRIVE
+                    );
                   case 'connection.Gmail':
-                    return renderConnectionSelect(paramKey, AuthorizationProvider.G_GMAIL, 'Choose your GMail Connection')
+                    return renderConnectionSelect(
+                      paramKey,
+                      AuthorizationProvider.G_GMAIL
+                    );
                   case 'connection.Google Sheets':
-                    return renderConnectionSelect(paramKey, AuthorizationProvider.G_SHEETS, 'Choose your GSheet Connection')
+                    return renderConnectionSelect(
+                      paramKey,
+                      AuthorizationProvider.G_SHEETS
+                    );
                   case 'enum.shareType':
                     return renderSelect(paramKey, [
                       { value: 'user', label: 'User' },
@@ -442,12 +449,10 @@ export default function PropertiesSideBar({
                           <FormLabel>Result Variable</FormLabel>
                           <Select
                             defaultValue={saveResult || ''}
+                            placeholder="Choose Variable"
                             onChange={(e) => {
                               setSaveResult(e.target.value);
                             }}>
-                            <option value="" disabled>
-                              Choose Variable
-                            </option>
                             {variableStorage &&
                               variableStorage.map((variable: any) => (
                                 <option
