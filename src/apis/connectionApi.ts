@@ -26,6 +26,7 @@ const removeConnection = async (provider: string, name: string): Promise<void> =
     });
 };
 
+
 const connectionApi = {
   queryConnections,
   refreshConnection,

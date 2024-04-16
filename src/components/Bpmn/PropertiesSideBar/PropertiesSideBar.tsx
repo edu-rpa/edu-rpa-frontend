@@ -45,6 +45,8 @@ import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
 import { Variable } from '@/types/variable';
+import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
+import ConnectionOptions from './ConnectionSelect';
 
 interface PropertiesSideBarProps {
   isOpen: boolean;
@@ -293,6 +295,18 @@ export default function PropertiesSideBar({
                 </Select>
               );
 
+              const renderConnectionSelect = (
+                paramKey: string,
+                provider: AuthorizationProvider,
+                defaultValue: string = "Choose connection",
+              ) => (
+                <ConnectionOptions
+                  defaultValue={defaultValue}
+                  onChange={(e) => handleInputChange(paramKey, e.target.value)}
+                  provider= {provider}
+                />
+              )
+
               const renderProperty = (
                 paramKey: string,
                 paramValue: ArgumentProps
@@ -347,12 +361,11 @@ export default function PropertiesSideBar({
                   case 'number':
                     return renderInput(paramKey, 'number');
                   case 'connection.Google Drive':
+                    return renderConnectionSelect(paramKey, AuthorizationProvider.G_DRIVE, 'Choose your Drive Connection')
                   case 'connection.Gmail':
+                    return renderConnectionSelect(paramKey, AuthorizationProvider.G_GMAIL, 'Choose your GMail Connection')
                   case 'connection.Google Sheets':
-                    return renderInput(paramKey, 'text', {
-                      variant: 'filled',
-                      disabled: true,
-                    });
+                    return renderConnectionSelect(paramKey, AuthorizationProvider.G_SHEETS, 'Choose your GSheet Connection')
                   case 'enum.shareType':
                     return renderSelect(paramKey, [
                       { value: 'user', label: 'User' },
