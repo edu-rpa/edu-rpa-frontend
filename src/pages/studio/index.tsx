@@ -85,6 +85,7 @@ export default function Studio() {
           xml: '',
           activities: [],
           variables: [],
+          sharedByUser: item.sharedByUser,
         };
       })
     );

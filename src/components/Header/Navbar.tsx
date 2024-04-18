@@ -1,7 +1,9 @@
 import { toggleSidebar } from '@/redux/slice/homeSlice';
 import {
   Avatar,
+  AvatarBadge,
   Box,
+  Button,
   Flex,
   HStack,
   IconButton,
@@ -26,6 +28,7 @@ import userApi from '@/apis/userApi';
 import { useEffect, useState } from 'react';
 import { getLocalStorageObject } from '@/utils/localStorageService';
 import { LocalStorage } from '@/constants/localStorage';
+import NotificationMenu from './NotificationMenu';
 
 const Navbar = () => {
   const router = useRouter();
@@ -92,12 +95,8 @@ const Navbar = () => {
       </Box>
 
       <HStack spacing={{ base: '0', md: '6' }}>
-        <IconButton
-          size="lg"
-          variant="ghost"
-          aria-label="open menu"
-          icon={<FiBell />}
-        />
+        <NotificationMenu />
+
         <Flex alignItems="center">
           <Menu>
             <MenuButton py={2} transition="all 0.3s">

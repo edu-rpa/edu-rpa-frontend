@@ -75,6 +75,7 @@ const runRobot = async (userId: number, processId: string, version: number) => {
       user_id: userId.toString(),
       process_id: processId,
       version: version,
+      trigger_type: 'manual'
     })
     .then((res: any) => {
       return res.data;
