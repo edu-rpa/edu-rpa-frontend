@@ -6,6 +6,7 @@ export enum VariableType {
   List = 'list',
   Dictionary = 'dictionary',
   Connection = 'connection',
+  DocumentTemplate = 'template',
 }
 
 export interface Variable {
@@ -14,6 +15,7 @@ export interface Variable {
   value: any;
   isArgument: boolean;
   type: VariableType;
+  label?: string;
 }
 
 export interface VariableItem {
