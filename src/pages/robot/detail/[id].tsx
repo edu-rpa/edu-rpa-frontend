@@ -21,7 +21,7 @@ import { LOG_ROBOT } from '@/constants/robot';
 const RobotDetail = () => {
   const router = useRouter();
   const params = useParams();
-  const robotID = LOG_ROBOT.FOLDER_PREFIX + params.id;
+  const robotID = LOG_ROBOT.FOLDER_PREFIX + params?.id;
 
   return (
     <Box className="bg-white h-[100vh]">
