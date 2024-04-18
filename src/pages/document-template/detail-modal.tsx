@@ -24,6 +24,8 @@ interface Props {
   onClose: () => void;
   documentTemplate?: DocumentTemplate;
   handleSaveDocumentTemplate: (saveDocumentTemplateDto: SaveDocumentTemplateDto) => void;
+  isEditable? : boolean,  
+  handleSelectDocumentTemplate?: (e:any) => void;
 }
 
 const DetailDocumentTemplateModal: React.FC<Props> = ({
@@ -31,6 +33,8 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
   onClose,
   documentTemplate,
   handleSaveDocumentTemplate,
+  isEditable=true,
+  handleSelectDocumentTemplate=(e:any)=>{}
 }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [dataTemplate, setDataTemplate] = useState<DataTemplate>({});
@@ -139,7 +143,7 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
           <ModalHeader>{documentTemplate?.name}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <FormControl>
+          {isEditable && <FormControl>
               <Box className="flex justify-between">
                 <Box
                   border="1px"
@@ -155,7 +159,7 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
                   />
                 </Box>
               </Box>
-            </FormControl>
+            </FormControl> }
 
             <h1 className="text-2xl mt-[20px]">Sample document</h1>
 
@@ -175,9 +179,9 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
               />
             )}
 
-            <h1 className="text-2xl mt-[20px]">Data template</h1>
+            {isEditable && <h1 className="text-2xl mt-[20px]">Data template</h1>}
 
-            <ul>
+            {isEditable && <ul>
               {Object.keys(dataTemplate).map((label, index) => {
                 const rect = dataTemplate[label];
                 return (
@@ -196,18 +200,34 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
                 );
 
               })}
-            </ul>
+            </ul>}
           </ModalBody>
           <ModalFooter>
-            <Button
-              isLoading={isLoading}
-              colorScheme="blue"
-              mr={3}
-              onClick={() => handleSaveDocumentTemplate({
-                dataTemplate: dataTemplate,
-              })}>
-              Save
-            </Button>
+            {
+              isEditable 
+              ? 
+                <Button
+                    isLoading={isLoading}
+                    colorScheme="blue"
+                    mr={3}
+                    onClick={() => handleSaveDocumentTemplate({
+                      dataTemplate: dataTemplate,
+                    })}>
+                    Save
+                </Button>
+              :
+                <Button
+                  isLoading={isLoading}
+                  colorScheme="blue"
+                  mr={3}
+                  onClick={() => handleSelectDocumentTemplate({
+                    name: `${documentTemplate.type}-template-${documentTemplate.name ?? ""}`, 
+                    dataTemplate: JSON.stringify(dataTemplate)
+                  })}>
+                  Select
+                </Button>
+            }
+
             <Button onClick={onClose}>
               Cancel
             </Button>

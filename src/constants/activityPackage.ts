@@ -745,7 +745,7 @@ export const ActivityPackages = [
     _id: 'google_classroom',
     displayName: 'Google Classroom',
     description: 'Help you integrate your work with Google Classroom',
-    library: 'EduRPA.GoogleClassroom',
+    library: 'EduRPA.Google',
     activityTemplates: [
       {
         templateId: 'create_course',
@@ -1025,7 +1025,7 @@ export const ActivityPackages = [
     _id: 'google_form',
     displayName: 'Google Form',
     description: 'Help you integrate your work with Google Form',
-    library: 'EduRPA.GoogleForm',
+    library: 'EduRPA.Google',
     activityTemplates: [
       {
         templateId: 'create_quiz_form',
