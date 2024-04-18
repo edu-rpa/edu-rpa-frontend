@@ -31,14 +31,6 @@ const getNumberOfRobot = async () => {
     });
 };
 
-const getRobotByID = async (id: string) => {
-  return await apiBase
-    .get(`${process.env.NEXT_PUBLIC_DEV_API}/robot/${id}`)
-    .then((res: any) => {
-      return res.data;
-    });
-};
-
 const getRobotDetail = async (
   userId: number,
   processId: string,
@@ -75,7 +67,7 @@ const runRobot = async (userId: number, processId: string, version: number) => {
       user_id: userId.toString(),
       process_id: processId,
       version: version,
-      trigger_type: 'manual'
+      trigger_type: 'manual',
     })
     .then((res: any) => {
       return res.data;
@@ -151,7 +143,12 @@ const updateSchedule = async (
     });
 };
 
-const upsertEventSchedule = async (userId: number, processId: string, version: number, eventSchedule: EventSchedule) => {
+const upsertEventSchedule = async (
+  userId: number,
+  processId: string,
+  version: number,
+  eventSchedule: EventSchedule
+) => {
   return await apiBase
     .post(`${process.env.NEXT_PUBLIC_AWS_ROBOT_API_GATEWAY_URL}/event`, {
       user_id: userId.toString(),
@@ -168,7 +165,6 @@ const robotApi = {
   getAllRobot,
   createRobot,
   getNumberOfRobot,
-  getRobotByID,
   getRobotDetail,
   stopRobot,
   runRobot,

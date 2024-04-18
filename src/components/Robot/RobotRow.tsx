@@ -14,9 +14,11 @@ import {
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import { FaPlay, FaStop } from 'react-icons/fa';
-import { IoMdSettings } from "react-icons/io";
+import { IoMdSettings } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import { toastError, toastSuccess } from '@/utils/common';
+import { useRouter } from 'next/router';
+import EDU_RPA_ROBOT from '@/constants/robot';
 
 const mapStatus = (status: string) => {
   switch (status) {
@@ -70,6 +72,7 @@ const RobotRow = (props: RobotRowProps) => {
   const user = useSelector(userSelector);
   const data = props.data;
   const toast = useToast();
+  const router = useRouter();
 
   const handleGetStatus = async () => {
     setIsLoadingStatus(true);
@@ -118,6 +121,10 @@ const RobotRow = (props: RobotRowProps) => {
 
   return (
     <Tr
+      onClick={() => {
+        const logGroup = `${EDU_RPA_ROBOT}-${user.id}-${props.data.processId}-v${props.data.processVersion}`;
+        router.push(`/robot/detail/${logGroup}`);
+      }}
       _hover={{
         bg: '#4FD1C5',
         cursor: 'pointer',
