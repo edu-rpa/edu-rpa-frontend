@@ -71,11 +71,13 @@ const ConnectionRow = (props: ConnectionRowProps) => {
   };
 
   const handleReconnect = async () => {
-    const provider = providerData.find((provider) => provider.name === data.provider);
+    const provider = providerData.find(
+      (provider) => provider.name === data.provider
+    );
     if (provider) {
       window.open(
         `${process.env.NEXT_PUBLIC_DEV_API}/auth/${provider.slug}?fromUser=${user.id}&reconnect=true`,
-        "_self"
+        '_self'
       );
     }
   };
@@ -110,13 +112,12 @@ const ConnectionRow = (props: ConnectionRowProps) => {
           </Box>
         );
       case 'provider':
-        const provider = providerData.find((provider) => provider.name === value);
+        const provider = providerData.find(
+          (provider) => provider.name === value
+        );
         return (
           <Box className="flex justify-between items-center">
-            <IconImage
-              icon={provider!.icon}
-              label={provider!.name}
-            />
+            <IconImage icon={provider!.icon} label={provider!.name} />
           </Box>
         );
       default:
@@ -133,9 +134,9 @@ const ConnectionRow = (props: ConnectionRowProps) => {
         borderRadius: '15px',
       }}
       onClick={() => props.onView && props.onView(data.provider, data.name)}>
-      {Object.keys(data).map((key, columnIndex) =>
+      {Object.keys(data).map((key, columnIndex) => (
         <Td key={key}>{renderTableCell(key, data[key])}</Td>
-      )}
+      ))}
       <Td>
         {isLoadingRefresh ? (
           <Button
@@ -184,8 +185,8 @@ const ConnectionRow = (props: ConnectionRowProps) => {
         </HStack>
       </Td>
     </Tr>
-  )
-}
+  );
+};
 
 const ConnectionTable = (props: ConnectionTableProps) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -193,7 +194,9 @@ const ConnectionTable = (props: ConnectionTableProps) => {
     provider: '',
     name: '',
   });
-  const [connectionData, setConnectionData] = useState<Connection[]>(props.data);
+  const [connectionData, setConnectionData] = useState<Connection[]>(
+    props.data
+  );
   const itemsPerPage = 5;
   const pageCount = Math.ceil(connectionData.length / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
@@ -222,7 +225,11 @@ const ConnectionTable = (props: ConnectionTableProps) => {
         duration: 3000,
         isClosable: true,
       });
-      setConnectionData(connectionData.filter((item) => item.provider !== provider || item.name !== name));
+      setConnectionData(
+        connectionData.filter(
+          (item) => item.provider !== provider || item.name !== name
+        )
+      );
     } catch (error) {
       toast({
         title: 'Failed to remove connection',
@@ -244,24 +251,26 @@ const ConnectionTable = (props: ConnectionTableProps) => {
       borderColor="#319795"
       borderRadius="15px"
       overflow="hidden">
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            {props.header.map((item: string) => (
-              <Th key={item}>{item}</Th>
+      <Box overflowX="auto">
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              {props.header.map((item: string) => (
+                <Th key={item}>{item}</Th>
+              ))}
+            </Tr>
+          </Thead>
+          <Tbody>
+            {currentData.map((item, index) => (
+              <ConnectionRow
+                key={index}
+                data={item}
+                onSelectedForRemove={handleSelectForRemove}
+              />
             ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {currentData.map((item, index) => (
-            <ConnectionRow
-              key={index}
-              data={item}
-              onSelectedForRemove={handleSelectForRemove}
-            />
-          ))}
-        </Tbody>
-      </Table>
+          </Tbody>
+        </Table>
+      </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -270,10 +279,12 @@ const ConnectionTable = (props: ConnectionTableProps) => {
           <ModalBody>
             <Text>Are you sure to remove this connection ?</Text>
             <Text fontWeight={'bold'}>
-              Provider: {selectedForRemove.provider}, Name: {selectedForRemove.name}
+              Provider: {selectedForRemove.provider}, Name:{' '}
+              {selectedForRemove.name}
             </Text>
             <Text>
-              Robot using this connection will not be able to run if this connection is removed.  
+              Robot using this connection will not be able to run if this
+              connection is removed.
             </Text>
           </ModalBody>
 
@@ -284,7 +295,10 @@ const ConnectionTable = (props: ConnectionTableProps) => {
             <Button
               colorScheme="red"
               onClick={() => {
-                handleRemoveConnection(selectedForRemove.provider, selectedForRemove.name);
+                handleRemoveConnection(
+                  selectedForRemove.provider,
+                  selectedForRemove.name
+                );
                 onClose();
               }}>
               Remove
