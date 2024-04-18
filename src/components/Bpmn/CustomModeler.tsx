@@ -253,6 +253,7 @@ function CustomModeler() {
         }}>
         Save XML
       </Button>
+
       {/* <Button
         colorScheme="blue"
         size="md"
@@ -267,7 +268,7 @@ function CustomModeler() {
           console.log(bpmnParser.parseXML(res.xml as string));
         }}>
         Save JSON
-      </Button>
+      </Button> */}
 
       <Button
         colorScheme="orange"
@@ -285,7 +286,7 @@ function CustomModeler() {
           );
         }}>
         Save Properties
-      </Button> */}
+      </Button>
 
       <Button
         colorScheme="blue"

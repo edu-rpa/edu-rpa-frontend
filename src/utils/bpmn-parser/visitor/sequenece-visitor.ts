@@ -2,6 +2,7 @@ import { Variable } from "@/types/variable";
 import {
   BpmnParseError,
   BpmnParseErrorCode,
+  CredentialProviderCode,
   VariableError,
   VariableErrorCode,
 } from "../error";
@@ -22,6 +23,7 @@ import {
   Argument,
   BodyItem,
   For,
+  GoogleCredentialKeyword,
   If,
   IfBranch,
   Keyword,
@@ -31,6 +33,8 @@ import {
   Robot,
   Test,
 } from "./robot";
+import { ArgumentProps } from "@/types/property";
+import { AuthorizationProvider, AuthorizationProviderByActivityPackage } from "@/interfaces/enums/provider.enum";
 
 export class SequenceVisitor {
   properties: Map<string, Properties>;
@@ -61,6 +65,11 @@ export class SequenceVisitor {
 }
 
 export class ConcreteSequenceVisitor extends SequenceVisitor {
+  private credentials : {
+    provider: AuthorizationProvider,
+    connectionKey: string
+  }[] = [];
+
   parse() {
     let name = "";
     let body: BodyItem[] = this.visit(this.sequence, []);
@@ -72,6 +81,10 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     );
     let robot = new Robot(name, test, resource);
     return robot;
+  }
+
+  getCredentials() {
+    return this.credentials
   }
 
   parseVariables() {
@@ -89,7 +102,6 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
   visitBpmnTask(node: BpmnTask, params: any[]) {
     let activityID = node.id;
     let property = this.properties.get(activityID)?.properties;
-    console.log(property);
     if (!property)
       throw new BpmnParseError(
         BpmnParseErrorCode["Missing Property"],
@@ -112,6 +124,8 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     if (args) {
       // parse keywords arguments
       for (let arg of Object.values(args)) {
+        // Ignore empty keywords
+        // Which may include special 'Connection' Argument that does not have keywordArg
         if (arg.keywordArg && arg.value) {
           keywordArg.push(new Argument(arg.keywordArg, arg.value));
         }
@@ -130,7 +144,14 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       this.imports.add(Lib);
     }
 
-    return [new Keyword(property.activityName, keywordArg, keywordAssigns)];
+    let keywords = [new Keyword(property.activityName, keywordArg, keywordAssigns)];
+    if(property.arguments.Connection) {
+      // Handle Create Set Up Keywords
+      let credentials = this._handleCreateCredentials(Lib, property.activityPackage, property.arguments.Connection)
+      keywords  = credentials.concat(keywords)
+    }
+
+    return keywords;
   }
 
   visitSequence(node: Sequence, params: any[]) {
@@ -227,5 +248,28 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       );
     }
     return variable;
+  }
+
+  private _handleCreateCredentials(library: string, packageName: string,  args: ArgumentProps) {
+    // Check if supported connections
+    const provider = AuthorizationProviderByActivityPackage.get(packageName)
+    if(!provider)
+        throw new BpmnParseError(CredentialProviderCode["Not found provider"] + ":" + provider, "")
+    
+    switch(library){
+      case 'RPA.Cloud.Google':
+        if(!args.value || args.value.length == 0)
+            return []
+        
+        // Create credential paths for google token file
+        const credentialFilePath = `${process.env["ROBOT_CREDENTIAL_FOLDER"]}/${args.value}.json`
+
+        // Store the provides
+        this.credentials.push(({provider, connectionKey: args.value}))
+
+        return [new GoogleCredentialKeyword(credentialFilePath)]
+      default:
+        return []
+    }
   }
 }

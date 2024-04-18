@@ -13,6 +13,7 @@ import {
 import { ConcreteGraphVisitor, ConcreteSequenceVisitor } from "./visitor";
 import { ProcessVariables, Properties } from './model/properties.model';
 import { Variable } from '@/types/variable';
+import { Robot } from './visitor/robot';
 
 var convert = require('xml-js');
 var options = { ignoreComment: true, alwaysChildren: true };
@@ -38,12 +39,22 @@ export class BpmnParser {
     let g = new ConcreteGraphVisitor(bpmnProcess);
     let sequence = g.buildGraph().buildBasicBlock();
 
-    let robot = new ConcreteSequenceVisitor(sequence, properties, variables).parse();
+    let parser = new ConcreteSequenceVisitor(sequence, properties, variables)
+    let robot = parser.parse();
+    let credentials = parser.getCredentials()
+
     try {
-      return robot.toJSON(); 
+      return {
+        code: robot.toJSON(),
+        credentials
+      } 
     } catch (error) {
       throw error
     }
+  }
+
+  private processRobotConnections(robot : Robot) {
+    
   }
 
   public parseXML(xml: string) {

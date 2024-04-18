@@ -19,6 +19,7 @@ import { useMutation } from "@tanstack/react-query";
 import { CreateRobotDto } from "@/dtos/robotDto";
 import robotApi from "@/apis/robotApi";
 import LoadingIndicator from "@/components/LoadingIndicator/LoadingIndicator";
+import { BpmnParseError, BpmnParseErrorCode } from "@/utils/bpmn-parser/error";
 
 interface Props {
   processID: string;
@@ -48,13 +49,15 @@ export const PublishRobotModal = (props: Props) => {
 
   const handlePublishRobot = async () => {
     try {
-      const robotCode = await props.genRobotCode(props.processID);
-
+      const result = await props.genRobotCode(props.processID);
+      if(!result.code || !result.credentials) {
+          throw new BpmnParseError(BpmnParseErrorCode["Unknown"], "")
+      }
       const publishPayload = {
         name: robotName,
         processId: props.processID as string,
-        code: JSON.stringify(robotCode),
-        providers: ["Google Drive"],
+        code: JSON.stringify(result.code),
+        providers: result.credentials,
         triggerType: triggerType,
       };
       handleCreateRobotWithApi.mutate(publishPayload);
