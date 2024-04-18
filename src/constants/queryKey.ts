@@ -6,4 +6,6 @@ export const QUERY_KEY = {
   ROBOT_LIST: 'robot-list',
   ROBOT_DETAIL: 'robot_detail',
   ROBOT_COUNT: 'robot-count',
+  LOG_STREAMS: 'log-streams',
+  LOG_STREAM_DETAIL: 'log-stream-detail',
 };

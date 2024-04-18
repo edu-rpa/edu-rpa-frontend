@@ -1,21 +1,30 @@
 import React from 'react';
-import { Box, Heading, Container, Text, IconButton } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  Container,
+  Text,
+  IconButton,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { useParams } from 'next/navigation';
-import robotCode from '../../../constants/robot';
-import CodeViewer from '@/components/CodeViewer/CodeViewer';
-import { useQuery } from '@tanstack/react-query';
-import { QUERY_KEY } from '@/constants/queryKey';
-import robotApi from '@/apis/robotApi';
-import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
+import RobotDashboard from '../components/Dashboard/RobotDashboard';
+import RobotLog from '../components/Log/RobotLog';
+import { LOG_ROBOT } from '@/constants/robot';
 
-const RobotCode = () => {
+const RobotDetail = () => {
   const router = useRouter();
   const params = useParams();
+  const robotID = LOG_ROBOT.FOLDER_PREFIX + params.id;
 
   return (
-    <Container maxW="container.xl" className="bg-white h-[100vh]">
+    <Box className="bg-white h-[100vh]">
       <Box className="flex justify-between items-center w-90 m-auto">
         <IconButton
           colorScheme="teal"
@@ -33,7 +42,7 @@ const RobotCode = () => {
           color="teal"
           my={5}
           py={8}>
-          Robot Code
+          Robot Information
         </Heading>
         <Box></Box>
       </Box>
@@ -45,13 +54,31 @@ const RobotCode = () => {
         shadow="md"
         mb={6}
         className="w-90 m-auto">
-        <Text fontSize="lg" fontWeight="bold">
-          Robot Information:
+        <Text>
+          <span className="font-bold">Robot ID:</span> {robotID}
         </Text>
-        <Text>ID: {params && params.id} </Text>
       </Box>
-    </Container>
+
+      <Tabs variant="enclosed" className="w-90 m-auto">
+        <TabList mb="1em">
+          <Tab _selected={{ color: 'white', bg: '#319795' }}>Log</Tab>
+          <Tab _selected={{ color: 'white', bg: '#319795' }}>Dashboard</Tab>
+          <Tab _selected={{ color: 'white', bg: '#319795' }}>Connection</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <RobotLog robotID={robotID} />
+          </TabPanel>
+          <TabPanel>
+            <RobotDashboard />
+          </TabPanel>
+          <TabPanel>
+            <p>Connection details here...</p>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Box>
   );
 };
 
-export default RobotCode;
+export default RobotDetail;
