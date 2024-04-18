@@ -122,123 +122,128 @@ const CustomTable = (props: TableProps) => {
       borderColor="#319795"
       borderRadius="15px"
       overflow="hidden">
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            {props.header.map((item: string) => (
-              <Th key={item}>{item}</Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {currentData.map((item, index) => (
-            <Tr
-              key={item.id}
-              _hover={{
-                bg: '#4FD1C5',
-                cursor: 'pointer',
-                color: 'white',
-                borderRadius: '15px',
-              }}
-              onClick={() => props.onView && props.onView(item.id)}>
-              {Object.keys(item).map((key, columnIndex) =>
-                columnIndex < (props.maxRows ?? DEFAULT_MAX_ROWS) ? (
-                  <Td key={key}>{renderTableCell(key, item[key])}</Td>
-                ) : null
-              )}
-              <Td>
-                <HStack spacing={2}>
-                  {props.onRun && (
-                    <IconButton
-                      bg="white"
-                      aria-label="Run"
-                      onClick={(e: any) => {
-                        e.stopPropagation();
-                        props.onRun && props.onRun(item.id);
-                      }}
-                      icon={<FaPlay color="#319795" />}
-                    />
-                  )}
-                  {props.onViewFile && (
-                    <IconButton
-                      bg="white"
-                      aria-label="View Item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        props.onViewFile && props.onViewFile(item.id);
-                      }}
-                      icon={<FaCode color="#319795" />}
-                    />
-                  )}
-                  {props.onDownload && (
-                    <IconButton
-                      bg="white"
-                      aria-label="Download"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        props.onDownload && props.onDownload(item.id);
-                      }}
-                      icon={<DownloadIcon color="#319795" />}
-                    />
-                  )}
-                  {props.onEdit && (
-                    <IconButton
-                      bg="white"
-                      aria-label="Edit item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (item.processID) {
-                          props.onEdit && props.onEdit(item.processID);
-                        } else {
-                          props.onEdit && props.onEdit(item.id);
-                        }
-                      }}
-                      icon={<EditIcon color="#319795" />}
-                    />
-                  )}
-                  {props.onDelete && (
-                    <Box>
+      <Box overflowX="auto">
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              {props.header.map((item: string) => (
+                <Th key={item}>{item}</Th>
+              ))}
+            </Tr>
+          </Thead>
+          <Tbody>
+            {currentData.map((item, index) => (
+              <Tr
+                key={item.id}
+                _hover={{
+                  bg: '#4FD1C5',
+                  cursor: 'pointer',
+                  color: 'white',
+                  borderRadius: '15px',
+                }}
+                onClick={() => props.onView && props.onView(item.id)}>
+                {Object.keys(item).map((key, columnIndex) =>
+                  columnIndex < (props.maxRows ?? DEFAULT_MAX_ROWS) ? (
+                    <Td key={key}>{renderTableCell(key, item[key])}</Td>
+                  ) : null
+                )}
+                <Td>
+                  <HStack spacing={2}>
+                    {props.onRun && (
                       <IconButton
                         bg="white"
-                        aria-label="Delete item"
+                        aria-label="Run"
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          props.onRun && props.onRun(item.id);
+                        }}
+                        icon={<FaPlay color="#319795" />}
+                      />
+                    )}
+                    {props.onViewFile && (
+                      <IconButton
+                        bg="white"
+                        aria-label="View Item"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteClick(item.id);
+                          props.onViewFile && props.onViewFile(item.id);
                         }}
-                        icon={<DeleteIcon color="#319795" />}
+                        icon={<FaCode color="#319795" />}
                       />
-                      <Modal isOpen={isOpen} onClose={onClose}>
-                        <ModalOverlay />
-                        <ModalContent>
-                          <ModalHeader>Confirmation Delete</ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>
-                            <Text>
-                              Are you sure you want to delete this item?
-                            </Text>
-                            <Text>
-                              This action is irreversible and you will not be
-                              able to restore the item afterward.
-                            </Text>
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button variant="outline" mr={3} onClick={onClose}>
-                              Cancel
-                            </Button>
-                            <Button colorScheme="red" onClick={confirmDelete}>
-                              Delete
-                            </Button>
-                          </ModalFooter>
-                        </ModalContent>
-                      </Modal>
-                    </Box>
-                  )}
-                </HStack>
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+                    )}
+                    {props.onDownload && (
+                      <IconButton
+                        bg="white"
+                        aria-label="Download"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          props.onDownload && props.onDownload(item.id);
+                        }}
+                        icon={<DownloadIcon color="#319795" />}
+                      />
+                    )}
+                    {props.onEdit && (
+                      <IconButton
+                        bg="white"
+                        aria-label="Edit item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (item.processID) {
+                            props.onEdit && props.onEdit(item.processID);
+                          } else {
+                            props.onEdit && props.onEdit(item.id);
+                          }
+                        }}
+                        icon={<EditIcon color="#319795" />}
+                      />
+                    )}
+                    {props.onDelete && (
+                      <Box>
+                        <IconButton
+                          bg="white"
+                          aria-label="Delete item"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(item.id);
+                          }}
+                          icon={<DeleteIcon color="#319795" />}
+                        />
+                        <Modal isOpen={isOpen} onClose={onClose}>
+                          <ModalOverlay />
+                          <ModalContent>
+                            <ModalHeader>Confirmation Delete</ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                              <Text>
+                                Are you sure you want to delete this item?
+                              </Text>
+                              <Text>
+                                This action is irreversible and you will not be
+                                able to restore the item afterward.
+                              </Text>
+                            </ModalBody>
+                            <ModalFooter>
+                              <Button
+                                variant="outline"
+                                mr={3}
+                                onClick={onClose}>
+                                Cancel
+                              </Button>
+                              <Button colorScheme="red" onClick={confirmDelete}>
+                                Delete
+                              </Button>
+                            </ModalFooter>
+                          </ModalContent>
+                        </Modal>
+                      </Box>
+                    )}
+                  </HStack>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
       <ReactPaginate
         previousLabel={
           <IconButton aria-label="Previous">
