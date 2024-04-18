@@ -16,6 +16,7 @@ import processApi from "@/apis/processApi";
 import { useState, useEffect } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { toastSuccess, toastError } from "@/utils/common";
+import { getProcessFromLocalStorage } from "@/utils/processService";
 
 const removableChipStyle = {
   display: 'flex',
@@ -36,6 +37,7 @@ export const ShareWithModal = ({
   onClose,
   processID,
 }: ShareWithModalProps) => {
+  const process = getProcessFromLocalStorage(processID);
   const [email, setEmail] = useState<string>('');
   const [emails, setEmails] = useState<string[]>([]);
   const [shared, setShared] = useState<string[]>([]);
@@ -89,55 +91,71 @@ export const ShareWithModal = ({
       <ModalHeader>Share with people</ModalHeader>
       <ModalCloseButton />
       <ModalBody pb={6}>
-        <Text fontWeight={'bold'}>Shared</Text>
-        {shared.length === 0 ? (
-          <Text>You have not shared this process with anyone</Text>
-        ) : (
-          shared.map((email, index) => (
-            <div key={index}> {email} </div>
-          ))
-        )}
-        <FormControl>
-          <FormLabel>Emails</FormLabel>
-          Press Enter to add email
-          <Input
-            placeholder="Emails"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
-          />
-          {emails.map((email, index) => (
-            <div
-              key={index}
-              style={removableChipStyle}
-            >
-              {email}
-              <IconButton
-                isRound={true}
-                variant='solid'
-                colorScheme='gray'
-                aria-label='Remove email'
-                fontSize='20px'
-                icon={<CloseIcon />}
-                onClick={() => {
-                  setEmails(emails.filter((e) => e !== email));
-                }}
-              />
-            </div>
-          ))}
-        </FormControl>
+        {
+          process.sharedByUser
+            ? (
+
+              <>
+                <Text fontWeight={'bold'}>This process is shared to you by {process.sharedByUser.name}</Text>
+                <Text>Only the owner can share this process</Text>
+                <Text>Please contact the owner if you want to share this process to other people</Text>
+              </>
+
+            ) : <>
+
+              <Text fontWeight={'bold'}>Shared</Text>
+              {shared.length === 0 ? (
+                <Text>You have not shared this process with anyone</Text>
+              ) : (
+                shared.map((email, index) => (
+                  <div key={index}> {email} </div>
+                ))
+              )}
+              <FormControl>
+                <FormLabel>Emails</FormLabel>
+                Press Enter to add email
+                <Input
+                  placeholder="Emails"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  onBlur={handleBlur}
+                />
+                {emails.map((email, index) => (
+                  <div
+                    key={index}
+                    style={removableChipStyle}
+                  >
+                    {email}
+                    <IconButton
+                      isRound={true}
+                      variant='solid'
+                      colorScheme='gray'
+                      aria-label='Remove email'
+                      fontSize='20px'
+                      icon={<CloseIcon />}
+                      onClick={() => {
+                        setEmails(emails.filter((e) => e !== email));
+                      }}
+                    />
+                  </div>
+                ))}
+              </FormControl>
+
+            </>
+        }
       </ModalBody>
 
       <ModalFooter>
-        <Button
+        {process.sharedByUser !== null || <Button
           mr={3}
           colorScheme="teal"
           onClick={handleShareProcess}
           isLoading={loading}
+          disabled={emails.length === 0}
         >
           Share
-        </Button>
+        </Button>}
         <Button colorScheme="teal" variant="outline" onClick={onClose}>
           Cancel
         </Button>
