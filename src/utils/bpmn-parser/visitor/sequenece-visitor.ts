@@ -93,9 +93,11 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       try {
         value = JSON.parse(v.value);
       } catch (error) {
-        throw new VariableError(VariableErrorCode["Value Invalid"], v);
+        console.log(error)
+        // throw new VariableError(VariableErrorCode["Value Invalid"] + `: variable ${v.name} (${v.type}) with value ${v.value ?? "null"}` , v);
+      }finally {
+        return new ProcessVariable(v.name, value, v.type);
       }
-      return new ProcessVariable(v.name, value, v.type);
     });
   }
 
@@ -140,17 +142,18 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       );
     }
 
+    // handle Create Lib
     if (Lib) {
       this.imports.add(Lib);
     }
-
-    let keywords = [new Keyword(property.activityName, keywordArg, keywordAssigns)];
-    if(property.arguments.Connection) {
-      // Handle Create Set Up Keywords
-      let credentials = this._handleCreateCredentials(Lib, property.activityPackage, property.arguments.Connection)
-      keywords  = credentials.concat(keywords)
+    if(property.arguments.Librabry) {
+      const library = property.arguments.Library?.value;
+      if (library) {
+        this.imports.add(library);
+      }
     }
 
+    let keywords = [new Keyword(property.activityName, keywordArg, keywordAssigns)];
     return keywords;
   }
 

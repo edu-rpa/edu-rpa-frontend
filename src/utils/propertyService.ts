@@ -29,7 +29,6 @@ const getActivityByService = (data: any, service: string) => {
 };
 
 const getArgumentsByActivity = (data: any, activityName: string) => {
-  console.log(data)
   const activityArgs = data.filter(
     (item: any) => item.displayName === activityName
   );

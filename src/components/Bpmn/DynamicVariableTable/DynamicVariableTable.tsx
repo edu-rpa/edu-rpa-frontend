@@ -117,9 +117,12 @@ const DynamicVariableTable = (props: VariableTableProps) => {
               <Td>
                   <DynamicInputValue
                     row = {row}
-                    onChange={(dataTemplate, label) => {
+                    onChange={(dataTemplate: string, label? : string) => {
+                      console.log(dataTemplate, label)
                       handleEditRow(index, 'value', String(dataTemplate));
-                      handleEditRow(index, 'label', String(label));
+                      if(label) {
+                        handleEditRow(index, 'label', String(label));
+                      }
                     }}
                   >
                   </DynamicInputValue>

@@ -12,16 +12,14 @@ export const ActivityPackages = [
         description: 'Set up drive connection for following task',
         iconCode: 'FaEnvelope',
         type: 'activity',
-        keyword: 'Setup Drive Connection',
+        keyword: 'Set up OAuth token in vault',
         arguments: {
           Librabry: {
             type: 'string',
-            description: 'The name of the folder',
-            keywordArg: 'Librabry',
             value: 'EduRPA.Google',
             hidden: true,
           },
-          Connection: {
+          token_file_path: {
             type: 'connection.Google Drive',
             description: 'Your connection ID with Google Drive',
             value: null,
@@ -299,16 +297,14 @@ export const ActivityPackages = [
         description: 'Set up Gmail connection for following task',
         iconCode: 'FaEnvelope',
         type: 'activity',
-        keyword: 'Setup Gmail Connection',
+        keyword: 'Set up OAuth token in vault',
         arguments: {
           Librabry: {
             type: 'string',
-            description: 'The name of the folder',
-            keywordArg: 'Librabry',
             value: 'EduRPA.Google',
             hidden: true,
           },
-          Connection: {
+          token_file_path: {
             type: 'connection.Gmail',
             description: 'Your connection ID with Gmail',
             value: null,
@@ -467,12 +463,10 @@ export const ActivityPackages = [
         arguments: {
           Librabry: {
             type: 'string',
-            description: 'The name of the folder',
-            keywordArg: 'Librabry',
             value: 'EduRPA.Google',
             hidden: true,
           },
-          Connection: {
+          token_file_path: {
             type: 'connection.Google Sheets',
             description: 'Your connection ID with Google Sheet',
             value: null,
@@ -725,16 +719,14 @@ export const ActivityPackages = [
         description: 'Set up Google Classroom connection for following task',
         iconCode: 'FaEnvelope',
         type: 'activity',
-        keyword: 'Setup Google Classroom Connection',
+        keyword: 'Set Up Classroom Connection',
         arguments: {
           Librabry: {
             type: 'string',
-            description: 'The name of the folder',
-            keywordArg: 'Librabry',
             value: 'EduRPA.Google',
             hidden: true,
           },
-          Connection: {
+          token_file_path: {
             type: 'connection.Google Classroom',
             description: 'Your connection ID with Google Classroom',
             value: null,
@@ -1028,16 +1020,14 @@ export const ActivityPackages = [
         description: 'Set up Google Form connection for following task',
         iconCode: 'FaEnvelope',
         type: 'activity',
-        keyword: 'Setup Google Form Connection',
+        keyword: 'Set Up Form Connection',
         arguments: {
           Librabry: {
             type: 'string',
-            description: 'The name of the folder',
-            keywordArg: 'Librabry',
             value: 'EduRPA.Google',
             hidden: true,
           },
-          Connection: {
+          token_file_path: {
             type: 'connection.Google Form',
             description: 'Your connection ID with Google Form',
             value: null,
