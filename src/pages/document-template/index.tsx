@@ -22,7 +22,14 @@ import documentTemplateApi from '@/apis/documentTemplateApi';
 
 const documentTemplateExplain = 'Document template is a template that contains the information of the document that you want to extract.';
 
-export default function DocumentTemplateList() {
+export interface DocumentTemplateListProps {
+  isEditable? : boolean,  
+  handleSelectDocumentTemplate?: (e:any) => void;
+}
+
+export default function DocumentTemplateList(props: DocumentTemplateListProps) {
+  const {isEditable=true, handleSelectDocumentTemplate=(e:any)=>{}} = props
+
   const { 
     isOpen: isOpenCreateModal, 
     onOpen: onOpenCreateModal, 
@@ -42,12 +49,13 @@ export default function DocumentTemplateList() {
   const [documentTemplates, setDocumentTemplates] = useState<DocumentTemplate[]>([]);
   const [selectedDocumentTemplate, setSelectedDocumentTemplate] = useState<DocumentTemplate>();
   const [editedDocumentTemplate, setEditedDocumentTemplate] = useState<DocumentTemplate>();
+  const [documentType, setDocumentType] = useState<DocumentTemplateType>()
 
   useEffect(() => {
-    documentTemplateApi.getDocumentTemplates().then((res) => {
+    documentTemplateApi.getDocumentTemplates(documentType).then((res) => {
       setDocumentTemplates(res);
     });
-  }, []);
+  }, [documentType]);
 
   const tableProps = {
     header: ['ID', 'Name', 'Description', 'Type', 'Actions'],
@@ -116,18 +124,13 @@ export default function DocumentTemplateList() {
     setSelectedDocumentTemplate(undefined);
   };
 
+  const handleSelectFilterType = (e) => {
+    setDocumentType(e.target.value)
+  }
+
   return (
     <div className="mb-[200px]">
       <SidebarContent>
-        <div className="flex flex-start">
-          <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
-            Document Template List
-          </h1>
-          <Tooltip hasArrow label={documentTemplateExplain} bg='gray.300' color='black'>
-            <QuestionIcon />
-          </Tooltip>
-        </div>
-
         <div className="flex justify-between w-90 mx-auto my-[30px]">
           <InputGroup>
             <InputLeftElement pointerEvents="none">
@@ -141,16 +144,19 @@ export default function DocumentTemplateList() {
             />
           </InputGroup>
 
+          
           <div className="flex justify-between gap-[5px]">
             <Box className="w-[10vw]">
-              <Select defaultValue="all">
-                <option value="all">All</option>
+
+              <Select onChange={(e) => handleSelectFilterType(e)}>
+                <option value="">All</option>
                 <option value="image">Image</option>
               </Select>
             </Box>
 
-            <Button colorScheme="teal" onClick={onOpenCreateModal}>Create</Button>
+            {isEditable && <Button colorScheme="teal" onClick={onOpenCreateModal}>Create</Button>}
           </div>
+          
         </div>
 
         {documentTemplates.length === 0 && (
@@ -160,24 +166,35 @@ export default function DocumentTemplateList() {
           </div>
         )}
 
-        <CreateDocumentTemplateModal
+        <div className="flex flex-start">
+          <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
+            Document Template List
+          </h1>
+          <Tooltip hasArrow label={documentTemplateExplain} bg='gray.300' color='black'>
+            <QuestionIcon />
+          </Tooltip>
+        </div>
+
+        {isEditable && (<CreateDocumentTemplateModal
           isOpen={isOpenCreateModal}
           onClose={onCloseCreateModal}
           handleCreateNewDocumentTemplate={handleCreateNewDocumentTemplate}
-        />
+        />)}
+
+        {isEditable && <EditDocumentTemplateModal
+          isOpen={isOpenEditModal}
+          onClose={onCloseEditModal}
+          documentTemplate={editedDocumentTemplate}
+          handleEditDocumentTemplate={handleEditDocumentTemplate}
+        />}
 
         <DetailDocumentTemplateModal
           isOpen={isOpenDetailModal}
           onClose={handleCloseDetailModal}
           documentTemplate={selectedDocumentTemplate}
           handleSaveDocumentTemplate={handleSaveDocumentTemplate}
-        />
-
-        <EditDocumentTemplateModal
-          isOpen={isOpenEditModal}
-          onClose={onCloseEditModal}
-          documentTemplate={editedDocumentTemplate}
-          handleEditDocumentTemplate={handleEditDocumentTemplate}
+          isEditable={isEditable}
+          handleSelectDocumentTemplate={handleSelectDocumentTemplate}
         />
 
         <div className="w-90 m-auto">

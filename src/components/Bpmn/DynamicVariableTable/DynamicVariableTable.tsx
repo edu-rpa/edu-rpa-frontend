@@ -14,6 +14,7 @@ import {
 import { Variable, VariableType } from '@/types/variable';
 import { useDispatch } from 'react-redux';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
+import DynamicInputValue from './DynamicInputValue';
 
 interface VariableTableProps {
   variableList: Variable[];
@@ -31,6 +32,7 @@ const DynamicVariableTable = (props: VariableTableProps) => {
     [VariableType.List]: '[]',
     [VariableType.Dictionary]: '{}',
     [VariableType.Connection]: '',
+    [VariableType.DocumentTemplate]: '{}',
   };
 
   const [selectedType, setSelectedType] = useState<VariableType>(
@@ -53,7 +55,7 @@ const DynamicVariableTable = (props: VariableTableProps) => {
 
   const handleEditRow = (
     index: number,
-    field: 'name' | 'value' | 'type' | 'isArgument',
+    field: 'name' | 'value' | 'type' | 'isArgument' | 'label',
     value: string | boolean
   ) => {
     const updatedData = [...props.variableList];
@@ -113,12 +115,14 @@ const DynamicVariableTable = (props: VariableTableProps) => {
                 />
               </Td>
               <Td>
-                <Input
-                  value={row.value}
-                  onChange={(e) => {
-                    handleEditRow(index, 'value', e.target.value);
-                  }}
-                />
+                  <DynamicInputValue
+                    row = {row}
+                    onChange={(dataTemplate, label) => {
+                      handleEditRow(index, 'value', String(dataTemplate));
+                      handleEditRow(index, 'label', String(label));
+                    }}
+                  >
+                  </DynamicInputValue>
               </Td>
               <Td>
                 <Select
@@ -133,6 +137,7 @@ const DynamicVariableTable = (props: VariableTableProps) => {
                   <option value={VariableType.List}>List</option>
                   <option value={VariableType.Dictionary}>Dictionary</option>
                   <option value={VariableType.Connection}>Connection</option>
+                  <option value={VariableType.DocumentTemplate}>DocumentTemplate</option>
                 </Select>
               </Td>
               <Td>

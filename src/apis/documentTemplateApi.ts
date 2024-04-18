@@ -10,10 +10,17 @@ import {
   SaveDocumentTemplateDto,
 } from '@/dtos/documentTemplateDto';
 import axios from 'axios';
+import { DocumentTemplateType } from '@/interfaces/enums/document-template-type';
 
-const getDocumentTemplates = async (): Promise<DocumentTemplate[]> => {
+const getDocumentTemplates = async (type?: DocumentTemplateType, limit: number=0 , page: number=5): Promise<DocumentTemplate[]> => {
   return await apiBase
-    .get(`${process.env.NEXT_PUBLIC_DEV_API}/document-template`)
+    .get(`${process.env.NEXT_PUBLIC_DEV_API}/document-template`, {
+      params: {
+        type,
+        limit,
+        page
+      }
+    })
     .then((res: any) => {
       return res.data;
     });
