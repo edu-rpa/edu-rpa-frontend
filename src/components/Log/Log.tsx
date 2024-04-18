@@ -1,27 +1,12 @@
 import React from 'react';
 import { Box, Text, VStack, Container } from '@chakra-ui/react';
-import { LogMessage } from '@/types/log';
+import { LogEvent } from '@/interfaces/log';
 
 interface LogProps {
-  messages: LogMessage[];
+  logs: LogEvent[];
 }
 
-const Log: React.FC<LogProps> = ({ messages }) => {
-  const getColorScheme = (type: 'success' | 'error' | 'info' | 'warning') => {
-    switch (type) {
-      case 'success':
-        return 'green';
-      case 'error':
-        return 'red';
-      case 'info':
-        return 'blue';
-      case 'warning':
-        return 'yellow';
-      default:
-        return 'gray';
-    }
-  };
-
+const Log = (props: LogProps) => {
   return (
     <Container maxW="full" p={0}>
       <VStack
@@ -33,14 +18,13 @@ const Log: React.FC<LogProps> = ({ messages }) => {
         boxShadow="md"
         maxHeight="500px"
         overflowY="auto">
-        {messages.map((message, index) => (
-          <Box
-            key={index}
-            p={3}
-            bg={`${getColorScheme(message.type)}.100`}
-            borderRadius="md">
-            <Text fontSize="md" color={`${getColorScheme(message.type)}.800`}>
-              {message.type}: {message.text}
+        {props.logs.map((log, index) => (
+          <Box key={index} p={3} borderRadius="md" bg={'white'}>
+            <Text fontSize="md">
+              <span className="text-primary font-bold">
+                {new Date(log.timestamp).toLocaleString()}
+              </span>
+              : {log.message}
             </Text>
           </Box>
         ))}
