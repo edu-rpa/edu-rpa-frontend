@@ -87,7 +87,7 @@ export default function PropertiesSideBar({
   );
 
   // Optional solution, refactor later
-  let activityKeyword = '';
+  const [activityKeyword, setActivityKeyword] = useState<string>('');
 
   const dispatch = useDispatch();
 
@@ -96,6 +96,7 @@ export default function PropertiesSideBar({
     setFormValues({});
     setSaveResult(null);
     setIsExist(false);
+    setActivityKeyword('');
   };
 
   const handleActivities = (activity: any) => {
@@ -131,19 +132,18 @@ export default function PropertiesSideBar({
 
   const handleUpdateProperties = () => {
     if (sideBarState.currentStep < 3) return;
-    const payload = {
-      activityPackage: sideBarState.packageName,
-      activityName: sideBarState.activityName,
-      library: getLibrary(sideBarState.packageName),
-      arguments: formValues,
-      return: saveResult,
-    };
 
     const updatePayload = {
       // Update to here
       ...getActivityInProcess(processID, activityItem.activityID),
       keyword: activityKeyword,
-      properties: payload,
+      properties: {
+        activityPackage: sideBarState.packageName,
+        activityName: sideBarState.activityName,
+        library: getLibrary(sideBarState.packageName),
+        arguments: formValues,
+        return: saveResult,
+      },
     };
     const updateProperties = updateActivityInProcess(processID, updatePayload);
     const updateProcess = updateLocalStorage({
@@ -204,6 +204,16 @@ export default function PropertiesSideBar({
               const { _id, displayName, activityTemplates, description } =
                 activityPackage;
               const { currentStep, packageName, activityName } = sideBarState;
+
+              const activityInfo = getArgumentsByActivity(
+                activityTemplates,
+                activityName
+              );
+
+              useEffect(() => {
+                activityInfo?.[0]?.keyword &&
+                  setActivityKeyword(activityInfo?.[0]?.keyword);
+              }, [activityInfo?.[0]?.keyword]);
 
               const renderStepOne = () => (
                 <Tooltip label={description}>
@@ -422,17 +432,18 @@ export default function PropertiesSideBar({
               };
 
               const renderStepThree = () => {
-                const activityInfo = getArgumentsByActivity(
-                  activityTemplates,
-                  activityName
-                );
                 // Keyword Here
-                const activityKeyword = activityInfo?.[0]?.keyword;
+                const keyword = activityInfo?.[0]?.keyword;
                 const activityProperty = activityInfo?.[0]?.arguments;
                 const returnType = activityInfo?.[0]?.return;
 
                 return (
                   <div>
+                    {keyword && (
+                      <div className="font-bold text-md text-primary">
+                        Keyword: {keyword}
+                      </div>
+                    )}
                     {activityProperty &&
                       Object.entries(activityProperty).map(
                         ([paramKey, paramValue]) => {
