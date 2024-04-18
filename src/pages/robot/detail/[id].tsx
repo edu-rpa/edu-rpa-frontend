@@ -3,7 +3,7 @@ import { Box, Heading, Container, Text, IconButton } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { useParams } from 'next/navigation';
-import robotCode from '../../../constants/robotCode';
+import robotCode from '../../../constants/robot';
 import CodeViewer from '@/components/CodeViewer/CodeViewer';
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEY } from '@/constants/queryKey';

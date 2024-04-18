@@ -85,6 +85,10 @@ export default function PropertiesSideBar({
   const variableStorage = currentVariableStorage?.variables.map(
     (variable: Variable) => [variable.name, variable.type]
   );
+
+  // Optional solution, refactor later
+  let activityKeyword = '';
+
   const dispatch = useDispatch();
 
   const handleReset = () => {
@@ -136,7 +140,9 @@ export default function PropertiesSideBar({
     };
 
     const updatePayload = {
+      // Update to here
       ...getActivityInProcess(processID, activityItem.activityID),
+      keyword: activityKeyword,
       properties: payload,
     };
     const updateProperties = updateActivityInProcess(processID, updatePayload);
@@ -420,15 +426,18 @@ export default function PropertiesSideBar({
                   activityTemplates,
                   activityName
                 );
+                // Keyword Here
+                const activityKeyword = activityInfo?.[0]?.keyword;
                 const activityProperty = activityInfo?.[0]?.arguments;
                 const returnType = activityInfo?.[0]?.return;
+
                 return (
                   <div>
                     {activityProperty &&
                       Object.entries(activityProperty).map(
                         ([paramKey, paramValue]) => {
                           if (
-                            !paramValue["hidden"] && 
+                            !paramValue['hidden'] &&
                             paramValue &&
                             typeof paramValue === 'object' &&
                             'description' in paramValue
