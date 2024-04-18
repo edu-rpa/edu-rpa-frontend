@@ -19,9 +19,9 @@ export default function DocumentTemplateInput(props: DocumentTemplateInputParams
         name,
         dataTemplate
     }) => {
-        onChange(dataTemplate, label);
         setLabel(name);
         onClose();
+        onChange(dataTemplate, name);
     }
 
     return(

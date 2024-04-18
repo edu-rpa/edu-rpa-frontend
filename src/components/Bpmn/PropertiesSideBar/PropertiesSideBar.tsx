@@ -315,7 +315,6 @@ export default function PropertiesSideBar({
                     initDefaultValue(paramValue.type)
                   );
                 }
-
                 switch (paramValue.type) {
                   case 'string':
                   case 'email':
@@ -372,6 +371,16 @@ export default function PropertiesSideBar({
                       paramKey,
                       AuthorizationProvider.G_SHEETS
                     );
+                  case 'connection.Google Classroom':
+                    return renderConnectionSelect(
+                      paramKey,
+                      AuthorizationProvider.G_CLASSROOM
+                    );
+                  case 'connection.Google Form':
+                    return renderConnectionSelect(
+                      paramKey,
+                      AuthorizationProvider.G_FORMS
+                    );
                   case 'enum.shareType':
                     return renderSelect(paramKey, [
                       { value: 'user', label: 'User' },
@@ -419,6 +428,7 @@ export default function PropertiesSideBar({
                       Object.entries(activityProperty).map(
                         ([paramKey, paramValue]) => {
                           if (
+                            !paramValue["hidden"] && 
                             paramValue &&
                             typeof paramValue === 'object' &&
                             'description' in paramValue

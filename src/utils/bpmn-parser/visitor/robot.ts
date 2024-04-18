@@ -82,7 +82,7 @@ export class ProcessVariable {
       this.value = this.value.map((v) => JSON.stringify(v));
       this.name = "@{"+this.name.replace(/[^\w\s]/gi, '')+"}"
     } else if (typeof this.value === "object") {
-      if (this.type !== "dictionary")
+      if (this.type !== "dictionary" && this.type !== "template")
         throw new VariableError(
           VariableErrorCode["Incompatible Type"],
           this.name

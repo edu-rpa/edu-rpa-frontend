@@ -41,6 +41,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { bpmnSelector } from '@/redux/selector';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
 import FunctionalTabBar from './FunctionalTabBar/FunctionalTabBar';
+import DisplayRobotCode from './DisplayRobotCode/DisplayRobotCode';
 
 interface OriginalObject {
   [key: string]: {
@@ -288,13 +289,9 @@ function CustomModeler() {
         Save Properties
       </Button>
 
-      <Button
-        colorScheme="blue"
-        size="md"
-        className="mx-[5px]"
-        onClick={async () => compileRobotCode(processID as string)}>
-        Compile Robot
-      </Button>
+      <DisplayRobotCode
+        compileRobotCode={() => compileRobotCode(processID as string)}
+      />
 
       <VariablesSideBar processID={processID as string} />
       <br />

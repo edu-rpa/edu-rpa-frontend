@@ -1,10 +1,31 @@
 export const ActivityPackages = [
+  // Drive
   {
     _id: 'google_drive',
     displayName: 'Google Drive',
     description: 'Help you integrate your work with Google Drive',
     library: 'RPA.Cloud.Google',
     activityTemplates: [
+      {
+        templateId: 'google_drive.set_up_connection',
+        displayName: 'Setup Drive Connection',
+        description: 'Set up drive connection for following task',
+        iconCode: 'FaEnvelope',
+        type: 'activity',
+        keyword: 'Set up OAuth token in vault',
+        arguments: {
+          Librabry: {
+            type: 'string',
+            value: 'EduRPA.Google',
+            hidden: true,
+          },
+          token_file_path: {
+            type: 'connection.Google Drive',
+            description: 'Your connection ID with Google Drive',
+            value: null,
+          },
+        },
+      },
       {
         templateId: 'drive.create_folder',
         displayName: 'Create folder',
@@ -13,11 +34,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Create Drive Directory',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
-            value: null,
-          },
           'Folder name': {
             type: 'string',
             description: 'The name of the folder',
@@ -47,11 +63,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Download Drive Files',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
-            value: null,
-          },
           'Folder name': {
             type: 'string',
             description: 'The name of the folder',
@@ -80,11 +91,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Upload Drive File',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
-            value: '',
-          },
           'File name': {
             type: 'string',
             keywordArg: 'filename',
@@ -120,11 +126,6 @@ export const ActivityPackages = [
         iconCode: 'FaGoogleDrive',
         type: 'subprocess',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
-            value: null,
-          },
           'Folder Path': {
             type: 'string',
             description: 'The path to the folder',
@@ -146,11 +147,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Search Drive Files',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
-            value: null,
-          },
           'Folder Path': {
             type: 'string',
             description: 'The path to the folder',
@@ -180,11 +176,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Get Drive File By Id',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
-            value: null,
-          },
           ID: {
             type: 'string',
             description: 'The ID of folder or file',
@@ -208,11 +199,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Delete Drive File',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
-            value: null,
-          },
           ID: {
             type: 'string',
             description: 'The ID of folder or file',
@@ -235,11 +221,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Move Drive File',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
-            value: null,
-          },
           'Source ID': {
             type: 'string',
             description: 'The ID of source folder or file',
@@ -268,11 +249,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Add Drive Share',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
-            value: null,
-          },
           'Share Type': {
             type: 'enum.shareType',
             description: 'Share with list emails or all people',
@@ -308,12 +284,33 @@ export const ActivityPackages = [
       },
     ],
   },
+  // Gmail
   {
     _id: 'gmail',
     displayName: 'Gmail',
     description: 'Help you integrate your work with Gmail',
     library: 'RPA.Cloud.Google',
     activityTemplates: [
+      {
+        templateId: 'gmail.set_up_connection',
+        displayName: 'Setup Gmail Connection',
+        description: 'Set up Gmail connection for following task',
+        iconCode: 'FaEnvelope',
+        type: 'activity',
+        keyword: 'Set up OAuth token in vault',
+        arguments: {
+          Librabry: {
+            type: 'string',
+            value: 'EduRPA.Google',
+            hidden: true,
+          },
+          token_file_path: {
+            type: 'connection.Gmail',
+            description: 'Your connection ID with Gmail',
+            value: null,
+          },
+        },
+      },
       {
         templateId: 'gmail.send_email',
         displayName: 'Send email',
@@ -322,11 +319,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Send Message',
         arguments: {
-          Connection: {
-            type: 'connection.Gmail',
-            description: 'Your connection ID with Gmail',
-            value: null,
-          },
           From: {
             type: 'string',
             description: 'Your source email',
@@ -367,11 +359,6 @@ export const ActivityPackages = [
         iconCode: 'FaEnvelope',
         type: 'subprocess',
         arguments: {
-          Connection: {
-            type: 'connection.Gmail',
-            description: 'Your connection ID with Gmail',
-            value: null,
-          },
           'Email Folder Path': {
             type: 'string',
             description: 'The source email folder path',
@@ -424,11 +411,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'List Messages',
         arguments: {
-          Connection: {
-            type: 'connection.Gmail',
-            description: 'Your connection ID with Gmail',
-            value: null,
-          },
           'Email Folder Path': {
             type: 'string',
             description: 'The source email folder path',
@@ -464,12 +446,33 @@ export const ActivityPackages = [
       },
     ],
   },
+  //Sheets
   {
     _id: 'google_sheets',
     displayName: 'Google Sheet',
     description: 'Help you integrate your work with Google Sheets',
     library: 'RPA.Cloud.Google',
     activityTemplates: [
+      {
+        templateId: 'google_sheets.set_up_connection',
+        displayName: 'Setup Google Sheet Connection',
+        description: 'Set up Google Sheet connection for following task',
+        iconCode: 'FaEnvelope',
+        type: 'activity',
+        keyword: 'Setup Google Sheet Connection',
+        arguments: {
+          Librabry: {
+            type: 'string',
+            value: 'EduRPA.Google',
+            hidden: true,
+          },
+          token_file_path: {
+            type: 'connection.Google Sheets',
+            description: 'Your connection ID with Google Sheet',
+            value: null,
+          },
+        },
+      },
       {
         templateId: 'sheet.create_spreadsheet',
         displayName: 'Create SpreadSheet',
@@ -478,11 +481,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Create Spreadsheet',
         arguments: {
-          Connection: {
-            type: 'connection.Google Drive',
-            description: 'Your connection ID with Google Drive',
-            value: null,
-          },
           'SpreadSheet Name': {
             type: 'string',
             description: 'The spread sheet name',
@@ -504,11 +502,6 @@ export const ActivityPackages = [
         iconCode: 'FaFileSpreadsheet',
         type: 'subprocess',
         arguments: {
-          Connection: {
-            type: 'connection.Google Sheets',
-            description: 'Your connection ID with Google Sheet',
-            value: null,
-          },
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -531,11 +524,7 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Get Spreadsheet Basic Information',
         arguments: {
-          Connection: {
-            type: 'connection.Google Sheets',
-            description: 'Your connection ID with Google Sheet',
-            value: null,
-          },
+
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -559,11 +548,7 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Create Sheet',
         arguments: {
-          Connection: {
-            type: 'connection.Google Sheets',
-            description: 'Your connection ID with Google Sheet',
-            value: null,
-          },
+
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -587,11 +572,7 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Delete Sheet',
         arguments: {
-          Connection: {
-            type: 'connection.Google Sheets',
-            description: 'Your connection ID with Google Sheet',
-            value: null,
-          },
+
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -615,11 +596,7 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Rename Sheet',
         arguments: {
-          Connection: {
-            type: 'connection.Google Sheets',
-            description: 'Your connection ID with Google Sheet',
-            value: null,
-          },
+
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -650,11 +627,7 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Update Sheet Values',
         arguments: {
-          Connection: {
-            type: 'connection.Google Sheets',
-            description: 'Your connection ID with Google Sheet',
-            value: null,
-          },
+
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -685,11 +658,7 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Get Sheet Values',
         arguments: {
-          Connection: {
-            type: 'connection.Google Sheets',
-            description: 'Your connection ID with Google Sheet',
-            value: null,
-          },
+
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -719,11 +688,7 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Clear Sheet Values',
         arguments: {
-          Connection: {
-            type: 'connection.Google Sheets',
-            description: 'Your connection ID with Google Sheet',
-            value: null,
-          },
+
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -741,12 +706,33 @@ export const ActivityPackages = [
       },
     ],
   },
+  // Classroom
   {
     _id: 'google_classroom',
     displayName: 'Google Classroom',
     description: 'Help you integrate your work with Google Classroom',
     library: 'EduRPA.Google',
     activityTemplates: [
+      {
+        templateId: 'google_classroom.set_up_connection',
+        displayName: 'Setup Google Classroom Connection',
+        description: 'Set up Google Classroom connection for following task',
+        iconCode: 'FaEnvelope',
+        type: 'activity',
+        keyword: 'Set Up Classroom Connection',
+        arguments: {
+          Librabry: {
+            type: 'string',
+            value: 'EduRPA.Google',
+            hidden: true,
+          },
+          token_file_path: {
+            type: 'connection.Google Classroom',
+            description: 'Your connection ID with Google Classroom',
+            value: null,
+          },
+        },
+      },
       {
         templateId: 'create_course',
         displayName: 'Create Course',
@@ -1021,12 +1007,33 @@ export const ActivityPackages = [
       },
     ],
   },
+  // Form
   {
     _id: 'google_form',
     displayName: 'Google Form',
     description: 'Help you integrate your work with Google Form',
     library: 'EduRPA.Google',
     activityTemplates: [
+    {
+        templateId: 'google_form.set_up_connection',
+        displayName: 'Setup Google Form Connection',
+        description: 'Set up Google Form connection for following task',
+        iconCode: 'FaEnvelope',
+        type: 'activity',
+        keyword: 'Set Up Form Connection',
+        arguments: {
+          Librabry: {
+            type: 'string',
+            value: 'EduRPA.Google',
+            hidden: true,
+          },
+          token_file_path: {
+            type: 'connection.Google Form',
+            description: 'Your connection ID with Google Form',
+            value: null,
+          },
+        },
+      },
       {
         templateId: 'create_quiz_form',
         displayName: 'Create Quiz Form',
