@@ -9,4 +9,5 @@ export interface ArgumentProps {
   description: string;
   keywordArg?: string | null;
   value?: any;
+  hidden?: boolean,
 }
