@@ -1,4 +1,4 @@
-import { Variable } from "@/types/variable";
+import { Variable, VariableType } from "@/types/variable";
 import {
   BpmnParseError,
   BpmnParseErrorCode,
@@ -66,20 +66,20 @@ export class SequenceVisitor {
 
 export class ConcreteSequenceVisitor extends SequenceVisitor {
   private credentials : {
-    provider: AuthorizationProvider,
+    provider?: AuthorizationProvider,
     connectionKey: string
   }[] = [];
 
   parse() {
     let name = "";
     let body: BodyItem[] = this.visit(this.sequence, []);
-    let test = new Test("Main", body);
+    let tests = [new Test("Main", body)];
     let variables: ProcessVariable[] = this.parseVariables();
     let resource = new Resource(
       Array.from(this.imports).map((i) => new Lib(i)),
       variables
     );
-    let robot = new Robot(name, test, resource);
+    let robot = new Robot(name, tests, resource);
     return robot;
   }
 
@@ -89,21 +89,29 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
 
   parseVariables() {
     return this.variables.map((v) => {
-      let value;
-      try {
-        value = JSON.parse(v.value);
-      } catch (error) {
-        console.log(error)
-        // throw new VariableError(VariableErrorCode["Value Invalid"] + `: variable ${v.name} (${v.type}) with value ${v.value ?? "null"}` , v);
-      }finally {
-        return new ProcessVariable(v.name, value, v.type);
-      }
+      return new ProcessVariable(v.name, this._handleParseValue(v), v.type);
     });
+  }
+
+  private _handleParseValue(variable : Variable) {
+    const {name, value, type} = variable
+    switch(type) {
+      case VariableType.DocumentTemplate:
+      case VariableType.Dictionary:
+      case VariableType.List:
+        return `\${{ ${value} }}`
+      default:
+        return value;
+    }
+
   }
 
   visitBpmnTask(node: BpmnTask, params: any[]) {
     let activityID = node.id;
-    let property = this.properties.get(activityID)?.properties;
+    let configuration = this.properties.get(activityID)
+    let property = configuration?.properties;
+    const keyword = configuration.keyword; 
+
     if (!property)
       throw new BpmnParseError(
         BpmnParseErrorCode["Missing Property"],
@@ -118,6 +126,7 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     const args = property.arguments;
     const assignVariable = property.return;
     const Lib = property.library;
+
     let keywordAssigns = [] as ProcessVariable[];
     let keywordArg = [] as Argument[];
     if (!property.activityName) {
@@ -138,7 +147,7 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       const assignVarName = assignVariable.replace(/^[^\w]{(.*)}$/, "$1");
       const variableInStorage = this._checkVariableValid(assignVarName);
       keywordAssigns.push(
-        new ProcessVariable(assignVarName, JSON.parse(variableInStorage.value), variableInStorage.type)
+        new ProcessVariable(assignVarName, variableInStorage.value, variableInStorage.type)
       );
     }
 
@@ -153,7 +162,15 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       }
     }
 
-    let keywords = [new Keyword(property.activityName, keywordArg, keywordAssigns)];
+    if(property.arguments.Connection) {
+      // Add connectionKey for robot
+      const connectionArgs = property.arguments.Connection
+      this.credentials.push({
+        connectionKey: connectionArgs?.value.split('/').pop().split('.').slice(0, -1).join('.') ?? ""
+      })
+    }
+
+    let keywords = [new Keyword(keyword, keywordArg, keywordAssigns)];
     return keywords;
   }
 
@@ -251,28 +268,5 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       );
     }
     return variable;
-  }
-
-  private _handleCreateCredentials(library: string, packageName: string,  args: ArgumentProps) {
-    // Check if supported connections
-    const provider = AuthorizationProviderByActivityPackage.get(packageName)
-    if(!provider)
-        throw new BpmnParseError(CredentialProviderCode["Not found provider"] + ":" + provider, "")
-    
-    switch(library){
-      case 'RPA.Cloud.Google':
-        if(!args.value || args.value.length == 0)
-            return []
-        
-        // Create credential paths for google token file
-        const credentialFilePath = `${process.env["ROBOT_CREDENTIAL_FOLDER"]}/${args.value}.json`
-
-        // Store the provides
-        this.credentials.push(({provider, connectionKey: args.value}))
-
-        return [new GoogleCredentialKeyword(credentialFilePath)]
-      default:
-        return []
-    }
   }
 }

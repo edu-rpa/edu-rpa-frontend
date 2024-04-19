@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "patch-package",
-    "dev": "next dev",
+    "dev": "ENV=development next dev",
     "build": "next build",
     "export": "next export",
     "start": "next start",
@@ -43,6 +43,7 @@
     "framer-motion": "^10.16.4",
     "immutability-helper": "^3.1.1",
     "inherits": "^2.0.3",
+    "lodash": "^4.17.21",
     "next": "^13.5.3",
     "patch-package": "^8.0.0",
     "prism-react-renderer": "^2.3.0",

@@ -21,6 +21,8 @@ export const ActivityPackages = [
           },
           token_file_path: {
             type: 'connection.Google Drive',
+            keywordArg: "token_file_path",
+            provider: "Google Drive",
             description: 'Your connection ID with Google Drive',
             value: null,
           },
@@ -304,8 +306,10 @@ export const ActivityPackages = [
             value: 'EduRPA.Google',
             hidden: true,
           },
-          token_file_path: {
+          Connection: {
             type: 'connection.Gmail',
+            keywordArg: "token_file_path",
+            provider: "Gmail",
             description: 'Your connection ID with Gmail',
             value: null,
           },
@@ -466,8 +470,10 @@ export const ActivityPackages = [
             value: 'EduRPA.Google',
             hidden: true,
           },
-          token_file_path: {
+          Connection: {
             type: 'connection.Google Sheets',
+            keywordArg: "token_file_path",
+            provider: "Google Sheets",
             description: 'Your connection ID with Google Sheet',
             value: null,
           },
@@ -726,9 +732,11 @@ export const ActivityPackages = [
             value: 'EduRPA.Google',
             hidden: true,
           },
-          token_file_path: {
+          Connection: {
             type: 'connection.Google Classroom',
             description: 'Your connection ID with Google Classroom',
+            keywordArg: "token_file_path",
+            provider: "Google Classroom",
             value: null,
           },
         },
@@ -889,10 +897,10 @@ export const ActivityPackages = [
       },
       {
         templateId: 'invite_student_course',
-        displayName: 'Invite Students To Course',
-        description: 'Invite Students To Course',
+        displayName: 'Invite Students To Classroom',
+        description: 'Invite Students To Classroom',
         type: 'activity',
-        keyword: 'Invite Students To Course',
+        keyword: 'Invite Students To Classroom',
         arguments: {
           'Course ID': {
             type: 'string',
@@ -1027,9 +1035,11 @@ export const ActivityPackages = [
             value: 'EduRPA.Google',
             hidden: true,
           },
-          token_file_path: {
+          Connection: {
             type: 'connection.Google Form',
+            keywordArg: "token_file_path",
             description: 'Your connection ID with Google Form',
+            provider: "Google Forms",
             value: null,
           },
         },

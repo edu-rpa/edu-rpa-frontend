@@ -21,6 +21,7 @@ import { Connection } from '@/interfaces/connection';
 import { providerData } from '@/constants/providerData';
 import ConnectionTable from '@/components/Connection/ConnectionTable';
 import CreateNewConnectionModal from '@/components/Connection/CreateNewConnectionModal';
+import _ from 'lodash';
 
 const integrationServiceExplain =
   'With integration service, you can create connections to other services. Connections can be used by robots to perform tasks on your behalf.';
@@ -52,7 +53,8 @@ export default function Service() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const data = await connectionApi.queryConnections();
+        let data = await connectionApi.queryConnections();
+        data = data.map(i => _.omit(i, ["connectionKey"]) as Connection)
         setConnectionData(data);
       } catch (error) {
         console.log(error);

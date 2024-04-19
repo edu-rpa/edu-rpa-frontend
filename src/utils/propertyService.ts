@@ -42,9 +42,9 @@ const getLibrary = (packageName: string) => {
     case 'Google Sheet':
       return 'RPA.Cloud.Google';
     case 'Google Classroom':
-      return 'EduRPA.GoogleClassroom';
+      return 'EduRPA.Google';
     case 'Google Form':
-      return 'EduRPA.GoogleForm';
+      return 'EduRPA.Google';
     case 'Browser automation':
       return 'RPA.Browser.Playwright';
     case 'Document automation':
