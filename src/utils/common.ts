@@ -47,10 +47,25 @@ const toastSuccess = (toast: any, message: string) => {
   });
 };
 
+const toastInfo = (toast: any, message: string) => {
+  toast({
+    title: 'Info',
+    description: message,
+    status: 'info',
+    duration: 5000,
+    isClosable: true,
+    position: 'top-right',
+    containerStyle: {
+      marginTop: '100px',
+    },
+  });
+};
+
 export { 
   formatDate, 
   exportFile, 
   stringifyCyclicObject, 
   toastError, 
-  toastSuccess
+  toastSuccess,
+  toastInfo
 };

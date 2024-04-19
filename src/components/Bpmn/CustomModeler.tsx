@@ -151,7 +151,7 @@ function CustomModeler() {
     const processProperties = getProcessFromLocalStorage(processID as string);
     if (!processProperties) {
       toast({
-        title: 'There are some erros, please refresh the page!',
+        title: 'There are some errors, please refresh the page!',
         status: 'error',
         position: 'top-right',
         duration: 1000,

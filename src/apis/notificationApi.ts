@@ -1,10 +1,12 @@
 import apiBase from './config';
 import { Notification } from '@/interfaces/notification';
 
-const getNotifications = async (limit: number, page: number): Promise<Notification[]> => {
+export const NOTI_PAGE_LIMIT = 5;
+
+const getNotifications = async (page: number): Promise<Notification[]> => {
   return await apiBase
     .get(
-      `${process.env.NEXT_PUBLIC_DEV_API}/notification?limit=${limit}&page=${page}`
+      `${process.env.NEXT_PUBLIC_DEV_API}/notification?limit=${NOTI_PAGE_LIMIT}&page=${page}`
     )
     .then((res: any) => {
       return res.data;
