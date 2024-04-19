@@ -21,8 +21,8 @@ export const ActivityPackages = [
           },
           token_file_path: {
             type: 'connection.Google Drive',
-            keywordArg: "token_file_path",
-            provider: "Google Drive",
+            keywordArg: 'token_file_path',
+            provider: 'Google Drive',
             description: 'Your connection ID with Google Drive',
             value: null,
           },
@@ -51,7 +51,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'Folder',
-          assignedTo: null,
           type: 'dictionary',
           description:
             'The created folder. This is a dictionary, contains: id (folder id), url (folder url)',
@@ -80,7 +79,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'Files',
-          assignedTo: null,
           type: 'list',
           description: "List of dowloaded files 's name",
         },
@@ -116,29 +114,8 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'File id',
-          assignedTo: null,
           type: 'string',
           description: 'The uploaded file id',
-        },
-      },
-      {
-        templateId: 'drive.for_each_file_in_folder',
-        displayName: 'For each file in folder',
-        description: 'Iterates over a list of files in a Google Drive folder',
-        iconCode: 'FaGoogleDrive',
-        type: 'subprocess',
-        arguments: {
-          'Folder Path': {
-            type: 'string',
-            description: 'The path to the folder',
-            value: '',
-          },
-        },
-        variable: {
-          name: 'File',
-          type: 'dictionary',
-          description:
-            'The file. This is a dictionary, contains: id (file id), url (file url), name (file name), is_folder, mimeType (file mime type), size (file size), modifiedTime (file modified time)',
         },
       },
       {
@@ -164,7 +141,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'File List',
-          assignedTo: null,
           type: 'list',
           description:
             'A list of files. Each file is a dictionary, contains: id (file id), url (file url), name (file name), is_folder, mimeType (file mime type), size (file size), modifiedTime (file modified time)',
@@ -187,7 +163,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'File/Folder',
-          assignedTo: null,
           type: 'dictionary',
           description:
             'The file/folder. This is a dictionary, contains: id (file/folder id), url (file/folder url), name (file/folder name), is_folder, mimeType (file/folder mime type), size (file/folder size), modifiedTime (file/folder modified time)',
@@ -210,7 +185,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'Number of deleted',
-          assignedTo: null,
           type: 'number',
           description: 'The number of deleted files/folders',
         },
@@ -238,7 +212,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'List of files/folders id',
-          assignedTo: null,
           type: 'list',
           description: 'A list of files/folders id',
         },
@@ -278,7 +251,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'Share response',
-          assignedTo: null,
           type: 'dictionary',
           description:
             'The share response. This is a dictionary, contains: file_id, permission_id',
@@ -308,8 +280,8 @@ export const ActivityPackages = [
           },
           Connection: {
             type: 'connection.Gmail',
-            keywordArg: "token_file_path",
-            provider: "Gmail",
+            keywordArg: 'token_file_path',
+            provider: 'Gmail',
             description: 'Your connection ID with Gmail',
             value: null,
           },
@@ -350,61 +322,9 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'Sent message',
-          assignedTo: null,
           type: 'dictionary',
           description:
             'The sent message. This is a dictionary, contains: id (message id), threadId (message thread id)',
-        },
-      },
-      {
-        templateId: 'gmail.for_each_email',
-        displayName: 'For each email',
-        description: 'Iterates over a list of email',
-        iconCode: 'FaEnvelope',
-        type: 'subprocess',
-        arguments: {
-          'Email Folder Path': {
-            type: 'string',
-            description: 'The source email folder path',
-            value: [],
-          },
-          'Max number emails': {
-            type: 'number',
-            description: 'Filter by the limit number of emails',
-            keywordArg: 'max_results',
-            value: 100,
-          },
-          'From email': {
-            type: 'string',
-            description: 'Filter by source email',
-            value: '',
-          },
-          'Starred Email': {
-            type: 'boolean',
-            description: 'Filter by starred email',
-            value: false,
-          },
-          'Read Email': {
-            type: 'boolean',
-            description: 'Filter by read email',
-            value: false,
-          },
-          'From date': {
-            type: 'date',
-            description: 'Filter by range of day (start day)',
-            value: null,
-          },
-          'To date': {
-            type: 'date',
-            description: 'Filter by range of day (end day)',
-            value: null,
-          },
-        },
-        variable: {
-          name: 'Email',
-          type: 'dictionary',
-          description:
-            'The email. This is a dictionary, contains: id (email id), from (email from), to (email to), cc (email cc), bcc (email bcc), subject (email subject), body (email body), attachments (email attachments)',
         },
       },
       {
@@ -442,7 +362,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'Emails',
-          assignedTo: null,
           type: 'list',
           description:
             'A list of emails. Each email is a dictionary, contains: id (email id), from (email from), to (email to), cc (email cc), bcc (email bcc), subject (email subject), body (email body), attachments (email attachments)',
@@ -472,8 +391,8 @@ export const ActivityPackages = [
           },
           Connection: {
             type: 'connection.Google Sheets',
-            keywordArg: "token_file_path",
-            provider: "Google Sheets",
+            keywordArg: 'token_file_path',
+            provider: 'Google Sheets',
             description: 'Your connection ID with Google Sheet',
             value: null,
           },
@@ -496,30 +415,8 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'SpreadSheet ID',
-          assignedTo: null,
           type: 'string',
           description: 'The created spreadsheet id',
-        },
-      },
-      {
-        templateId: 'sheet.for_each_sheet_in_spreadsheet',
-        displayName: 'For Each Sheet',
-        description: 'Iterates over a list of Sheet in a Spreadsheet',
-        iconCode: 'FaFileSpreadsheet',
-        type: 'subprocess',
-        arguments: {
-          'SpreadSheet ID': {
-            type: 'string',
-            description: 'The ID of spread sheet',
-            keywordArg: 'spreadsheet_id',
-            value: '',
-          },
-        },
-        variable: {
-          name: 'Sheet',
-          type: 'dictionary',
-          description:
-            'The sheet. This is a dictionary, contains: id (sheet id), title (sheet title), index (sheet index), sheetType (sheet type), gridProperties (sheet grid properties)',
         },
       },
       {
@@ -530,7 +427,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Get Spreadsheet Basic Information',
         arguments: {
-
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -540,7 +436,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'SpreadSheet',
-          assignedTo: null,
           type: 'dictionary',
           description:
             'The spreadsheet. This is a dictionary, contains: id (spreadsheet id), url (spreadsheet url), name (spreadsheet name), sheets (spreadsheet sheets)',
@@ -554,7 +449,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Create Sheet',
         arguments: {
-
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -568,7 +462,11 @@ export const ActivityPackages = [
             value: '',
           },
         },
-        return: null,
+        return: {
+          displayName: 'Result',
+          type: 'dictionary',
+          description: 'Operation result as an dictionary',
+        },
       },
       {
         templateId: 'sheet.delete_sheet',
@@ -578,7 +476,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Delete Sheet',
         arguments: {
-
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -592,7 +489,11 @@ export const ActivityPackages = [
             value: '',
           },
         },
-        return: null,
+        return: {
+          displayName: 'Result',
+          type: 'dictionary',
+          description: 'Operation result as an dictionary',
+        },
       },
       {
         templateId: 'sheet.rename_sheet',
@@ -602,7 +503,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Rename Sheet',
         arguments: {
-
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -622,7 +522,11 @@ export const ActivityPackages = [
             value: '',
           },
         },
-        return: null,
+        return: {
+          displayName: 'Result',
+          type: 'dictionary',
+          description: 'Operation result as an dictionary',
+        },
       },
       {
         templateId: 'sheet.write_data_to_sheet',
@@ -633,7 +537,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Update Sheet Values',
         arguments: {
-
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -653,7 +556,11 @@ export const ActivityPackages = [
             value: [],
           },
         },
-        return: null,
+        return: {
+          displayName: 'Result',
+          type: 'dictionary',
+          description: 'Operation result',
+        },
       },
       {
         templateId: 'sheet.read_data_from_sheet',
@@ -664,7 +571,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Get Sheet Values',
         arguments: {
-
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -680,7 +586,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'Sheet Values',
-          assignedTo: null,
           type: 'list',
           description: 'A list of values. Each value is a list of cells value',
         },
@@ -694,7 +599,6 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Clear Sheet Values',
         arguments: {
-
           'SpreadSheet ID': {
             type: 'string',
             description: 'The ID of spread sheet',
@@ -708,7 +612,11 @@ export const ActivityPackages = [
             value: '',
           },
         },
-        return: null,
+        return: {
+          displayName: 'Result',
+          type: 'dictionary',
+          description: 'Operation result',
+        },
       },
     ],
   },
@@ -735,8 +643,8 @@ export const ActivityPackages = [
           Connection: {
             type: 'connection.Google Classroom',
             description: 'Your connection ID with Google Classroom',
-            keywordArg: "token_file_path",
-            provider: "Google Classroom",
+            keywordArg: 'token_file_path',
+            provider: 'Google Classroom',
             value: null,
           },
         },
@@ -750,28 +658,60 @@ export const ActivityPackages = [
         arguments: {
           'Course Name': {
             type: 'string',
-            keywordArg: 'course_name',
+            keywordArg: 'name',
             description: 'Name of the created course',
             value: '',
           },
           'Teacher Email': {
             type: 'string',
-            keywordArg: 'teacher_email',
+            keywordArg: 'ownerId',
             description: 'Email of teacher you would to invite',
             value: '',
           },
         },
         return: {
-          displayName: 'ID of Google Classroom Course',
-          assignedTo: null,
+          displayName: 'Course ID',
           type: 'string',
-          description: 'The ID of Google Classroom Course',
+          description: 'The ID of the course',
+        },
+      },
+      {
+        templateId: 'list_classrooms',
+        displayName: 'List Classrooms',
+        description: 'List Classrooms',
+        type: 'activity',
+        keyword: 'List Classrooms',
+        arguments: {},
+        return: {
+          displayName: 'List of Classrooms',
+          type: 'list',
+          description: 'List of dictionary of course object with {name, id}',
+        },
+      },
+      {
+        templateId: 'delete_course_by_id',
+        displayName: 'Delete Classroom',
+        description: 'Delete Classroom',
+        type: 'activity',
+        keyword: 'Delete Classroom',
+        arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'courseId',
+            description: 'ID of the course',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'Result',
+          type: 'dictionary',
+          description: 'Operation result',
         },
       },
       {
         templateId: 'get_course_id_by_course_name',
         displayName: 'Get Course ID By Course Name',
-        description: 'Get Course ID By Course Name',
+        description: 'Get ID of the course by course name',
         type: 'activity',
         keyword: 'Get Course ID By Course Name',
         arguments: {
@@ -783,116 +723,9 @@ export const ActivityPackages = [
           },
         },
         return: {
-          displayName: 'ID of Google Classroom Course',
-          assignedTo: null,
+          displayName: 'Course ID',
           type: 'string',
-          description: 'The ID of Google Classroom Course',
-        },
-      },
-      {
-        templateId: 'delete_course_by_id',
-        displayName: 'Delete Course By ID',
-        description: 'Delete Course By ID',
-        type: 'activity',
-        keyword: 'Delete Course By ID',
-        arguments: {
-          'Course ID': {
-            type: 'string',
-            keywordArg: 'course_id',
-            description: 'ID of the course',
-            value: '',
-          },
-        },
-        return: null,
-      },
-      {
-        templateId: 'create_assignment',
-        displayName: 'Create Assignment',
-        description: 'Create Assignment in a course of Google Classroom',
-        type: 'activity',
-        keyword: 'Create Assignment',
-        arguments: {
-          'Course ID': {
-            type: 'string',
-            keywordArg: 'course_id',
-            description: 'ID of the course',
-            value: '',
-          },
-          'Assignment Title': {
-            type: 'string',
-            keywordArg: 'assignment_title',
-            description: 'Title of the assignment',
-            value: '',
-          },
-          'Assignment Description': {
-            type: 'string',
-            keywordArg: 'assignment_description',
-            description: 'Description of the assignment',
-            value: '',
-          },
-          'Due Date': {
-            type: 'date',
-            keywordArg: 'due_date',
-            description: 'Due date of the assignment',
-            value: '',
-          },
-          'Assignment URL': {
-            type: 'string',
-            keywordArg: 'assignment_url',
-            description: 'URL of the assignment',
-            value: '',
-          },
-        },
-        return: {
-          displayName: 'ID of Google Classroom Assignment',
-          assignedTo: null,
-          type: 'string',
-          description: 'The ID of Google Classroom Assignment',
-        },
-      },
-      {
-        templateId: 'create_quiz_classroom',
-        displayName: 'Create Quiz',
-        description: 'Create Quiz in a course of Google Classroom',
-        type: 'activity',
-        keyword: 'Create Quiz',
-        arguments: {
-          'Course ID': {
-            type: 'string',
-            keywordArg: 'course_id',
-            description: 'ID of the course',
-            value: '',
-          },
-          'Quiz Title': {
-            type: 'string',
-            keywordArg: 'quiz_title',
-            description: 'Title of the quiz',
-            value: '',
-          },
-          'Quiz Description': {
-            type: 'string',
-            keywordArg: 'quiz_description',
-            description: 'Description of the quiz',
-            value: '',
-          },
-          'Quiz URL': {
-            type: 'string',
-            keywordArg: 'quiz_url',
-            description: 'URL of the quiz',
-            value: '',
-          },
-          'Max Points': {
-            type: 'number',
-            keywordArg: 'max_points',
-            description: 'Maximum points of the quiz',
-            value: 10,
-          },
-        },
-        return: {
-          displayName: 'ID of Google Classroom Quiz',
-          assignedTo: null,
-          type: 'string',
-          description: 'The ID of Google Classroom Quiz',
+          description: 'The ID of the course',
         },
       },
       {
@@ -904,36 +737,145 @@ export const ActivityPackages = [
         arguments: {
           'Course ID': {
             type: 'string',
-            keywordArg: 'course_id',
+            keywordArg: 'courseId',
             description: 'ID of the course',
             value: '',
           },
           'List of student emails': {
             type: 'list',
-            keywordArg: 'email_list',
+            keywordArg: 'studentEmails',
             description: 'List of student emails',
             value: '',
           },
         },
-        return: null,
+        return: {
+          displayName: 'Result',
+          type: 'dictionary',
+          description: 'Operation result',
+        },
       },
       {
-        templateId: 'list_course_work_in_course',
-        displayName: 'List Coursework In Course',
-        description: 'List Coursework In Course',
+        templateId: 'create_assignment',
+        displayName: 'Create Assignment',
+        description: 'Create Assignment in a course of Google Classroom',
         type: 'activity',
-        keyword: 'List Coursework In Course',
+        keyword: 'Create Assignment',
         arguments: {
           'Course ID': {
             type: 'string',
-            keywordArg: 'course_id',
+            keywordArg: 'courseId',
+            description: 'ID of the course',
+            value: '',
+          },
+          'Assignment Title': {
+            type: 'string',
+            keywordArg: 'title',
+            description: 'Title of the assignment',
+            value: '',
+          },
+          'Assignment Description': {
+            type: 'string',
+            keywordArg: 'description',
+            description: 'Description of the assignment',
+            value: '',
+          },
+          'Assignment URL': {
+            type: 'list',
+            keywordArg: 'linkMaterials',
+            description: 'URL of the assignment',
+            value: '',
+          },
+          'Due Date': {
+            type: 'string',
+            keywordArg: 'dueDate',
+            description: 'Due date of the assignment',
+            value: '',
+          },
+          'Due Time': {
+            type: 'string',
+            keywordArg: 'dueTime',
+            description: 'Due time of the assignment',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'ID of Course Assignment',
+          type: 'string',
+          description: 'The ID of Course Assignment',
+        },
+      },
+      {
+        templateId: 'create_quiz_classroom',
+        displayName: 'Create Quiz',
+        description: 'Create Quiz in a course of Google Classroom',
+        type: 'activity',
+        keyword: 'Create Quiz',
+        arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'courseId',
+            description: 'ID of the course',
+            value: '',
+          },
+          'Quiz Title': {
+            type: 'string',
+            keywordArg: 'title',
+            description: 'Title of the quiz',
+            value: '',
+          },
+          'Quiz Description': {
+            type: 'string',
+            keywordArg: 'description',
+            description: 'Description of the quiz',
+            value: '',
+          },
+          'Quiz URL': {
+            type: 'string',
+            keywordArg: 'quizUrl',
+            description: 'URL of the quiz',
+            value: '',
+          },
+          'Max Points': {
+            type: 'number',
+            keywordArg: 'maxPoints',
+            description: 'Maximum points of the quiz',
+            value: 10,
+          },
+          'Due Date': {
+            type: 'string',
+            keywordArg: 'dueDate',
+            description: 'Due date of the assignment',
+            value: '',
+          },
+          'Due Time': {
+            type: 'string',
+            keywordArg: 'dueTime',
+            description: 'Due time of the assignment',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'ID of Course Quiz',
+          type: 'string',
+          description: 'The ID of Course Quiz',
+        },
+      },
+      {
+        templateId: 'list_course_work',
+        displayName: 'List Coursework',
+        description: 'List Coursework',
+        type: 'activity',
+        keyword: 'List Coursework',
+        arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'courseId',
             description: 'ID of the course',
             value: '',
           },
         },
         return: {
           displayName: 'List of Coursework In Course',
-          assignedTo: null,
           type: 'list',
           description: 'List of Coursework In Course',
         },
@@ -945,70 +887,105 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Get Coursework ID By Title',
         arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'courseId',
+            description: 'ID of the course',
+            value: '',
+          },
           'Course Title': {
             type: 'string',
-            keywordArg: 'course_title',
+            keywordArg: 'title',
             description: 'Title of the course',
             value: '',
           },
         },
         return: {
           displayName: 'Coursework ID of the course',
-          assignedTo: null,
           type: 'string',
           description: 'Coursework ID of the course',
         },
       },
       {
-        templateId: 'list_submissions_of_coursework',
-        displayName: 'List Submissions Of Coursework',
-        description: 'List Submissions Of Coursework',
+        templateId: 'delete_coursework',
+        displayName: 'Delete Coursework',
+        description: 'Delete Coursework',
         type: 'activity',
-        keyword: 'List Submissions Of Coursework',
+        keyword: 'Delete Coursework',
         arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'courseId',
+            description: 'ID of the course',
+            value: '',
+          },
           'Coursework ID': {
             type: 'string',
-            keywordArg: 'course_work_id',
+            keywordArg: 'courseworkId',
+            description: 'ID of the course work',
+            value: '',
+          },
+        },
+        return: {
+          displayName: 'Result',
+          type: 'dictionary',
+          description: 'Operation result',
+        },
+      },
+      {
+        templateId: 'list_student_submissions',
+        displayName: 'List Student Submissions',
+        description: 'List Student Submissions',
+        type: 'activity',
+        keyword: 'List Student Submissions',
+        arguments: {
+          'Course ID': {
+            type: 'string',
+            keywordArg: 'courseId',
+            description: 'ID of the course',
+            value: '',
+          },
+          'Coursework ID': {
+            type: 'string',
+            keywordArg: 'courseworkId',
             description: 'ID of the coursework',
             value: '',
           },
         },
         return: {
           displayName: 'Student submissions',
-          assignedTo: null,
           type: 'list',
           description: 'List of student submissions of the coursework',
         },
       },
       {
-        templateId: 'get_submission_id_by_student_email',
-        displayName: 'Get Submission ID By Student Email',
-        description: 'Get Submission ID By Student Email',
+        templateId: 'get_submission_id_by_email',
+        displayName: 'Get Submission ID By Email',
+        description: 'Get Submission ID By Email',
         type: 'activity',
-        keyword: 'Get Submission ID By Student Email',
+        keyword: 'Get Submission ID By Email',
         arguments: {
           'Course ID': {
             type: 'string',
-            keywordArg: 'course_id',
+            keywordArg: 'courseId',
             description: 'ID of the course',
             value: '',
           },
           'Coursework ID': {
             type: 'string',
-            keywordArg: 'course_work_id',
+            keywordArg: 'courseworkId',
             description: 'ID of the coursework',
             value: '',
           },
           'Student Email': {
             type: 'string',
-            keywordArg: 'student_email',
+            keywordArg: 'studentEmail',
             description: 'Email of the student',
             value: '',
           },
         },
         return: {
           displayName: 'ID of the submission',
-          assignedTo: null,
           type: 'string',
           description: 'ID of the submission',
         },
@@ -1022,7 +999,7 @@ export const ActivityPackages = [
     description: 'Help you integrate your work with Google Form',
     library: 'EduRPA.Google',
     activityTemplates: [
-    {
+      {
         templateId: 'google_form.set_up_connection',
         displayName: 'Setup Google Form Connection',
         description: 'Set up Google Form connection for following task',
@@ -1037,9 +1014,9 @@ export const ActivityPackages = [
           },
           Connection: {
             type: 'connection.Google Form',
-            keywordArg: "token_file_path",
+            keywordArg: 'token_file_path',
             description: 'Your connection ID with Google Form',
-            provider: "Google Forms",
+            provider: 'Google Forms',
             value: null,
           },
         },
@@ -1049,18 +1026,17 @@ export const ActivityPackages = [
         displayName: 'Create Quiz Form',
         description: 'Create quiz in google form',
         type: 'activity',
-        keyword: 'Create Quiz',
+        keyword: 'Create Form',
         arguments: {
           'Form Name': {
             type: 'string',
-            keywordArg: 'form_name',
+            keywordArg: 'title',
             description: 'Name of Google Form',
             value: '',
           },
         },
         return: {
           displayName: 'ID of created quiz form',
-          assignedTo: null,
           type: 'string',
           description: 'The ID of created quiz form',
         },
@@ -1074,24 +1050,23 @@ export const ActivityPackages = [
         arguments: {
           URL: {
             type: 'string',
-            keywordArg: 'doc_url',
+            keywordArg: 'url',
             description: 'URL of Google Doc',
             value: '',
           },
         },
         return: {
           displayName: 'ID of Google Doc',
-          assignedTo: null,
           type: 'string',
           description: 'The ID of Google Doc',
         },
       },
       {
         templateId: 'transfer_quiz',
-        displayName: 'Transfer Google Doc To Quiz Form',
+        displayName: 'Transfer Google Doc To Google',
         description: 'Transfer quiz from google doc to google form',
         type: 'activity',
-        keyword: 'Transfer Quiz From Google Doc To Google Form',
+        keyword: 'Add Questions And Answers From Google Doc To Form',
         arguments: {
           DocID: {
             type: 'string',
@@ -1107,10 +1082,9 @@ export const ActivityPackages = [
           },
         },
         return: {
-          displayName: 'ID of Google Form',
-          assignedTo: null,
+          displayName: 'The link of Google Form',
           type: 'string',
-          description: 'The ID of Google Form',
+          description: 'The link of Google Form',
         },
       },
     ],
@@ -1343,7 +1317,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'Text',
-          assignedTo: null,
           type: 'string',
           description: 'The text of the element',
         },
@@ -1380,7 +1353,7 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'Data',
-          assignedTo: null,
+
           type: 'dictionary',
           description: 'The extracted data from the document',
         },
@@ -1408,7 +1381,7 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'Grade report file name',
-          assignedTo: null,
+
           type: 'string',
           description: 'The generated grade report file name',
         },
@@ -1451,7 +1424,7 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'File path',
-          assignedTo: null,
+
           type: 'string',
           description: 'The uploaded file path',
         },
@@ -1473,7 +1446,6 @@ export const ActivityPackages = [
         },
         return: {
           displayName: 'File name',
-          assignedTo: null,
           type: 'string',
           description: 'The downloaded file name',
         },
