@@ -1063,7 +1063,7 @@ export const ActivityPackages = [
       },
       {
         templateId: 'transfer_quiz',
-        displayName: 'Add Questions And Answers From Google Doc To Form',
+        displayName: 'Transfer Google Doc To Google',
         description: 'Transfer quiz from google doc to google form',
         type: 'activity',
         keyword: 'Add Questions And Answers From Google Doc To Form',
