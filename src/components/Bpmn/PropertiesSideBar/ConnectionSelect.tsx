@@ -12,6 +12,8 @@ export interface ConnectionOptionsParams {
 export default function ConnectionOptions(props: ConnectionOptionsParams) {
   const { onChange, provider, value } = props;
   const [options, setOptions] = useState<Connection[]>([]);
+  const handleCreateGoogleCredentialFilePath = (path: string) => `${process.env["NEXT_PUBLIC_ROBOT_CREDENTIAL_FOLDER"]}/${path}.json`
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,7 +32,7 @@ export default function ConnectionOptions(props: ConnectionOptionsParams) {
       placeholder="Choose the connection"
       value={value}>
       {options.map((option) => (
-        <option key={option.name} value={option.connectionKey}>
+        <option key={option.name} value={handleCreateGoogleCredentialFilePath(option.connectionKey)}>
           {option.name}
         </option>
       ))}

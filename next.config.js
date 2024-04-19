@@ -14,9 +14,10 @@ const config = {
     ignoreDuringBuilds: true,
   },
   // output: 'export',
-  // images: {
-  //   unoptimized: true,
-  // },
+  images: {
+    unoptimized: true,
+  },
 };
-require('dotenv').config({ path: `./.env.${process.env.ENVIRONMENT}` });
+
+require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
 module.exports = config;

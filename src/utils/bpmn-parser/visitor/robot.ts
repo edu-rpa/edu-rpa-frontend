@@ -37,7 +37,7 @@ export class Keyword extends BodyItem {
     return {
       name: this.name,
       args,
-      assigns,
+      assign: assigns,
     };
   }
 }
@@ -51,8 +51,10 @@ export class GoogleCredentialKeyword extends Keyword {
 export class Argument {
   constructor(public name: string, public value: string) {}
   toJSON() {
-    return `${this.name}=${this.value}`;
+    // return `${this.name}=${this.value}`;
+    return `${this.value}`;
   }
+
 }
 
 export class ProcessVariable {
@@ -206,14 +208,14 @@ export class Lib {
 export class Robot {
   constructor(
     public name: string,
-    public tests: Test,
+    public tests: Test[],
     public resource: Resource
   ) {}
 
   toJSON() {
     return {
       name: this.name,
-      tests: this.tests.toJSON(),
+      tests: this.tests.map(t => t.toJSON()),
       resource: this.resource.toJSON(),
     };
   }

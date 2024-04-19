@@ -1,6 +1,7 @@
 export interface Properties {
     activityID: string;
     activityType: string;
+    keyword?: string,
     properties: PropertiesDetails;
 }
 

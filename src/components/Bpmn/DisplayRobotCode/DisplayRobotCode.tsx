@@ -5,16 +5,28 @@ import { useState } from "react";
 
 export interface DisplayRobotCodeParams {
     compileRobotCode: any;
+    errorTrace?: string;
+    setErrorTrace: any
 }
 export default function DisplayRobotCode(props: DisplayRobotCodeParams) {
-    const {compileRobotCode} = props
-    const [robotCode, setRobotCode] = useState<string>()
+    const {compileRobotCode, errorTrace, setErrorTrace} = props
+    const [displayTxt, setDisplayTxt] = useState<string>()
     const { isOpen, onOpen, onClose } = useDisclosure()
     
     const handleDisplayRobotCode = () => {
-        const code: any = compileRobotCode()   
-        setRobotCode(JSON.stringify(code, null, 4))
+        const code: any = compileRobotCode()
+        if(errorTrace && errorTrace.length > 0) {
+            setDisplayTxt(errorTrace)
+        }   
+        else {
+            setDisplayTxt(JSON.stringify(code, null, 4))
+        }
         onOpen()
+    }
+
+    const onCloseDisplay = () => {
+        setErrorTrace('')
+        onClose();
     }
 
     return(
@@ -26,12 +38,12 @@ export default function DisplayRobotCode(props: DisplayRobotCodeParams) {
                 onClick={() => handleDisplayRobotCode()}>
                 Compile Robot
             </Button>
-            <Modal isOpen={isOpen} onClose={onClose} size="xl">
+            <Modal isOpen={isOpen} onClose={onCloseDisplay} size="xl">
                 <ModalOverlay />
                 <ModalContent maxW="50%">
                     <ModalCloseButton />
                         <CodeViewer
-                            code={robotCode}
+                            code={displayTxt}
                             language="json"
                         >
                         </CodeViewer>
