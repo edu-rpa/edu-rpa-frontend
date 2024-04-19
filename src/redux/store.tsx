@@ -4,6 +4,7 @@ import homeSlice from './slice/homeSlice';
 import bpmnSlice from './slice/bpmnSlice';
 import userSlice from './slice/userSlice';
 import scheduleSlice from './slice/scheduleSlice';
+import notificationSlice from './slice/notificationSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     bpmn: bpmnSlice.reducer,
     user: userSlice.reducer,
     schedule: scheduleSlice.reducer,
+    notification: notificationSlice.reducer,
   },
 });
 

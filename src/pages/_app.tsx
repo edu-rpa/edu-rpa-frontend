@@ -11,6 +11,8 @@ import { useRouter } from 'next/router';
 import HeaderLayout from '@/components/Layouts/HeaderLayout';
 import SidebarLayout from '@/components/Layouts/SidebarLayout';
 import DefaultLayout from '@/components/Layouts/DefaultLayout';
+import { PubNubProvider } from 'pubnub-react';
+import PubNub from 'pubnub';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (_page: React.ReactElement) => React.ReactElement;
@@ -22,6 +24,10 @@ type AppPropsWithLayout = AppProps & {
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
   const queryClient = new QueryClient();
+  const pubnub = new PubNub({
+    subscribeKey: process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY,
+    userId: 'user',
+  });
   const useGetLayout = () => {
     const router = useRouter();
     const path = router.pathname;
@@ -49,9 +55,11 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <ChakraProvider theme={theme}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <PubNubProvider client={pubnub}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </PubNubProvider>
         </ChakraProvider>
       </QueryClientProvider>
     </Provider>

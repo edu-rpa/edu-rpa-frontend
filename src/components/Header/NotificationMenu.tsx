@@ -22,9 +22,14 @@ import { FiAlertCircle } from "react-icons/fi";
 import { FaShareSquare, FaPlay } from "react-icons/fa";
 import { GrIntegration } from "react-icons/gr";
 import { BsFillLightningFill } from "react-icons/bs";
-import notificationApi from "@/apis/notificationApi";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import {
+  fetchMoreNotifications,
+  markAsRead,
+} from "@/redux/slice/notificationSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { notificationSelector } from "@/redux/selector";
 
 const NotificationMenu = () => {
   const [selectedNotification, setSelectedNotification] = useState<Notification>({
@@ -35,12 +40,8 @@ const NotificationMenu = () => {
     type: NotificationType.ROBOT_EXECUTION,
     createdAt: new Date()
   });
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const [countUnread, setCountUnread] = useState<number>(0);
-  const PAGE_LIMIT = 5;
-  const [curPage, setCurPage] = useState<number>(1);
+  const dispatch = useDispatch();
+  const { notifications, countUnread, hasMore, curPage, isLoading } = useSelector(notificationSelector);
   const router = useRouter();
   const {
     isOpen,
@@ -48,45 +49,13 @@ const NotificationMenu = () => {
     onClose,
   } = useDisclosure();
 
-  async function fetchNotifications() {
-    setIsLoading(true);
-    const res = await notificationApi.getNotifications(PAGE_LIMIT, curPage);
-    setIsLoading(false);
-    if (res.length < PAGE_LIMIT) {
-      setHasMore(false);
-    }
-    setNotifications((prev) => [...prev, ...res]);
-  }
-
-  async function fetchCountUnread() {
-    const res = await notificationApi.getCountUnread();
-    setCountUnread(res);
-  }
-
-  async function markAsRead(id: number) {
-    await notificationApi.markAsRead(id);
-    setNotifications((prev) => prev.map((noti) => {
-      if (noti.id === id) {
-        return { ...noti, isRead: true };
-      }
-      return noti;
-    }));
-    setCountUnread(countUnread - 1);
-  }
-
   const readNotification = (notification: Notification) => {
     setSelectedNotification(notification);
     onOpen();
     if (!notification.isRead) {
-      markAsRead(notification.id);
+      dispatch(markAsRead(notification.id) as any);
     }
   }
-
-  useEffect(() => {
-    console.log('Fetching noti...');
-    fetchNotifications();
-    fetchCountUnread();
-  }, [curPage]);
 
   const handleActionOfNoti = () => {
     onClose();
@@ -156,7 +125,7 @@ const NotificationMenu = () => {
           ))}
           {hasMore && <Button 
             style={{ width: '100%', marginTop: '10px' }}
-            onClick={() => setCurPage(curPage + 1)}
+            onClick={() => dispatch(fetchMoreNotifications(curPage + 1) as any)}
             isLoading={isLoading}
           >Load more</Button>}
         </MenuList>
@@ -165,10 +134,16 @@ const NotificationMenu = () => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{selectedNotification.title}</ModalHeader>
+          <ModalHeader>Notification detail</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {selectedNotification.content}
+            Title: <b>{selectedNotification.title}</b>
+            <br />
+            Type: {NotificationType[selectedNotification.type]}
+            <br />
+            Content: {selectedNotification.content}
+            <br />
+            Created at: {selectedNotification.createdAt.toLocaleString()}
           </ModalBody>
 
           <ModalFooter>

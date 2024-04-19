@@ -15,6 +15,7 @@ import {
   Text,
   VStack,
   useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
@@ -23,17 +24,28 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '@/redux/slice/userSlice';
 import { userSelector } from '@/redux/selector';
+import { usePubNub } from 'pubnub-react';
 
 import userApi from '@/apis/userApi';
 import { useEffect, useState } from 'react';
 import { getLocalStorageObject } from '@/utils/localStorageService';
 import { LocalStorage } from '@/constants/localStorage';
 import NotificationMenu from './NotificationMenu';
+import { toastInfo } from '@/utils/common';
+import { Notification } from '@/interfaces/notification';
+import {
+  refetchNotifications,
+} from '@/redux/slice/notificationSlice';
+
+const privateNotiChannelPrefix = 'notification.';
 
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const pubnub = usePubNub();
+  const toast = useToast();
   const user = useSelector(userSelector);
+
   const [userInfo, setUserInfo] = useState<any>(null);
 
   const removeAuthToken = () => {
@@ -57,9 +69,26 @@ const Navbar = () => {
     }
   }, []);
 
+  const onReceiveNotification = (message) => {
+    const notification: Notification = message.message;
+    toastInfo(toast, `You have a new notification: ${notification.title}`);
+    dispatch(refetchNotifications() as any);
+  };
+
   useEffect(() => {
     if (userInfo && userInfo.length != 0) {
       dispatch(setUser(userInfo));
+      dispatch(refetchNotifications() as any);
+      // update user id for pubnub
+      pubnub.setUUID(userInfo.id.toString());
+      pubnub.subscribe({
+        channels: [`${privateNotiChannelPrefix}${userInfo.id}`],
+      });
+      pubnub.addListener({
+        message: (message) => {
+          onReceiveNotification(message);
+        },
+      });
     }
   }, [userInfo]);
 
