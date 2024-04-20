@@ -16,6 +16,7 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
+  Box,
 } from '@chakra-ui/react';
 import { NotificationType, Notification } from '@/interfaces/notification';
 import { FiAlertCircle } from 'react-icons/fi';
@@ -89,12 +90,11 @@ const NotificationMenu = () => {
   };
 
   return (
-    <>
+    <Box>
       <Menu>
         <MenuButton>
           <Avatar
-            width={25}
-            height={25}
+            size="sm"
             src="https://img.icons8.com/ios/50/appointment-reminders--v1.png">
             {countUnread > 0 && (
               <AvatarBadge boxSize="1.75em" bg="red.500">
@@ -179,7 +179,7 @@ const NotificationMenu = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Box>
   );
 };
 
