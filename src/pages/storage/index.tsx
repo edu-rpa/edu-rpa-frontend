@@ -21,46 +21,44 @@ import {
   getPresignedUrl,
   deleteFile,
 } from '@/apis/fileStorageApi';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-} from '@chakra-ui/react'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import CreateFolderModal from '@/components/FileStorage/CreateFolderModal';
 import FileUploadModal from '@/components/FileStorage/FileUploadModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
-
-const storageExplain = 'File storage is a place where you can store your files. Robots can access these files to perform their tasks.';
+import { ToolTipExplain } from '@/constants/description';
 
 export default function Storage() {
   const [files, setFiles] = useState<string[]>([]);
   const [currentPath, setCurrentPath] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoadingCreateFolder, setIsLoadingCreateFolder] = useState<boolean>(false);
-  const [isLoadingGetPresignedUrl, setIsLoadingGetPresignedUrl] = useState<boolean>(false);
-  const [isLoadingDeleteFile, setIsLoadingDeleteFile] = useState<boolean>(false);
+  const [isLoadingCreateFolder, setIsLoadingCreateFolder] =
+    useState<boolean>(false);
+  const [isLoadingGetPresignedUrl, setIsLoadingGetPresignedUrl] =
+    useState<boolean>(false);
+  const [isLoadingDeleteFile, setIsLoadingDeleteFile] =
+    useState<boolean>(false);
   const [selectedFileToDelete, setSelectedFileToDelete] = useState<string>('');
   const [selectedDates, setSelectedDates] = useState<Date[]>([
     new Date(),
     new Date(),
   ]);
 
-  const { 
-    isOpen: isOpenCreateFolderModal, 
-    onOpen: onOpenCreateFolderModal, 
-    onClose: onCloseCreateFolderModal 
+  const {
+    isOpen: isOpenCreateFolderModal,
+    onOpen: onOpenCreateFolderModal,
+    onClose: onCloseCreateFolderModal,
   } = useDisclosure();
-  const { 
-    isOpen: isOpenFileUploadModal, 
-    onOpen: onOpenFileUploadModal, 
-    onClose: onCloseFileUploadModal 
+  const {
+    isOpen: isOpenFileUploadModal,
+    onOpen: onOpenFileUploadModal,
+    onClose: onCloseFileUploadModal,
   } = useDisclosure();
-  const { 
-    isOpen: isOpenConfirmDeleteModal, 
-    onOpen: onOpenConfirmDeleteModal, 
-    onClose: onCloseConfirmDeleteModal 
+  const {
+    isOpen: isOpenConfirmDeleteModal,
+    onOpen: onOpenConfirmDeleteModal,
+    onClose: onCloseConfirmDeleteModal,
   } = useDisclosure();
 
   const handleCreateFolder = (folderName: string) => {
@@ -160,31 +158,33 @@ export default function Storage() {
     }
     setIsLoading(false);
     setIsLoadingDeleteFile(false);
-  }
+  };
 
   return (
     <div className="mb-[200px]">
       <SidebarContent>
         <div className="flex flex-start">
-          <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
+          <h1 className="pl-[20px] pr-[10px] ml-[35px] font-bold text-2xl text-[#319795]">
             File Storage
           </h1>
-          <Tooltip hasArrow label={storageExplain} bg='gray.300' color='black'>
-            <QuestionIcon />
+          <Tooltip
+            hasArrow
+            label={ToolTipExplain.STORAGE_SERVICE}
+            bg="gray.300"
+            color="black">
+            <QuestionIcon color="blue.500" />
           </Tooltip>
         </div>
         <Breadcrumb
-          separator={<ChevronRightIcon color='gray.500' />}
+          separator={<ChevronRightIcon color="gray.500" />}
           spacing="8px"
-          className='px-[20px] ml-[35px] mt-[20px]'
-        >
+          className="px-[20px] ml-[35px] mt-[20px]">
           <BreadcrumbItem>
             <BreadcrumbLink
               color="#319795"
               onClick={() => {
                 setCurrentPath('');
-              }}
-            >
+              }}>
               /
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -193,9 +193,13 @@ export default function Storage() {
               <BreadcrumbLink
                 color="#319795"
                 onClick={() => {
-                  setCurrentPath(currentPath.split('/').slice(0, index + 1).join('/') + '/');
-                }}
-              >
+                  setCurrentPath(
+                    currentPath
+                      .split('/')
+                      .slice(0, index + 1)
+                      .join('/') + '/'
+                  );
+                }}>
                 {path}
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -231,16 +235,14 @@ export default function Storage() {
               </Select>
             </Box>
             <IconButton
-              colorScheme='teal'
-              aria-label='Upload File'
-              size='lg'
+              colorScheme="teal"
+              aria-label="Upload File"
               icon={<CloudUploadIcon />}
               onClick={handleClickUpload}
             />
             <IconButton
-              colorScheme='teal'
-              aria-label='Create Folder'
-              size='lg'
+              colorScheme="teal"
+              aria-label="Create Folder"
               icon={<CreateNewFolderIcon />}
               onClick={handleClickCreateFolder}
             />
@@ -263,17 +265,22 @@ export default function Storage() {
         <ConfirmModal
           isOpen={isOpenConfirmDeleteModal}
           onClose={onCloseConfirmDeleteModal}
-          title={`Delete ${selectedFileToDelete.endsWith('/')? 'folder':'file'}?`}
+          title={`Delete ${
+            selectedFileToDelete.endsWith('/') ? 'folder' : 'file'
+          }?`}
           content={`delete ${selectedFileToDelete}`}
           onConfirm={handleConfirmDelete}
           isLoading={isLoadingDeleteFile}
         />
 
-        {isLoading
-          ? <div className="w-90 m-auto flex justify-center items-center">
-            <Button colorScheme="teal" disabled className='m-auto' isLoading>Loading...</Button>
+        {isLoading ? (
+          <div className="w-90 m-auto flex justify-center items-center">
+            <Button colorScheme="teal" disabled className="m-auto" isLoading>
+              Loading...
+            </Button>
           </div>
-          : <div className="w-90 m-auto">
+        ) : (
+          <div className="w-90 m-auto">
             <div className="grid grid-cols-4 gap-4">
               {files.map((file) => (
                 <FileItem
@@ -286,7 +293,7 @@ export default function Storage() {
               ))}
             </div>
           </div>
-        }
+        )}
 
         {files.length === 0 && !isLoading && (
           <div className="w-90 m-auto flex justify-center items-center">

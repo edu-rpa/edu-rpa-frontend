@@ -41,7 +41,7 @@ import { userSelector } from '@/redux/selector';
 
 interface ConnectionTableProps {
   header: string[];
-  data: Connection[];
+  data: any;
   maxRows?: number;
   isLoading?: boolean;
 }

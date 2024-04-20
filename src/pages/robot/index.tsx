@@ -3,7 +3,7 @@ import CustomTable from '@/components/CustomTable/CustomTable';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
 import { QUERY_KEY } from '@/constants/queryKey';
-import { SearchIcon, RepeatIcon } from '@chakra-ui/icons';
+import { SearchIcon, RepeatIcon, QuestionIcon } from '@chakra-ui/icons';
 import {
   Box,
   IconButton,
@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputLeftElement,
   Select,
+  Tooltip,
   useToast,
 } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
@@ -19,6 +20,7 @@ import React, { useEffect, useState } from 'react';
 import RobotTable from '@/components/Robot/RobotTable';
 import { Robot, TriggerType } from '@/interfaces/robot';
 import { toastError } from '@/utils/common';
+import { ToolTipExplain } from '@/constants/description';
 
 export default function RobotPage() {
   const router = useRouter();
@@ -40,8 +42,7 @@ export default function RobotPage() {
     queryFn: () => robotApi.getAllRobot(limit, page),
   });
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   const fetchData = async () => {
     // TODO: implement refresh functionallity
@@ -61,6 +62,7 @@ export default function RobotPage() {
         processVersion: item.processVersion,
         createdAt: item.createdAt,
         triggerType: item.triggerType,
+        robotKey: item.robotKey,
       };
     });
 
@@ -80,9 +82,18 @@ export default function RobotPage() {
   return (
     <div className="mb-[200px]">
       <SidebarContent>
-        <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
-          Robot List
-        </h1>
+        <div className="flex flex-start">
+          <h1 className="pl-[20px] pr-[10px] ml-[35px] font-bold text-2xl text-[#319795]">
+            Robot List
+          </h1>
+          <Tooltip
+            hasArrow
+            label={ToolTipExplain.ROBOT_SERVICE}
+            bg="gray.300"
+            color="black">
+            <QuestionIcon color="blue.500" />
+          </Tooltip>
+        </div>
         <div className="w-90 mx-auto my-[30px]">
           <InputGroup>
             <InputLeftElement pointerEvents="none">
@@ -117,16 +128,15 @@ export default function RobotPage() {
           <div className="w-90 m-auto flex justify-center items-center">
             <div className="text-center">
               <div className="text-2xl font-bold">No robots here</div>
-              <div className="text-gray-500">Publish a robot from your existing processes.</div>
+              <div className="text-gray-500">
+                Publish a robot from your existing processes.
+              </div>
             </div>
           </div>
         )}
 
         <div className="w-90 m-auto">
-          <RobotTable
-            header={tableProps.header}
-            data={tableProps.data}
-          />
+          <RobotTable header={tableProps.header} data={tableProps.data} />
         </div>
       </SidebarContent>
     </div>

@@ -41,7 +41,6 @@ interface RobotTableProps {
   maxRows?: number;
   isLoading?: boolean;
 }
-const DEFAULT_MAX_ROWS = 6;
 
 const RobotTable = (props: RobotTableProps) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -109,7 +108,12 @@ const RobotTable = (props: RobotTableProps) => {
     processVersion: number,
     triggerType: TriggerType
   ) => {
-    setSelectedForConfigTrigger({ userId, processId, processVersion, triggerType });
+    setSelectedForConfigTrigger({
+      userId,
+      processId,
+      processVersion,
+      triggerType,
+    });
     onOpenForConfigTrigger();
   };
 

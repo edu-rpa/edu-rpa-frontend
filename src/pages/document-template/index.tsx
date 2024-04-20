@@ -14,42 +14,50 @@ import { SearchIcon, QuestionIcon } from '@chakra-ui/icons';
 import CustomTable from '@/components/CustomTable/CustomTable';
 import { DocumentTemplate } from '@/interfaces/document-template';
 import { DocumentTemplateType } from '@/interfaces/enums/document-template-type';
-import { CreateDocumentTemplateDto, SaveDocumentTemplateDto, EditDocumentTemplateDto } from '@/dtos/documentTemplateDto';
+import {
+  CreateDocumentTemplateDto,
+  SaveDocumentTemplateDto,
+  EditDocumentTemplateDto,
+} from '@/dtos/documentTemplateDto';
 import CreateDocumentTemplateModal from './create-modal';
 import DetailDocumentTemplateModal from './detail-modal';
 import EditDocumentTemplateModal from './edit-modal';
 import documentTemplateApi from '@/apis/documentTemplateApi';
-
-const documentTemplateExplain = 'Document template is a template that contains the information of the document that you want to extract.';
+import { ToolTipExplain } from '@/constants/description';
 
 export interface DocumentTemplateListProps {
-  isEditable? : boolean,  
-  handleSelectDocumentTemplate?: (e:any) => void;
+  isEditable?: boolean;
+  handleSelectDocumentTemplate?: (e: any) => void;
 }
 
 export default function DocumentTemplateList(props: DocumentTemplateListProps) {
-  const {isEditable=true, handleSelectDocumentTemplate=(e:any)=>{}} = props
+  const { isEditable = true, handleSelectDocumentTemplate = (e: any) => {} } =
+    props;
 
-  const { 
-    isOpen: isOpenCreateModal, 
-    onOpen: onOpenCreateModal, 
-    onClose: onCloseCreateModal 
+  const {
+    isOpen: isOpenCreateModal,
+    onOpen: onOpenCreateModal,
+    onClose: onCloseCreateModal,
   } = useDisclosure();
-  const { 
-    isOpen: isOpenDetailModal, 
-    onOpen: onOpenDetailModal, 
-    onClose: onCloseDetailModal 
+  const {
+    isOpen: isOpenDetailModal,
+    onOpen: onOpenDetailModal,
+    onClose: onCloseDetailModal,
   } = useDisclosure();
-  const { 
-    isOpen: isOpenEditModal, 
-    onOpen: onOpenEditModal, 
-    onClose: onCloseEditModal 
+  const {
+    isOpen: isOpenEditModal,
+    onOpen: onOpenEditModal,
+    onClose: onCloseEditModal,
   } = useDisclosure();
 
-  const [documentTemplates, setDocumentTemplates] = useState<DocumentTemplate[]>([]);
-  const [selectedDocumentTemplate, setSelectedDocumentTemplate] = useState<DocumentTemplate>();
-  const [editedDocumentTemplate, setEditedDocumentTemplate] = useState<DocumentTemplate>();
-  const [documentType, setDocumentType] = useState<DocumentTemplateType>()
+  const [documentTemplates, setDocumentTemplates] = useState<
+    DocumentTemplate[]
+  >([]);
+  const [selectedDocumentTemplate, setSelectedDocumentTemplate] =
+    useState<DocumentTemplate>();
+  const [editedDocumentTemplate, setEditedDocumentTemplate] =
+    useState<DocumentTemplate>();
+  const [documentType, setDocumentType] = useState<DocumentTemplateType>();
 
   useEffect(() => {
     documentTemplateApi.getDocumentTemplates(documentType).then((res) => {
@@ -87,36 +95,56 @@ export default function DocumentTemplateList(props: DocumentTemplateListProps) {
     }
   };
 
-  const handleEditDocumentTemplate = async (editDocumentTemplateDto: EditDocumentTemplateDto) => {
+  const handleEditDocumentTemplate = async (
+    editDocumentTemplateDto: EditDocumentTemplateDto
+  ) => {
     if (!editedDocumentTemplate) return;
-    const res = await documentTemplateApi.editDocumentTemplate(editedDocumentTemplate.id, editDocumentTemplateDto);
-    setDocumentTemplates(documentTemplates.map((documentTemplate) => {
-      if (documentTemplate.id === editedDocumentTemplate.id) {
-        return res;
-      }
-      return documentTemplate;
-    }));
+    const res = await documentTemplateApi.editDocumentTemplate(
+      editedDocumentTemplate.id,
+      editDocumentTemplateDto
+    );
+    setDocumentTemplates(
+      documentTemplates.map((documentTemplate) => {
+        if (documentTemplate.id === editedDocumentTemplate.id) {
+          return res;
+        }
+        return documentTemplate;
+      })
+    );
     onCloseEditModal();
   };
 
-  const handleCreateNewDocumentTemplate = async (createDocumentTemplateDto: CreateDocumentTemplateDto) => {
-    const res = await documentTemplateApi.createDocumentTemplate(createDocumentTemplateDto);
+  const handleCreateNewDocumentTemplate = async (
+    createDocumentTemplateDto: CreateDocumentTemplateDto
+  ) => {
+    const res = await documentTemplateApi.createDocumentTemplate(
+      createDocumentTemplateDto
+    );
     setDocumentTemplates([...documentTemplates, res]);
     onCloseCreateModal();
     setSelectedDocumentTemplate(res);
     onOpenDetailModal();
   };
 
-  const handleSaveDocumentTemplate = async (saveDocumentTemplateDto: SaveDocumentTemplateDto) => {
+  const handleSaveDocumentTemplate = async (
+    saveDocumentTemplateDto: SaveDocumentTemplateDto
+  ) => {
     if (!selectedDocumentTemplate) return;
-    await documentTemplateApi.saveDocumentTemplate(selectedDocumentTemplate.id, saveDocumentTemplateDto);
+    await documentTemplateApi.saveDocumentTemplate(
+      selectedDocumentTemplate.id,
+      saveDocumentTemplateDto
+    );
     onCloseDetailModal();
     setSelectedDocumentTemplate(undefined);
   };
 
   const handleDeleteDocumentTemplate = async (documentTemplateId: string) => {
     await documentTemplateApi.deleteDocumentTemplate(documentTemplateId);
-    setDocumentTemplates(documentTemplates.filter((documentTemplate) => documentTemplate.id !== documentTemplateId));
+    setDocumentTemplates(
+      documentTemplates.filter(
+        (documentTemplate) => documentTemplate.id !== documentTemplateId
+      )
+    );
   };
 
   const handleCloseDetailModal = () => {
@@ -125,12 +153,24 @@ export default function DocumentTemplateList(props: DocumentTemplateListProps) {
   };
 
   const handleSelectFilterType = (e) => {
-    setDocumentType(e.target.value)
-  }
+    setDocumentType(e.target.value);
+  };
 
   return (
     <div className="mb-[200px]">
       <SidebarContent>
+        <div className="flex flex-start">
+          <h1 className="pl-[20px] pr-[10px] ml-[35px] font-bold text-2xl text-[#319795]">
+            Document Template List
+          </h1>
+          <Tooltip
+            hasArrow
+            label={ToolTipExplain.DOCUMENT_TEMPLATE_SERVICE}
+            bg="gray.300"
+            color="black">
+            <QuestionIcon color="blue.500" />
+          </Tooltip>
+        </div>
         <div className="flex justify-between w-90 mx-auto my-[30px]">
           <InputGroup>
             <InputLeftElement pointerEvents="none">
@@ -144,49 +184,48 @@ export default function DocumentTemplateList(props: DocumentTemplateListProps) {
             />
           </InputGroup>
 
-          
           <div className="flex justify-between gap-[5px]">
             <Box className="w-[10vw]">
-
               <Select onChange={(e) => handleSelectFilterType(e)}>
                 <option value="">All</option>
                 <option value="image">Image</option>
               </Select>
             </Box>
 
-            {isEditable && <Button colorScheme="teal" onClick={onOpenCreateModal}>Create</Button>}
+            {isEditable && (
+              <Button colorScheme="teal" onClick={onOpenCreateModal}>
+                Create
+              </Button>
+            )}
           </div>
-          
         </div>
 
         {documentTemplates.length === 0 && (
           <div className="flex flex-col justify-center items-center">
             <h1 className="text-2xl font-bold">No document template found</h1>
-            <div className="text-gray-500">Create a new document template to help you automate document-related tasks</div>
+            <div className="text-gray-500">
+              Create a new document template to help you automate
+              document-related tasks
+            </div>
           </div>
         )}
 
-        <div className="flex flex-start">
-          <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
-            Document Template List
-          </h1>
-          <Tooltip hasArrow label={documentTemplateExplain} bg='gray.300' color='black'>
-            <QuestionIcon />
-          </Tooltip>
-        </div>
+        {isEditable && (
+          <CreateDocumentTemplateModal
+            isOpen={isOpenCreateModal}
+            onClose={onCloseCreateModal}
+            handleCreateNewDocumentTemplate={handleCreateNewDocumentTemplate}
+          />
+        )}
 
-        {isEditable && (<CreateDocumentTemplateModal
-          isOpen={isOpenCreateModal}
-          onClose={onCloseCreateModal}
-          handleCreateNewDocumentTemplate={handleCreateNewDocumentTemplate}
-        />)}
-
-        {isEditable && <EditDocumentTemplateModal
-          isOpen={isOpenEditModal}
-          onClose={onCloseEditModal}
-          documentTemplate={editedDocumentTemplate}
-          handleEditDocumentTemplate={handleEditDocumentTemplate}
-        />}
+        {isEditable && (
+          <EditDocumentTemplateModal
+            isOpen={isOpenEditModal}
+            onClose={onCloseEditModal}
+            documentTemplate={editedDocumentTemplate}
+            handleEditDocumentTemplate={handleEditDocumentTemplate}
+          />
+        )}
 
         <DetailDocumentTemplateModal
           isOpen={isOpenDetailModal}
