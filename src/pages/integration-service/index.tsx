@@ -18,7 +18,6 @@ import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
 import connectionApi from '@/apis/connectionApi';
 import { Connection } from '@/interfaces/connection';
 
-import { providerData } from '@/constants/providerData';
 import ConnectionTable from '@/components/Connection/ConnectionTable';
 import CreateNewConnectionModal from '@/components/Connection/CreateNewConnectionModal';
 import _ from 'lodash';
@@ -54,7 +53,7 @@ export default function Service() {
       setIsLoading(true);
       try {
         let data = await connectionApi.queryConnections();
-        data = data.map(i => _.omit(i, ["connectionKey"]) as Connection)
+        data = data.map((i) => _.omit(i, ['connectionKey']) as Connection);
         setConnectionData(data);
       } catch (error) {
         console.log(error);

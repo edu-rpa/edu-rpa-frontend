@@ -17,11 +17,13 @@ import { useParams } from 'next/navigation';
 import RobotDashboard from '../components/Dashboard/RobotDashboard';
 import RobotLog from '../components/Log/RobotLog';
 import { LOG_ROBOT } from '@/constants/robot';
+import ConnectionDetail from '../components/ConnectionDetail/ConnectionDetail';
 
 const RobotDetail = () => {
   const router = useRouter();
   const params = useParams();
-  const robotID = LOG_ROBOT.FOLDER_PREFIX + params?.id;
+  const logGroup = LOG_ROBOT.FOLDER_PREFIX + router.query?.group;
+  const robotID = params.id;
 
   return (
     <Box className="bg-white h-[100vh]">
@@ -67,13 +69,13 @@ const RobotDetail = () => {
         </TabList>
         <TabPanels>
           <TabPanel>
-            <RobotLog robotID={robotID} />
+            <RobotLog logGroup={logGroup} />
           </TabPanel>
           <TabPanel>
             <RobotDashboard />
           </TabPanel>
           <TabPanel>
-            <p>Connection details here...</p>
+            <ConnectionDetail />
           </TabPanel>
         </TabPanels>
       </Tabs>

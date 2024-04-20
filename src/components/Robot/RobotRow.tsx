@@ -70,7 +70,7 @@ const RobotRow = (props: RobotRowProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState('');
   const user = useSelector(userSelector);
-  const data = props.data;
+  const { robotKey, ...data } = props.data;
   const toast = useToast();
   const router = useRouter();
 
@@ -119,12 +119,14 @@ const RobotRow = (props: RobotRowProps) => {
     handleGetStatus();
   }, []);
 
+  const handleNavigateRobotDetail = () => {
+    const logGroup = `${LOG_ROBOT.EDU_RPA_ROBOT}-${user.id}-${props.data.processId}-v${props.data.processVersion}`;
+    router.push(`/robot/detail/${robotKey}?group=${logGroup}`);
+  };
+
   return (
     <Tr
-      onClick={() => {
-        const logGroup = `${LOG_ROBOT.EDU_RPA_ROBOT}-${user.id}-${props.data.processId}-v${props.data.processVersion}`;
-        router.push(`/robot/detail/${logGroup}`);
-      }}
+      onClick={handleNavigateRobotDetail}
       _hover={{
         bg: '#4FD1C5',
         cursor: 'pointer',

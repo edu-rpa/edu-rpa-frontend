@@ -17,7 +17,7 @@ import logApi from '@/apis/logApi';
 import { RepeatIcon, SearchIcon } from '@chakra-ui/icons';
 
 interface RobotLogProps {
-  robotID: string;
+  logGroup: string;
 }
 
 const RobotLog = (props: RobotLogProps) => {
@@ -26,14 +26,14 @@ const RobotLog = (props: RobotLogProps) => {
 
   const { data: logStreams, refetch: getLogStreamsRefetch } = useQuery({
     queryKey: [QUERY_KEY.LOG_STREAMS],
-    queryFn: () => logApi.getStreamLogs(props.robotID),
+    queryFn: () => logApi.getStreamLogs(props.logGroup),
   });
 
   const { data: logStreamDetail, refetch: getLogStreamDetailRefetch } =
     useQuery({
       queryKey: [QUERY_KEY.LOG_STREAM_DETAIL],
       queryFn: () =>
-        logApi.getLogStreamDetail(props.robotID, selectedLogStream),
+        logApi.getLogStreamDetail(props.logGroup, selectedLogStream),
       enabled: !!selectedLogStream,
     });
 
