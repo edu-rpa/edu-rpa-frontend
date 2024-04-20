@@ -11,91 +11,71 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { ChevronLeftIcon, SearchIcon } from '@chakra-ui/icons';
-import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
-import CustomTable from '@/components/CustomTable/CustomTable';
-import TemplateCard from '@/components/TemplateCard/TemplateCard';
-import {
-  getLocalStorageObject,
-  setLocalStorageObject,
-} from '@/utils/localStorageService';
-import { LocalStorage } from '@/constants/localStorage';
-import { Process } from '@/types/process';
-import { exportFile, formatDate } from '@/utils/common';
-import {
-  deleteProcessById,
-  getProcessFromLocalStorage,
-} from '@/utils/processService';
-import { deleteVariableById } from '@/utils/variableService';
-import AutomationTemplateImage from '@/assets/images/AutomationTemplate.jpg';
+import { ChevronLeftIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons';
+import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { QUERY_KEY } from '@/constants/queryKey';
+import robotApi from '@/apis/robotApi';
+import { Robot } from '@/interfaces/robot';
+import RobotTable from '@/components/Robot/RobotTable';
+import { toastError } from '@/utils/common';
 
 const ServiceDetail = () => {
   const router = useRouter();
+  const param = useParams();
   const toast = useToast();
+  const [nameFilter, setNameFilter] = useState('');
 
-  const [processList, setProcessList] = useState([]);
+  const connectionKey = param?.id as string;
+  const provider = router.query?.provider as string;
+  const user = router.query?.user as string;
 
-  useEffect(() => {
-    const getProcessStorage = getLocalStorageObject(LocalStorage.PROCESS_LIST);
-    if (getProcessStorage) {
-      setProcessList(getProcessStorage);
-    }
-  }, []);
+  const { data: robotList } = useQuery({
+    queryKey: [QUERY_KEY.ROBOT_LIST_BY_CONNECTION_KEY],
+    queryFn: () => robotApi.getAllRobotsByConnectionKey(connectionKey),
+  });
 
-  const formatData =
-    processList &&
-    processList.map((item: Process) => {
+  const fetchData = async () => {
+    // TODO: implement refresh functionallity
+    toastError(toast, 'Refresh functionallity is not implemented yet');
+  };
+
+  const formatData: Omit<Robot, 'userId'>[] =
+    robotList &&
+    robotList.map((item: any) => {
       return {
-        id: item.processID,
-        name: item.processName,
-        owner: 'You',
-        ptype: item.processType,
-        last_modified: formatDate(new Date()),
+        name: item.name,
+        processId: item.processId,
+        processVersion: item.processVersion,
+        createdAt: item.createdAt,
+        triggerType: item.triggerType,
+        robotKey: item.robotKey,
       };
     });
 
   const tableProps = {
     header: [
+      'Robot Name',
       'Process ID',
-      'Process Name',
-      'Process Type',
-      'Owner',
-      'Last Modified',
+      'Process Version',
+      'Created At',
+      'Trigger Type',
+      'Status',
       'Actions',
     ],
     data: formatData ?? [],
   };
 
-  const handleDeleteProcessByID = (processID: string) => {
-    const processListAfterDelete = deleteProcessById(processID);
-    const variableListAfterDelete = deleteVariableById(processID);
-    setLocalStorageObject(LocalStorage.PROCESS_LIST, processListAfterDelete);
-    setLocalStorageObject(LocalStorage.VARIABLE_LIST, variableListAfterDelete);
-    router.reload();
-  };
-
-  const handleEditProcessByID = (processID: string) => {
-    router.push(`/studio/modeler/${processID}`);
-  };
-
-  const handleDownloadProcessByID = (processID: string) => {
-    const processXML = getProcessFromLocalStorage(processID).xml;
-    exportFile(processXML, `${processID}.xml`);
-  };
-
   return (
-    <Container
-      maxW="container.xl"
-      className="fixed top-0 left-0 right-0 bottom-0 bg-white overflow-y-auto">
-      <Box className="flex justify-between items-center">
+    <Box className="fixed top-0 left-0 right-0 bottom-0 bg-white overflow-y-auto">
+      <Box className="flex justify-between items-center w-90 m-auto">
         <IconButton
           colorScheme="teal"
           aria-label="Prev to home"
           variant="outline"
           isRound={true}
           size="lg"
-          className="ml-[40px]"
-          onClick={() => router.push('/service')}
+          onClick={() => router.push('/integration-service')}
           icon={<ChevronLeftIcon />}
         />
         <Heading
@@ -105,7 +85,7 @@ const ServiceDetail = () => {
           color="teal"
           my={5}
           py={8}>
-          Process List By Connection
+          Detail Connection
         </Heading>
         <Box></Box>
       </Box>
@@ -117,76 +97,59 @@ const ServiceDetail = () => {
         mb={6}
         className="w-90 m-auto">
         <Text>
-          <b>Service:</b> Google Drive
+          <b>Connection Key:</b> {connectionKey}
         </Text>
         <Text>
-          <b>Connection ID:</b> 2023-09-17T06:55:54.536
+          <b>Provider:</b> {provider}
         </Text>
         <Text>
-          <b>Owner:</b> ducan1406@gmail.com
+          <b>Email:</b> {user}
         </Text>
       </Box>
-      <Box>
-        <SidebarContent className="w-[80vw] m-auto">
-          <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
-            Process List
-          </h1>
-          <div className="flex justify-between w-90 mx-auto my-[30px]">
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <SearchIcon color="gray.500" />
-              </InputLeftElement>
-              <Input
-                width="80vw"
-                bg="white.300"
-                type="text"
-                placeholder="Search..."
-              />
-            </InputGroup>
+      {tableProps.data.length === 0 && (
+        <div className="w-90 m-auto flex justify-center items-center">
+          <div className="text-center">
+            <div className="text-2xl font-bold">No robots here</div>
+            <div className="text-gray-500">
+              Publish a robot from your existing processes.
+            </div>
           </div>
+        </div>
+      )}
 
-          <div className="w-90 m-auto">
-            <CustomTable
-              header={tableProps.header}
-              data={tableProps.data}
-              onView={handleEditProcessByID}
-              onEdit={handleEditProcessByID}
-              onDownload={handleDownloadProcessByID}
-              onDelete={handleDeleteProcessByID}
+      <div className="w-90 mx-auto my-[30px]">
+        <div className="my-10">
+          <InputGroup>
+            <InputLeftElement pointerEvents="none">
+              <SearchIcon color="gray.500" />
+            </InputLeftElement>
+            <Input
+              width="30vw"
+              bg="white.300"
+              type="text"
+              placeholder="Search by robot name"
+              value={nameFilter}
+              onChange={(e) => setNameFilter(e.target.value)}
             />
-          </div>
-        </SidebarContent>
-      </Box>
-      <Box className="w-[80vw] m-auto">
-        <SidebarContent className="w-[80vw] m-auto">
-          <h1 className="px-[20px] ml-[30px] font-bold text-2xl text-[#319795]">
-            Google Drive Templates
-          </h1>
-          <div className="grid grid-cols-3 gap-[15px] w-90 m-auto">
-            <TemplateCard
-              image={AutomationTemplateImage}
-              title="Grading 100 English Exams from sample document"
-              description="Evaluating 100 English Exam Papers from the provided sample document, ensuring accuracy and fairness throughout the grading process..."
-            />
-            <TemplateCard
-              image={AutomationTemplateImage}
-              title="Get 100 emails from Inbox"
-              description="Retrieve 100 emails from your Inbox, managing and organizing your electronic correspondence efficiently and effectively..."
-            />
-            <TemplateCard
-              image={AutomationTemplateImage}
-              title="Export Data To Google Sheet"
-              description="Seamlessly transfer your data directly to Google Sheets with our intuitive export feature. Whether you're managing extensive datasets, tracking project progress, or analyzing financial records, our tool ensures your information is synchronized in real-time."
-            />
-            <TemplateCard
-              image={AutomationTemplateImage}
-              title="Extract Text From An Image"
-              description="Unlock the hidden potential of your images with our cutting-edge templates. It's your gateway to converting visual content into actionable text, making information more accessible and versatile than ever before."
-            />
-          </div>
-        </SidebarContent>
-      </Box>
-    </Container>
+            {/* <Box className="w-[15vw] ml-[20px]">
+              <Select
+                defaultValue="all"
+                onChange={(e) => setProcessFilter(e.target.value)}>
+                <option value="mock">Mock process</option>
+              </Select>
+            </Box> */}
+            <Box className="w-[15vw] ml-[20px]">
+              <IconButton
+                aria-label="Refresh"
+                icon={<RepeatIcon />}
+                onClick={fetchData}
+              />
+            </Box>
+          </InputGroup>
+        </div>
+        <RobotTable header={tableProps.header} data={tableProps.data} />
+      </div>
+    </Box>
   );
 };
 export default ServiceDetail;

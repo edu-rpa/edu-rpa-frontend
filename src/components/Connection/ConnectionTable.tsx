@@ -31,13 +31,13 @@ import {
 import ReactPaginate from 'react-paginate';
 import { IoDocumentText } from 'react-icons/io5';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
-import { FaCode } from 'react-icons/fa6';
 import { Connection } from '@/interfaces/connection';
 import IconImage from '@/components/IconImage/IconImage';
 import { providerData } from '@/constants/providerData';
 import connectionApi from '@/apis/connectionApi';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/redux/selector';
+import { useRouter } from 'next/router';
 
 interface ConnectionTableProps {
   header: string[];
@@ -45,11 +45,10 @@ interface ConnectionTableProps {
   maxRows?: number;
   isLoading?: boolean;
 }
-const DEFAULT_MAX_ROWS = 6;
 
 interface ConnectionRowProps {
   data: Connection;
-  onView?: (provider: string, name: string) => void;
+  onView?: (connectionKey: string, provider: string, name: string) => void;
   onSelectedForRemove: (provider: string, name: string) => void;
 }
 
@@ -57,7 +56,7 @@ const ConnectionRow = (props: ConnectionRowProps) => {
   const [isLoadingRefresh, setIsLoadingRefresh] = useState(false);
   const [status, setStatus] = useState('Connected');
   const user = useSelector(userSelector);
-  const data = props.data;
+  const { connectionKey, ...data } = props.data;
 
   const handleRefreshConnection = async () => {
     setIsLoadingRefresh(true);
@@ -133,7 +132,9 @@ const ConnectionRow = (props: ConnectionRowProps) => {
         color: 'white',
         borderRadius: '15px',
       }}
-      onClick={() => props.onView && props.onView(data.provider, data.name)}>
+      onClick={() =>
+        props.onView && props.onView(connectionKey, data.provider, data.name)
+      }>
       {Object.keys(data).map((key, columnIndex) => (
         <Td key={key}>{renderTableCell(key, data[key])}</Td>
       ))}
@@ -203,6 +204,7 @@ const ConnectionTable = (props: ConnectionTableProps) => {
   const endIndex = startIndex + itemsPerPage;
   const currentData = connectionData.slice(startIndex, endIndex);
   const toast = useToast();
+  const router = useRouter();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -214,6 +216,16 @@ const ConnectionTable = (props: ConnectionTableProps) => {
 
   const handlePageChange = (selected: any) => {
     setCurrentPage(selected.selected);
+  };
+
+  const handleNavigateServiceDetail = (
+    connectionKey: string,
+    provider: string,
+    name: string
+  ) => {
+    router.push(
+      `/integration-service/detail/${connectionKey}?provider=${provider}&user=${name}`
+    );
   };
 
   const handleRemoveConnection = async (provider: string, name: string) => {
@@ -265,6 +277,7 @@ const ConnectionTable = (props: ConnectionTableProps) => {
               <ConnectionRow
                 key={index}
                 data={item}
+                onView={handleNavigateServiceDetail}
                 onSelectedForRemove={handleSelectForRemove}
               />
             ))}

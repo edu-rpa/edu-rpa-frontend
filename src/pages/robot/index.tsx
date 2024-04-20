@@ -23,13 +23,11 @@ import { toastError } from '@/utils/common';
 import { ToolTipExplain } from '@/constants/description';
 
 export default function RobotPage() {
-  const router = useRouter();
   const [nameFilter, setNameFilter] = useState('');
-  const [processFilter, setProcessFilter] = useState('all');
   const toast = useToast();
 
   const { data: countRobot, isLoading: countRobotLoading } = useQuery({
-    queryKey: [QUERY_KEY.PROCESS_COUNT],
+    queryKey: [QUERY_KEY.ROBOT_COUNT],
     queryFn: () => robotApi.getNumberOfRobot(),
   });
 
@@ -107,13 +105,13 @@ export default function RobotPage() {
               value={nameFilter}
               onChange={(e) => setNameFilter(e.target.value)}
             />
-            <Box className="w-[15vw] ml-[20px]">
+            {/* <Box className="w-[15vw] ml-[20px]">
               <Select
                 defaultValue="all"
                 onChange={(e) => setProcessFilter(e.target.value)}>
                 <option value="mock">Mock process</option>
               </Select>
-            </Box>
+            </Box> */}
             <Box className="w-[15vw] ml-[20px]">
               <IconButton
                 aria-label="Refresh"

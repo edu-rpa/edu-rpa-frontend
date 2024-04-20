@@ -119,11 +119,6 @@ export default function ConnectionDetail(props: ConnectionProps) {
             </Select>
           </Box>
         </InputGroup>
-        <div className="flex justify-between gap-[10px]">
-          <Button colorScheme="teal" onClick={onOpen}>
-            New Connection
-          </Button>
-        </div>
 
         <CreateNewConnectionModal isOpen={isOpen} onClose={onClose} />
       </div>

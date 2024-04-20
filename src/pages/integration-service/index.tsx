@@ -42,16 +42,11 @@ export default function Service() {
   const errorMessage = router.query.error;
   const successMessage = router.query.message;
 
-  const handleViewService = (serviceID: string) => {
-    router.push(`/service/detail/${serviceID}`);
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
         let data = await connectionApi.queryConnections();
-        data = data.map((i) => _.omit(i, ['connectionKey']) as Connection);
         setConnectionData(data);
       } catch (error) {
         console.log(error);
