@@ -60,7 +60,7 @@ function CustomModeler() {
   const dispatch = useDispatch();
   const processID = params.id;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [errorTrace, setErrorTrace] = useState<string>('')
+  const [errorTrace, setErrorTrace] = useState<string>('');
   const isSavedChanges = useSelector(bpmnSelector);
 
   const { data: processDetailByID, isLoading } = useQuery({
@@ -190,10 +190,10 @@ function CustomModeler() {
         duration: 1000,
         isClosable: true,
       });
-      
+
       return robotCode;
     } catch (error) {
-      setErrorTrace(error.stack.toString())
+      setErrorTrace(error.stack.toString());
       toast({
         title: (error as Error).message,
         status: 'error',
@@ -273,7 +273,7 @@ function CustomModeler() {
         Save JSON
       </Button> */}
 
-      <Button
+      {/* <Button
         colorScheme="orange"
         size="md"
         className="mx-[5px]"
@@ -289,7 +289,7 @@ function CustomModeler() {
           );
         }}>
         Save Properties
-      </Button>
+      </Button> */}
 
       <DisplayRobotCode
         compileRobotCode={() => compileRobotCode(processID as string)}

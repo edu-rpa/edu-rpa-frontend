@@ -32,21 +32,21 @@ export default function FunctionalTabBar(props: FunctionalTabBarProps) {
     <Stack direction="row" spacing={4}>
       <Button
         leftIcon={<FaSave />}
-        colorScheme="blue"
+        colorScheme="teal"
         variant="solid"
         onClick={props.onSaveAll}>
         Save All
       </Button>
-      <Button leftIcon={<FaPlay />} colorScheme="teal" variant="solid">
+      {/* <Button leftIcon={<FaPlay />} colorScheme="teal" variant="solid">
         Run
-      </Button>
+      </Button> */}
       <Button
         leftIcon={<MdPublish />}
         onClick={() => {
           onOpen();
           setType('publish');
         }}
-        colorScheme="orange"
+        colorScheme="blue"
         variant="solid">
         Publish
       </Button>
@@ -67,9 +67,11 @@ export default function FunctionalTabBar(props: FunctionalTabBarProps) {
         isOpen={isOpen}
         onClose={onClose}>
         <ModalOverlay />
-        {modalType == 'publish' 
-          ? <PublishRobotModal {...props} onClose={onClose} /> 
-          : <ShareWithModal onClose={onClose} processID={props.processID} />}
+        {modalType == 'publish' ? (
+          <PublishRobotModal {...props} onClose={onClose} />
+        ) : (
+          <ShareWithModal onClose={onClose} processID={props.processID} />
+        )}
       </Modal>
     </Stack>
   );
