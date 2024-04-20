@@ -21,9 +21,7 @@ import { Connection } from '@/interfaces/connection';
 import ConnectionTable from '@/components/Connection/ConnectionTable';
 import CreateNewConnectionModal from '@/components/Connection/CreateNewConnectionModal';
 import _ from 'lodash';
-
-const integrationServiceExplain =
-  'With integration service, you can create connections to other services. Connections can be used by robots to perform tasks on your behalf.';
+import { ToolTipExplain } from '@/constants/description';
 
 export default function Service() {
   const router = useRouter();
@@ -97,15 +95,15 @@ export default function Service() {
     <div className="mb-[200px]">
       <SidebarContent>
         <div className="flex flex-start">
-          <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
+          <h1 className="pl-[20px] pr-[10px] ml-[35px] font-bold text-2xl text-[#319795]">
             Connection List
           </h1>
           <Tooltip
             hasArrow
-            label={integrationServiceExplain}
+            label={ToolTipExplain.INTERGRATION_SERVICE}
             bg="gray.300"
             color="black">
-            <QuestionIcon />
+            <QuestionIcon color="blue.500" />
           </Tooltip>
         </div>
 

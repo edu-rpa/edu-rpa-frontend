@@ -23,7 +23,7 @@ const RobotDetail = () => {
   const router = useRouter();
   const params = useParams();
   const logGroup = LOG_ROBOT.FOLDER_PREFIX + router.query?.group;
-  const robotID = params.id;
+  const robotID = params?.id as string;
 
   return (
     <Box className="bg-white h-[100vh]">
@@ -55,7 +55,7 @@ const RobotDetail = () => {
         rounded="lg"
         shadow="md"
         mb={6}
-        className="w-90 m-auto">
+        className="w-90 mx-auto my-5">
         <Text>
           <span className="font-bold">Robot ID:</span> {robotID}
         </Text>
@@ -75,7 +75,7 @@ const RobotDetail = () => {
             <RobotDashboard />
           </TabPanel>
           <TabPanel>
-            <ConnectionDetail />
+            <ConnectionDetail robotID={robotID} />
           </TabPanel>
         </TabPanels>
       </Tabs>

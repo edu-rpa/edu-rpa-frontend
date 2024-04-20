@@ -1,4 +1,4 @@
-import { AuthorizationProvider } from "./enums/provider.enum";
+import { AuthorizationProvider } from './enums/provider.enum';
 
 export interface Connection {
   provider: AuthorizationProvider;

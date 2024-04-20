@@ -16,10 +16,11 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Tooltip,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
+import { QuestionIcon, SearchIcon } from '@chakra-ui/icons';
 import TemplateCard from '@/components/TemplateCard/TemplateCard';
 import SidebarContent from '@/components/Sidebar/SidebarContent/SidebarContent';
 import {
@@ -45,6 +46,7 @@ import { CreateProcessDto } from '@/dtos/processDto';
 import processApi from '@/apis/processApi';
 import { QUERY_KEY } from '@/constants/queryKey';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
+import { ToolTipExplain } from '@/constants/description';
 
 export default function Studio() {
   const router = useRouter();
@@ -291,9 +293,18 @@ export default function Studio() {
   return (
     <div className="mb-[200px]">
       <SidebarContent>
-        <h1 className="px-[20px] ml-[35px] font-bold text-2xl text-[#319795]">
-          Process List
-        </h1>
+        <div className="flex flex-start">
+          <h1 className="pl-[20px] pr-[10px] ml-[35px] font-bold text-2xl text-[#319795]">
+            Process List
+          </h1>
+          <Tooltip
+            hasArrow
+            label={ToolTipExplain.STUDIO_SERVICE}
+            bg="gray.300"
+            color="black">
+            <QuestionIcon color="blue.500" />
+          </Tooltip>
+        </div>
         <div className="flex justify-between w-90 mx-auto my-[30px]">
           <InputGroup>
             <InputLeftElement pointerEvents="none">
