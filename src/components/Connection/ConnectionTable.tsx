@@ -224,7 +224,7 @@ const ConnectionTable = (props: ConnectionTableProps) => {
     name: string
   ) => {
     router.push(
-      `/integration-service/detail/${connectionKey}?provider=${provider}&service=${name}`
+      `/integration-service/detail/${connectionKey}?provider=${provider}&user=${name}`
     );
   };
 

@@ -5,7 +5,7 @@ import {
   EventSchedule,
 } from '@/dtos/robotDto';
 import apiBase from './config';
-import { Schedule } from '@/interfaces/robot';
+import { Robot, Schedule } from '@/interfaces/robot';
 
 const getAllRobot = async (limit: number, page: number) => {
   return await apiBase
@@ -161,6 +161,16 @@ const upsertEventSchedule = async (
     });
 };
 
+const getAllRobotsByConnectionKey = async (
+  connectionKey: string
+): Promise<Robot[]> => {
+  return await apiBase
+    .get(`${process.env.NEXT_PUBLIC_DEV_API}/connection/usage/${connectionKey}`)
+    .then((res: any) => {
+      return res.data;
+    });
+};
+
 const robotApi = {
   getAllRobot,
   createRobot,
@@ -173,6 +183,7 @@ const robotApi = {
   createSchedule,
   updateSchedule,
   upsertEventSchedule,
+  getAllRobotsByConnectionKey,
 };
 
 export default robotApi;

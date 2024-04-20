@@ -1,6 +1,7 @@
 import { Connection } from '@/interfaces/connection';
 import apiBase from './config';
 import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
+import { Robot } from '@/interfaces/robot';
 
 const queryConnections = async (
   provider?: AuthorizationProvider

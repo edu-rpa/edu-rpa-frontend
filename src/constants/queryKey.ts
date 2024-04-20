@@ -8,4 +8,5 @@ export const QUERY_KEY = {
   ROBOT_COUNT: 'robot-count',
   LOG_STREAMS: 'log-streams',
   LOG_STREAM_DETAIL: 'log-stream-detail',
+  ROBOT_LIST_BY_CONNECTION_KEY: 'robot-list-by-connection-key',
 };
