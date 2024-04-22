@@ -15,6 +15,11 @@ import {
   Input,
   Box,
   useToast,
+  Checkbox,
+  RadioGroup,
+  Radio,
+  Stack,
+  Text,
 } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 import documentTemplateApi from "@/apis/documentTemplateApi";
@@ -28,6 +33,11 @@ interface Props {
   handleSelectDocumentTemplate?: (e:any) => void;
 }
 
+const TEMPLATE_SIZES = [
+  [800, 600],
+  [600, 800],
+];
+
 const DetailDocumentTemplateModal: React.FC<Props> = ({
   isOpen,
   onClose,
@@ -38,6 +48,9 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
 }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [dataTemplate, setDataTemplate] = useState<DataTemplate>({});
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isScanned, setIsScanned] = useState<boolean>(false);
+  const [templateSizeIndex, setTemplateSizeIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const toast = useToast();
@@ -63,14 +76,13 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
     }
   }, [documentTemplate]);
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
+  const handleTemplateUpload = async () => {
+    if (selectedFile && documentTemplate) {
       setIsLoading(true);
       setImageUrl('');
       const { id } = documentTemplate as DocumentTemplate;
 
-      const res = await documentTemplateApi.uploadSampleDocument(id, file);
+      const res = await documentTemplateApi.uploadSampleDocument(id, selectedFile, isScanned, TEMPLATE_SIZES[templateSizeIndex]);
       setImageUrl(res.url);
       setIsLoading(false);
     }
@@ -143,7 +155,8 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
           <ModalHeader>{documentTemplate?.name}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-          {isEditable && <FormControl>
+            <h1 className="text-2xl mb-[20px]">Sample document</h1>
+            {isEditable && <FormControl>
               <Box className="flex justify-between">
                 <Box
                   border="1px"
@@ -152,7 +165,9 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
                   className="my-[5px]">
                   <Input
                     type="file"
-                    onChange={handleImageUpload}
+                    onChange={(e) => {
+                      setSelectedFile(e.target.files?.[0]);
+                    }}
                     accept="image/*"
                     p={2}
                     variant="unstyled"
@@ -161,11 +176,42 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
               </Box>
             </FormControl> }
 
-            <h1 className="text-2xl mt-[20px]">Sample document</h1>
+            <Box className="flex flex-col">
+              <Checkbox
+                disabled={!selectedFile}
+                isChecked={isScanned}
+                onChange={(e) => setIsScanned(e.target.checked)}
+              >The sample document has already been scanned.</Checkbox>
+
+              <RadioGroup
+                onChange={(value) => {
+                  setTemplateSizeIndex(parseInt(value));
+                }}
+                value={templateSizeIndex.toString()}
+                isDisabled={!selectedFile}
+              >
+                <Stack direction="row">
+                  <Text>Template size (Width x Height):</Text>
+                  {TEMPLATE_SIZES.map((size, index) => (
+                    <Radio key={index} value={index.toString()}>
+                      {size[0]} x {size[1]}
+                    </Radio>
+                  ))}
+                </Stack>
+              </RadioGroup>
+
+              <Button
+                colorScheme="teal"
+                size="md"
+                className="m-[10px]"
+                onClick={handleTemplateUpload}>
+                Upload Sample Document
+              </Button>
+            </Box>
 
             {!imageUrl && !isLoading && (
               <div className="flex justify-center items-center">
-                <p>No sample document uploaded or the document cannot be processed</p>
+                <p>No sample document uploaded or the document cannot be processed.</p>
               </div>
             )}
 
@@ -208,7 +254,7 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
               ? 
                 <Button
                     isLoading={isLoading}
-                    colorScheme="blue"
+                    colorScheme="teal"
                     mr={3}
                     onClick={() => handleSaveDocumentTemplate({
                       dataTemplate: dataTemplate,
@@ -218,7 +264,7 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
               :
                 <Button
                   isLoading={isLoading}
-                  colorScheme="blue"
+                  colorScheme="teal"
                   mr={3}
                   onClick={() => handleSelectDocumentTemplate({
                     name: `${documentTemplate.type}-template-${documentTemplate.name ?? ""}`, 
