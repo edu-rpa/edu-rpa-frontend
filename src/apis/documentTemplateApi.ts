@@ -83,14 +83,16 @@ const saveDocumentTemplate = async (
 
 const uploadSampleDocument = async (
   id: string,
-  file: File
+  file: File,
+  isScanned: boolean,
+  size: number[]
 ): Promise<SampleDocumentUrl> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
     reader.onload = () => {
       fetch(
-        `${process.env.NEXT_PUBLIC_AWS_API_GATEWAY_URL}/${id}/sample-document`,
+        `${process.env.NEXT_PUBLIC_AWS_API_GATEWAY_URL}/${id}/sample-document?isScanned=${isScanned}&&width=${size[0]}&&height=${size[1]}`,
         {
           method: 'POST',
           body: reader.result,

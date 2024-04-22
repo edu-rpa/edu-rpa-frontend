@@ -8,6 +8,10 @@ export interface CreateDocumentTemplateDto {
 }
 
 export interface SaveDocumentTemplateDto {
+  size?: {
+    width: number;
+    height: number;
+  };
   dataTemplate: DataTemplate;
 }
 
