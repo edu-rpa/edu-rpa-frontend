@@ -9,6 +9,7 @@ import {
   Select,
   useDisclosure,
   Tooltip,
+  useToast,
 } from '@chakra-ui/react';
 import { SearchIcon, QuestionIcon } from '@chakra-ui/icons';
 import CustomTable from '@/components/CustomTable/CustomTable';
@@ -24,6 +25,7 @@ import DetailDocumentTemplateModal from './detail-modal';
 import EditDocumentTemplateModal from './edit-modal';
 import documentTemplateApi from '@/apis/documentTemplateApi';
 import { ToolTipExplain } from '@/constants/description';
+import { toastSuccess } from '@/utils/common';
 
 export interface DocumentTemplateListProps {
   isEditable?: boolean;
@@ -58,6 +60,8 @@ export default function DocumentTemplateList(props: DocumentTemplateListProps) {
   const [editedDocumentTemplate, setEditedDocumentTemplate] =
     useState<DocumentTemplate>();
   const [documentType, setDocumentType] = useState<DocumentTemplateType>();
+
+  const toast = useToast();
 
   useEffect(() => {
     documentTemplateApi.getDocumentTemplates(documentType).then((res) => {
@@ -112,6 +116,8 @@ export default function DocumentTemplateList(props: DocumentTemplateListProps) {
       })
     );
     onCloseEditModal();
+    setEditedDocumentTemplate(undefined);
+    toastSuccess(toast, 'Document template updated successfully');
   };
 
   const handleCreateNewDocumentTemplate = async (
@@ -124,6 +130,7 @@ export default function DocumentTemplateList(props: DocumentTemplateListProps) {
     onCloseCreateModal();
     setSelectedDocumentTemplate(res);
     onOpenDetailModal();
+    toastSuccess(toast, 'Document template created successfully');
   };
 
   const handleSaveDocumentTemplate = async (
@@ -136,6 +143,7 @@ export default function DocumentTemplateList(props: DocumentTemplateListProps) {
     );
     onCloseDetailModal();
     setSelectedDocumentTemplate(undefined);
+    toastSuccess(toast, 'Document template saved successfully');
   };
 
   const handleDeleteDocumentTemplate = async (documentTemplateId: string) => {
@@ -145,6 +153,7 @@ export default function DocumentTemplateList(props: DocumentTemplateListProps) {
         (documentTemplate) => documentTemplate.id !== documentTemplateId
       )
     );
+    toastSuccess(toast, 'Document template deleted successfully');
   };
 
   const handleCloseDetailModal = () => {

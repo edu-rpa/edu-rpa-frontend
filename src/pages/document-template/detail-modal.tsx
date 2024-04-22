@@ -84,6 +84,14 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
 
       const res = await documentTemplateApi.uploadSampleDocument(id, selectedFile, isScanned, TEMPLATE_SIZES[templateSizeIndex]);
       setImageUrl(res.url);
+      await documentTemplateApi.saveDocumentTemplate(id, {
+        size: {
+          width: TEMPLATE_SIZES[templateSizeIndex][0],
+          height: TEMPLATE_SIZES[templateSizeIndex][1],
+        },
+        dataTemplate: {},
+      });
+      setDataTemplate({});
       setIsLoading(false);
     }
   };
