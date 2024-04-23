@@ -1,4 +1,5 @@
 export enum VariableType {
+  Any = 'any',
   String = 'string',
   Number = 'number',
   Boolean = 'boolean',

@@ -328,9 +328,15 @@ export default function PropertiesSideBar({
                   formValues[paramKey] = setDefaultValue(
                     paramKey,
                     paramValue,
-                    initDefaultValue(paramValue.type)
+                    paramValue["value"] ?? initDefaultValue(paramValue.type) // Setup default arguments
                   );
                 }
+                
+                if(paramValue['hidden']) {
+                  // Hidden property
+                  return null;
+                }
+                
                 switch (paramValue.type) {
                   case 'string':
                   case 'email':
@@ -448,7 +454,6 @@ export default function PropertiesSideBar({
                       Object.entries(activityProperty).map(
                         ([paramKey, paramValue]) => {
                           if (
-                            !paramValue['hidden'] &&
                             paramValue &&
                             typeof paramValue === 'object' &&
                             'description' in paramValue
@@ -458,7 +463,7 @@ export default function PropertiesSideBar({
                                 label={paramValue.description as string}
                                 key={paramKey}>
                                 <FormControl>
-                                  <FormLabel>{paramKey}</FormLabel>
+                                  {!paramValue["hidden"] && <FormLabel>{paramKey}</FormLabel>}
                                   {renderProperty(
                                     paramKey,
                                     paramValue as ArgumentProps
