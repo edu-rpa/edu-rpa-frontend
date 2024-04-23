@@ -1132,11 +1132,10 @@ export const ActivityPackages = [
             description: 'List of value',
             value: [],
           },
-        },
-        variable: {
-          name: 'Item',
-          type: 'any',
-          description: 'The item in the list',
+          variable: {
+            type: 'string',
+            description: 'The item in the list',
+          },
         },
       },
     ],
