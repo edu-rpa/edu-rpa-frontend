@@ -1,5 +1,7 @@
 import { array } from "prop-types";
 import { VariableError, VariableErrorCode } from "../error";
+import _ from "lodash";
+import { VariableType } from "@/types/variable";
 
 /**
  * Keyword
@@ -69,8 +71,25 @@ export class ProcessVariable {
     }
   }
   toJSON() {
-    if (!this.value) {
-      this.name = "${"+this.name.replace(/[^\w\s]/gi, '')+"}" ;
+    // Transform name to robotframework variable definition
+    // $ For scalar
+    // @ For List
+    // & For Dictionary
+
+    switch(this.type) {
+      case VariableType.List:
+        this.name =  "@{"+this.name.replace(/[^\w\s]/gi, '')+"}"
+        break
+      case VariableType.DocumentTemplate:
+        // Document Template is kind of dictionary
+      case VariableType.Dictionary:
+        this.name =  "&{"+this.name.replace(/[^\w\s]/gi, '')+"}"
+        break
+      default:
+        this.name =  "${"+this.name.replace(/[^\w\s]/gi, '')+"}"
+    }
+
+    if (_.isNil(this.value)) {
       if(this.type === "string") {
         this.value = ""
       }
@@ -82,7 +101,6 @@ export class ProcessVariable {
           this.name
         );
       this.value = this.value.map((v) => JSON.stringify(v));
-      this.name = "@{"+this.name.replace(/[^\w\s]/gi, '')+"}"
     } else if (typeof this.value === "object") {
       if (this.type !== "dictionary" && this.type !== "template")
         throw new VariableError(
@@ -92,11 +110,10 @@ export class ProcessVariable {
       this.value = Object.keys(this.value).map(
         (k) => `${k}=${JSON.stringify(this.value[k])}`
       );
-      this.name = "&{"+this.name.replace(/[^\w\s]/gi, '')+"}" 
     } else {
       this.value = [this.value];
-      this.name = "${"+this.name.replace(/[^\w\s]/gi, '')+"}" 
     }
+
     return {
       name: this.name,
       value: this.value,
@@ -158,8 +175,14 @@ export class For extends BodyItem {
         else 
           return i.name
       }),
+      values: this.values.map((v) => {
+        let i = v.toJSON()
+        if(typeof i === "string") 
+          return i
+        else 
+          return i.name
+      }),
       flavor: this.flavor,
-      values: this.values.map((v) => v.toJSON()),
       body: this.body.map((item) => item.toJSON()),
       start: this.start,
       mode: this.mode,

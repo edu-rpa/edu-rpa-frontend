@@ -74,7 +74,7 @@ export default function Studio() {
     queryFn: () => processApi.getAllProcess(limit, page),
   });
 
-  console.log('All processes', allProcess);
+  // console.log('All processes', allProcess);
 
   const syncBackendToLocalStorage = () => {
     return (
@@ -107,10 +107,10 @@ export default function Studio() {
       localStorage.setItem(LocalStorage.VARIABLE_LIST, JSON.stringify([]));
     } else {
       preProcessingVariableList();
-      console.log(
-        'Variable Storage',
-        getLocalStorageObject(LocalStorage.VARIABLE_LIST)
-      );
+      // console.log(
+      //   'Variable Storage',
+      //   getLocalStorageObject(LocalStorage.VARIABLE_LIST)
+      // );
     }
   }, [isLoadingProcess]);
 
@@ -186,7 +186,7 @@ export default function Studio() {
       description: initialProcess.processDesc,
       xml: initialProcess.xml,
     };
-    console.log('Import payload', createProcessPayloadAPI);
+    // console.log('Import payload', createProcessPayloadAPI);
     handleCreateProcessWithApi.mutate(createProcessPayloadAPI as any);
   };
 

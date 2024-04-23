@@ -35,6 +35,7 @@ import {
 } from "./robot";
 import { ArgumentProps } from "@/types/property";
 import { AuthorizationProvider, AuthorizationProviderByActivityPackage } from "@/interfaces/enums/provider.enum";
+import _ from "lodash";
 
 export class SequenceVisitor {
   properties: Map<string, Properties>;
@@ -155,16 +156,16 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     if (Lib) {
       this.imports.add(Lib);
     }
-    if(property.arguments.Librabry) {
-      const library = property.arguments.Library?.value;
+    if(args.Librabry) {
+      const library = args.Librabry?.value;
       if (library) {
         this.imports.add(library);
       }
     }
 
-    if(property.arguments.Connection) {
+    if(args.Connection) {
       // Add connectionKey for robot
-      const connectionArgs = property.arguments.Connection
+      const connectionArgs = args.Connection
       this.credentials.push({
         connectionKey: connectionArgs?.value.split('/').pop().split('.').slice(0, -1).join('.') ?? ""
       })
@@ -216,13 +217,14 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
   visitBlankBlock(node: BlankBlock, params: any[]) {
     let activityID = node.bpmnId;
     let property = this.properties.get(activityID)?.properties;
-    if (!property) {
+    if (_.isEmpty(property)) {
       let body = [] as BodyItem[];
       for (let item of node.block) {
         body = body.concat(this.visit(item, params));
       }
       return body;
     } else {
+      console.log(property)
       if (property.activityPackage !== "Control") {
         throw new BpmnParseError(
           BpmnParseErrorCode["Invalid Property"],
@@ -251,9 +253,9 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       let ItemInStorage = this._checkVariableValid(ItemName)
 
       return new For(
-        [new ProcessVariable(ListName, JSON.parse(ItemInStorage.value), ItemInStorage.type)],
+        [new ProcessVariable(ItemName, ItemInStorage.value, ItemInStorage.type)],
         "IN",
-        [new ProcessVariable(ItemName, JSON.parse(ListInStorage.value), ListInStorage.type)],
+        [new ProcessVariable(ListName, ListInStorage.value, ListInStorage.type)],
         body
       );
     }
