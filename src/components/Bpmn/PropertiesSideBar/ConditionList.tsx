@@ -126,7 +126,6 @@ const ConditionList = ({
   };
 
   const [conditions, setConditions] = useState<any[]>([]);
-  const [isFirstVisit, setIsFirstVisit] = useState<boolean>(true);
 
   const deleteCondition = (id) => {
     setConditions(conditions.filter((condition) => condition.id !== id));
@@ -162,11 +161,8 @@ const ConditionList = ({
   };
 
   useEffect(() => {
-    if (isFirstVisit) {
-      setConditions(parseExpression(value));
-      setIsFirstVisit(true);
-    }
-  }, [value]);
+    setConditions(parseExpression(value));
+  }, []);
 
   return (
     <Box>
