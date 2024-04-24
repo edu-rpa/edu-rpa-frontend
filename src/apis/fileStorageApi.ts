@@ -1,7 +1,8 @@
+import { FileMetadata } from '@/interfaces/storage';
 import apiBase from './config';
 import axios from 'axios';
 
-export const getFiles = async (path: string): Promise<string[]> => {
+export const getFiles = async (path: string): Promise<FileMetadata[]> => {
   return await apiBase
     .get(`${process.env.NEXT_PUBLIC_AWS_API_GATEWAY_URL}/file-storage`, {
       params: {
