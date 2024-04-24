@@ -45,6 +45,7 @@ import { isSavedChange } from '@/redux/slice/bpmnSlice';
 import { Variable } from '@/types/variable';
 import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
 import ConnectionOptions from './ConnectionSelect';
+import ConditionList from './ConditionList';
 
 interface PropertiesSideBarProps {
   isOpen: boolean;
@@ -328,15 +329,15 @@ export default function PropertiesSideBar({
                   formValues[paramKey] = setDefaultValue(
                     paramKey,
                     paramValue,
-                    paramValue["value"] ?? initDefaultValue(paramValue.type) // Setup default arguments
+                    paramValue['value'] ?? initDefaultValue(paramValue.type) // Setup default arguments
                   );
                 }
-                
-                if(paramValue['hidden']) {
+
+                if (paramValue['hidden']) {
                   // Hidden property
                   return null;
                 }
-                
+
                 switch (paramValue.type) {
                   case 'string':
                   case 'email':
@@ -432,6 +433,8 @@ export default function PropertiesSideBar({
                       { value: '>=', label: '>=' },
                       { value: '<=', label: '<=' },
                     ]);
+                  case 'list.condition':
+                    return <ConditionList />;
                   default:
                     return null;
                 }
@@ -463,7 +466,9 @@ export default function PropertiesSideBar({
                                 label={paramValue.description as string}
                                 key={paramKey}>
                                 <FormControl>
-                                  {!paramValue["hidden"] && <FormLabel>{paramKey}</FormLabel>}
+                                  {!paramValue['hidden'] && (
+                                    <FormLabel>{paramKey}</FormLabel>
+                                  )}
                                   {renderProperty(
                                     paramKey,
                                     paramValue as ArgumentProps

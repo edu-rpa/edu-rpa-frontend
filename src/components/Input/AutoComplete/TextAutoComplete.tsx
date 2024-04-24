@@ -30,8 +30,6 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
     setIsDropdownOpen(false);
   };
 
-  console.log('Recommend Words', props.recommendedWords);
-
   return (
     <Box position="relative">
       <Input
