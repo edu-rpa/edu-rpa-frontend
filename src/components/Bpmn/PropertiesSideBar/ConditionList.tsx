@@ -136,17 +136,18 @@ const ConditionList = ({
       condition.id === id ? updatedCondition : condition
     );
     setConditions([...newConditions]);
-    handleUpdateExpression();
   };
 
   const handleLogicalOperatorChange = (index, value) => {
     const newConditions = [...conditions];
     newConditions[index].logicalOperator = value;
     setConditions([...newConditions]);
-    handleUpdateExpression();
   };
 
   const handleUpdateExpression = () => {
+    if (!conditions.length) {
+      return;
+    }
     const expression = conditions
       .map((cond, index) => {
         const part = `${cond.left} ${cond.operator} ${cond.right}`;
@@ -156,13 +157,19 @@ const ConditionList = ({
       })
       .join(' ');
     if (onChange) {
+      console.log('Condtions:', conditions);
+      console.log('Changed expression:', expression);
       onChange(expression);
     }
   };
 
   useEffect(() => {
-    setConditions(parseExpression(value));
+    value != '' && setConditions(parseExpression(value));
   }, []);
+
+  useEffect(() => {
+    handleUpdateExpression();
+  }, [conditions]);
 
   return (
     <Box>
