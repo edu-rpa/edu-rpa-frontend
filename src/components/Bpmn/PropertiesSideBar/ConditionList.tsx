@@ -7,35 +7,46 @@ import {
   Select,
   RadioGroup,
   Radio,
+  VStack,
   HStack,
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
+import TextAutoComplete from '@/components/Input/AutoComplete/TextAutoComplete';
 
-// Condition component now has `data` and `onChange` props
-const Condition = ({ id, data, onDelete, onChange }) => {
-  const handleLeftChange = (e) => {
-    onChange(id, { ...data, left: e.target.value });
+interface Condition {
+  id: string;
+  left: string;
+  operator: string;
+  right: string;
+  logicalOperator: string;
+}
+
+const Condition = ({ id, data, recommendWords, onDelete, onChange }) => {
+  const handleLeftChange = (value) => {
+    onChange(id, { ...data, left: value });
   };
 
   const handleOperatorChange = (e) => {
     onChange(id, { ...data, operator: e.target.value });
   };
 
-  const handleRightChange = (e) => {
-    onChange(id, { ...data, right: e.target.value });
+  const handleRightChange = (value) => {
+    onChange(id, { ...data, right: value });
   };
 
   return (
-    <HStack marginBottom="4">
-      <Input
-        placeholder="Type or select variables"
+    <Box>
+      <TextAutoComplete
+        type="text"
         value={data.left}
-        onChange={handleLeftChange}
+        onChange={(newValue: string) => handleLeftChange(newValue)}
+        recommendedWords={recommendWords}
       />
       <Select
-        placeholder="Choose operator"
+        placeholder="Select Operator"
+        onChange={handleOperatorChange}
         value={data.operator}
-        onChange={handleOperatorChange}>
+        className="my-[10px]">
         <option value="=">{'='}</option>
         <option value="!=">{'!='}</option>
         <option value="<">{'<'}</option>
@@ -43,93 +54,147 @@ const Condition = ({ id, data, onDelete, onChange }) => {
         <option value=">">{'>'}</option>
         <option value=">=">{'>='}</option>
       </Select>
-      <Input
-        placeholder="Type or select variables"
+      <TextAutoComplete
+        type="text"
         value={data.right}
-        onChange={handleRightChange}
+        onChange={(newValue: string) => handleRightChange(newValue)}
+        recommendedWords={recommendWords}
       />
-      <IconButton
-        aria-label="Delete condition"
-        bgColor={'red.500'}
-        _hover={{ bgColor: 'red.600' }}
-        icon={<CloseIcon color={'white'} />}
-        onClick={() => onDelete(id)}
-      />
-    </HStack>
+      <Box className="flex justify-between items-center">
+        <Box></Box>
+        <IconButton
+          aria-label="Delete condition"
+          bgColor={'red.500'}
+          className="mt-[10px]"
+          _hover={{ bgColor: 'red.600' }}
+          icon={<CloseIcon color={'white'} />}
+          onClick={() => onDelete(id)}
+        />
+      </Box>
+    </Box>
   );
 };
 
-const ConditionList = () => {
-  const [conditions, setConditions] = useState([
-    { id: 'init', left: '', operator: '=', right: '', logicalOperator: 'AND' },
-  ]);
+interface ConditionListProps {
+  recommendedWords: string[];
+  value: string;
+  onChange: (newValue: string) => void;
+}
 
+const ConditionList = ({
+  recommendedWords,
+  value,
+  onChange,
+}: ConditionListProps) => {
   const addCondition = () => {
     const newCondition = {
       id: Math.random().toString(),
       left: '',
-      operator: '=',
+      operator: '',
       right: '',
-      logicalOperator: 'AND',
+      logicalOperator: '',
     };
     setConditions([...conditions, newCondition]);
   };
+
+  const parseExpression = (expression) => {
+    const conditionRegex =
+      /(&\{[^}]+\}|[^\s<>=!]+)\s*(==|!=|<=|>=|<|>)\s*(&\{[^}]+\}|[^\s<>=!]+)(?:\s*(\&\&|\|\|))?/g;
+    let match;
+    const parsedConditions = [];
+    let lastIndex = 0;
+
+    while ((match = conditionRegex.exec(expression)) !== null) {
+      let { index } = match;
+      let logicalOperator = '';
+      if (lastIndex !== 0 && lastIndex !== index) {
+        logicalOperator = expression.slice(lastIndex, index).trim();
+      }
+
+      parsedConditions.push({
+        id: Math.random().toString(),
+        left: match[1] ?? '',
+        operator: match[2] ?? '',
+        right: match[3] ?? '',
+        logicalOperator: match[4] ?? '',
+      });
+
+      lastIndex = conditionRegex.lastIndex;
+    }
+
+    return parsedConditions;
+  };
+
+  const [conditions, setConditions] = useState<any[]>([]);
+  const [isFirstVisit, setIsFirstVisit] = useState<boolean>(true);
 
   const deleteCondition = (id) => {
     setConditions(conditions.filter((condition) => condition.id !== id));
   };
 
   const handleConditionChange = (id, updatedCondition) => {
-    setConditions(
-      conditions.map((condition) =>
-        condition.id === id ? updatedCondition : condition
-      )
+    const newConditions = conditions.map((condition) =>
+      condition.id === id ? updatedCondition : condition
     );
+    setConditions([...newConditions]);
+    handleUpdateExpression();
   };
 
   const handleLogicalOperatorChange = (index, value) => {
     const newConditions = [...conditions];
     newConditions[index].logicalOperator = value;
-    setConditions(newConditions);
+    setConditions([...newConditions]);
+    handleUpdateExpression();
   };
 
-  // Function to build the expression
-  const getExpression = () => {
-    return conditions
-      .map((cond) => `${cond.left} ${cond.operator} ${cond.right}`)
-      .join(` ${conditions[0].logicalOperator} `);
+  const handleUpdateExpression = () => {
+    const expression = conditions
+      .map((cond, index) => {
+        const part = `${cond.left} ${cond.operator} ${cond.right}`;
+        return index === 0
+          ? part
+          : `${conditions[index - 1].logicalOperator} ${part}`;
+      })
+      .join(' ');
+    if (onChange) {
+      onChange(expression);
+    }
   };
 
-  // Side effect to log the expression when conditions change
   useEffect(() => {
-    console.log(getExpression());
-  }, [conditions]);
+    if (isFirstVisit) {
+      setConditions(parseExpression(value));
+      setIsFirstVisit(true);
+    }
+  }, [value]);
 
   return (
     <Box>
-      {conditions.map((condition, index) => (
-        <Box key={condition.id}>
-          <Condition
-            id={condition.id}
-            data={condition}
-            onDelete={deleteCondition}
-            onChange={handleConditionChange}
-          />
-          {index < conditions.length - 1 && (
-            <RadioGroup
-              onChange={(e) => handleLogicalOperatorChange(index, e)}
-              value={condition.logicalOperator}
-              defaultValue="AND"
-              className="my-[10px]"
-              marginLeft="2">
-              <HStack justifyContent="flex-start">
-                <Radio value="AND">AND</Radio>
-                <Radio value="OR">OR</Radio>
-              </HStack>
-            </RadioGroup>
-          )}
-        </Box>
-      ))}
+      {conditions &&
+        conditions.map((condition, index) => (
+          <Box key={condition.id}>
+            <Condition
+              id={condition.id}
+              data={condition}
+              onDelete={deleteCondition}
+              onChange={handleConditionChange}
+              recommendWords={recommendedWords}
+            />
+            {index < conditions.length - 1 && (
+              <RadioGroup
+                onChange={(e) => handleLogicalOperatorChange(index, e)}
+                value={condition.logicalOperator}
+                defaultValue="&&"
+                className="my-[10px]"
+                marginLeft="2">
+                <HStack justifyContent="flex-start">
+                  <Radio value="&&">AND</Radio>
+                  <Radio value="||">OR</Radio>
+                </HStack>
+              </RadioGroup>
+            )}
+          </Box>
+        ))}
       <Button onClick={addCondition} colorScheme="blue" marginTop="4">
         Add Condition
       </Button>

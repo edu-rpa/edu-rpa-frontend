@@ -321,6 +321,14 @@ export default function PropertiesSideBar({
                 />
               );
 
+              const renderConditionList = (paramKey: string) => (
+                <ConditionList
+                  value={formValues[paramKey]?.value ?? ''}
+                  onChange={(value) => handleInputChange(paramKey, value)}
+                  recommendedWords={variableStorage}
+                />
+              );
+
               const renderProperty = (
                 paramKey: string,
                 paramValue: ArgumentProps
@@ -434,7 +442,7 @@ export default function PropertiesSideBar({
                       { value: '<=', label: '<=' },
                     ]);
                   case 'list.condition':
-                    return <ConditionList />;
+                    return renderConditionList(paramKey);
                   default:
                     return null;
                 }
