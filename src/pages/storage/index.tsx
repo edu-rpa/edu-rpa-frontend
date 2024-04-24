@@ -28,9 +28,10 @@ import CreateFolderModal from '@/components/FileStorage/CreateFolderModal';
 import FileUploadModal from '@/components/FileStorage/FileUploadModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { ToolTipExplain } from '@/constants/description';
+import { FileMetadata } from '@/interfaces/storage';
 
 export default function Storage() {
-  const [files, setFiles] = useState<string[]>([]);
+  const [files, setFiles] = useState<FileMetadata[]>([]);
   const [currentPath, setCurrentPath] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingCreateFolder, setIsLoadingCreateFolder] =
@@ -88,7 +89,7 @@ export default function Storage() {
     setIsLoading(true);
     getFiles(currentPath)
       .then((res) => {
-        setFiles(res.filter((file) => file !== ''));
+        setFiles(res.filter((file) => file.name !== ''));
       })
       .finally(() => {
         setIsLoading(false);
@@ -115,7 +116,7 @@ export default function Storage() {
     setIsLoading(true);
     getFiles(currentPath)
       .then((res) => {
-        setFiles(res.filter((file) => file !== ''));
+        setFiles(res.filter((file) => file.name !== ''));
       })
       .finally(() => {
         setIsLoading(false);
@@ -140,7 +141,7 @@ export default function Storage() {
     const isDirectory = selectedFileToDelete.endsWith('/');
     if (isDirectory) {
       const files = await getFiles(selectedFileToDelete);
-      if (files.some((file) => file !== '')) {
+      if (files.some((file) => file.name !== '')) {
         alert('The folder is not empty');
         setIsLoadingDeleteFile(false);
         return;
@@ -152,7 +153,7 @@ export default function Storage() {
       onCloseConfirmDeleteModal();
       setIsLoading(true);
       const res = await getFiles(currentPath);
-      setFiles(res.filter((file) => file !== ''));
+      setFiles(res.filter((file) => file.name !== ''));
     } catch (error: any) {
       alert(error);
     }
@@ -275,17 +276,17 @@ export default function Storage() {
 
         {isLoading ? (
           <div className="w-90 m-auto flex justify-center items-center">
-            <Button colorScheme="teal" disabled className="m-auto" isLoading>
+            <Button colorScheme="teal" className="m-auto" isLoading>
               Loading...
             </Button>
           </div>
         ) : (
           <div className="w-90 m-auto">
             <div className="grid grid-cols-4 gap-4">
-              {files.map((file) => (
+              {files.map((file, idx) => (
                 <FileItem
-                  key={file}
-                  name={file}
+                  key={idx}
+                  data={file}
                   isLoading={isLoadingGetPresignedUrl}
                   onClick={handleFileItemClick}
                   onClickDelete={handleClickDeleteFile}
