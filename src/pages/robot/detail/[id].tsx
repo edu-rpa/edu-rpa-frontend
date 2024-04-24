@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Heading,
@@ -18,12 +18,17 @@ import RobotDashboard from '../components/Dashboard/RobotDashboard';
 import RobotLog from '../components/Log/RobotLog';
 import { LOG_ROBOT } from '@/constants/robot';
 import ConnectionDetail from '../components/ConnectionDetail/ConnectionDetail';
+import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 
 const RobotDetail = () => {
   const router = useRouter();
   const params = useParams();
   const logGroup = LOG_ROBOT.FOLDER_PREFIX + router.query?.group;
   const robotID = params?.id as string;
+
+  if (!router.query.group) {
+    return <LoadingIndicator />;
+  }
 
   return (
     <Box className="bg-white h-[100vh]">

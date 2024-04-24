@@ -118,7 +118,7 @@ const DynamicVariableTable = (props: VariableTableProps) => {
                   <DynamicInputValue
                     row = {row}
                     onChange={(dataTemplate: string, label? : string) => {
-                      console.log(dataTemplate, label)
+                      // console.log(dataTemplate, label)
                       handleEditRow(index, 'value', String(dataTemplate));
                       if(label) {
                         handleEditRow(index, 'label', String(label));
@@ -133,6 +133,7 @@ const DynamicVariableTable = (props: VariableTableProps) => {
                   onChange={(e) => {
                     handleTypeChange(index, e.target.value as VariableType);
                   }}>
+                  <option value={VariableType.Any}>Any</option>
                   <option value={VariableType.String}>String</option>
                   <option value={VariableType.Number}>Number</option>
                   <option value={VariableType.Boolean}>Boolean</option>

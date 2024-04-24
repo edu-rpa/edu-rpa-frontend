@@ -17,6 +17,7 @@ export const ActivityPackages = [
           Librabry: {
             type: 'string',
             value: 'EduRPA.Google',
+            description: 'Librabry for setup OAuth token',
             hidden: true,
           },
           token_file_path: {
@@ -1127,16 +1128,16 @@ export const ActivityPackages = [
         iconCode: 'ImLoop2',
         type: 'subprocess',
         arguments: {
+          Item: {
+              type: 'string',
+              description: 'Iterate Variable',
+              value: '',
+          },
           List: {
             type: 'list',
-            description: 'List of value',
-            value: [],
+            description: 'Iterate Struture',
+            value: '',
           },
-        },
-        variable: {
-          name: 'Item',
-          type: 'any',
-          description: 'The item in the list',
         },
       },
     ],

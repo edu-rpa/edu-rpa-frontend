@@ -18,17 +18,19 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
   };
 
   const handleSelectWord = (varName: string, varType: string) => {
-     let prefix = '${';
-     let suffix = '}';
-     if (varType === 'list') {
-       prefix = '@{';
-     }
-     if (varType === 'dictionary') {
-       prefix = '&{';
-     }
+    let prefix = '${';
+    let suffix = '}';
+    if (varType === 'list') {
+      prefix = '@{';
+    }
+    if (varType === 'dictionary') {
+      prefix = '&{';
+    }
     props.onChange(`${prefix}${varName}${suffix}`);
     setIsDropdownOpen(false);
   };
+
+  console.log('Recommend Words', props.recommendedWords);
 
   return (
     <Box position="relative">
@@ -54,7 +56,7 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
             zIndex={1}>
             {props.recommendedWords.map((word) => (
               <Text
-                key={word}
+                key={word[0]}
                 onClick={() => handleSelectWord(word[0], word[1])}
                 p={2}
                 _hover={{ bg: 'gray.100' }}
@@ -62,7 +64,7 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
                 fontSize="md"
                 fontWeight="normal"
                 color="black">
-                {word}
+                {word[0]}
               </Text>
             ))}
           </Box>

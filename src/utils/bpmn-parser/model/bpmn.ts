@@ -89,7 +89,7 @@ export class BpmnProcess extends BpmnNode {
 
         let endEventId = Object.keys(this.elements).find(key => this.elements[key] instanceof BpmnEndEvent);
         if(!endEventId)
-            throw new BpmnParseError("Not Found Start Event", this.id)
+            throw new BpmnParseError("Not Found End Event", this.id)
     }
     public toString (indent: number) : string {
         return "Process"

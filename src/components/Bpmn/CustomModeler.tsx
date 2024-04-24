@@ -104,7 +104,7 @@ function CustomModeler() {
       processID: processID,
       variables: convertObjectToArray(processDetailByID.variables),
     };
-    console.log('Payload Storage', payloadStorage);
+    // console.log('Payload Storage', payloadStorage);
     const currentLocalStorageList = getLocalStorageObject(
       LocalStorage.VARIABLE_LIST
     );
@@ -193,6 +193,7 @@ function CustomModeler() {
 
       return robotCode;
     } catch (error) {
+      console.log(error)
       setErrorTrace(error.stack.toString());
       toast({
         title: (error as Error).message,
@@ -252,7 +253,7 @@ function CustomModeler() {
         onClick={async () => {
           const res = await bpmnReactJs.saveXML();
           exportFile(res.xml as string, `${processID}.xml`);
-          console.log(res.xml);
+          // console.log(res.xml);
         }}>
         Save XML
       </Button>
