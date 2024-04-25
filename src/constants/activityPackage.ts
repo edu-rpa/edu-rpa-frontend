@@ -1095,19 +1095,9 @@ export const ActivityPackages = [
         iconCode: 'AiOutlineBranches',
         type: 'gateway',
         arguments: {
-          left: {
-            type: 'variable',
-            description: 'The left operand',
-            value: '',
-          },
-          operator: {
-            type: 'enum.operator.logic',
-            description: 'The operator',
-            value: '=',
-          },
-          right: {
-            type: 'any',
-            description: 'The right operand',
+          Condition: {
+            type: 'list.condition',
+            description: 'List of condition',
             value: '',
           },
         },
@@ -1121,9 +1111,9 @@ export const ActivityPackages = [
         type: 'subprocess',
         arguments: {
           Item: {
-              type: 'string',
-              description: 'Iterate Variable',
-              value: '',
+            type: 'string',
+            description: 'Iterate Variable',
+            value: '',
           },
           List: {
             type: 'list',

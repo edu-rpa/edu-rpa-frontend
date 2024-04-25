@@ -2,30 +2,33 @@ import React, { useState } from 'react';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import ClearIcon from '@mui/icons-material/Clear';
-import { IconButton } from '@chakra-ui/react';
+import { IconButton, Badge } from '@chakra-ui/react';
 import SVGIcon from '@/components/Icons/SVGIcon';
 import ImageFileIcon from '@/assets/svgs/file-icon-image.svg';
 import XlsxFileIcon from '@/assets/svgs/file-icon-xlsx.svg';
 import PdfFileIcon from '@/assets/svgs/file-icon-pdf.svg';
 import TxtFileIcon from '@/assets/svgs/file-icon-txt.svg';
 import DefaultFileIcon from '@/assets/svgs/file-icon-default.svg';
+import { FileMetadata } from '@/interfaces/storage';
 
 interface FileItemProps {
-  name: string;
+  data: FileMetadata;
   onClick: (name: string) => void;
   onClickDelete: (name: string) => void;
   isLoading?: boolean;
 }
 
 const FileItem: React.FC<FileItemProps> = ({
-  name,
+  data,
   onClick,
   onClickDelete,
   isLoading,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const isDirectory = name && name.endsWith('/');
+  const isDirectory = data.type === 'folder';
+  const name = data.name;
+  const createdBy = data.created_by;
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -77,7 +80,15 @@ const FileItem: React.FC<FileItemProps> = ({
           />
         )}
       </div>
-      <div className="text-center">{name}</div>
+      <div className="text-center">
+        {name}
+        <br />
+        {createdBy && (
+          <Badge colorScheme="green" variant="solid">
+            {createdBy}
+          </Badge>
+        )}
+      </div>
       {isHovered && (
         <IconButton
           aria-label="delete"
