@@ -1,6 +1,6 @@
 import { array } from "prop-types";
 import { VariableError, VariableErrorCode } from "../error";
-import _ from "lodash";
+import _, { values } from "lodash";
 import { VariableType } from "@/types/variable";
 
 /**
@@ -19,7 +19,7 @@ export class Keyword extends BodyItem {
     super();
   }
   toJSON() {
-    let args = this.args.map((item) => item.toJSON());
+    let args = this.args.filter((item) => item.value.length).map((item) => item.toJSON());
     let assignsVarName = this.assigns.map((item) => {
       let i = item.toJSON()
       if (typeof i === "string") {

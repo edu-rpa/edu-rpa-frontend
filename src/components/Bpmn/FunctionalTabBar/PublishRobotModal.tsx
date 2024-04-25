@@ -30,6 +30,7 @@ import robotApi from "@/apis/robotApi";
 import { BpmnParseError, BpmnParseErrorCode } from "@/utils/bpmn-parser/error";
 import { dryrun, handleCheckDryrunError } from "@/apis/robotCodeValidateApi";
 import { ValidationError } from "@/apis/ErrorMessage";
+import RobotExecutionComponent from "./DisplayError/DisplayValidationError";
 
 interface Props {
   processID: string;
@@ -135,9 +136,8 @@ export const PublishRobotModal = (props: Props) => {
     if(error instanceof ValidationError) {
       const txt = JSON.stringify(error.errorResponse, null,2)
       return (
-        <Container size="xl">
-          {txt}
-        </Container>
+        <RobotExecutionComponent data={error.errorResponse}>
+        </RobotExecutionComponent>
       )
     }
   }
@@ -203,10 +203,9 @@ export const PublishRobotModal = (props: Props) => {
                 <Button size="sm" style={{ display: 'block' }} 
                   onClick={() => setIsOpenErrorDetail(true)}
                 >Show Detail</Button>
-                <Modal isOpen={isOpenErrorDetail} onClose={onClose} size="xl">
+                <Modal isOpen={isOpenErrorDetail} onClose={onClose} size="full">
                   <ModalOverlay />
                   <ModalContent>
-                    <ModalHeader>Modal Title</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                       {handleDisplayError(error)}

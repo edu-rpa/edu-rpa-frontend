@@ -12,17 +12,11 @@ export const ActivityPackages = [
         description: 'Set up drive connection for following task',
         iconCode: 'FaEnvelope',
         type: 'activity',
-        keyword: 'Set up OAuth token in vault',
+        keyword: 'Init Drive',
         arguments: {
-          Librabry: {
-            type: 'string',
-            value: 'EduRPA.Google',
-            description: 'Librabry for setup OAuth token',
-            hidden: true,
-          },
           token_file_path: {
             type: 'connection.Google Drive',
-            keywordArg: 'token_file_path',
+            keywordArg: 'token_file',
             provider: 'Google Drive',
             description: 'Your connection ID with Google Drive',
             value: null,
@@ -272,16 +266,11 @@ export const ActivityPackages = [
         description: 'Set up Gmail connection for following task',
         iconCode: 'FaEnvelope',
         type: 'activity',
-        keyword: 'Set up OAuth token in vault',
+        keyword: 'Init Gmail',
         arguments: {
-          Librabry: {
-            type: 'string',
-            value: 'EduRPA.Google',
-            hidden: true,
-          },
           Connection: {
             type: 'connection.Gmail',
-            keywordArg: 'token_file_path',
+            keywordArg: 'token_file',
             provider: 'Gmail',
             description: 'Your connection ID with Gmail',
             value: null,
@@ -388,6 +377,7 @@ export const ActivityPackages = [
           Librabry: {
             type: 'string',
             value: 'EduRPA.Google',
+            description: 'Librabry for setup OAuth token',
             hidden: true,
           },
           Connection: {
@@ -639,6 +629,7 @@ export const ActivityPackages = [
           Librabry: {
             type: 'string',
             value: 'EduRPA.Google',
+            description: 'Librabry for setup OAuth token',
             hidden: true,
           },
           Connection: {
@@ -1011,6 +1002,7 @@ export const ActivityPackages = [
           Librabry: {
             type: 'string',
             value: 'EduRPA.Google',
+            description: 'Librabry for setup OAuth token',
             hidden: true,
           },
           Connection: {
