@@ -1,4 +1,5 @@
 import TextAutoComplete from '@/components/Input/AutoComplete/TextAutoComplete';
+import { isSavedChange } from '@/redux/slice/bpmnSlice';
 import { CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -8,6 +9,7 @@ import {
   RadioGroup,
   Select,
 } from '@chakra-ui/react';
+import { useDispatch } from 'react-redux';
 
 export interface ConditionData {
   id: string;
@@ -38,12 +40,17 @@ const Condition = ({
     onChange(id, { ...data, [field]: value });
   };
 
+  const dispatch = useDispatch();
+
   return (
     <Box>
       {index > 0 && (
         <RadioGroup
           className="my-[10px]"
-          onChange={(e) => handleValueChange('logicalOperator')(e)}
+          onChange={(e) => {
+            handleValueChange('logicalOperator')(e);
+            dispatch(isSavedChange(false));
+          }}
           value={data.logicalOperator}>
           <HStack spacing={4}>
             <Radio value="&&">AND</Radio>
