@@ -53,11 +53,23 @@ const getAllConnectionsByRobotKey = async (
     });
 };
 
+const getConnectionsByConnectionKey = async (
+  connectionKeys: string[]
+): Promise<Connection[]> => {
+  return await apiBase
+    .post(`${process.env.NEXT_PUBLIC_DEV_API}/connection/connectionKey`, {
+      connectionKeys
+    })
+    .then((res: any) => {
+      return res.data.connections;
+    });
+};
 const connectionApi = {
   queryConnections,
   refreshConnection,
   removeConnection,
   getAllConnectionsByRobotKey,
+  getConnectionsByConnectionKey
 };
 
 export default connectionApi;

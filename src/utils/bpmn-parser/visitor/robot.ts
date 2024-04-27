@@ -1,6 +1,6 @@
 import { array } from "prop-types";
 import { VariableError, VariableErrorCode } from "../error";
-import _ from "lodash";
+import _, { values } from "lodash";
 import { VariableType } from "@/types/variable";
 
 /**
@@ -19,7 +19,7 @@ export class Keyword extends BodyItem {
     super();
   }
   toJSON() {
-    let args = this.args.map((item) => item.toJSON());
+    let args = this.args.filter((item) => item.value.length).map((item) => item.toJSON());
     let assignsVarName = this.assigns.map((item) => {
       let i = item.toJSON()
       if (typeof i === "string") {
@@ -156,7 +156,7 @@ export class For extends BodyItem {
   constructor(
     public variables: ProcessVariable[],
     public flavor: "IN" | "IN RANGE",
-    public values: ProcessVariable[],
+    public values: ProcessVariable[] | string[],
     public body: BodyItem[],
     public start?: string,
     public mode?: string,
@@ -176,6 +176,10 @@ export class For extends BodyItem {
           return i.name
       }),
       values: this.values.map((v) => {
+        if(typeof v === "string") {
+          // Parameter
+          return v
+        }
         let i = v.toJSON()
         if(typeof i === "string") 
           return i

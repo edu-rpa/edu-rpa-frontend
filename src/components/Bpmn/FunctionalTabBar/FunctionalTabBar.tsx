@@ -44,6 +44,7 @@ export default function FunctionalTabBar(props: FunctionalTabBarProps) {
         leftIcon={<MdPublish />}
         onClick={() => {
           onOpen();
+          props.onSaveAll();
           setType('publish');
         }}
         colorScheme="blue"

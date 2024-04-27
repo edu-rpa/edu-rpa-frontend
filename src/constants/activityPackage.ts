@@ -12,17 +12,11 @@ export const ActivityPackages = [
         description: 'Set up drive connection for following task',
         iconCode: 'FaEnvelope',
         type: 'activity',
-        keyword: 'Set up OAuth token in vault',
+        keyword: 'Init Drive',
         arguments: {
-          Librabry: {
-            type: 'string',
-            value: 'EduRPA.Google',
-            description: 'Librabry for setup OAuth token',
-            hidden: true,
-          },
           token_file_path: {
             type: 'connection.Google Drive',
-            keywordArg: 'token_file_path',
+            keywordArg: 'token_file',
             provider: 'Google Drive',
             description: 'Your connection ID with Google Drive',
             value: null,
@@ -272,16 +266,11 @@ export const ActivityPackages = [
         description: 'Set up Gmail connection for following task',
         iconCode: 'FaEnvelope',
         type: 'activity',
-        keyword: 'Set up OAuth token in vault',
+        keyword: 'Init Gmail',
         arguments: {
-          Librabry: {
-            type: 'string',
-            value: 'EduRPA.Google',
-            hidden: true,
-          },
           Connection: {
             type: 'connection.Gmail',
-            keywordArg: 'token_file_path',
+            keywordArg: 'token_file',
             provider: 'Gmail',
             description: 'Your connection ID with Gmail',
             value: null,
@@ -383,13 +372,8 @@ export const ActivityPackages = [
         description: 'Set up Google Sheet connection for following task',
         iconCode: 'FaEnvelope',
         type: 'activity',
-        keyword: 'Setup Google Sheet Connection',
+        keyword: 'Init Sheets',
         arguments: {
-          Librabry: {
-            type: 'string',
-            value: 'EduRPA.Google',
-            hidden: true,
-          },
           Connection: {
             type: 'connection.Google Sheets',
             keywordArg: 'token_file_path',
@@ -639,6 +623,7 @@ export const ActivityPackages = [
           Librabry: {
             type: 'string',
             value: 'EduRPA.Google',
+            description: 'Librabry for setup OAuth token',
             hidden: true,
           },
           Connection: {
@@ -1011,6 +996,7 @@ export const ActivityPackages = [
           Librabry: {
             type: 'string',
             value: 'EduRPA.Google',
+            description: 'Librabry for setup OAuth token',
             hidden: true,
           },
           Connection: {
@@ -1118,6 +1104,12 @@ export const ActivityPackages = [
         iconCode: 'ImLoop2',
         type: 'subprocess',
         arguments: {
+          LoopType: {
+            type: 'string',
+            value: 'for_each',
+            description: 'Type to parse loop',
+            hidden: true,
+          },
           Item: {
             type: 'string',
             description: 'Iterate Variable',
@@ -1126,6 +1118,36 @@ export const ActivityPackages = [
           List: {
             type: 'list',
             description: 'Iterate Struture',
+            value: '',
+          },
+        },
+      },
+      {
+        templateId: 'for_range',
+        displayName: 'For Value In Range',
+        description: 'Execute a set of activities for each item in range',
+        iconCode: 'ImLoop2',
+        type: 'subprocess',
+        arguments: {
+          LoopType: {
+            type: 'string',
+            value: 'for_range',
+            description: 'Type to parse loop',
+            hidden: true,
+          },
+          Item: {
+            type: 'string',
+            description: 'Iterate Variable',
+            value: '',
+          },
+          Start: {
+            type: 'number',
+            description: 'start value',
+            value: '',
+          },
+          End: {
+            type: 'number',
+            description: 'start value',
             value: '',
           },
         },

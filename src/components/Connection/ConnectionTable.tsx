@@ -76,7 +76,7 @@ const ConnectionRow = (props: ConnectionRowProps) => {
     if (provider) {
       window.open(
         `${process.env.NEXT_PUBLIC_DEV_API}/auth/${provider.slug}?fromUser=${user.id}&reconnect=true`,
-        '_self'
+        '_blank'
       );
     }
   };
