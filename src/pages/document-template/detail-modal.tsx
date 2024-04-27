@@ -62,8 +62,15 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
 
       documentTemplateApi.getDocumentTemplateDetail(documentTemplate.id).then((res) => {
         const documentTemplateDetail: DocumentTemplateDetail = res;
-        const { dataTemplate } = documentTemplateDetail;
-        setDataTemplate(dataTemplate);
+        setDataTemplate(documentTemplateDetail.dataTemplate);
+        setTemplateSizeIndex(
+          TEMPLATE_SIZES.findIndex(
+            (size) =>
+              size[0] === documentTemplateDetail.size?.width &&
+              size[1] === documentTemplateDetail.size?.height
+          )
+        );
+        setIsScanned(documentTemplateDetail.isScanned ?? false);
       });
 
       documentTemplateApi.getPresignedUrl(documentTemplate.id)
@@ -84,11 +91,12 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
 
       const res = await documentTemplateApi.uploadSampleDocument(id, selectedFile, isScanned, TEMPLATE_SIZES[templateSizeIndex]);
       setImageUrl(res.url);
-      await documentTemplateApi.saveDocumentTemplate(id, {
+      const resDTD = await documentTemplateApi.saveDocumentTemplate(id, {
         size: {
           width: TEMPLATE_SIZES[templateSizeIndex][0],
           height: TEMPLATE_SIZES[templateSizeIndex][1],
         },
+        isScanned: isScanned,
         dataTemplate: {},
       });
       setDataTemplate({});
@@ -265,8 +273,14 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
                     colorScheme="teal"
                     mr={3}
                     onClick={() => handleSaveDocumentTemplate({
+                      size: {
+                        width: TEMPLATE_SIZES[templateSizeIndex][0],
+                        height: TEMPLATE_SIZES[templateSizeIndex][1],
+                      },
+                      isScanned: isScanned,
                       dataTemplate: dataTemplate,
-                    })}>
+                    } as SaveDocumentTemplateDto
+                    )}>
                     Save
                 </Button>
               :
@@ -276,7 +290,14 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
                   mr={3}
                   onClick={() => handleSelectDocumentTemplate({
                     name: `${documentTemplate.type}-template-${documentTemplate.name ?? ""}`, 
-                    dataTemplate: JSON.stringify(dataTemplate)
+                    template: JSON.stringify({
+                      dataTemplate: dataTemplate,
+                      size: {
+                        width: TEMPLATE_SIZES[templateSizeIndex][0],
+                        height: TEMPLATE_SIZES[templateSizeIndex][1],
+                      },
+                      isScanned: isScanned,
+                    })
                   })}>
                   Select
                 </Button>

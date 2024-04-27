@@ -8,10 +8,11 @@ export interface CreateDocumentTemplateDto {
 }
 
 export interface SaveDocumentTemplateDto {
-  size?: {
+  size: {
     width: number;
     height: number;
   };
+  isScanned: boolean;
   dataTemplate: DataTemplate;
 }
 
