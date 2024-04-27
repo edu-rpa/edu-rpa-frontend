@@ -118,6 +118,10 @@ export default function PropertiesSideBar({
     }
   }, [isOpen, activityItem]);
 
+  useEffect(() => {
+    dispatch(isSavedChange(false));
+  }, [isOpen]);
+
   const handleGoBack = () => {
     setBack();
     setFormValues({});
