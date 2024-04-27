@@ -1,5 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Box, Input, Text } from '@chakra-ui/react';
+import { isSavedChange } from '@/redux/slice/bpmnSlice';
+import { useDispatch } from 'react-redux';
 
 interface TextAutoCompleteProps {
   type: string;
@@ -30,13 +32,18 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
     setIsDropdownOpen(false);
   };
 
+  const dispatch = useDispatch();
+
   return (
     <Box position="relative">
       <Input
         type={props.type || 'text'}
         value={props.value}
         onChange={handleInputChange}
-        onFocus={() => setIsDropdownOpen(true)}
+        onFocus={() => {
+          setIsDropdownOpen(true);
+          dispatch(isSavedChange(false));
+        }}
         placeholder={props.placeholder || 'Type or select variables'}
       />
       {isDropdownOpen &&
