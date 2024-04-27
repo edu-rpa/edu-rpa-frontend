@@ -1,55 +1,13 @@
 import { useState } from 'react';
 import { ConditionData } from './Condition';
+import { v4 as uuidv4 } from 'uuid';
 
-export const useConditions = (initialExpression: string) => {
-  const parseExpression = (expression: string) => {
-    const conditionRegex =
-      /(?:\s*(\&\&|\|\|))?(&\{[^}]+\}|[^\s<>=!]+)\s*(=|!=|<=|>=|<|>)\s*(&\{[^}]+\}|[^\s<>=!]+)/g;
-    let match;
-    const parsedConditions = [];
-    let lastIndex = 0;
-
-    while ((match = conditionRegex.exec(expression)) !== null) {
-      let { index } = match;
-      let logicalOperator = '';
-      if (lastIndex !== 0 && lastIndex !== index) {
-        logicalOperator = expression.slice(lastIndex, index).trim();
-      }
-
-      parsedConditions.push({
-        id: Math.random().toString(),
-        left: match[2] ?? '',
-        operator: match[3] ?? '',
-        right: match[4] ?? '',
-        logicalOperator: (logicalOperator || match[1]) ?? '',
-      });
-
-      lastIndex = conditionRegex.lastIndex;
-    }
-
-    return parsedConditions;
-  };
-
-  const formatExpression = (conditions: ConditionData[]) => {
-    return conditions
-      .map((cond, index) => {
-        const part = `${cond.left} ${cond.operator} ${cond.right}`;
-        if (index > 0) {
-          const logicalOperator = conditions[index].logicalOperator;
-          return `${logicalOperator} ${part}`;
-        }
-        return part;
-      })
-      .join(' ');
-  };
-
-  const [conditions, setConditions] = useState(() =>
-    parseExpression(initialExpression)
-  );
+export const useConditions = (condtionData: ConditionData[]) => {
+  const [conditions, setConditions] = useState(condtionData);
 
   const addCondition = () => {
     const newCondition = {
-      id: Math.random().toString(),
+      id: uuidv4(),
       left: '',
       operator: '',
       right: '',
@@ -72,7 +30,6 @@ export const useConditions = (initialExpression: string) => {
 
   return {
     conditions,
-    formatExpression,
     addCondition,
     deleteCondition,
     updateCondition,

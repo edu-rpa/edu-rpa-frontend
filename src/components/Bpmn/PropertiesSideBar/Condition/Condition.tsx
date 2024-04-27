@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 export interface ConditionData {
+  id: string;
   left: string;
   operator: string;
   right: string;
