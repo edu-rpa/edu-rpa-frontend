@@ -129,6 +129,7 @@ export default function PropertiesSideBar({
       ...prev,
       [key]: { ...prev[key], value: value },
     }));
+    dispatch(isSavedChange(false));
   };
 
   const handleUpdateProperties = () => {

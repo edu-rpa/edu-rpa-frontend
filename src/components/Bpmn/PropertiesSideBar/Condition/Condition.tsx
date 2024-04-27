@@ -1,5 +1,4 @@
 import TextAutoComplete from '@/components/Input/AutoComplete/TextAutoComplete';
-import { isSavedChange } from '@/redux/slice/bpmnSlice';
 import { CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -9,7 +8,6 @@ import {
   RadioGroup,
   Select,
 } from '@chakra-ui/react';
-import { useDispatch } from 'react-redux';
 
 export interface ConditionData {
   id: string;
@@ -40,8 +38,6 @@ const Condition = ({
     onChange(id, { ...data, [field]: value });
   };
 
-  const dispatch = useDispatch();
-
   return (
     <Box>
       {index > 0 && (
@@ -49,7 +45,6 @@ const Condition = ({
           className="my-[10px]"
           onChange={(e) => {
             handleValueChange('logicalOperator')(e);
-            dispatch(isSavedChange(false));
           }}
           value={data.logicalOperator}>
           <HStack spacing={4}>
@@ -69,7 +64,9 @@ const Condition = ({
         <Select
           className="my-[10px]"
           value={data.operator}
-          onChange={(e) => handleValueChange('operator')(e.target.value)}>
+          onChange={(e) => {
+            handleValueChange('operator')(e.target.value);
+          }}>
           {['Select Operator', '=', '!=', '<', '<=', '>', '>='].map((op) => (
             <option key={op} value={op}>
               {op}
@@ -93,7 +90,6 @@ const Condition = ({
             colorScheme="red"
             onClick={() => {
               onDelete(id);
-              dispatch(isSavedChange(false));
             }}
           />
         </Box>
