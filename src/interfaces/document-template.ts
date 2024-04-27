@@ -9,7 +9,11 @@ export interface DocumentTemplate {
 }
 
 export interface DocumentTemplateDetail {
-  _id: string;
+  size?: {
+    width: number;
+    height: number;
+  };
+  isScanned?: boolean;
   dataTemplate: DataTemplate;
 }
 

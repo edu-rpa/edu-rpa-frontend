@@ -8,7 +8,7 @@ import { MdMargin } from "react-icons/md";
 
 export interface DocumentTemplateInputParams {
     row: Variable,
-    onChange: (dataTemplate: string, label: string) => void;
+    onChange: (template: string, label: string) => void;
 }
 export default function DocumentTemplateInput(props: DocumentTemplateInputParams) {
     const {row, onChange} = props
@@ -17,11 +17,11 @@ export default function DocumentTemplateInput(props: DocumentTemplateInputParams
 
     const handleSelectDocumentTemplate = ({
         name,
-        dataTemplate
+        template
     }) => {
         setLabel(name);
         onClose();
-        onChange(dataTemplate, name);
+        onChange(template, name);
     }
 
     return(
