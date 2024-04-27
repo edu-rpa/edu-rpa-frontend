@@ -45,7 +45,7 @@ import { isSavedChange } from '@/redux/slice/bpmnSlice';
 import { Variable } from '@/types/variable';
 import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
 import ConnectionOptions from './ConnectionSelect';
-import ConditionList from './ConditionList';
+import ConditionList from './Condition/ConditionList';
 
 interface PropertiesSideBarProps {
   isOpen: boolean;
@@ -87,7 +87,6 @@ export default function PropertiesSideBar({
     (variable: Variable) => [variable.name, variable.type]
   );
 
-  // Optional solution, refactor later
   const [activityKeyword, setActivityKeyword] = useState<string>('');
 
   const dispatch = useDispatch();
@@ -107,8 +106,9 @@ export default function PropertiesSideBar({
     setIsExist(true);
   };
 
+  const activity = getActivityInProcess(processID, activityItem.activityID);
+
   useEffect(() => {
-    const activity = getActivityInProcess(processID, activityItem.activityID);
     if (!activity) return;
     const hasProperties = Object.keys(activity.properties).length > 0;
     if (!hasProperties) {
@@ -116,7 +116,7 @@ export default function PropertiesSideBar({
     } else {
       handleActivities(activity);
     }
-  }, [isOpen]);
+  }, [isOpen, activityItem]);
 
   const handleGoBack = () => {
     setBack();
@@ -129,6 +129,7 @@ export default function PropertiesSideBar({
       ...prev,
       [key]: { ...prev[key], value: value },
     }));
+    dispatch(isSavedChange(false));
   };
 
   const handleUpdateProperties = () => {
@@ -146,11 +147,13 @@ export default function PropertiesSideBar({
         return: saveResult,
       },
     };
+
     const updateProperties = updateActivityInProcess(processID, updatePayload);
     const updateProcess = updateLocalStorage({
       ...getProcessFromLocalStorage(processID),
       activities: updateProperties,
     });
+
     setLocalStorageObject(LocalStorage.PROCESS_LIST, updateProcess);
   };
 
@@ -323,8 +326,10 @@ export default function PropertiesSideBar({
 
               const renderConditionList = (paramKey: string) => (
                 <ConditionList
-                  value={formValues[paramKey]?.value ?? ''}
-                  onChange={(value) => handleInputChange(paramKey, value)}
+                  expression={formValues[paramKey]?.value ?? ''}
+                  onExpressionChange={(value) => {
+                    handleInputChange(paramKey, value);
+                  }}
                   recommendedWords={variableStorage}
                 />
               );

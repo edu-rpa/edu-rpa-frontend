@@ -36,7 +36,9 @@ const TextAutoComplete = (props: TextAutoCompleteProps) => {
         type={props.type || 'text'}
         value={props.value}
         onChange={handleInputChange}
-        onFocus={() => setIsDropdownOpen(true)}
+        onFocus={() => {
+          setIsDropdownOpen(true);
+        }}
         placeholder={props.placeholder || 'Type or select variables'}
       />
       {isDropdownOpen &&
