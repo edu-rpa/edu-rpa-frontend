@@ -165,7 +165,7 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+    <Modal isOpen={isOpen} onClose={onClose} size="4xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{documentTemplate?.name}</ModalHeader>
@@ -233,6 +233,7 @@ const DetailDocumentTemplateModal: React.FC<Props> = ({
 
             {imageUrl && !isLoading && (
               <BoundingBox
+                size={TEMPLATE_SIZES[templateSizeIndex]}
                 imageUrl={imageUrl}
                 dataTemplate={dataTemplate}
                 onNewRectangle={handleNewRectangle}

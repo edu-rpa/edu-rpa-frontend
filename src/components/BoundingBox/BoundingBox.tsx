@@ -2,6 +2,7 @@ import { DataTemplate, Rectangle } from '@/types/boundingBox';
 import React, { useState, useEffect } from 'react';
 
 type BoundingBoxProps = {
+  size: number[];
   imageUrl: string;
   dataTemplate: DataTemplate;
   onNewRectangle: (newRectangles: Rectangle) => void;
@@ -14,6 +15,7 @@ type BoundingBoxProps = {
 };
 
 const BoundingBox: React.FC<BoundingBoxProps> = ({
+  size,
   imageUrl,
   dataTemplate,
   onNewRectangle,
@@ -32,6 +34,7 @@ const BoundingBox: React.FC<BoundingBoxProps> = ({
     const rect = e.currentTarget.getBoundingClientRect();
     const startX = e.clientX - rect.left;
     const startY = e.clientY - rect.top;
+    if (startX < 0 || startY < 0 || startX > size[0] || startY > size[1]) return;
     setCurrentRect({
       left: startX,
       top: startY,
