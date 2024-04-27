@@ -22,6 +22,7 @@ import {
   Modal,
   ModalOverlay,
   Container,
+  Heading,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { toastSuccess } from "@/utils/common";
@@ -29,8 +30,12 @@ import { useRouter } from "next/router";
 import robotApi from "@/apis/robotApi";
 import { BpmnParseError, BpmnParseErrorCode } from "@/utils/bpmn-parser/error";
 import { dryrun, handleCheckDryrunError } from "@/apis/robotCodeValidateApi";
-import { ValidationError } from "@/apis/ErrorMessage";
+import { RobotCreationError, UserCredentialError, ValidationError } from "@/apis/ErrorMessage";
 import RobotExecutionComponent from "./DisplayError/DisplayValidationError";
+import connectionApi from "@/apis/connectionApi";
+import { AxiosError } from "axios";
+import ConnectionTable from "@/components/Connection/ConnectionTable";
+import _ from "lodash";
 
 interface Props {
   processID: string;
@@ -39,7 +44,7 @@ interface Props {
   onClose: () => void;
 }
 
-const simulateAPICall = async (delay) => {
+const delay = async (delay) => {
   await new Promise((resolve) => setTimeout(resolve, delay));
 };
 
@@ -93,28 +98,50 @@ export const PublishRobotModal = (props: Props) => {
             throw new ValidationError("Validation Error", response)
           }
         case 1: 
-          await simulateAPICall(3000)
+          let connections = await connectionApi.getConnectionsByConnectionKey(result.credentials.map((k:any) => k.connectionKey))
+          
+          let refreshConnectionPromises = connections.map(async (conn) => {
+            try {
+              await connectionApi.refreshConnection(conn.provider, conn.name);
+              return true
+            } catch (error) {
+              return false
+            }
+          })
+
+          let connectionExpiredMask = await Promise.all(refreshConnectionPromises)
+
+          let expiredConnections = connections.filter((conn, index) => !connectionExpiredMask[index]);
+
+          if(expiredConnections.length) {
+            throw new UserCredentialError("Connection expired", expiredConnections)
+          }
+
         case 2:
-          const publishPayload = {
-            name: robotName,
-            processId: props.processID as string,
-            code: JSON.stringify(result.code),
-            providers: result.credentials,
-            triggerType: triggerType,
-          };
-          await robotApi.createRobot(publishPayload);
-          
-          toastSuccess(toast, 'Create robot successfully!');
-          
-          // Redirect to robot page
-          router.push('/robot');
+          try {
+            const publishPayload = {
+              name: robotName,
+              processId: props.processID as string,
+              code: JSON.stringify(result.code),
+              providers: result.credentials,
+              triggerType: triggerType,
+            };
+
+            await robotApi.createRobot(publishPayload);
+            
+            toastSuccess(toast, 'Create robot successfully!');
+
+            // Redirect to robot page
+            router.push('/robot'); 
+          } catch (error) {
+            throw new RobotCreationError(error.message, error.response)
+          }
         default:
           break;
       }
       // If "API call" is successful, proceed to the next step
       setActiveStep((prevStep) => prevStep + 1);
     } catch (error) {
-      console.error('Error:', error);
       setError(error); // Set error message
     } finally {
       setLoading(false); // Reset loading status regardless of success or failure
@@ -139,6 +166,31 @@ export const PublishRobotModal = (props: Props) => {
         <RobotExecutionComponent data={error.errorResponse}>
         </RobotExecutionComponent>
       )
+    }else if(error instanceof RobotCreationError) {
+      return (
+        <Box mt={4} p={4} bg="red.100" borderRadius="md">
+          <Heading as="h2" size="md">Error Details:</Heading>
+          <p><strong>Status:</strong> {error.errorResponse.status}</p>
+          <p><strong>Error:</strong> {error.errorResponse.data.error}</p>
+          <p><strong>Message:</strong> {error.errorResponse.data.message.join(', ')}</p>
+        </Box>
+      )
+    }else if (error instanceof UserCredentialError) {
+      const tableProps = {
+        header: ['Service', 'Connection name', 'Created at', 'Status', 'Action'],
+        data: _.map(error.expiredConnectionList, conn => _.omit(conn, ["connectionKey", "refreshToken", "accessToken"]))
+      };
+      return <ConnectionTable
+        {...tableProps}
+      ></ConnectionTable>
+    }
+    else if(error instanceof AxiosError) {
+      <Box mt={4} p={4} bg="red.100" borderRadius="md">
+        <Heading as="h2" size="md">Error Details:</Heading>
+        <p><strong>Status:</strong> {error.status}</p>
+        <p><strong>Error:</strong> {error.response.data.error}</p>
+        <p><strong>Message:</strong> {error.response.data.message.join(', ')}</p>
+      </Box>
     }
   }
   return (
@@ -203,7 +255,7 @@ export const PublishRobotModal = (props: Props) => {
                 <Button size="sm" style={{ display: 'block' }} 
                   onClick={() => setIsOpenErrorDetail(true)}
                 >Show Detail</Button>
-                <Modal isOpen={isOpenErrorDetail} onClose={onClose} size="full">
+                <Modal isOpen={isOpenErrorDetail} onClose={onClose} size={activeStep == 0 ? "full" : "xl"}>
                   <ModalOverlay />
                   <ModalContent>
                     <ModalCloseButton />

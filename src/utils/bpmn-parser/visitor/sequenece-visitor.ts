@@ -217,14 +217,13 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
   visitBlankBlock(node: BlankBlock, params: any[]) {
     let activityID = node.bpmnId;
     let property = this.properties.get(activityID)?.properties;
-    if (_.isEmpty(property)) {
+    if (_.isEmpty(property) || _.isNil(property.arguments.LoopType)) {
       let body = [] as BodyItem[];
       for (let item of node.block) {
         body = body.concat(this.visit(item, params));
       }
       return body;
     } else {
-      console.log(property)
       if (property.activityPackage !== "Control") {
         throw new BpmnParseError(
           BpmnParseErrorCode["Invalid Property"],
@@ -232,32 +231,64 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
         );
       }
       let args = property.arguments;
-      let List = args.List;
-      let Item = args.Item;
-
-      let body = [] as BodyItem[];
-      for (let item of node.block) {
-        body = body.concat(this.visit(item, params));
+      switch(args.LoopType.value) {
+        case 'for_each':
+          let List = args.List;
+          let Item = args.Item;
+      
+          let bodyForEach = [] as BodyItem[];
+          for (let itemForEach of node.block) {
+            bodyForEach = bodyForEach.concat(this.visit(itemForEach, params));
+          }
+      
+          if (!Item.value || !List.value) {
+            throw new BpmnParseError(
+              BpmnParseErrorCode["Missing Property"],
+              activityID
+            );
+          }
+          let ListName = List.value.match(/{\s*(.*?)\s*}/)[1]
+          let ItemName = Item.value.match(/{\s*(.*?)\s*}/)[1]
+      
+          let ListInStorage = this._checkVariableValid(ListName);
+          let ItemInStorage = this._checkVariableValid(ItemName);
+      
+          return new For(
+            [new ProcessVariable(ItemName, ItemInStorage.value, ItemInStorage.type)],
+            "IN",
+            [new ProcessVariable(ListName, ListInStorage.value, ListInStorage.type)],
+            bodyForEach
+          );
+        case 'for_range':
+          let bodyForRange = [] as BodyItem[];
+          for (let itemForRange of node.block) {
+            bodyForRange = bodyForRange.concat(this.visit(itemForRange, params));
+          }
+      
+          let ItemForRange = args.Item;
+          let Start = args.Start;
+          let End = args.End;
+      
+          if (!ItemForRange.value || !Start.value || !End.value) {
+            throw new BpmnParseError(
+              BpmnParseErrorCode["Missing Property"],
+              activityID
+            );
+          }
+      
+          let ItemNameForRange = ItemForRange.value.match(/{\s*(.*?)\s*}/)[1]
+          let ItemInStorageForRange = this._checkVariableValid(ItemNameForRange);
+      
+          return new For(
+            [new ProcessVariable(ItemNameForRange, ItemNameForRange, ItemInStorageForRange.type)],
+            "IN RANGE",
+            [
+              Start.value,
+              End.value,
+            ],
+            bodyForRange
+          );
       }
-
-      if (!Item.value || !List.value) {
-        throw new BpmnParseError(
-          BpmnParseErrorCode["Missing Property"],
-          activityID
-        );
-      }
-      let ListName = List.value.replace(/^[^\w]{(.*)}$/, "$1")
-      let ItemName = Item.value.replace(/^[^\w]{(.*)}$/, "$1")
-
-      let ListInStorage = this._checkVariableValid(ListName)
-      let ItemInStorage = this._checkVariableValid(ItemName)
-
-      return new For(
-        [new ProcessVariable(ItemName, ItemInStorage.value, ItemInStorage.type)],
-        "IN",
-        [new ProcessVariable(ListName, ListInStorage.value, ListInStorage.type)],
-        body
-      );
     }
   }
 

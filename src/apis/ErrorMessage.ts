@@ -1,3 +1,5 @@
+import { Connection } from "@/interfaces/connection";
+
 export class ValidationError extends Error {
     public errorResponse: any
     constructor(message, response) {
@@ -8,17 +10,19 @@ export class ValidationError extends Error {
 }
 
 export class UserCredentialError extends Error {
-  public errorResponse: any
-  constructor(message) {
+  public expiredConnectionList: Connection[]
+  constructor(message, expiredConnectionList) {
     super(message);
     this.name = 'UserCredentialError'; // Set the name property of the error
+    this.expiredConnectionList=expiredConnectionList
   }
 }
 
 export class RobotCreationError extends Error {
   public errorResponse: any
-  constructor(message) {
+  constructor(message, errorResponse) {
     super(message);
     this.name = 'RobotCreationError'; // Set the name property of the error
+    this.errorResponse = errorResponse
   }
 }

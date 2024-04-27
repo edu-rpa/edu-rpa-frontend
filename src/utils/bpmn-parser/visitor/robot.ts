@@ -156,7 +156,7 @@ export class For extends BodyItem {
   constructor(
     public variables: ProcessVariable[],
     public flavor: "IN" | "IN RANGE",
-    public values: ProcessVariable[],
+    public values: ProcessVariable[] | string[],
     public body: BodyItem[],
     public start?: string,
     public mode?: string,
@@ -176,6 +176,10 @@ export class For extends BodyItem {
           return i.name
       }),
       values: this.values.map((v) => {
+        if(typeof v === "string") {
+          // Parameter
+          return v
+        }
         let i = v.toJSON()
         if(typeof i === "string") 
           return i
