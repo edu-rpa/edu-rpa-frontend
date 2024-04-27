@@ -91,7 +91,10 @@ const Condition = ({
             aria-label="Delete condition"
             icon={<CloseIcon />}
             colorScheme="red"
-            onClick={() => onDelete(id)}
+            onClick={() => {
+              onDelete(id);
+              dispatch(isSavedChange(false));
+            }}
           />
         </Box>
       )}
