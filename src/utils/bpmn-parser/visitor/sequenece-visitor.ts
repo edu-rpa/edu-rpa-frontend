@@ -2,14 +2,9 @@ import { Variable, VariableType } from "@/types/variable";
 import {
   BpmnParseError,
   BpmnParseErrorCode,
-  CredentialProviderCode,
-  VariableError,
-  VariableErrorCode,
 } from "../error";
-import { BpmnNode, BpmnTask } from "../model/bpmn";
+import { BpmnTask } from "../model/bpmn";
 import {
-  Arguments,
-  ProcessVariables,
   Properties,
 } from "../model/properties.model";
 import {
@@ -23,7 +18,6 @@ import {
   Argument,
   BodyItem,
   For,
-  GoogleCredentialKeyword,
   If,
   IfBranch,
   Keyword,
@@ -33,8 +27,7 @@ import {
   Robot,
   Test,
 } from "./robot";
-import { ArgumentProps } from "@/types/property";
-import { AuthorizationProvider, AuthorizationProviderByActivityPackage } from "@/interfaces/enums/provider.enum";
+import { AuthorizationProvider } from "@/interfaces/enums/provider.enum";
 import _ from "lodash";
 
 export class SequenceVisitor {
@@ -100,7 +93,7 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       case VariableType.DocumentTemplate:
       case VariableType.Dictionary:
       case VariableType.List:
-        return `\${{ ${value} }}`
+        return `\${{ ${value} }}`.replaceAll("\\", "")
       default:
         return value;
     }
@@ -189,29 +182,79 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
       let branchCode: IfBranch = this.visit(branch, params);
       ifBranch.push(branchCode);
     }
-    let haveElse = false;
-    for (let i = 0; i < ifBranch.length; i++) {
-      if (i == 0) {
-        ifBranch[i].type = "IF";
-      } else {
-        if (ifBranch[i].condition.length) ifBranch[i].type = "ELSE IF";
-        else if (ifBranch[i].condition.length) {
-          if (!haveElse) {
-            ifBranch[i].type = "ELSE";
-            haveElse = true;
-          } else {
-            // throw new BpmnParseError(BpmnParseErrorCode["Have 2 else branch - missing condition"], node.join || "")
-          }
-        }
+    
+    // Check branch with empty condition
+    let emptyFlow = []
+    ifBranch.forEach((branch, index) => {
+      if(_.isEmpty(branch.condition)) {
+        emptyFlow.push(node.branches[index].conditionId)
       }
+    })
+
+    if(emptyFlow.length >= 2) {
+      // If there are 2 empty condition branch then it is missing configuration
+      throw new BpmnParseError(BpmnParseErrorCode["Missing condition"], emptyFlow.join(","))
     }
+
+    for (let i = 0; i < ifBranch.length; i++) {
+      let branch = ifBranch[i]
+      if(branch.condition.length == 0) {
+        branch.type = "ELSE"
+        continue
+      }
+      branch.type = "ELSE IF"
+    }
+
+    if(ifBranch[0].type == "ELSE") {
+      ifBranch[1].type = "IF"
+    }else {
+      ifBranch[0].type = "IF"
+    }
+
     return [new If(ifBranch)];
   }
 
   visitIfBranchBlock(node: IfBranchBlock, params: any[]) {
     let body: BodyItem[] = this.visit(node.sequence, params);
-    let condition = ""; // Get condition from properties
-    return new IfBranch("IF", condition, body);
+    let flowID = node.conditionId;
+    let flowProperty = this.properties.get(flowID)?.properties;
+    
+    if(_.isEmpty(flowProperty)) {
+      return new IfBranch("IF", "", body);
+    }
+    const flowArgument = flowProperty.arguments["Condition"];
+    const flowValue = flowArgument.value;
+
+    const oLogicConditionList = JSON.parse(flowValue);
+    let conditionList = []; // Get condition from properties
+
+    for(let oCondition of oLogicConditionList) {
+      const left = oCondition["left"]
+      const right = oCondition["right"]
+      let logicalOperator = oCondition['logicalOperator']
+      const conditionOperator = oCondition["operator"]
+
+      if(logicalOperator.length) {
+          switch(logicalOperator) {
+            case "&&":
+                logicalOperator ="and"
+                break
+            case "||":
+                logicalOperator = "or"
+                break
+            default: 
+          }
+          conditionList.push(logicalOperator)
+      }
+
+      if (_.isEmpty(left) || _.isEmpty(right) || _.isEmpty(conditionOperator)) {
+        throw new BpmnParseError(BpmnParseErrorCode["Missing Property"], node.conditionId)
+      }
+
+      conditionList.push(`${left} ${conditionOperator} ${right}`)
+    }
+
+    return new IfBranch("IF", conditionList.join(" "), body);
   }
 
   visitBlankBlock(node: BlankBlock, params: any[]) {

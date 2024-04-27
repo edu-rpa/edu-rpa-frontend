@@ -14,12 +14,12 @@ export default function DisplayRobotCode(props: DisplayRobotCodeParams) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     
     const handleDisplayRobotCode = () => {
-        const code: any = compileRobotCode()
+        const result: any = compileRobotCode()
         if(errorTrace && errorTrace.length > 0) {
             setDisplayTxt(errorTrace)
         }   
         else {
-            setDisplayTxt(JSON.stringify(code, null, 4))
+            setDisplayTxt(JSON.stringify(result?.code ?? "", null, 4).replaceAll("\\",""))
         }
         onOpen()
     }

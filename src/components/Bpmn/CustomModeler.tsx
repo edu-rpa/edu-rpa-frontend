@@ -42,6 +42,7 @@ import { bpmnSelector } from '@/redux/selector';
 import { isSavedChange } from '@/redux/slice/bpmnSlice';
 import FunctionalTabBar from './FunctionalTabBar/FunctionalTabBar';
 import DisplayRobotCode from './DisplayRobotCode/DisplayRobotCode';
+import { BpmnParseError } from '@/utils/bpmn-parser/error';
 
 interface OriginalObject {
   [key: string]: {
@@ -172,7 +173,7 @@ function CustomModeler() {
     }
   };
 
-  const compileRobotCode = (processID: string) => {
+  const compileRobotCode = async (processID: string) => {
     try {
       const bpmnParser = new BpmnParser();
       const processProperties = getProcessFromLocalStorage(processID as string);
@@ -193,8 +194,20 @@ function CustomModeler() {
 
       return robotCode;
     } catch (error) {
-      console.log(error)
       setErrorTrace(error.stack.toString());
+      // let _bpmnId = error.bpmnId.split(",")[0]
+      // console.log(_bpmnId)
+      // bpmnReactJs.addMarker(_bpmnId, "djs-search-overlay");
+
+      if(error  instanceof BpmnParseError) {
+        toast({
+          title: error.message + ": " + error.bpmnId ,
+          status: 'error',
+          position: 'bottom-right',
+          duration: 1000,
+          isClosable: true,
+        });
+      }
       toast({
         title: (error as Error).message,
         status: 'error',
