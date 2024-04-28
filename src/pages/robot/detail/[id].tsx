@@ -19,6 +19,7 @@ import RobotLog from '../components/Log/RobotLog';
 import { LOG_ROBOT } from '@/constants/robot';
 import ConnectionDetail from '../components/ConnectionDetail/ConnectionDetail';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
+import LogDetail from '../components/LogDetail/LogDetail';
 
 const RobotDetail = () => {
   const router = useRouter();
@@ -69,12 +70,16 @@ const RobotDetail = () => {
       <Tabs variant="enclosed" className="w-90 m-auto">
         <TabList mb="1em">
           <Tab _selected={{ color: 'white', bg: '#319795' }}>Log</Tab>
+          <Tab _selected={{ color: 'white', bg: '#319795' }}>Log Detail</Tab>
           <Tab _selected={{ color: 'white', bg: '#319795' }}>Dashboard</Tab>
           <Tab _selected={{ color: 'white', bg: '#319795' }}>Connection</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
             <RobotLog logGroup={logGroup} />
+          </TabPanel>
+          <TabPanel>
+            <LogDetail logGroup={logGroup} />
           </TabPanel>
           <TabPanel>
             <RobotDashboard />

@@ -17,6 +17,7 @@ import CreateNewConnectionModal from '@/components/Connection/CreateNewConnectio
 import { SearchIcon } from '@chakra-ui/icons';
 import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
 import { Connection } from '@/interfaces/connection';
+import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 interface ConnectionProps {
   robotID: string;
 }
