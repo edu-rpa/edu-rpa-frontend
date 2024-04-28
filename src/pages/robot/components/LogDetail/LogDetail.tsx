@@ -37,9 +37,10 @@ interface LogDetailProps {
 export default function LogDetail(props: LogDetailProps) {
   const [expandedLogId, setExpandedLogId] = useState('');
   const logGroup = props.logGroup;
-  const segments = logGroup.split('-');
-  const processID = segments[4];
-  const version = parseInt(segments[5].slice(1));
+  const segments = logGroup?.split('-');
+  const processID = segments && segments.length > 4 ? segments[4] : '';
+  const version =
+    segments && segments.length > 5 ? parseInt(segments[5].slice(1)) : 0;
 
   const [selectedLogStream, setSelectedLogStream] = useState('test-log');
   const [isRefetch, setIsRefetch] = useState(false);
@@ -54,7 +55,7 @@ export default function LogDetail(props: LogDetailProps) {
   });
 
   useEffect(() => {
-    setSelectedLogStream(logStreams?.[0].logStreamName);
+    setSelectedLogStream(logStreams?.[0].logStreamName.replace('stream_', ''));
   }, [logStreams]);
 
   const handleRefetch = () => {
@@ -108,7 +109,7 @@ export default function LogDetail(props: LogDetailProps) {
           className="mx-3"
           value={selectedLogStream}
           onChange={(e) => {
-            setSelectedLogStream(e.target.value);
+            setSelectedLogStream(e.target.value.replace('stream_', ''));
             handleRefetch();
           }}>
           {logStreams?.length > 0 &&
