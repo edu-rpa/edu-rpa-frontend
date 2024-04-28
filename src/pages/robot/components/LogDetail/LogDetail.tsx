@@ -55,8 +55,8 @@ export default function LogDetail(props: LogDetailProps) {
   });
 
   useEffect(() => {
-    if (selectedLogStream === 'test') {
-      setSelectedLogStream(logStreams?.[0].logStreamName);
+    if (logStreams && logStreams.length > 0 && selectedLogStream == 'test') {
+      setSelectedLogStream(logStreams[0]?.logStreamName);
     }
   }, [logStreams]);
 
@@ -77,16 +77,13 @@ export default function LogDetail(props: LogDetailProps) {
   } = useQuery({
     queryKey: [QUERY_KEY.LOG_ROBOT_DETAIL],
     queryFn: () =>
+      selectedLogStream != 'test' &&
       robotReportApi.getRobotLogDetail(
         selectedLogStream.replace('stream_', ''),
         processID,
         version
       ),
   });
-
-  if (getLogRobotDetailLoading || getLogStreamsLoading) {
-    return <LoadingIndicator />;
-  }
 
   const handleToggle = (logId: any) => {
     setExpandedLogId(expandedLogId === logId ? '' : logId);
@@ -104,6 +101,10 @@ export default function LogDetail(props: LogDetailProps) {
         return 'blue';
     }
   };
+
+  if (getLogRobotDetailLoading || getLogStreamsLoading) {
+    return <LoadingIndicator />;
+  }
 
   return (
     <Box>
@@ -150,54 +151,55 @@ export default function LogDetail(props: LogDetailProps) {
             </Tr>
           </Thead>
           <Tbody>
-            {logRobotDetail?.map((log) => (
-              <React.Fragment key={log.kw_id}>
-                <Tr>
-                  <Td>{log.kw_id}</Td>
-                  <Td>{log.kw_name}</Td>
-                  <Td>{log.kw_args}</Td>
-                  <Td>
-                    <Badge
-                      className="px-[20px] py-3 text-center"
-                      style={{ borderRadius: '10px', width: 80 }}
-                      colorScheme={getStatusBadgeColor(log.kw_status)}>
-                      {log.kw_status}
-                    </Badge>
-                  </Td>
-                  <Td>{formatTime(log.start_time)}</Td>
-                  <Td>{formatTime(log.end_time)}</Td>
-                  <Td>{log.elapsed_time} seconds</Td>
-                  <Td>
-                    <Tooltip label="Toggle Details">
-                      <IconButton
-                        aria-label="Toggle Details"
-                        backgroundColor={
-                          expandedLogId === log.kw_id ? 'gray.200' : 'white'
-                        }
-                        icon={
-                          expandedLogId === log.kw_id ? (
-                            <ChevronUpIcon />
-                          ) : (
-                            <ChevronDownIcon />
-                          )
-                        }
-                        onClick={() => handleToggle(log.kw_id)}
-                      />
-                    </Tooltip>
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Td colSpan={8}>
-                    <Collapse in={expandedLogId === log.kw_id}>
-                      <Box p={4} className="text-red-500 bg-gray-100">
-                        {log.robot_run_detail_messages ||
-                          'No additional messages.'}
-                      </Box>
-                    </Collapse>
-                  </Td>
-                </Tr>
-              </React.Fragment>
-            ))}
+            {logRobotDetail &&
+              logRobotDetail?.map((log) => (
+                <React.Fragment key={log.kw_id}>
+                  <Tr>
+                    <Td>{log.kw_id}</Td>
+                    <Td>{log.kw_name}</Td>
+                    <Td>{log.kw_args}</Td>
+                    <Td>
+                      <Badge
+                        className="px-[20px] py-3 text-center"
+                        style={{ borderRadius: '10px', width: 80 }}
+                        colorScheme={getStatusBadgeColor(log.kw_status)}>
+                        {log.kw_status}
+                      </Badge>
+                    </Td>
+                    <Td>{formatTime(log.start_time)}</Td>
+                    <Td>{formatTime(log.end_time)}</Td>
+                    <Td>{log.elapsed_time} seconds</Td>
+                    <Td>
+                      <Tooltip label="Toggle Details">
+                        <IconButton
+                          aria-label="Toggle Details"
+                          backgroundColor={
+                            expandedLogId === log.kw_id ? 'gray.200' : 'white'
+                          }
+                          icon={
+                            expandedLogId === log.kw_id ? (
+                              <ChevronUpIcon />
+                            ) : (
+                              <ChevronDownIcon />
+                            )
+                          }
+                          onClick={() => handleToggle(log.kw_id)}
+                        />
+                      </Tooltip>
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Td colSpan={8}>
+                      <Collapse in={expandedLogId === log.kw_id}>
+                        <Box p={4} className="text-red-500 bg-gray-100">
+                          {log.robot_run_detail_messages ||
+                            'No additional messages.'}
+                        </Box>
+                      </Collapse>
+                    </Td>
+                  </Tr>
+                </React.Fragment>
+              ))}
           </Tbody>
         </Table>
       )}
