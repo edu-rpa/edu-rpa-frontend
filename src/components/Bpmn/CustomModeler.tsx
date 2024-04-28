@@ -173,7 +173,7 @@ function CustomModeler() {
     }
   };
 
-  const compileRobotCode = async (processID: string) => {
+  const compileRobotCode = (processID: string) => {
     try {
       const bpmnParser = new BpmnParser();
       const processProperties = getProcessFromLocalStorage(processID as string);
