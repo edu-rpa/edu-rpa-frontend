@@ -22,7 +22,7 @@ interface RobotLogProps {
 }
 
 const RobotLog = (props: RobotLogProps) => {
-  const [selectedLogStream, setSelectedLogStream] = useState('');
+  const [selectedLogStream, setSelectedLogStream] = useState('test');
   const [isRefetch, setIsRefetch] = useState(false);
 
   const { data: logStreams, refetch: getLogStreamsRefetch } = useQuery({
@@ -41,7 +41,7 @@ const RobotLog = (props: RobotLogProps) => {
   });
 
   useEffect(() => {
-    if (selectedLogStream == '') {
+    if (selectedLogStream == 'test') {
       setSelectedLogStream(logStreams?.[0].logStreamName);
     }
   }, [logStreams]);
@@ -56,9 +56,9 @@ const RobotLog = (props: RobotLogProps) => {
     getLogStreamDetailRefetch();
   };
 
-  if (isLoading) {
-    return <LoadingIndicator />;
-  }
+  // if (isLoading) {
+  //   return <LoadingIndicator />;
+  // }
 
   return (
     <Box className="w-full m-auto">
