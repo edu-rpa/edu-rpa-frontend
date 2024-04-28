@@ -2,6 +2,7 @@ import { Connection } from '@/interfaces/connection';
 import apiBase from './config';
 import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
 import { Robot } from '@/interfaces/robot';
+import { ActivateConnectionDto } from '@/dtos/connectionDto';
 
 const queryConnections = async (
   provider?: AuthorizationProvider
@@ -58,18 +59,34 @@ const getConnectionsByConnectionKey = async (
 ): Promise<Connection[]> => {
   return await apiBase
     .post(`${process.env.NEXT_PUBLIC_DEV_API}/connection/connectionKey`, {
-      connectionKeys
+      connectionKeys,
     })
     .then((res: any) => {
       return res.data.connections;
     });
 };
+
+const activateConnection = async (
+  robotKey: string,
+  payload: ActivateConnectionDto
+) => {
+  return await apiBase
+    .post(
+      `${process.env.NEXT_PUBLIC_DEV_API}/connection/activate/robot/${robotKey}`,
+      payload
+    )
+    .then((res: any) => {
+      return res.data;
+    });
+};
+
 const connectionApi = {
   queryConnections,
   refreshConnection,
   removeConnection,
   getAllConnectionsByRobotKey,
-  getConnectionsByConnectionKey
+  getConnectionsByConnectionKey,
+  activateConnection,
 };
 
 export default connectionApi;

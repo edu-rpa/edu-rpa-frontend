@@ -117,38 +117,33 @@ const ServiceDetail = () => {
         </div>
       )}
 
-      <div className="w-90 mx-auto my-[30px]">
-        <div className="my-10">
-          <InputGroup>
-            <InputLeftElement pointerEvents="none">
-              <SearchIcon color="gray.500" />
-            </InputLeftElement>
-            <Input
-              width="30vw"
-              bg="white.300"
-              type="text"
-              placeholder="Search by robot name"
-              value={nameFilter}
-              onChange={(e) => setNameFilter(e.target.value)}
-            />
-            {/* <Box className="w-[15vw] ml-[20px]">
-              <Select
-                defaultValue="all"
-                onChange={(e) => setProcessFilter(e.target.value)}>
-                <option value="mock">Mock process</option>
-              </Select>
-            </Box> */}
-            <Box className="w-[15vw] ml-[20px]">
-              <IconButton
-                aria-label="Refresh"
-                icon={<RepeatIcon />}
-                onClick={fetchData}
+      {tableProps.data.length > 0 && (
+        <div className="w-90 mx-auto my-[30px]">
+          <div className="my-10">
+            <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <SearchIcon color="gray.500" />
+              </InputLeftElement>
+              <Input
+                width="30vw"
+                bg="white.300"
+                type="text"
+                placeholder="Search by robot name"
+                value={nameFilter}
+                onChange={(e) => setNameFilter(e.target.value)}
               />
-            </Box>
-          </InputGroup>
+              <Box className="w-[15vw] ml-[20px]">
+                <IconButton
+                  aria-label="Refresh"
+                  icon={<RepeatIcon />}
+                  onClick={fetchData}
+                />
+              </Box>
+            </InputGroup>
+          </div>
+          <RobotTable header={tableProps.header} data={tableProps.data} />
         </div>
-        <RobotTable header={tableProps.header} data={tableProps.data} />
-      </div>
+      )}
     </Box>
   );
 };

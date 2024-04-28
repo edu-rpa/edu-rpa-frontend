@@ -10,14 +10,13 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { Connection } from 'bpmn-js/lib/model/Types';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import CreateNewConnectionModal from '@/components/Connection/CreateNewConnectionModal';
 import { SearchIcon } from '@chakra-ui/icons';
 import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
-
+import { Connection } from '@/interfaces/connection';
 interface ConnectionProps {
   robotID: string;
 }
@@ -38,8 +37,7 @@ export default function ConnectionDetail(props: ConnectionProps) {
         const data = await connectionApi.getAllConnectionsByRobotKey(
           props.robotID
         );
-        const res = data.map((i) => _.omit(i, ['connectionKey']) as Connection);
-        setConnectionData(res);
+        setConnectionData(data);
       } catch (error) {
         console.log(error);
       }
@@ -124,7 +122,11 @@ export default function ConnectionDetail(props: ConnectionProps) {
       </div>
       {tableProps.data.length > 0 && (
         <div className="w-full m-auto">
-          <ConnectionTable {...tableProps} isLoading={isLoading} />
+          <ConnectionTable
+            {...tableProps}
+            isLoading={isLoading}
+            robotKey={props.robotID}
+          />
         </div>
       )}
     </div>
