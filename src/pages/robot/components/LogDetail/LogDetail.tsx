@@ -108,7 +108,7 @@ export default function LogDetail(props: LogDetailProps) {
           className="mx-3"
           value={selectedLogStream}
           onChange={(e) => {
-            setSelectedLogStream(e.target.value);
+            setSelectedLogStream(e.target.value.replace('stream_', ''));
             handleRefetch();
           }}>
           {logStreams?.length > 0 &&
