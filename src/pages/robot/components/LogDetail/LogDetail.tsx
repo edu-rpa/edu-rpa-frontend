@@ -56,9 +56,7 @@ export default function LogDetail(props: LogDetailProps) {
 
   useEffect(() => {
     if (selectedLogStream === 'test') {
-      setSelectedLogStream(
-        logStreams?.[0].logStreamName.replace('stream_', '')
-      );
+      setSelectedLogStream(logStreams?.[0].logStreamName);
     }
   }, [logStreams]);
 
@@ -79,7 +77,11 @@ export default function LogDetail(props: LogDetailProps) {
   } = useQuery({
     queryKey: [QUERY_KEY.LOG_ROBOT_DETAIL],
     queryFn: () =>
-      robotReportApi.getRobotLogDetail(selectedLogStream, processID, version),
+      robotReportApi.getRobotLogDetail(
+        selectedLogStream.replace('stream_', ''),
+        processID,
+        version
+      ),
   });
 
   if (getLogRobotDetailLoading || getLogStreamsLoading) {
@@ -117,7 +119,7 @@ export default function LogDetail(props: LogDetailProps) {
           className="mx-3"
           value={selectedLogStream}
           onChange={(e) => {
-            setSelectedLogStream(e.target.value.replace('stream_', ''));
+            setSelectedLogStream(e.target.value);
           }}>
           {logStreams?.length > 0 &&
             logStreams.map((stream) => (
