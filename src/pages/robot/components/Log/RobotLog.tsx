@@ -41,8 +41,14 @@ const RobotLog = (props: RobotLogProps) => {
   });
 
   useEffect(() => {
-    setSelectedLogStream(logStreams?.[0].logStreamName);
+    if (selectedLogStream == '') {
+      setSelectedLogStream(logStreams?.[0].logStreamName);
+    }
   }, [logStreams]);
+
+  useEffect(() => {
+    handleRefetch();
+  }, [selectedLogStream]);
 
   const handleRefetch = () => {
     setIsRefetch(!isRefetch);
@@ -69,7 +75,6 @@ const RobotLog = (props: RobotLogProps) => {
           value={selectedLogStream}
           onChange={(e) => {
             setSelectedLogStream(e.target.value);
-            handleRefetch();
           }}>
           {logStreams?.length > 0 &&
             logStreams.map((stream) => (
