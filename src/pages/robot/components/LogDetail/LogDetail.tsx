@@ -42,7 +42,7 @@ export default function LogDetail(props: LogDetailProps) {
   const version =
     segments && segments.length > 5 ? parseInt(segments[5].slice(1)) : 0;
 
-  const [selectedLogStream, setSelectedLogStream] = useState('test-log');
+  const [selectedLogStream, setSelectedLogStream] = useState('test');
   const [isRefetch, setIsRefetch] = useState(false);
 
   const {
@@ -55,8 +55,16 @@ export default function LogDetail(props: LogDetailProps) {
   });
 
   useEffect(() => {
-    setSelectedLogStream(logStreams?.[0].logStreamName.replace('stream_', ''));
+    if (selectedLogStream === 'test') {
+      setSelectedLogStream(
+        logStreams?.[0].logStreamName.replace('stream_', '')
+      );
+    }
   }, [logStreams]);
+
+  useEffect(() => {
+    handleRefetch();
+  }, [selectedLogStream]);
 
   const handleRefetch = () => {
     setIsRefetch(!isRefetch);
@@ -78,11 +86,11 @@ export default function LogDetail(props: LogDetailProps) {
     return <LoadingIndicator />;
   }
 
-  const handleToggle = (logId) => {
+  const handleToggle = (logId: any) => {
     setExpandedLogId(expandedLogId === logId ? '' : logId);
   };
 
-  const getStatusBadgeColor = (status) => {
+  const getStatusBadgeColor = (status: any) => {
     switch (status) {
       case 'PASS':
         return 'green';
@@ -110,7 +118,6 @@ export default function LogDetail(props: LogDetailProps) {
           value={selectedLogStream}
           onChange={(e) => {
             setSelectedLogStream(e.target.value.replace('stream_', ''));
-            handleRefetch();
           }}>
           {logStreams?.length > 0 &&
             logStreams.map((stream) => (
