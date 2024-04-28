@@ -89,6 +89,10 @@ const Navbar = () => {
           onReceiveNotification(message);
         },
       });
+
+      return () => {
+        pubnub.unsubscribeAll();
+      };
     }
   }, [userInfo]);
 
