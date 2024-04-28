@@ -131,7 +131,7 @@ export default function Studio() {
         id: item.id,
         name: item.name,
         description: item.description,
-        sharedBy: item.sharedByUser ? item.sharedByUser.name : '',
+        sharedBy: item.sharedByUser ? item.sharedByUser.name : 'me',
         last_modified: item.updatedAt,
         version: item.version,
       };

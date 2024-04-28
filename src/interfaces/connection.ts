@@ -5,5 +5,6 @@ export interface Connection {
   name: string;
   createdAt: Date;
   connectionKey: string;
+  isActivate?: boolean;
   [key: string]: any;
 }
