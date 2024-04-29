@@ -23,6 +23,14 @@ const createRobot = async (payload: CreateRobotDto) => {
     });
 };
 
+const deleteRobot = async (robotKey: string) => {
+  return await apiBase
+    .delete(`${process.env.NEXT_PUBLIC_DEV_API}/robot/${robotKey}`)
+    .then((res: any) => {
+      return res.data;
+    });
+};
+
 const getNumberOfRobot = async () => {
   return await apiBase
     .get(`${process.env.NEXT_PUBLIC_DEV_API}/robot/count`)
@@ -174,6 +182,7 @@ const getAllRobotsByConnectionKey = async (
 const robotApi = {
   getAllRobot,
   createRobot,
+  deleteRobot,
   getNumberOfRobot,
   getRobotDetail,
   stopRobot,

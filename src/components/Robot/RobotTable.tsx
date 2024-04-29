@@ -34,6 +34,8 @@ import { Robot, TriggerType } from '@/interfaces/robot';
 import { toastError, toastSuccess } from '@/utils/common';
 import RobotRow from './RobotRow';
 import ConfigTriggerModal from './ConfigTriggerModal';
+import robotApi from '@/apis/robotApi';
+import { useRouter } from 'next/router';
 
 interface RobotTableProps {
   header: string[];
@@ -48,6 +50,7 @@ const RobotTable = (props: RobotTableProps) => {
     userId: 0,
     processId: '',
     processVersion: 0,
+    robotKey: '',
   });
   const [selectedForConfigTrigger, setSelectedForConfigTrigger] = useState({
     userId: 0,
@@ -55,6 +58,7 @@ const RobotTable = (props: RobotTableProps) => {
     processVersion: 0,
     triggerType: TriggerType.MANUAL,
   });
+  const [isLoading, setIsLoading] = useState(false);
   const robotData = props.data;
   const itemsPerPage = 5;
   const pageCount = Math.ceil(robotData.length / itemsPerPage);
@@ -62,6 +66,7 @@ const RobotTable = (props: RobotTableProps) => {
   const endIndex = startIndex + itemsPerPage;
   const currentData = robotData.slice(startIndex, endIndex);
   const toast = useToast();
+  const router = useRouter();
 
   const {
     isOpen: isOpenForRemove,
@@ -84,21 +89,26 @@ const RobotTable = (props: RobotTableProps) => {
     setCurrentPage(selected.selected);
   };
 
-  const handleRemoveRobot = async (
-    userId: number,
-    processId: string,
-    processVersion: number
-  ) => {
-    // TODO: remove robot
-    toastError(toast, 'This feature is not implemented yet');
+  const handleRemoveRobot = async (robotKey: string) => {
+    setIsLoading(true);
+    try {
+      await robotApi.deleteRobot(robotKey);
+      toastSuccess(toast, 'Robot removed successfully');
+    } catch (error) {
+      toastError(toast, 'Failed to remove robot');
+    }
+    setIsLoading(false);
+    onCloseForRemove();
+    router.reload();
   };
 
   const handleSelectForRemove = (
     userId: number,
     processId: string,
-    processVersion: number
+    processVersion: number,
+    robotKey: string
   ) => {
-    setSelectedForRemove({ userId, processId, processVersion });
+    setSelectedForRemove({ userId, processId, processVersion, robotKey });
     onOpenForRemove();
   };
 
@@ -166,13 +176,9 @@ const RobotTable = (props: RobotTableProps) => {
             </Button>
             <Button
               colorScheme="red"
+              isLoading={isLoading}
               onClick={() => {
-                handleRemoveRobot(
-                  selectedForRemove.userId,
-                  selectedForRemove.processId,
-                  selectedForRemove.processVersion
-                );
-                onCloseForRemove();
+                handleRemoveRobot(selectedForRemove.robotKey);
               }}>
               Remove
             </Button>

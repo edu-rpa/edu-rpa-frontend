@@ -61,7 +61,8 @@ interface RobotRowProps {
   onSelectedForRemove: (
     userId: number,
     processId: string,
-    processVersion: number
+    processVersion: number,
+    robotKey: string
   ) => void;
 }
 
@@ -216,7 +217,8 @@ const RobotRow = (props: RobotRowProps) => {
                   props.onSelectedForRemove(
                     user.id,
                     data.processId,
-                    data.processVersion
+                    data.processVersion,
+                    robotKey
                   );
                 }}
                 icon={<DeleteIcon color="#319795" />}
