@@ -14,7 +14,7 @@ export const ActivityPackages = [
         type: 'activity',
         keyword: 'Init Drive',
         arguments: {
-          token_file_path: {
+          Connection: {
             type: 'connection.Google Drive',
             keywordArg: 'token_file',
             provider: 'Google Drive',
