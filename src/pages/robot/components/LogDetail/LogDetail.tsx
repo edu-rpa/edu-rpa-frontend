@@ -45,11 +45,7 @@ export default function LogDetail(props: LogDetailProps) {
 
   const [selectedLogStream, setSelectedLogStream] = useState('test');
 
-  const {
-    data: logStreams,
-    isLoading: getLogStreamsLoading,
-    refetch: getLogStreamsRefetch,
-  } = useQuery({
+  const { data: logStreams, refetch: getLogStreamsRefetch } = useQuery({
     queryKey: [QUERY_KEY.LOG_STREAMS],
     queryFn: () => logApi.getStreamLogs(props.logGroup),
   });
@@ -69,11 +65,7 @@ export default function LogDetail(props: LogDetailProps) {
     refetchLogRobotDetail();
   };
 
-  const {
-    data: logRobotDetail,
-    isLoading: getLogRobotDetailLoading,
-    refetch: refetchLogRobotDetail,
-  } = useQuery({
+  const { data: logRobotDetail, refetch: refetchLogRobotDetail } = useQuery({
     queryKey: [QUERY_KEY.ROBOT_REPORT_DETAIL],
     queryFn: () =>
       selectedLogStream != 'test' &&
@@ -100,10 +92,6 @@ export default function LogDetail(props: LogDetailProps) {
         return 'blue';
     }
   };
-
-  if (getLogRobotDetailLoading || getLogStreamsLoading) {
-    return <LoadingIndicator />;
-  }
 
   return (
     <Box>
