@@ -5,6 +5,7 @@ export interface Robot {
   name: string;
   createdAt: Date;
   triggerType: TriggerType;
+  robotKey: string;
   [key: string]: any;
 }
 
