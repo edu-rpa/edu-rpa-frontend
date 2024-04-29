@@ -92,10 +92,10 @@ const RobotDetail = () => {
             <LogDetail tabIndex={tabIndex} logGroup={logGroup} />
           </TabPanel>
           <TabPanel>
-            <RobotDashboard />
+            <RobotDashboard tabIndex={tabIndex} />
           </TabPanel>
           <TabPanel>
-            <ConnectionDetail robotID={robotID} />
+            <ConnectionDetail tabIndex={tabIndex} robotID={robotID} />
           </TabPanel>
         </TabPanels>
       </Tabs>

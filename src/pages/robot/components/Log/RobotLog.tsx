@@ -15,7 +15,6 @@ import { QUERY_KEY } from '@/constants/queryKey';
 import { useQuery } from '@tanstack/react-query';
 import logApi from '@/apis/logApi';
 import { RepeatIcon, SearchIcon } from '@chakra-ui/icons';
-import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 
 interface RobotLogProps {
   logGroup: string;
