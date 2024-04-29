@@ -40,8 +40,6 @@ export default function RobotPage() {
     queryFn: () => robotApi.getAllRobot(limit, page),
   });
 
-  useEffect(() => {}, []);
-
   const fetchData = async () => {
     // TODO: implement refresh functionallity
     toastError(toast, 'Refresh functionallity is not implemented yet');

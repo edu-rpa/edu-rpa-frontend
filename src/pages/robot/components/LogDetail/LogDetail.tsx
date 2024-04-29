@@ -32,6 +32,7 @@ const formatTime = (timeString) => new Date(timeString).toLocaleString();
 
 interface LogDetailProps {
   logGroup: string;
+  tabIndex?: number;
 }
 
 export default function LogDetail(props: LogDetailProps) {
@@ -43,7 +44,6 @@ export default function LogDetail(props: LogDetailProps) {
     segments && segments.length > 5 ? parseInt(segments[5].slice(1)) : 0;
 
   const [selectedLogStream, setSelectedLogStream] = useState('test');
-  const [isRefetch, setIsRefetch] = useState(false);
 
   const {
     data: logStreams,
@@ -62,10 +62,9 @@ export default function LogDetail(props: LogDetailProps) {
 
   useEffect(() => {
     handleRefetch();
-  }, [selectedLogStream]);
+  }, [selectedLogStream, props.tabIndex]);
 
   const handleRefetch = () => {
-    setIsRefetch(!isRefetch);
     getLogStreamsRefetch();
     refetchLogRobotDetail();
   };
@@ -75,7 +74,7 @@ export default function LogDetail(props: LogDetailProps) {
     isLoading: getLogRobotDetailLoading,
     refetch: refetchLogRobotDetail,
   } = useQuery({
-    queryKey: [QUERY_KEY.LOG_ROBOT_DETAIL],
+    queryKey: [QUERY_KEY.ROBOT_REPORT_DETAIL],
     queryFn: () =>
       selectedLogStream != 'test' &&
       robotReportApi.getRobotLogDetail(
@@ -153,11 +152,11 @@ export default function LogDetail(props: LogDetailProps) {
           <Tbody>
             {logRobotDetail &&
               logRobotDetail?.map((log) => (
-                <React.Fragment key={log.kw_id}>
+                <React.Fragment key={log.kw_id + Math.random()}>
                   <Tr>
                     <Td>{log.kw_id}</Td>
                     <Td>{log.kw_name}</Td>
-                    <Td>{log.kw_args}</Td>
+                    <Td maxWidth={200}>{log.kw_args}</Td>
                     <Td>
                       <Badge
                         className="px-[20px] py-3 text-center"

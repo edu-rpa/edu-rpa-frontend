@@ -19,31 +19,25 @@ import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 
 interface RobotLogProps {
   logGroup: string;
+  tabIndex?: number;
 }
 
 const RobotLog = (props: RobotLogProps) => {
   const [selectedLogStream, setSelectedLogStream] = useState('test');
   const [isRefetch, setIsRefetch] = useState(false);
 
-  const {
-    data: logStreams,
-    isLoading: getLogStreamsLoading,
-    refetch: getLogStreamsRefetch,
-  } = useQuery({
+  const { data: logStreams, refetch: getLogStreamsRefetch } = useQuery({
     queryKey: [QUERY_KEY.LOG_STREAMS],
     queryFn: () => logApi.getStreamLogs(props.logGroup),
   });
 
-  const {
-    data: logStreamDetail,
-    isLoading: getLogStreamDetailLoading,
-    refetch: getLogStreamDetailRefetch,
-  } = useQuery({
-    queryKey: [QUERY_KEY.LOG_STREAM_DETAIL],
-    queryFn: () =>
-      selectedLogStream != 'test' &&
-      logApi.getLogStreamDetail(props.logGroup, selectedLogStream),
-  });
+  const { data: logStreamDetail, refetch: getLogStreamDetailRefetch } =
+    useQuery({
+      queryKey: [QUERY_KEY.LOG_STREAM_DETAIL],
+      queryFn: () =>
+        selectedLogStream != 'test' &&
+        logApi.getLogStreamDetail(props.logGroup, selectedLogStream),
+    });
 
   useEffect(() => {
     if (logStreams && logStreams.length > 0 && selectedLogStream == 'test') {
@@ -53,17 +47,13 @@ const RobotLog = (props: RobotLogProps) => {
 
   useEffect(() => {
     handleRefetch();
-  }, [selectedLogStream]);
+  }, [selectedLogStream, props.tabIndex]);
 
   const handleRefetch = () => {
     setIsRefetch(!isRefetch);
     getLogStreamsRefetch();
     getLogStreamDetailRefetch();
   };
-
-  if (getLogStreamsLoading || getLogStreamDetailLoading) {
-    return <LoadingIndicator />;
-  }
 
   return (
     <Box className="w-full m-auto">

@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { lazy, useEffect, useState } from 'react';
 import {
   Box,
   Heading,
-  Container,
   Text,
   IconButton,
   Tabs,
@@ -14,12 +13,17 @@ import {
 import { useRouter } from 'next/router';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { useParams } from 'next/navigation';
-import RobotDashboard from '../components/Dashboard/RobotDashboard';
 import RobotLog from '../components/Log/RobotLog';
 import { LOG_ROBOT } from '@/constants/robot';
-import ConnectionDetail from '../components/ConnectionDetail/ConnectionDetail';
+
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
-import LogDetail from '../components/LogDetail/LogDetail';
+const ConnectionDetail = lazy(
+  () => import('../components/ConnectionDetail/ConnectionDetail')
+);
+const RobotDashboard = lazy(
+  () => import('../components/Dashboard/RobotDashboard')
+);
+const LogDetail = lazy(() => import('../components/LogDetail/LogDetail'));
 
 const RobotDetail = () => {
   const router = useRouter();
@@ -30,6 +34,8 @@ const RobotDetail = () => {
   if (!router.query.group) {
     return <LoadingIndicator />;
   }
+
+  const [tabIndex, setTabIndex] = useState(0);
 
   return (
     <Box className="bg-white h-[100vh]">
@@ -67,7 +73,11 @@ const RobotDetail = () => {
         </Text>
       </Box>
 
-      <Tabs variant="enclosed" className="w-90 m-auto">
+      <Tabs
+        variant="enclosed"
+        className="w-90 m-auto"
+        index={tabIndex}
+        onChange={(index) => setTabIndex(index)}>
         <TabList mb="1em">
           <Tab _selected={{ color: 'white', bg: '#319795' }}>Log</Tab>
           <Tab _selected={{ color: 'white', bg: '#319795' }}>Log Detail</Tab>
@@ -79,7 +89,7 @@ const RobotDetail = () => {
             <RobotLog logGroup={logGroup} />
           </TabPanel>
           <TabPanel>
-            <LogDetail logGroup={logGroup} />
+            <LogDetail tabIndex={tabIndex} logGroup={logGroup} />
           </TabPanel>
           <TabPanel>
             <RobotDashboard />

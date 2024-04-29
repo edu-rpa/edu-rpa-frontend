@@ -20,6 +20,7 @@ import { Connection } from '@/interfaces/connection';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 interface ConnectionProps {
   robotID: string;
+  tabIndex?: number;
 }
 
 export default function ConnectionDetail(props: ConnectionProps) {
@@ -45,7 +46,7 @@ export default function ConnectionDetail(props: ConnectionProps) {
       setIsLoading(false);
     };
     fetchData();
-  }, []);
+  }, [props.tabIndex]);
 
   useEffect(() => {
     if (errorMessage) {
