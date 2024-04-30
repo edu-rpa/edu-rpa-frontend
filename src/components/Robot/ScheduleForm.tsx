@@ -20,6 +20,8 @@ import {
   setDayOfWeek,
   setYear,
   setTimezone,
+  setRateValue,
+  setRateUnit,
 } from '@/redux/slice/scheduleSlice';
 
 const ScheduleForm = () => {
@@ -53,6 +55,7 @@ const ScheduleForm = () => {
           <Stack direction="row">
             <Radio value="at">One-off</Radio>
             <Radio value="cron">Recurring</Radio>
+            <Radio value="rate">Interval</Radio>
           </Stack>
         </RadioGroup>
       </FormControl>
@@ -66,7 +69,7 @@ const ScheduleForm = () => {
             onChange={(e) => dispatch(setDatetime(e.target.value))}
           />
         </FormControl>
-      ) : (
+      ) : schedule.type === 'cron' ? (
         <Box>
           <FormControl mt={5}>
             <FormLabel>Minute</FormLabel>
@@ -128,7 +131,30 @@ const ScheduleForm = () => {
             />
           </FormControl>
         </Box>
-      )}
+      ) : schedule.type === 'rate' ? (
+        <Box>
+          <FormControl mt={5}>
+            <FormLabel>Value</FormLabel>
+            <Input
+              type="number"
+              placeholder="Value"
+              value={schedule.value}
+              onChange={(e) => dispatch(setRateValue(parseInt(e.target.value)))}
+            />
+          </FormControl>
+
+          <FormControl mt={5}>
+            <FormLabel>Unit</FormLabel>
+            <Select
+              value={schedule.unit}
+              onChange={(e) => dispatch(setRateUnit(e.target.value))}>
+              <option value="minutes">Minute</option>
+              <option value="hours">Hour</option>
+              <option value="days">Day</option>
+            </Select>
+          </FormControl>
+        </Box>
+      ) : null}
     </Box>
   );
 };
