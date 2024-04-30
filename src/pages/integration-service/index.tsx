@@ -135,7 +135,7 @@ export default function Service() {
             </Box>
           </InputGroup>
           <div className="flex justify-between gap-[10px]">
-            <Button colorScheme="teal" onClick={onOpen}>
+            <Button colorScheme="teal" bg={'teal'} onClick={onOpen}>
               New Connection
             </Button>
           </div>

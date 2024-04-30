@@ -93,7 +93,7 @@ export default function FeatureHome() {
             href={'#'}
           />
           <Card
-            heading={'Manage Packages'}
+            heading={'Utilize Packages'}
             icon={<Icon as={FcCollaboration} w={10} h={10} />}
             description={
               'Manage your activity packages, develop functional activities for your robots.'

@@ -209,7 +209,9 @@ export default function Studio() {
     // add to backend
     handleInsertToBackend(initialProcess);
 
-    router.push(`/studio/modeler/${processID}`);
+    router.push(
+      `/studio/modeler/${processID}?name=${initialProcess.processName}&version=0`
+    );
   };
 
   const handleDeleteProcessByID = (processID: string) => {
@@ -221,8 +223,12 @@ export default function Studio() {
     handleDeleteProcessWithApi.mutate(processID);
   };
 
-  const handleEditProcessByID = (processID: string) => {
-    router.push(`/studio/modeler/${processID}`);
+  const handleEditProcessByID = (
+    processID: string,
+    name: string,
+    version: number
+  ) => {
+    router.push(`/studio/modeler/${processID}?name=${name}&version=${version}`);
   };
 
   const handleDownloadProcessByID = (processID: string) => {
@@ -269,7 +275,9 @@ export default function Studio() {
         ]);
 
         handleInsertToBackend(importProcess);
-        router.push(`/studio/modeler/${processID}`);
+        router.push(
+          `/studio/modeler/${processID}?name=${importProcess.processName}&version=0`
+        );
       } catch (error) {
         console.error('Error during XML file import:', error);
         toast({

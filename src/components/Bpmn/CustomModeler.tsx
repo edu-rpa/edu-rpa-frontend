@@ -64,6 +64,9 @@ function CustomModeler() {
   const [errorTrace, setErrorTrace] = useState<string>('');
   const isSavedChanges = useSelector(bpmnSelector);
 
+  const processName = router?.query?.name as string;
+  const version = router?.query?.version as string;
+
   const { data: processDetailByID, isLoading } = useQuery({
     queryKey: [QUERY_KEY.PROCESS_DETAIL],
     queryFn: () => processApi.getProcessByID(processID as string),
@@ -199,9 +202,9 @@ function CustomModeler() {
       // console.log(_bpmnId)
       // bpmnReactJs.addMarker(_bpmnId, "djs-search-overlay");
 
-      if(error  instanceof BpmnParseError) {
+      if (error instanceof BpmnParseError) {
         toast({
-          title: error.message + ": " + error.bpmnId ,
+          title: error.message + ': ' + error.bpmnId,
           status: 'error',
           position: 'bottom-right',
           duration: 1000,
@@ -235,13 +238,21 @@ function CustomModeler() {
             onClick={() => router.push('/studio')}
             icon={<ChevronLeftIcon />}
           />
-          <h1 className="text-primary font-bold text-2xl mx-[20px]">
-            {processID}{' '}
-            {!isSavedChanges.isSaved && (
-              <span className="text-red-500">{'*'}</span>
-            )}
-          </h1>
+          <Box>
+            <h1 className="text-primary font-bold text-2xl mx-[20px]">
+              {processID}{' '}
+              {!isSavedChanges.isSaved && (
+                <span className="text-red-500">{'*'}</span>
+              )}
+            </h1>
+            <Box className="flex justify-between items-center">
+              <h1 className="text-gray-500 text-xl mx-[20px]">
+                Name: {processName || ''}
+              </h1>
+            </Box>
+          </Box>
         </Box>
+
         <FunctionalTabBar
           processID={processID as string}
           genRobotCode={compileRobotCode}

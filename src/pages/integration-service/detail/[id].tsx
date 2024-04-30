@@ -97,9 +97,6 @@ const ServiceDetail = () => {
         mb={6}
         className="w-90 m-auto">
         <Text>
-          <b>Connection Key:</b> {connectionKey}
-        </Text>
-        <Text>
           <b>Provider:</b> {provider}
         </Text>
         <Text>
