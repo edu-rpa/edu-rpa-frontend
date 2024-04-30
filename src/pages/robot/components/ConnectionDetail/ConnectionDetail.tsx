@@ -23,7 +23,6 @@ import { QUERY_KEY } from '@/constants/queryKey';
 import { useQuery } from '@tanstack/react-query';
 interface ConnectionProps {
   robotID: string;
-  tabIndex?: number;
 }
 
 export default function ConnectionDetail(props: ConnectionProps) {
@@ -33,7 +32,7 @@ export default function ConnectionDetail(props: ConnectionProps) {
   const errorMessage = router.query.error;
   const successMessage = router.query.message;
 
-  const { data: connectionList, refetch: refetchConnctionList } = useQuery({
+  const { data: connectionList, refetch: refetchConnectionList } = useQuery({
     queryKey: [QUERY_KEY.CONNECTION_LIST_BY_ROBOT_KEY],
     queryFn: () => connectionApi.getAllConnectionsByRobotKey(props.robotID),
   });
@@ -73,12 +72,8 @@ export default function ConnectionDetail(props: ConnectionProps) {
       : ''
   );
 
-  useEffect(() => {
-    handleRefetch();
-  }, [props.tabIndex]);
-
   const handleRefetch = () => {
-    refetchConnctionList();
+    refetchConnectionList();
   };
 
   return (
@@ -101,7 +96,7 @@ export default function ConnectionDetail(props: ConnectionProps) {
                 setProviderFilter(e.target.value);
               }}>
               <option value="">All services</option>
-              {Object.values(AuthorizationProvider).map((provider) => {
+              {Object.values(AuthorizationProvider)?.map((provider) => {
                 return (
                   <option key={provider} value={provider}>
                     {provider}

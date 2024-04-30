@@ -26,9 +26,20 @@ ChartJS.register(
 const options = {
   fill: true,
   responsive: true,
+  maintainAspectRatio: false,
   scales: {
     y: {
       min: 0,
+      title: {
+        display: true,
+        text: 'Seconds',
+      },
+    },
+    x: {
+      title: {
+        display: true,
+        text: 'Time',
+      },
     },
   },
   plugins: {
@@ -39,5 +50,9 @@ const options = {
 };
 
 export default function LineChart({ data }: any) {
-  return <Line data={data} options={options} />;
+  return (
+    <div className="w-full h-96">
+      <Line data={data} options={options} />
+    </div>
+  );
 }

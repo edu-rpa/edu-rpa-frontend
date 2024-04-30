@@ -33,7 +33,6 @@ const formatTime = (timeString) => new Date(timeString).toLocaleString();
 
 interface LogDetailProps {
   logGroup: string;
-  tabIndex?: number;
 }
 
 export default function LogDetail(props: LogDetailProps) {
@@ -59,7 +58,7 @@ export default function LogDetail(props: LogDetailProps) {
 
   useEffect(() => {
     handleRefetch();
-  }, [selectedLogStream, props.tabIndex]);
+  }, [selectedLogStream]);
 
   const handleRefetch = () => {
     getLogStreamsRefetch();

@@ -11,6 +11,7 @@ import {
   Filler,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 ChartJS.register(
   CategoryScale,
@@ -20,7 +21,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
+  ChartDataLabels
 );
 
 const options = {
@@ -35,13 +37,19 @@ const options = {
     legend: {
       display: true,
     },
+    datalabels: {
+      color: '#fff',
+      font: {
+        weight: 'bold',
+      },
+    },
   },
 };
 
 export default function BarChart({ data }: any) {
   return (
-    <div className="App">
-      <Bar data={data} options={options} />
+    <div>
+      <Bar data={data} options={options as any} />
     </div>
   );
 }

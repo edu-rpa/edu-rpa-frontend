@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, GridItem, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Grid,
+  GridItem,
+  IconButton,
+  Text,
+} from '@chakra-ui/react';
 import LineChart from '@/components/Chart/LineChart';
 import BarChart from '@/components/Chart/BarChart';
 import PieChart from '@/components/Chart/PieChart';
 import RadarChart from '@/components/Chart/RadarChart';
 import PolarAreaChart from '@/components/Chart/PolarAreaChart';
 import DoughnutChart from '@/components/Chart/DoughnutChart';
-import {
-  lineChartData,
-  barChartData,
-  pieChartData,
-  radarChartData,
-  polarAreaChartData,
-  doughnutChartData,
-} from '@/components/Chart/dataset';
 import robotReportApi from '@/apis/robotReportApi';
 import { QUERY_KEY } from '@/constants/queryKey';
 import { useQuery } from '@tanstack/react-query';
 import RefetchBar from '../RefetchBar/RefetchBar';
 import logApi from '@/apis/logApi';
+import { RepeatIcon } from '@chakra-ui/icons';
+import DataSet from './genDataSet';
+import MockDataSet from '@/components/Chart/dataset';
 
 interface RobotDashboardProps {
   logGroup: string;
-  tabIndex?: number;
 }
 
 const RobotDashboard = (props: RobotDashboardProps) => {
@@ -55,55 +56,54 @@ const RobotDashboard = (props: RobotDashboardProps) => {
       queryFn: () => robotReportApi.getReportGroupError(processID, version),
     });
 
-  const { data: robotReportFailures, refetch: refetchReportFailures } =
-    useQuery({
-      queryKey: [QUERY_KEY.ROBOT_REPORT_DETAIL_FAILURES],
-      queryFn: () => robotReportApi.getReportDetailFailures(processID, version),
-    });
-
-  function formatDateTime(dateStr) {
+  function formatDateTime(dateStr: string) {
     const date = new Date(dateStr);
     return date.toISOString().replace('T', ' ').slice(0, 19);
   }
 
-  useEffect(() => {
+  const handleRefetch = () => {
     refetchReportOverall();
     refetchReportAverageTime();
     refetchReportGroupPassed();
     refetchReportGroupError();
-    refetchReportFailures();
-  }, [props.tabIndex]);
-
-  const [selectedLogStream, setSelectedLogStream] = useState('test');
-  const { data: logStreams, refetch: getLogStreamsRefetch } = useQuery({
-    queryKey: ['LOG_STREAMS'],
-    queryFn: () => logApi.getStreamLogs(props.logGroup),
-  });
-
-  useEffect(() => {
-    if (logStreams && logStreams.length > 0 && selectedLogStream === 'test') {
-      setSelectedLogStream(logStreams[0]?.logStreamName);
-    }
-  }, [logStreams]);
-
-  const handleRefetch = () => {
-    getLogStreamsRefetch();
   };
+
+  const lineChartData =
+    robotReportOverall &&
+    DataSet.LineChartData(
+      'Robot Time Execution',
+      robotReportOverall?.map((item) => formatDateTime(item.start_time)),
+      robotReportOverall?.map((item) => item.time_execution)
+    );
+
+  const pieChartData =
+    robotReportGroupPassed &&
+    DataSet.PieChartData(
+      'Success Rate',
+      ['Pass', 'Fail'],
+      robotReportGroupPassed.map((item) => item.count)
+    );
+
+  const barChartData =
+    robotReportGroupError &&
+    DataSet.BarChartData(
+      'Error Rate',
+      robotReportGroupError.map((item) => item.error_message),
+      robotReportGroupError.map((item) => item.count)
+    );
 
   return (
     <Box>
-      <RefetchBar
-        selectedLogStream={selectedLogStream}
-        setSelectedLogStream={setSelectedLogStream}
-        logStreams={logStreams}
-        handleRefetch={handleRefetch}
+      <IconButton
+        aria-label="Refresh"
+        icon={<RepeatIcon />}
+        onClick={handleRefetch}
+        className="my-[5px]"
       />
-      <Grid
-        templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
-        gap={6}>
+      <Grid templateColumns={['repeat(2, 1fr)']} gap={6}>
         <GridItem>
           <Box bg="white" p={4} rounded="lg" shadow="md">
-            <LineChart data={lineChartData} />
+            <LineChart data={lineChartData ?? MockDataSet.lineChartData} />
           </Box>
         </GridItem>
         <GridItem>
@@ -116,42 +116,25 @@ const RobotDashboard = (props: RobotDashboardProps) => {
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
-            h="50%">
-            <Text fontSize="lg">Average Time</Text>
-            <Text fontSize="xl">
+            h="100%">
+            <Text className="font-bold text-2xl">Average Time</Text>
+            <Text className="text-2xl">
               {robotReportAverageTime?.avg_time_execution
                 ? `${robotReportAverageTime?.avg_time_execution} s`
                 : '0 s'}
             </Text>
           </Box>
         </GridItem>
+
         <GridItem>
           <Box bg="white" p="4" rounded="lg" shadow="md">
-            <BarChart data={barChartData} />
+            <PieChart data={pieChartData ?? MockDataSet.pieChartData} />
           </Box>
         </GridItem>
 
         <GridItem>
           <Box bg="white" p="4" rounded="lg" shadow="md">
-            <PieChart data={pieChartData} />
-          </Box>
-        </GridItem>
-
-        <GridItem>
-          <Box bg="white" p="4" rounded="lg" shadow="md">
-            <RadarChart data={radarChartData} />
-          </Box>
-        </GridItem>
-
-        <GridItem>
-          <Box bg="white" p="4" rounded="lg" shadow="md">
-            <PolarAreaChart data={polarAreaChartData} />
-          </Box>
-        </GridItem>
-
-        <GridItem>
-          <Box bg="white" p="4" rounded="lg" shadow="md">
-            <DoughnutChart data={doughnutChartData} />
+            <BarChart data={barChartData ?? MockDataSet.barChartData} />
           </Box>
         </GridItem>
       </Grid>

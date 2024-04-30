@@ -33,6 +33,7 @@
     "chakra-ui-autocomplete": "^1.4.5",
     "chakra-ui-steps": "^2.1.0",
     "chart.js": "^4.4.0",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "date-fns": "^2.30.0",
     "dayzed": "^3.2.3",
     "diagram-js-grid": "^0.2.0",

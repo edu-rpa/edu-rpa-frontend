@@ -8,7 +8,6 @@ import { QUERY_KEY } from '@/constants/queryKey';
 
 interface RobotLogProps {
   logGroup: string;
-  tabIndex?: number;
 }
 
 const RobotLog = (props: RobotLogProps) => {
