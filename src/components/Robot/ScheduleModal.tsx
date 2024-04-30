@@ -36,6 +36,10 @@ const generateExpression = (schedule: ScheduleState) => {
     return `at(${schedule.datetime}:00)`;
   }
 
+  if (schedule.type === 'rate') {
+    return `rate(${schedule.value} ${schedule.unit})`;
+  }
+
   return `cron(${schedule.minute} ${schedule.hour} ${schedule.dayOfMonth} ${schedule.month} ${schedule.dayOfWeek} ${schedule.year})`;
 };
 

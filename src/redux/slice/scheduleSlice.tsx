@@ -12,6 +12,8 @@ export interface ScheduleState {
   month: string;
   dayOfWeek: string;
   year: string;
+  value: number;
+  unit: string;
 }
 
 const initialState: ScheduleState = {
@@ -23,8 +25,10 @@ const initialState: ScheduleState = {
   hour: '*',
   dayOfMonth: '*',
   month: '*',
-  dayOfWeek: '*',
+  dayOfWeek: '?',
   year: '*',
+  value: 1,
+  unit: 'minutes',
 };
 
 const scheduleSlice = createSlice({
@@ -47,6 +51,10 @@ const scheduleSlice = createSlice({
         state.month = cronArr[3];
         state.dayOfWeek = cronArr[4];
         state.year = cronArr[5];
+      } else if (state.type === 'rate') {
+        const rate = action.payload.ScheduleExpression.split('(')[1].split(')')[0];
+        state.value = parseInt(rate.split(' ')[0]);
+        state.unit = rate.split(' ')[1];
       }
     },
 
@@ -90,6 +98,14 @@ const scheduleSlice = createSlice({
       state.year = action.payload;
     },
 
+    setRateValue: (state, action: PayloadAction<number>) => {
+      state.value = action.payload;
+    },
+
+    setRateUnit: (state, action: PayloadAction<string>) => {
+      state.unit = action.payload;
+    },
+
     resetSchedule: (state) => {
       state.name = '';
       state.type = 'at';
@@ -101,6 +117,8 @@ const scheduleSlice = createSlice({
       state.month = '*';
       state.dayOfWeek = '*';
       state.year = '*';
+      state.value = 1;
+      state.unit = 'minutes';
     },
   },
 });
@@ -117,6 +135,8 @@ export const {
   setMonth, 
   setDayOfWeek, 
   setYear,
+  setRateValue,
+  setRateUnit,
   resetSchedule,
 } = scheduleSlice.actions;
 
