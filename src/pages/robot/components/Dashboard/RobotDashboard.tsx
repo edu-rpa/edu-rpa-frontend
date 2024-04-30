@@ -19,9 +19,13 @@ import { useQuery } from '@tanstack/react-query';
 import RefetchBar from '../RefetchBar/RefetchBar';
 import logApi from '@/apis/logApi';
 import { RepeatIcon } from '@chakra-ui/icons';
-import DataSet from './genDataSet';
 import MockDataSet from '@/components/Chart/dataset';
 import { formatDateTime } from '@/utils/time';
+import {
+  BarChartData,
+  LineChartData,
+  PieChartData,
+} from '../../../../utils/genDataSet';
 
 interface RobotDashboardProps {
   logGroup: string;
@@ -66,7 +70,7 @@ const RobotDashboard = (props: RobotDashboardProps) => {
 
   const lineChartData =
     robotReportOverall &&
-    DataSet.LineChartData(
+    LineChartData(
       'Robot Time Execution',
       robotReportOverall?.map((item) => formatDateTime(item.start_time)),
       robotReportOverall?.map((item) => item.time_execution)
@@ -74,7 +78,7 @@ const RobotDashboard = (props: RobotDashboardProps) => {
 
   const pieChartData =
     robotReportGroupPassed &&
-    DataSet.PieChartData(
+    PieChartData(
       'Success Rate',
       ['Pass', 'Fail'],
       robotReportGroupPassed.map((item) => item.count)
@@ -82,7 +86,7 @@ const RobotDashboard = (props: RobotDashboardProps) => {
 
   const barChartData =
     robotReportGroupError &&
-    DataSet.BarChartData(
+    BarChartData(
       'Error Rate',
       robotReportGroupError.map((item) => item.error_message),
       robotReportGroupError.map((item) => item.count)
