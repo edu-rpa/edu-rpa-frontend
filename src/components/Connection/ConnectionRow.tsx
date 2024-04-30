@@ -28,6 +28,7 @@ import { DeleteIcon, RepeatIcon } from '@chakra-ui/icons';
 import { useMutation } from '@tanstack/react-query';
 import { ActivateConnectionDto } from '@/dtos/connectionDto';
 import { useRouter } from 'next/router';
+import { formatDateTime } from '@/utils/time';
 
 interface ConnectionRowProps {
   data: Connection;
@@ -103,6 +104,8 @@ const ConnectionRow = (props: ConnectionRowProps) => {
             <IconImage icon={provider!.icon} label={provider!.name} />
           </Box>
         );
+      case 'createdAt':
+        return <Text>{formatDateTime(value)}</Text>;
       default:
         return <Text>{value}</Text>;
     }

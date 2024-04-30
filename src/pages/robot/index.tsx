@@ -21,6 +21,7 @@ import RobotTable from '@/components/Robot/RobotTable';
 import { Robot, TriggerType } from '@/interfaces/robot';
 import { toastError } from '@/utils/common';
 import { ToolTipExplain } from '@/constants/description';
+import { formatDateTime } from '@/utils/time';
 
 export default function RobotPage() {
   const [nameFilter, setNameFilter] = useState('');
@@ -56,7 +57,7 @@ export default function RobotPage() {
         name: item.name,
         processId: item.processId,
         processVersion: item.processVersion,
-        createdAt: item.createdAt,
+        createdAt: formatDateTime(item.createdAt),
         triggerType: item.triggerType,
         robotKey: item.robotKey,
       };
@@ -103,13 +104,6 @@ export default function RobotPage() {
               value={nameFilter}
               onChange={(e) => setNameFilter(e.target.value)}
             />
-            {/* <Box className="w-[15vw] ml-[20px]">
-              <Select
-                defaultValue="all"
-                onChange={(e) => setProcessFilter(e.target.value)}>
-                <option value="mock">Mock process</option>
-              </Select>
-            </Box> */}
             <Box className="w-[15vw] ml-[20px]">
               <IconButton
                 aria-label="Refresh"

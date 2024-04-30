@@ -27,12 +27,12 @@ import robotReportApi from '@/apis/robotReportApi';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import { QUERY_KEY } from '@/constants/queryKey';
 import logApi from '@/apis/logApi';
+import RefetchBar from '../RefetchBar/RefetchBar';
 
 const formatTime = (timeString) => new Date(timeString).toLocaleString();
 
 interface LogDetailProps {
   logGroup: string;
-  tabIndex?: number;
 }
 
 export default function LogDetail(props: LogDetailProps) {
@@ -58,7 +58,7 @@ export default function LogDetail(props: LogDetailProps) {
 
   useEffect(() => {
     handleRefetch();
-  }, [selectedLogStream, props.tabIndex]);
+  }, [selectedLogStream]);
 
   const handleRefetch = () => {
     getLogStreamsRefetch();
@@ -68,12 +68,12 @@ export default function LogDetail(props: LogDetailProps) {
   const { data: logRobotDetail, refetch: refetchLogRobotDetail } = useQuery({
     queryKey: [QUERY_KEY.ROBOT_REPORT_DETAIL],
     queryFn: () =>
-      selectedLogStream != 'test' &&
       robotReportApi.getRobotLogDetail(
         selectedLogStream.replace('stream_', ''),
         processID,
         version
       ),
+    enabled: selectedLogStream != 'test',
   });
 
   const handleToggle = (logId: any) => {
@@ -93,36 +93,20 @@ export default function LogDetail(props: LogDetailProps) {
     }
   };
 
+  useEffect(() => {
+    if (selectedLogStream !== 'test') {
+      handleRefetch();
+    }
+  }, [selectedLogStream]);
+
   return (
     <Box>
-      <Box className="flex justify-between my-5">
-        <InputGroup>
-          <InputLeftElement pointerEvents="none">
-            <SearchIcon color="gray.500" />
-          </InputLeftElement>
-          <Input bg="white.300" type="text" placeholder="Search..." />
-        </InputGroup>
-        <Select
-          size="md"
-          className="mx-3"
-          value={selectedLogStream}
-          onChange={(e) => {
-            setSelectedLogStream(e.target.value);
-          }}>
-          {logStreams?.length > 0 &&
-            logStreams.map((stream) => (
-              <option key={stream.logStreamName} value={stream.logStreamName}>
-                {new Date(stream.lastEventTime).toLocaleString()}
-              </option>
-            ))}
-        </Select>
-        <IconButton
-          aria-label="Refresh"
-          icon={<RepeatIcon />}
-          onClick={handleRefetch}
-          className="ml-5"
-        />
-      </Box>
+      <RefetchBar
+        selectedLogStream={selectedLogStream}
+        setSelectedLogStream={setSelectedLogStream}
+        logStreams={logStreams}
+        handleRefetch={handleRefetch}
+      />
       {logStreams && (
         <Table variant="striped">
           <Thead>

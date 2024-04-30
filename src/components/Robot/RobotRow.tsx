@@ -19,36 +19,7 @@ import { useSelector } from 'react-redux';
 import { toastError, toastSuccess } from '@/utils/common';
 import { useRouter } from 'next/router';
 import { LOG_ROBOT } from '@/constants/robot';
-
-const mapStatus = (status: string) => {
-  switch (status) {
-    case 'not running':
-    case 'stopped':
-    case 'pending':
-      return 'not running';
-    case 'running':
-      return 'running';
-    case 'stopping':
-      return 'stopping';
-    default:
-      return 'not running';
-  }
-};
-
-const mapStatusColor = (status: string) => {
-  switch (status) {
-    case 'not running':
-    case 'stopped':
-      return 'gray';
-    case 'running':
-      return 'green';
-    case 'stopping':
-    case 'pending':
-      return 'yellow';
-    default:
-      return 'gray';
-  }
-};
+import { mapStatus, mapStatusColor } from '@/utils/robot';
 
 interface RobotRowProps {
   data: Omit<Robot, 'userId'>;

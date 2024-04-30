@@ -93,34 +93,34 @@ export default function FeatureHome() {
             href={'#'}
           />
           <Card
-            heading={'Robot Automation'}
+            heading={'Utilize Packages'}
             icon={<Icon as={FcCollaboration} w={10} h={10} />}
+            description={
+              'Manage your activity packages, develop functional activities for your robots.'
+            }
+            href={'#'}
+          />
+          <Card
+            heading={'Compile Robot'}
+            icon={<Icon as={FcReading} w={10} h={10} />}
+            description={
+              'Compile your robots with ease, manage your robots, and deploy them to the cloud.'
+            }
+            href={'#'}
+          />
+          <Card
+            heading={'Automate Robot'}
+            icon={<Icon as={FcTodoList} w={10} h={10} />}
             description={
               'Robots helps you to automate repetitive tasks, reduce human error, integrate with AI technology.'
             }
             href={'#'}
           />
           <Card
-            heading={'Quiz Transformation'}
-            icon={<Icon as={FcTodoList} w={10} h={10} />}
-            description={
-              'Transform your traditional exams, whether in Word, PDF, or paper format into quiz in Google Forms.'
-            }
-            href={'#'}
-          />
-          <Card
-            heading={'E-learning Configuration'}
-            icon={<Icon as={FcReading} w={10} h={10} />}
-            description={
-              'Manage eLearning environments, including teachers, students, and materials in Google Classroom.'
-            }
-            href={'#'}
-          />
-          <Card
-            heading={'Grading Intelligence'}
+            heading={'Monitor Robot'}
             icon={<Icon as={FcDoughnutChart} w={10} h={10} />}
             description={
-              'Our intelligent grading system utilizes AI to provide instant, accurate assessments. '
+              'Monitor your robots, analyze their performance, and optimize their efficiency.'
             }
             href={'#'}
           />

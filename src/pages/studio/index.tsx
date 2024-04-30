@@ -47,6 +47,7 @@ import processApi from '@/apis/processApi';
 import { QUERY_KEY } from '@/constants/queryKey';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import { ToolTipExplain } from '@/constants/description';
+import { formatDateTime } from '@/utils/time';
 
 export default function Studio() {
   const router = useRouter();
@@ -132,7 +133,7 @@ export default function Studio() {
         name: item.name,
         description: item.description,
         sharedBy: item.sharedByUser ? item.sharedByUser.name : 'me',
-        last_modified: item.updatedAt,
+        last_modified: formatDateTime(item.updatedAt),
         version: item.version,
       };
     });
@@ -208,7 +209,9 @@ export default function Studio() {
     // add to backend
     handleInsertToBackend(initialProcess);
 
-    router.push(`/studio/modeler/${processID}`);
+    router.push(
+      `/studio/modeler/${processID}?name=${initialProcess.processName}&version=0`
+    );
   };
 
   const handleDeleteProcessByID = (processID: string) => {
@@ -220,8 +223,12 @@ export default function Studio() {
     handleDeleteProcessWithApi.mutate(processID);
   };
 
-  const handleEditProcessByID = (processID: string) => {
-    router.push(`/studio/modeler/${processID}`);
+  const handleEditProcessByID = (
+    processID: string,
+    name: string,
+    version: number
+  ) => {
+    router.push(`/studio/modeler/${processID}?name=${name}&version=${version}`);
   };
 
   const handleDownloadProcessByID = (processID: string) => {
@@ -268,7 +275,9 @@ export default function Studio() {
         ]);
 
         handleInsertToBackend(importProcess);
-        router.push(`/studio/modeler/${processID}`);
+        router.push(
+          `/studio/modeler/${processID}?name=${importProcess.processName}&version=0`
+        );
       } catch (error) {
         console.error('Error during XML file import:', error);
         toast({

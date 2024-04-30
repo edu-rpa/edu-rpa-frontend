@@ -1,30 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  Heading,
-  Container,
-  Text,
-  IconButton,
-  Select,
-  InputLeftElement,
-  Input,
-  InputGroup,
-} from '@chakra-ui/react';
-import Log from '@/components/Log/Log';
-import { QUERY_KEY } from '@/constants/queryKey';
+import { Box } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import logApi from '@/apis/logApi';
-import { RepeatIcon, SearchIcon } from '@chakra-ui/icons';
+import Log from '@/components/Log/Log';
+import RefetchBar from '../RefetchBar/RefetchBar';
+import { QUERY_KEY } from '@/constants/queryKey';
 
 interface RobotLogProps {
   logGroup: string;
-  tabIndex?: number;
 }
 
 const RobotLog = (props: RobotLogProps) => {
   const [selectedLogStream, setSelectedLogStream] = useState('test');
-  const [isRefetch, setIsRefetch] = useState(false);
-
   const { data: logStreams, refetch: getLogStreamsRefetch } = useQuery({
     queryKey: [QUERY_KEY.LOG_STREAMS],
     queryFn: () => logApi.getStreamLogs(props.logGroup),
@@ -34,56 +21,35 @@ const RobotLog = (props: RobotLogProps) => {
     useQuery({
       queryKey: [QUERY_KEY.LOG_STREAM_DETAIL],
       queryFn: () =>
-        selectedLogStream != 'test' &&
         logApi.getLogStreamDetail(props.logGroup, selectedLogStream),
+      enabled: selectedLogStream !== 'test',
     });
 
   useEffect(() => {
-    if (logStreams && logStreams.length > 0 && selectedLogStream == 'test') {
+    if (logStreams && logStreams.length > 0 && selectedLogStream === 'test') {
       setSelectedLogStream(logStreams[0]?.logStreamName);
     }
   }, [logStreams]);
 
   useEffect(() => {
-    handleRefetch();
-  }, [selectedLogStream, props.tabIndex]);
+    if (selectedLogStream !== 'test') {
+      handleRefetch();
+    }
+  }, [selectedLogStream]);
 
   const handleRefetch = () => {
-    setIsRefetch(!isRefetch);
     getLogStreamsRefetch();
     getLogStreamDetailRefetch();
   };
 
   return (
     <Box className="w-full m-auto">
-      <Box className="flex justify-between my-5">
-        <InputGroup>
-          <InputLeftElement pointerEvents="none">
-            <SearchIcon color="gray.500" />
-          </InputLeftElement>
-          <Input bg="white.300" type="text" placeholder="Search..." />
-        </InputGroup>
-        <Select
-          size="md"
-          className="mx-3"
-          value={selectedLogStream}
-          onChange={(e) => {
-            setSelectedLogStream(e.target.value);
-          }}>
-          {logStreams?.length > 0 &&
-            logStreams.map((stream) => (
-              <option key={stream.logStreamName} value={stream.logStreamName}>
-                {new Date(stream.lastEventTime).toLocaleString()}
-              </option>
-            ))}
-        </Select>
-        <IconButton
-          aria-label="Refresh"
-          icon={<RepeatIcon />}
-          onClick={handleRefetch}
-          className="ml-5"
-        />
-      </Box>
+      <RefetchBar
+        selectedLogStream={selectedLogStream}
+        setSelectedLogStream={setSelectedLogStream}
+        logStreams={logStreams}
+        handleRefetch={handleRefetch}
+      />
       {logStreamDetail && <Log logs={logStreamDetail} />}
     </Box>
   );

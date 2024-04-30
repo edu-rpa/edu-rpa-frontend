@@ -1,101 +1,136 @@
-import React from 'react';
-import { Box, Button, Grid, GridItem } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Button,
+  Grid,
+  GridItem,
+  IconButton,
+  Text,
+} from '@chakra-ui/react';
 import LineChart from '@/components/Chart/LineChart';
 import BarChart from '@/components/Chart/BarChart';
 import PieChart from '@/components/Chart/PieChart';
 import RadarChart from '@/components/Chart/RadarChart';
 import PolarAreaChart from '@/components/Chart/PolarAreaChart';
 import DoughnutChart from '@/components/Chart/DoughnutChart';
-import {
-  lineChartData,
-  barChartData,
-  pieChartData,
-  radarChartData,
-  polarAreaChartData,
-  doughnutChartData,
-} from '@/components/Chart/dataset';
 import robotReportApi from '@/apis/robotReportApi';
 import { QUERY_KEY } from '@/constants/queryKey';
 import { useQuery } from '@tanstack/react-query';
+import RefetchBar from '../RefetchBar/RefetchBar';
+import logApi from '@/apis/logApi';
+import { RepeatIcon } from '@chakra-ui/icons';
+import DataSet from './genDataSet';
+import MockDataSet from '@/components/Chart/dataset';
+import { formatDateTime } from '@/utils/time';
 
 interface RobotDashboardProps {
-  tabIndex?: number;
+  logGroup: string;
 }
 
 const RobotDashboard = (props: RobotDashboardProps) => {
+  const logGroup = props.logGroup;
+  const segments = logGroup?.split('-');
+  const processID = segments && segments.length > 4 ? segments[4] : '';
+  const version =
+    segments && segments.length > 5 ? parseInt(segments[5].slice(1)) : 0;
+
   const { data: robotReportOverall, refetch: refetchReportOverall } = useQuery({
     queryKey: [QUERY_KEY.ROBOT_REPORT_OVERALL],
-    queryFn: () => robotReportApi.getReportOverall('Process_94XTLQD', 1, 0),
+    queryFn: () => robotReportApi.getReportOverall(processID, version),
   });
 
   const { data: robotReportAverageTime, refetch: refetchReportAverageTime } =
     useQuery({
       queryKey: [QUERY_KEY.ROBOT_REPORT_AVERAGE_TIME],
-      queryFn: () =>
-        robotReportApi.getReportAverageTime('Process_94XTLQD', 1, 0),
+      queryFn: () => robotReportApi.getReportAverageTime(processID, version),
     });
 
   const { data: robotReportGroupPassed, refetch: refetchReportGroupPassed } =
     useQuery({
       queryKey: [QUERY_KEY.ROBOT_REPORT_GROUP_PASSED],
-      queryFn: () => robotReportApi.getReportGroupPassed('Process_94XTLQD', 1),
+      queryFn: () => robotReportApi.getReportGroupPassed(processID, version),
     });
 
   const { data: robotReportGroupError, refetch: refetchReportGroupError } =
     useQuery({
       queryKey: [QUERY_KEY.ROBOT_REPORT_GROUP_ERROR],
-      queryFn: () => robotReportApi.getReportGroupError('Process_94XTLQD', 1),
+      queryFn: () => robotReportApi.getReportGroupError(processID, version),
     });
 
-  const { data: robotReportFailures, refetch: refetchReportFailures } =
-    useQuery({
-      queryKey: [QUERY_KEY.ROBOT_REPORT_DETAIL_FAILURES],
-      queryFn: () =>
-        robotReportApi.getReportDetailFailures('Process_94XTLQD', 1),
-    });
+  const handleRefetch = () => {
+    refetchReportOverall();
+    refetchReportAverageTime();
+    refetchReportGroupPassed();
+    refetchReportGroupError();
+  };
 
-  function formatDateTime(dateStr) {
-    const date = new Date(dateStr);
-    return date.toISOString().replace('T', ' ').slice(0, 19);
-  }
+  const lineChartData =
+    robotReportOverall &&
+    DataSet.LineChartData(
+      'Robot Time Execution',
+      robotReportOverall?.map((item) => formatDateTime(item.start_time)),
+      robotReportOverall?.map((item) => item.time_execution)
+    );
+
+  const pieChartData =
+    robotReportGroupPassed &&
+    DataSet.PieChartData(
+      'Success Rate',
+      ['Pass', 'Fail'],
+      robotReportGroupPassed.map((item) => item.count)
+    );
+
+  const barChartData =
+    robotReportGroupError &&
+    DataSet.BarChartData(
+      'Error Rate',
+      robotReportGroupError.map((item) => item.error_message),
+      robotReportGroupError.map((item) => item.count)
+    );
 
   return (
     <Box>
-      <Grid
-        templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
-        gap={6}>
+      <IconButton
+        aria-label="Refresh"
+        icon={<RepeatIcon />}
+        onClick={handleRefetch}
+        className="my-[5px]"
+      />
+      <Grid templateColumns={['repeat(2, 1fr)']} gap={6}>
         <GridItem>
           <Box bg="white" p={4} rounded="lg" shadow="md">
-            <LineChart data={lineChartData} />
+            <LineChart data={lineChartData ?? MockDataSet.lineChartData} />
           </Box>
         </GridItem>
         <GridItem>
-          <Box bg="white" p="4" rounded="lg" shadow="md">
-            <BarChart data={barChartData} />
-          </Box>
-        </GridItem>
-
-        <GridItem>
-          <Box bg="white" p="4" rounded="lg" shadow="md">
-            <PieChart data={pieChartData} />
-          </Box>
-        </GridItem>
-
-        <GridItem>
-          <Box bg="white" p="4" rounded="lg" shadow="md">
-            <RadarChart data={radarChartData} />
-          </Box>
-        </GridItem>
-
-        <GridItem>
-          <Box bg="white" p="4" rounded="lg" shadow="md">
-            <PolarAreaChart data={polarAreaChartData} />
+          <Box
+            bg="white"
+            p={4}
+            rounded="md"
+            shadow="md"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            h="100%">
+            <Text className="font-bold text-2xl">Average Time</Text>
+            <Text className="text-2xl">
+              {robotReportAverageTime?.avg_time_execution
+                ? `${robotReportAverageTime?.avg_time_execution} s`
+                : '0 s'}
+            </Text>
           </Box>
         </GridItem>
 
         <GridItem>
           <Box bg="white" p="4" rounded="lg" shadow="md">
-            <DoughnutChart data={doughnutChartData} />
+            <PieChart data={pieChartData ?? MockDataSet.pieChartData} />
+          </Box>
+        </GridItem>
+
+        <GridItem>
+          <Box bg="white" p="4" rounded="lg" shadow="md">
+            <BarChart data={barChartData ?? MockDataSet.barChartData} />
           </Box>
         </GridItem>
       </Grid>

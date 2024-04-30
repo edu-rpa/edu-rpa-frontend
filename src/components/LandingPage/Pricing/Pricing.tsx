@@ -68,7 +68,7 @@ export default function PricingHome() {
                 $
               </Text>
               <Text fontSize="5xl" fontWeight="900">
-                19
+                5
               </Text>
               <Text fontSize="3xl" color="gray.500">
                 /month
@@ -129,7 +129,7 @@ export default function PricingHome() {
                   $
                 </Text>
                 <Text fontSize="5xl" fontWeight="900">
-                  49
+                  10
                 </Text>
                 <Text fontSize="3xl" color="gray.500">
                   /month
@@ -172,7 +172,7 @@ export default function PricingHome() {
                 $
               </Text>
               <Text fontSize="5xl" fontWeight="900">
-                99
+                15
               </Text>
               <Text fontSize="3xl" color="gray.500">
                 /month

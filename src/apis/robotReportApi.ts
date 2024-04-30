@@ -17,10 +17,9 @@ const getRobotLogDetail = async (
 const getReportOverall = async (
   processID: string,
   version: number,
-  passed: number,
   date?: string
 ) => {
-  let url = `${process.env.NEXT_PUBLIC_DEV_API}/robot-report/overall?processID=${processID}&version=${version}&passed=${passed}`;
+  let url = `${process.env.NEXT_PUBLIC_DEV_API}/robot-report/overall?processID=${processID}&version=${version}&passed=1`;
 
   if (date) {
     url += `&date=${date}`;
@@ -34,10 +33,9 @@ const getReportOverall = async (
 const getReportAverageTime = async (
   processID: string,
   version: number,
-  passed: number,
   date?: string
 ) => {
-  let url = `${process.env.NEXT_PUBLIC_DEV_API}/robot-report/overall/average?processID=${processID}&version=${version}&passed=${passed}`;
+  let url = `${process.env.NEXT_PUBLIC_DEV_API}/robot-report/overall/average?processID=${processID}&version=${version}&passed=1`;
 
   if (date) {
     url += `&date=${date}`;

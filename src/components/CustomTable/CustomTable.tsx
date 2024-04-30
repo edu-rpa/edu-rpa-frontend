@@ -40,12 +40,12 @@ interface TableProps {
   data: any[];
   maxRows?: number;
   isLoading?: boolean;
-  onView?: (id: string) => void;
+  onView?: (id: string, name: string, version: number) => void;
   onDownload?: (id: string) => void;
   onDelete?: (id: string) => void;
-  onEdit?: (id: string) => void;
+  onEdit?: (id: string, name: string, version: number) => void;
   onRun?: (id: string) => void;
-  onViewFile?: (id: string) => void;
+  onViewFile?: (id: string, name: string, version: number) => void;
 }
 const DEFAULT_MAX_ROWS = 6;
 
@@ -59,7 +59,6 @@ const CustomTable = (props: TableProps) => {
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = props.data.slice(startIndex, endIndex);
-  const toast = useToast();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -141,7 +140,9 @@ const CustomTable = (props: TableProps) => {
                   color: 'white',
                   borderRadius: '15px',
                 }}
-                onClick={() => props.onView && props.onView(item.id)}>
+                onClick={() =>
+                  props.onView && props.onView(item.id, item.name, item.version)
+                }>
                 {Object.keys(item).map((key, columnIndex) =>
                   columnIndex < (props.maxRows ?? DEFAULT_MAX_ROWS) ? (
                     <Td key={key}>{renderTableCell(key, item[key])}</Td>
@@ -166,7 +167,8 @@ const CustomTable = (props: TableProps) => {
                         aria-label="View Item"
                         onClick={(e) => {
                           e.stopPropagation();
-                          props.onViewFile && props.onViewFile(item.id);
+                          props.onViewFile &&
+                            props.onViewFile(item.id, item.name, item.version);
                         }}
                         icon={<FaCode color="#319795" />}
                       />
@@ -189,9 +191,15 @@ const CustomTable = (props: TableProps) => {
                         onClick={(e) => {
                           e.stopPropagation();
                           if (item.processID) {
-                            props.onEdit && props.onEdit(item.processID);
+                            props.onEdit &&
+                              props.onEdit(
+                                item.processID,
+                                item.name,
+                                item.version
+                              );
                           } else {
-                            props.onEdit && props.onEdit(item.id);
+                            props.onEdit &&
+                              props.onEdit(item.id, item.name, item.version);
                           }
                         }}
                         icon={<EditIcon color="#319795" />}
