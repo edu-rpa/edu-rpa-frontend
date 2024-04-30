@@ -104,13 +104,6 @@ export default function RobotPage() {
               value={nameFilter}
               onChange={(e) => setNameFilter(e.target.value)}
             />
-            {/* <Box className="w-[15vw] ml-[20px]">
-              <Select
-                defaultValue="all"
-                onChange={(e) => setProcessFilter(e.target.value)}>
-                <option value="mock">Mock process</option>
-              </Select>
-            </Box> */}
             <Box className="w-[15vw] ml-[20px]">
               <IconButton
                 aria-label="Refresh"

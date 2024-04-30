@@ -9,6 +9,10 @@ import {
   Tab,
   TabPanels,
   TabPanel,
+  Tag,
+  useToast,
+  HStack,
+  Button,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
@@ -20,14 +24,101 @@ import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import ConnectionDetail from '../components/ConnectionDetail/ConnectionDetail';
 import LogDetail from '../components/LogDetail/LogDetail';
 import RobotDashboard from '../components/Dashboard/RobotDashboard';
+import { userSelector } from '@/redux/selector';
+import { useSelector } from 'react-redux';
+import robotApi from '@/apis/robotApi';
+import { FaPlay, FaStop } from 'react-icons/fa';
+import { QUERY_KEY } from '@/constants/queryKey';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { mapStatus, mapStatusColor } from '@/utils/robot';
+
+interface RobotRunningDto {
+  userID: number;
+  processID: string;
+  version: number;
+}
 
 const RobotDetail = () => {
   const router = useRouter();
   const params = useParams();
+  const user = useSelector(userSelector);
+  const toast = useToast();
   const logGroup = LOG_ROBOT.FOLDER_PREFIX + router.query?.group;
   const robotID = params?.id as string;
 
-  if (!router.query.group) {
+  const segments = logGroup?.split('-');
+  const processID = segments && segments.length > 4 ? segments[4] : '';
+  const version =
+    segments && segments.length > 5 ? parseInt(segments[5].slice(1)) : 0;
+
+  const {
+    data: robotStatus,
+    isLoading: robotStatusLoading,
+    refetch: refetchRobotStatus,
+  } = useQuery({
+    queryKey: [QUERY_KEY.ROBOT_STATUS],
+    queryFn: () => robotApi.getRobotDetail(user.id, processID, version),
+  });
+
+  const handleRunRobot = useMutation({
+    mutationFn: async (payload: RobotRunningDto) => {
+      return await robotApi.runRobot(
+        payload.userID,
+        payload.processID,
+        payload.version
+      );
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Run robot sucessfully!',
+        status: 'success',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+      refetchRobotStatus();
+    },
+    onError: () => {
+      toast({
+        title: 'Run robot failed !',
+        status: 'error',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+    },
+  });
+
+  const handleStopRobot = useMutation({
+    mutationFn: async (payload: RobotRunningDto) => {
+      return await robotApi.stopRobot(
+        payload.userID,
+        payload.processID,
+        payload.version
+      );
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Stop robot sucessfully!',
+        status: 'success',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+      refetchRobotStatus();
+    },
+    onError: () => {
+      toast({
+        title: 'Stop robot failed !',
+        status: 'error',
+        position: 'top-right',
+        duration: 1000,
+        isClosable: true,
+      });
+    },
+  });
+
+  if (!router.query.group || !processID || !version || robotStatusLoading) {
     return <LoadingIndicator />;
   }
 
@@ -65,6 +156,57 @@ const RobotDetail = () => {
         <Text>
           <span className="font-bold">Robot ID:</span> {robotID}
         </Text>
+        <Text>
+          <span className="font-bold">Process ID:</span> {processID}
+        </Text>
+        <Text>
+          <span className="font-bold">Version:</span> {version}
+        </Text>
+      </Box>
+
+      <Box className="flex justify-between items-center bg-teal-500 w-90 m-auto p-[20px] mb-[20px] rounded-lg">
+        <Box className="flex justify-between items-center">
+          <Box>
+            <Tag
+              colorScheme={mapStatusColor(
+                robotStatus ? robotStatus.instanceState : ''
+              )}
+              size="md"
+              p={3}
+              rounded={10}>
+              {robotStatus ? mapStatus(robotStatus.instanceState) : ''}
+            </Tag>
+            <IconButton
+              bg="white"
+              aria-label="Run robot"
+              className="ml-[5px]"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRunRobot.mutate({
+                  userID: user.id,
+                  processID: processID,
+                  version: version,
+                });
+              }}
+              icon={<FaPlay color="#319795" />}
+            />
+            <IconButton
+              bg="white"
+              aria-label="Stop robot"
+              className="ml-[5px]"
+              icon={<FaStop color="#319795" />}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleStopRobot.mutate({
+                  userID: user.id,
+                  processID: processID,
+                  version: version,
+                });
+              }}
+            />
+          </Box>
+          <Box></Box>
+        </Box>
       </Box>
 
       <Tabs variant="enclosed" className="w-90 m-auto">

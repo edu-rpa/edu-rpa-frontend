@@ -16,4 +16,7 @@ export const QUERY_KEY = {
   ROBOT_REPORT_DETAIL_FAILURES: 'robot-report-detail-failures',
   ROBOT_LIST_BY_CONNECTION_KEY: 'robot-list-by-connection-key',
   CONNECTION_LIST_BY_ROBOT_KEY: 'connection-list-by-robot-key',
+  ROBOT_STATUS: 'robot-status',
+  RUN_ROBOT: 'run-robot',
+  STOP_ROBOT: 'stop-robot',
 };
