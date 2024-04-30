@@ -21,6 +21,7 @@ import logApi from '@/apis/logApi';
 import { RepeatIcon } from '@chakra-ui/icons';
 import DataSet from './genDataSet';
 import MockDataSet from '@/components/Chart/dataset';
+import { formatDateTime } from '@/utils/time';
 
 interface RobotDashboardProps {
   logGroup: string;
@@ -55,11 +56,6 @@ const RobotDashboard = (props: RobotDashboardProps) => {
       queryKey: [QUERY_KEY.ROBOT_REPORT_GROUP_ERROR],
       queryFn: () => robotReportApi.getReportGroupError(processID, version),
     });
-
-  function formatDateTime(dateStr: string) {
-    const date = new Date(dateStr);
-    return date.toISOString().replace('T', ' ').slice(0, 19);
-  }
 
   const handleRefetch = () => {
     refetchReportOverall();

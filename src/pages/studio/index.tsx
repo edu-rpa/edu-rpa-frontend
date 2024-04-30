@@ -47,6 +47,7 @@ import processApi from '@/apis/processApi';
 import { QUERY_KEY } from '@/constants/queryKey';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
 import { ToolTipExplain } from '@/constants/description';
+import { formatDateTime } from '@/utils/time';
 
 export default function Studio() {
   const router = useRouter();
@@ -132,7 +133,7 @@ export default function Studio() {
         name: item.name,
         description: item.description,
         sharedBy: item.sharedByUser ? item.sharedByUser.name : 'me',
-        last_modified: item.updatedAt,
+        last_modified: formatDateTime(item.updatedAt),
         version: item.version,
       };
     });
