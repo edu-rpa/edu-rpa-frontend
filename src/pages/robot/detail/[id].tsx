@@ -17,13 +17,9 @@ import RobotLog from '../components/Log/RobotLog';
 import { LOG_ROBOT } from '@/constants/robot';
 
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
-const ConnectionDetail = lazy(
-  () => import('../components/ConnectionDetail/ConnectionDetail')
-);
-const RobotDashboard = lazy(
-  () => import('../components/Dashboard/RobotDashboard')
-);
-const LogDetail = lazy(() => import('../components/LogDetail/LogDetail'));
+import ConnectionDetail from '../components/ConnectionDetail/ConnectionDetail';
+import LogDetail from '../components/LogDetail/LogDetail';
+import RobotDashboard from '../components/Dashboard/RobotDashboard';
 
 const RobotDetail = () => {
   const router = useRouter();
@@ -34,8 +30,6 @@ const RobotDetail = () => {
   if (!router.query.group) {
     return <LoadingIndicator />;
   }
-
-  const [tabIndex, setTabIndex] = useState(0);
 
   return (
     <Box className="bg-white h-[100vh]">
@@ -73,11 +67,7 @@ const RobotDetail = () => {
         </Text>
       </Box>
 
-      <Tabs
-        variant="enclosed"
-        className="w-90 m-auto"
-        index={tabIndex}
-        onChange={(index) => setTabIndex(index)}>
+      <Tabs variant="enclosed" className="w-90 m-auto">
         <TabList mb="1em">
           <Tab _selected={{ color: 'white', bg: '#319795' }}>Log</Tab>
           <Tab _selected={{ color: 'white', bg: '#319795' }}>Log Detail</Tab>
@@ -89,13 +79,13 @@ const RobotDetail = () => {
             <RobotLog logGroup={logGroup} />
           </TabPanel>
           <TabPanel>
-            <LogDetail tabIndex={tabIndex} logGroup={logGroup} />
+            <LogDetail logGroup={logGroup} />
           </TabPanel>
           <TabPanel>
-            <RobotDashboard tabIndex={tabIndex} />
+            <RobotDashboard logGroup={logGroup} />
           </TabPanel>
           <TabPanel>
-            <ConnectionDetail tabIndex={tabIndex} robotID={robotID} />
+            <ConnectionDetail robotID={robotID} />
           </TabPanel>
         </TabPanels>
       </Tabs>

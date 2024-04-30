@@ -3,6 +3,7 @@ import ConnectionTable from '@/components/Connection/ConnectionTable';
 import {
   Box,
   Button,
+  IconButton,
   Input,
   InputGroup,
   InputLeftElement,
@@ -14,10 +15,12 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import CreateNewConnectionModal from '@/components/Connection/CreateNewConnectionModal';
-import { SearchIcon } from '@chakra-ui/icons';
+import { RepeatIcon, SearchIcon } from '@chakra-ui/icons';
 import { AuthorizationProvider } from '@/interfaces/enums/provider.enum';
 import { Connection } from '@/interfaces/connection';
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator';
+import { QUERY_KEY } from '@/constants/queryKey';
+import { useQuery } from '@tanstack/react-query';
 interface ConnectionProps {
   robotID: string;
   tabIndex?: number;
@@ -26,27 +29,14 @@ interface ConnectionProps {
 export default function ConnectionDetail(props: ConnectionProps) {
   const router = useRouter();
   const toast = useToast();
-  const [connectionData, setConnectionData] = useState<Connection[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const errorMessage = router.query.error;
   const successMessage = router.query.message;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const data = await connectionApi.getAllConnectionsByRobotKey(
-          props.robotID
-        );
-        setConnectionData(data);
-      } catch (error) {
-        console.log(error);
-      }
-      setIsLoading(false);
-    };
-    fetchData();
-  }, [props.tabIndex]);
+  const { data: connectionList, refetch: refetchConnctionList } = useQuery({
+    queryKey: [QUERY_KEY.CONNECTION_LIST_BY_ROBOT_KEY],
+    queryFn: () => connectionApi.getAllConnectionsByRobotKey(props.robotID),
+  });
 
   useEffect(() => {
     if (errorMessage) {
@@ -74,7 +64,7 @@ export default function ConnectionDetail(props: ConnectionProps) {
 
   const tableProps = {
     header: ['Service', 'Connection name', 'Created at', 'Status', 'Action'],
-    data: connectionData,
+    data: connectionList ?? [],
   };
 
   const [providerFilter, setProviderFilter] = useState(
@@ -83,7 +73,13 @@ export default function ConnectionDetail(props: ConnectionProps) {
       : ''
   );
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  useEffect(() => {
+    handleRefetch();
+  }, [props.tabIndex]);
+
+  const handleRefetch = () => {
+    refetchConnctionList();
+  };
 
   return (
     <div>
@@ -98,15 +94,11 @@ export default function ConnectionDetail(props: ConnectionProps) {
             type="text"
             placeholder="Search..."
           />
-          <Box className="w-[15vw] ml-[20px]">
+          <Box className="w-[15vw] ml-[20px] flex justify-between">
             <Select
               defaultValue=""
               onChange={(e) => {
                 setProviderFilter(e.target.value);
-                router.push({
-                  pathname: router.pathname,
-                  query: { provider: e.target.value },
-                });
               }}>
               <option value="">All services</option>
               {Object.values(AuthorizationProvider).map((provider) => {
@@ -118,17 +110,17 @@ export default function ConnectionDetail(props: ConnectionProps) {
               })}
             </Select>
           </Box>
+          <IconButton
+            aria-label="Refresh"
+            icon={<RepeatIcon />}
+            onClick={handleRefetch}
+            className="ml-5"
+          />
         </InputGroup>
-
-        <CreateNewConnectionModal isOpen={isOpen} onClose={onClose} />
       </div>
       {tableProps.data.length > 0 && (
         <div className="w-full m-auto">
-          <ConnectionTable
-            {...tableProps}
-            isLoading={isLoading}
-            robotKey={props.robotID}
-          />
+          <ConnectionTable {...tableProps} robotKey={props.robotID} />
         </div>
       )}
     </div>
