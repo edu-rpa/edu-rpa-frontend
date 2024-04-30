@@ -38,10 +38,4 @@ const BarChartData = (title: string, labels: string[], data: any[]) => {
   };
 };
 
-const DataSet = {
-  LineChartData,
-  PieChartData,
-  BarChartData,
-};
-
-export default DataSet;
+export { LineChartData, PieChartData, BarChartData };
