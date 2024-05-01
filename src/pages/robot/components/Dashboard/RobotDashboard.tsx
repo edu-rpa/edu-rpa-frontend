@@ -26,6 +26,7 @@ import {
   LineChartData,
   PieChartData,
 } from '../../../../utils/genDataSet';
+import { addHours, format } from 'date-fns';
 
 interface RobotDashboardProps {
   logGroup: string;
@@ -72,7 +73,9 @@ const RobotDashboard = (props: RobotDashboardProps) => {
     robotReportOverall &&
     LineChartData(
       'Robot Time Execution',
-      robotReportOverall?.map((item) => formatDateTime(item.start_time)),
+      robotReportOverall?.map((item) =>
+        format(addHours(new Date(item.start_time), 7), 'yyyy-MM-dd HH:mm:ss')
+      ),
       robotReportOverall?.map((item) => item.time_execution)
     );
 
