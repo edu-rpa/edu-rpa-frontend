@@ -47,9 +47,11 @@ export const useBpmn: BpmnJsReactHook = () => {
     return getElements().map((item: any) => {
       const currentActivity = getActivityInProcess(processID, item.id);
       const properties = currentActivity ? currentActivity.properties : {};
+      const keyword = currentActivity ? currentActivity.keyword : '';
       return {
         activityID: item.id,
         activityType: item.type,
+        keyword: keyword,
         properties: properties,
       };
     });

@@ -38,6 +38,7 @@ export default function ModelerSideBar(props: ModelerSideBarProps) {
         activityID: eventInfo.id,
         activityName: eventInfo.name,
         activityType: eventInfo.$type,
+        keyword: '',
         properties: {},
       };
       const isActivityExists = getActivityInProcess(

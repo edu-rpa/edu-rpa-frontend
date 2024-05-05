@@ -825,15 +825,14 @@ export const ActivityPackages = [
             type: 'number',
             keywordArg: 'maxPoints',
             description: 'Maximum points of the quiz',
-            value: 10,
           },
-          'Due Date': {
+          'Due Date (Optional)': {
             type: 'string',
             keywordArg: 'dueDate',
             description: 'Due date of the assignment',
             value: '',
           },
-          'Due Time': {
+          'Due Time (Optional)': {
             type: 'string',
             keywordArg: 'dueTime',
             description: 'Due time of the assignment',
