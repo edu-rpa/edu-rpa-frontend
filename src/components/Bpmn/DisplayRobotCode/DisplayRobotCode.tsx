@@ -19,7 +19,7 @@ export default function DisplayRobotCode(props: DisplayRobotCodeParams) {
             setDisplayTxt(errorTrace)
         }   
         else {
-            setDisplayTxt(JSON.stringify(result?.code ?? "", null, 4).replaceAll("\\",""))
+            setDisplayTxt(JSON.stringify(result?.code ?? "", null, 4))
         }
         onOpen()
     }
