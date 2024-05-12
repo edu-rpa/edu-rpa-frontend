@@ -82,8 +82,9 @@ export class ProcessVariable {
         break
       case VariableType.DocumentTemplate:
         // Document Template is kind of dictionary
+        this.name =  "${"+this.name.replace(/[^\w\s]/gi, '')+"}"
       case VariableType.Dictionary:
-        this.name =  "&{"+this.name.replace(/[^\w\s]/gi, '')+"}"
+        this.name =  "${"+this.name.replace(/[^\w\s]/gi, '')+"}"
         break
       default:
         this.name =  "${"+this.name.replace(/[^\w\s]/gi, '')+"}"

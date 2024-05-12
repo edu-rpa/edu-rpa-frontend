@@ -89,15 +89,21 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
 
   private _handleParseValue(variable : Variable) {
     const {name, value, type} = variable
+    let returnedValue = "";
     switch(type) {
       case VariableType.DocumentTemplate:
       case VariableType.Dictionary:
       case VariableType.List:
-        return `\${{ ${value} }}`.replaceAll("\\", "")
+        returnedValue =  `\${{ ${value} }}`
+        break;
       default:
-        return value;
+        returnedValue = value
     }
 
+    // relace true => True, false => False
+    returnedValue = returnedValue.replace(/\btrue\b/g, "True").replace(/\bfalse\b/g, "False");
+
+    return returnedValue
   }
 
   visitBpmnTask(node: BpmnTask, params: any[]) {

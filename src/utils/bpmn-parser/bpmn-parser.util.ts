@@ -53,10 +53,6 @@ export class BpmnParser {
     }
   }
 
-  private processRobotConnections(robot : Robot) {
-    
-  }
-
   public parseXML(xml: string) {
     let result = convert.xml2js(xml, options);
     let bpmn: Bpmn = Convert.toBpmn(JSON.stringify(result));
