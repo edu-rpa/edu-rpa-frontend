@@ -1187,18 +1187,18 @@ export const ActivityPackages = [
         description: 'Add an item to a list',
         iconCode: 'FaListUl',
         type: 'activity',
-        keyword: 'Add To List',
+        keyword: 'Append To List',
         arguments: {
           List: {
             type: 'list',
             description: 'The list',
-            keywordArg: 'list',
+            keywordArg: 'list_',
             value: [],
           },
           Item: {
             type: 'any',
             description: 'The item to add to the list',
-            keywordArg: 'item',
+            keywordArg: 'values',
             value: '',
           },
         },
@@ -1348,12 +1348,12 @@ export const ActivityPackages = [
         description: 'Extract data from a document using Document template',
         iconCode: 'FaFileAlt',
         type: 'activity',
-        keyword: 'Extract Data',
+        keyword: 'Extract Data From Document',
         arguments: {
           Document: {
             type: 'string',
             description: 'The document file name to extract data from',
-            keywordArg: 'document',
+            keywordArg: 'file_name',
             value: '',
           },
           'Document template': {
@@ -1376,12 +1376,12 @@ export const ActivityPackages = [
         description: 'Generate a grade report from a list of extracted data',
         iconCode: 'FaFileAlt',
         type: 'activity',
-        keyword: 'Generate Grade Report',
+        keyword: 'Create Grade Report File',
         arguments: {
-          Data: {
+          'Actual answers': {
             type: 'list',
             description: 'The list of extracted data',
-            keywordArg: 'data',
+            keywordArg: 'actual_answers',
             value: [],
           },
           'Correct answer': {
@@ -1390,6 +1390,12 @@ export const ActivityPackages = [
             keywordArg: 'correct_answer',
             value: {},
           },
+          'Names': {
+            type: 'list',
+            description: 'The list of student names',
+            keywordArg: 'file_names',
+            value: [],
+          }
         },
         return: {
           displayName: 'Grade report file name',
@@ -1405,7 +1411,7 @@ export const ActivityPackages = [
     displayName: 'File storage',
     description:
       "Help you store and retrieve files in the platform's file storage",
-    library: 'EduRPA.FileStorage',
+    library: 'EduRPA.Storage',
     activityTemplates: [
       {
         templateId: 'upload_file',
@@ -1453,6 +1459,12 @@ export const ActivityPackages = [
             type: 'string',
             description: 'The path of the file to download',
             keywordArg: 'file_path',
+            value: '',
+          },
+          'File name': {
+            type: 'string',
+            description: 'The name of the file to download',
+            keywordArg: 'file_name',
             value: '',
           },
         },

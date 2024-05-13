@@ -50,7 +50,7 @@ const getLibrary = (packageName: string) => {
     case 'Document automation':
       return 'EduRPA.Document';
     case 'File storage':
-      return 'EduRPA.FileStorage';
+      return 'EduRPA.Storage';
     default:
       return null;
   }
