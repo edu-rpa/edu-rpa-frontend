@@ -1,3 +1,9 @@
+export const LibrabryConfigurations = {
+  "EduRPA.Document": {
+    "lang": "vi",
+    "performance": "fast" 
+  }
+}
 export const ActivityPackages = [
   // Drive
   {

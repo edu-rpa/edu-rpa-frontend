@@ -224,12 +224,15 @@ export class Resource {
 }
 
 export class Lib {
-  constructor(public name: string) {}
+  constructor(public name: string, public args : any = null) {}
   toJSON() {
-    return {
+    let libJson = {
       type: "LIBRARY",
       name: this.name,
     };
+    if(this.args)
+      libJson["args"] = this.args
+    return libJson
   }
 }
 
