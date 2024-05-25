@@ -141,6 +141,9 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
         // Which may include special 'Connection' Argument that does not have keywordArg
         if (arg.keywordArg && arg.value) {
           keywordArg.push(new Argument(arg.keywordArg, arg.value));
+        }else if(arg.keywordArg === null && arg.value) {
+          // keywordArg empty ==> pass by value
+          keywordArg.push(new Argument("", arg.value));
         }
       }
     }

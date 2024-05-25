@@ -53,7 +53,11 @@ export class GoogleCredentialKeyword extends Keyword {
 export class Argument {
   constructor(public name: string, public value: string) {}
   toJSON() {
-    return `${this.name}=${this.value}`;
+    if(this.name.length) {
+      return `${this.name}=${this.value}`;
+    }else {
+      return `${this.value}`;
+    }
     // return `${this.value}`;
   }
 
