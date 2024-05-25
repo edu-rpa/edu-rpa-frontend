@@ -1,3 +1,9 @@
+export const LibrabryConfigurations = {
+  "EduRPA.Document": {
+    "lang": "vi",
+    "performance": "fast" 
+  }
+}
 export const ActivityPackages = [
   // Drive
   {
@@ -1157,6 +1163,7 @@ export const ActivityPackages = [
     _id: 'data_manipulation',
     displayName: 'Data manipulation',
     description: 'Help you manipulate data in your robot',
+    library: "Collections",
     activityTemplates: [
       {
         templateId: 'set_variable',
@@ -1192,13 +1199,12 @@ export const ActivityPackages = [
           List: {
             type: 'list',
             description: 'The list',
-            keywordArg: 'list_',
+            // keywordArg: 'list_',
             value: [],
           },
           Item: {
             type: 'any',
             description: 'The item to add to the list',
-            keywordArg: 'values',
             value: '',
           },
         },

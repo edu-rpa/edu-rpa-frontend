@@ -29,6 +29,7 @@ import {
 } from "./robot";
 import { AuthorizationProvider } from "@/interfaces/enums/provider.enum";
 import _ from "lodash";
+import { LibrabryConfigurations } from "@/constants/activityPackage";
 
 export class SequenceVisitor {
   properties: Map<string, Properties>;
@@ -69,8 +70,9 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     let body: BodyItem[] = this.visit(this.sequence, []);
     let tests = [new Test("Main", body)];
     let variables: ProcessVariable[] = this.parseVariables();
+    let librabries =  Array.from(this.imports).map((libName) => new Lib(libName, LibrabryConfigurations[libName]));
     let resource = new Resource(
-      Array.from(this.imports).map((i) => new Lib(i)),
+      librabries,
       variables
     );
     let robot = new Robot(name, tests, resource);
@@ -139,6 +141,9 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
         // Which may include special 'Connection' Argument that does not have keywordArg
         if (arg.keywordArg && arg.value) {
           keywordArg.push(new Argument(arg.keywordArg, arg.value));
+        }else if(arg.keywordArg === null && arg.value) {
+          // keywordArg empty ==> pass by value
+          keywordArg.push(new Argument("", arg.value));
         }
       }
     }

@@ -225,7 +225,7 @@ export const PublishRobotModal = (props: Props) => {
           <strong>Error:</strong> {error.response.data.error}
         </p>
         <p>
-          <strong>Message:</strong> {error.response.data.message.join(', ')}
+          <strong>Message:</strong> {error.response.data ? "Unknown Error" : error.response.data.message.join(', ')}
         </p>
       </Box>;
     }

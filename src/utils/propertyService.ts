@@ -51,6 +51,8 @@ const getLibrary = (packageName: string) => {
       return 'EduRPA.Document';
     case 'File storage':
       return 'EduRPA.Storage';
+    case 'Data manipulation':
+        return 'Collections';
     default:
       return null;
   }

@@ -53,7 +53,11 @@ export class GoogleCredentialKeyword extends Keyword {
 export class Argument {
   constructor(public name: string, public value: string) {}
   toJSON() {
-    return `${this.name}=${this.value}`;
+    if(this.name.length) {
+      return `${this.name}=${this.value}`;
+    }else {
+      return `${this.value}`;
+    }
     // return `${this.value}`;
   }
 
@@ -224,12 +228,15 @@ export class Resource {
 }
 
 export class Lib {
-  constructor(public name: string) {}
+  constructor(public name: string, public args : any = null) {}
   toJSON() {
-    return {
+    let libJson = {
       type: "LIBRARY",
       name: this.name,
     };
+    if(this.args)
+      libJson["args"] = this.args
+    return libJson
   }
 }
 
