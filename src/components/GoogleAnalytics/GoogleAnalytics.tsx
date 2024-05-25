@@ -18,7 +18,7 @@ const GoogleAnalytics = (props: GAProps) => {
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${process.env.NEXT_PUBLIC_MEASUREMENT_ID}', {
+              gtag('config', '${props.gaID}', {
               page_path: window.location.pathname,
               });
           `}
