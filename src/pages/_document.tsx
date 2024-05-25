@@ -1,6 +1,4 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { GA } from '@/constants/ga';
-import GoogleAnalytics from '@/components/GoogleAnalytics/GoogleAnalytics';
 
 class MyDocument extends Document {
   render() {
@@ -41,7 +39,6 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
         </body>
-        <GoogleAnalytics gaID={GA.MEASUREMENT_ID} />
       </Html>
     );
   }

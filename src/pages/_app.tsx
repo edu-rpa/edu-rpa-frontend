@@ -13,6 +13,8 @@ import SidebarLayout from '@/components/Layouts/SidebarLayout';
 import DefaultLayout from '@/components/Layouts/DefaultLayout';
 import { PubNubProvider } from 'pubnub-react';
 import PubNub from 'pubnub';
+import GoogleAnalytics from '@/components/GoogleAnalytics/GoogleAnalytics';
+import { GA } from '@/constants/ga';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (_page: React.ReactElement) => React.ReactElement;
@@ -58,6 +60,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
           <PubNubProvider client={pubnub}>
             <Layout>
               <Component {...pageProps} />
+              <GoogleAnalytics gaID={GA.MEASUREMENT_ID} />
             </Layout>
           </PubNubProvider>
         </ChakraProvider>
