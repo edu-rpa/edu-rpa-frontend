@@ -136,12 +136,14 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     }
     if (args) {
       // parse keywords arguments
-      for (let arg of Object.values(args)) {
+      for (let argName of Object.keys(args)) {
         // Ignore empty keywords
         // Which may include special 'Connection' Argument that does not have keywordArg
+        let arg = args[argName];
         if (arg.keywordArg && arg.value) {
           keywordArg.push(new Argument(arg.keywordArg, arg.value));
-        }else if(arg.keywordArg === null && arg.value) {
+        }else if(argName !== "Librabry" && arg.keywordArg === null && arg.value) {
+          // Ignore Librabry override hidden attributes
           // keywordArg empty ==> pass by value
           keywordArg.push(new Argument("", arg.value));
         }
