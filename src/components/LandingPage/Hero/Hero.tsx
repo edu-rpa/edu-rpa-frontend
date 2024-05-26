@@ -64,7 +64,9 @@ export default function HeroHome() {
               borderColor={'#319795'}
               fontWeight={'normal'}
               px={6}
-              leftIcon={<FaPlayCircle height={4} width={4} color={'#319795'} />}>
+              leftIcon={
+                <FaPlayCircle height={4} width={4} color={'#319795'} />
+              }>
               How It Works
             </Button>
           </Stack>
@@ -94,16 +96,11 @@ export default function HeroHome() {
               top={'50%'}
               transform={'translateX(-50%) translateY(-50%)'}
             />
-            <Image
-              alt={'Hero Image'}
-              fit={'cover'}
-              align={'center'}
-              w={'100%'}
-              h={'100%'}
-              src={
-                'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80'
-              }
-            />
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/5Pq27mQelzI?si=Gi8smiZjocIYrT2T"
+              title="EduRPA"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
           </Box>
         </Flex>
       </Stack>
