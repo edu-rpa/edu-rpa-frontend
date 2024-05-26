@@ -30,7 +30,6 @@ import {
 import { AuthorizationProvider } from "@/interfaces/enums/provider.enum";
 import _ from "lodash";
 import { LibrabryConfigurations } from "@/constants/activityPackage";
-
 export class SequenceVisitor {
   properties: Map<string, Properties>;
   imports: Set<string>;
@@ -89,12 +88,20 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
     });
   }
 
+  private _handleParseDictionary(value: string) {
+    let escapeValue = JSON.stringify(value);
+    return `\${{ ${escapeValue.slice(1, escapeValue.length-1)} }}`
+  } 
+
   private _handleParseValue(variable : Variable) {
     const {name, value, type} = variable
     let returnedValue = "";
     switch(type) {
-      case VariableType.DocumentTemplate:
       case VariableType.Dictionary:
+      case VariableType.DocumentTemplate:
+        // Parse to robotframework python inline expression logic
+        returnedValue =  this._handleParseDictionary(value);
+        break;
       case VariableType.List:
         returnedValue =  `\${{ ${value} }}`
         break;
