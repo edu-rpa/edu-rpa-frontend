@@ -235,7 +235,7 @@ export class Lib {
       name: this.name,
     };
     if(this.args)
-      libJson["args"] = this.args
+      libJson["args"] = Object.keys(this.args).map(k => `${k}=${this.args[k]}`)
     return libJson
   }
 }
