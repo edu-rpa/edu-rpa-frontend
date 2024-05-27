@@ -89,8 +89,9 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
   }
 
   private _handleParseDictionary(value: string) {
-    let escapeValue = JSON.stringify(value);
-    return `\${{ ${escapeValue.slice(1, escapeValue.length-1)} }}`
+    return  `\${{ ${value} }}`
+    // let escapeValue = JSON.stringify(value);
+    // return `\${{ ${escapeValue.slice(1, escapeValue.length-1)} }}`
   } 
 
   private _handleParseValue(variable : Variable) {
