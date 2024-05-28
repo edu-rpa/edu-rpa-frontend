@@ -29,8 +29,8 @@ const DynamicVariableTable = (props: VariableTableProps) => {
     [VariableType.Number]: '0',
     [VariableType.Boolean]: 'false',
     [VariableType.File]: '',
-    [VariableType.List]: '[]',
-    [VariableType.Dictionary]: '{}',
+    [VariableType.List]: '',
+    [VariableType.Dictionary]: '',
     [VariableType.Connection]: '',
     [VariableType.DocumentTemplate]: '{}',
   };

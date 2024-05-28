@@ -89,7 +89,10 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
   }
 
   private _handleParseDictionary(value: string) {
-    return  `\${{ ${value} }}`
+    if(value.length)
+      return  `\${{ ${value} }}`
+    else
+      return value
     // let escapeValue = JSON.stringify(value);
     // return `\${{ ${escapeValue.slice(1, escapeValue.length-1)} }}`
   } 
@@ -104,7 +107,8 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
         returnedValue =  this._handleParseDictionary(value);
         break;
       case VariableType.List:
-        returnedValue =  `\${{ ${value} }}`
+        if(value.length)
+          returnedValue =  `\${{ ${value} }}`
         break;
       default:
         returnedValue = value
@@ -148,6 +152,11 @@ export class ConcreteSequenceVisitor extends SequenceVisitor {
         // Ignore empty keywords
         // Which may include special 'Connection' Argument that does not have keywordArg
         let arg = args[argName];
+
+        if(arg.overrideType && arg.value && arg.value.match(/^[^\w]{(.*)}$/)) {
+          arg.value = arg.overrideType + arg.value.slice(1)
+        }
+
         if (arg.keywordArg && arg.value) {
           keywordArg.push(new Argument(arg.keywordArg, arg.value));
         }else if(argName !== "Librabry" && arg.keywordArg === null && arg.value) {
