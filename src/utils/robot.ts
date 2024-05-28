@@ -1,17 +1,23 @@
 const mapStatus = (status: string) => {
   switch (status) {
     case 'not running':
-      return 'not running';
+      return 'Not Running';
     case 'stopped':
-      return 'not running';
+      return 'Not Running';
     case 'pending':
-      return 'pending';
+      return 'Pending';
     case 'stopping':
-      return 'stopping';
+      return 'Stopping';
     case 'running':
-      return 'running';
+      return 'Running';
+    case 'setup':
+      return 'Setup'
+    case 'executing':
+      return 'Executing'
+    case 'cooldown':
+      return 'Cooldown'
     default:
-      return 'not running';
+      return 'Not running';
   }
 };
 
@@ -19,8 +25,13 @@ const mapStatusColor = (status: string) => {
   switch (status) {
     case 'not running':
       return 'gray';
+    case 'setup':
+      return 'blue';
     case 'running':
+    case 'executing':
       return 'green';
+    case 'cooldown':
+      return 'orange'
     case 'pending':
       return 'yellow';
     case 'stopping':
