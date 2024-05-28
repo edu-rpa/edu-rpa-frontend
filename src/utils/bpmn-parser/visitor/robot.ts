@@ -116,7 +116,10 @@ export class ProcessVariable {
         (k) => `${k}=${JSON.stringify(this.value[k])}`
       );
     } else {
-      this.value = [this.value];
+      if(this.value)
+        this.value = [this.value];
+      else
+        this.value = []
     }
 
     return {

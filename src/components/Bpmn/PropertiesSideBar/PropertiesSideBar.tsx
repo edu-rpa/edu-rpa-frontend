@@ -239,6 +239,7 @@ export default function PropertiesSideBar({
                 return {
                   ...formValues[paramKey],
                   keywordArg: paramValue.keywordArg || null,
+                  overrideType: paramValue.overrideType || null,
                   value: value,
                 };
               };

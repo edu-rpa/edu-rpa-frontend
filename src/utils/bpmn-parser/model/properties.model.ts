@@ -1,3 +1,5 @@
+import { RFVarType } from "@/constants/activityPackage";
+
 export interface Properties {
     activityID: string;
     activityType: string;
@@ -23,6 +25,7 @@ interface AgumentProperties {
     description: string;
     keywordArg?: string;
     value?: string;
+    overrideType: RFVarType;
 }
 
 export interface ProcessVariables {

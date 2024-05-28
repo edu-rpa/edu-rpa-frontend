@@ -10,4 +10,5 @@ export interface ArgumentProps {
   keywordArg?: string | null;
   value?: any;
   hidden?: boolean,
+  overrideType: string | null;
 }

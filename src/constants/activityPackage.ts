@@ -1,9 +1,17 @@
 export const LibrabryConfigurations = {
   "EduRPA.Document": {
     "lang": "vi",
-    "performance": "fast" 
+    "performance": "accurate" 
   }
 }
+
+export enum RFVarType {
+  "scalar" = "$",
+  "any" =  "$",
+  "dictionary" = "&",
+  "list" = "@"
+}
+
 export const ActivityPackages = [
   // Drive
   {
@@ -1200,11 +1208,13 @@ export const ActivityPackages = [
             type: 'list',
             description: 'The list',
             // keywordArg: 'list_',
+            overrideType: RFVarType["any"],
             value: [],
           },
           Item: {
             type: 'any',
             description: 'The item to add to the list',
+            overrideType: RFVarType["any"],
             value: '',
           },
         },
