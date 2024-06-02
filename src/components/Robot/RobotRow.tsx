@@ -54,7 +54,7 @@ const RobotRow = (props: RobotRowProps) => {
         data.processId,
         data.processVersion
       );
-      setStatus(mapStatus(res.instanceState));
+      setStatus(res.instanceState);
     } catch (error) {
       setStatus('');
     }
@@ -128,7 +128,7 @@ const RobotRow = (props: RobotRowProps) => {
             size="md"
             p={3}
             rounded={10}>
-            {status}
+            {mapStatus(status)}
           </Tag>
         )}
       </Td>
