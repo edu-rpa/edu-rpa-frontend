@@ -71,38 +71,14 @@ export default function HeroHome() {
             </Button>
           </Stack>
         </Stack>
-        <Flex
-          flex={1}
-          justify={'center'}
-          align={'center'}
-          position={'relative'}
-          w={'full'}>
-          <Box
-            position={'relative'}
-            height={'300px'}
-            rounded={'2xl'}
-            boxShadow={'2xl'}
-            width={'full'}
-            overflow={'hidden'}>
-            <IconButton
-              aria-label={'Play Button'}
-              variant={'ghost'}
-              _hover={{ bg: 'transparent' }}
-              icon={<FaPlayCircle width={12} height={12} />}
-              size={'lg'}
-              color={'white'}
-              position={'absolute'}
-              left={'50%'}
-              top={'50%'}
-              transform={'translateX(-50%) translateY(-50%)'}
-            />
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/5Pq27mQelzI?si=Gi8smiZjocIYrT2T"
-              title="EduRPA"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
-          </Box>
-        </Flex>
+        <Box flex={1} className="w-full h-[400px]">
+          <iframe
+            className="w-full h-full"
+            src="https://www.youtube.com/embed/5Pq27mQelzI?si=Gi8smiZjocIYrT2T"
+            title="EduRPA"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen></iframe>
+        </Box>
       </Stack>
     </Container>
   );
