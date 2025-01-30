@@ -1,8 +1,6 @@
 # EduRPA
 
-<a href="https://www.youtube.com/watch?v=5Pq27mQelzI">
-  <img src="https://i9.ytimg.com/vi_webp/5Pq27mQelzI/mqdefault.webp?v=6653607c&sqp=CKiT7LwG&rs=AOn4CLDhgY2pK0W5w8Zet6vt3CnqhthhUA" alt="EduRPA" style="width: 100%;">
-</a>
+[![EduRPA](https://github.com/user-attachments/assets/efbce81e-04e1-4c24-9902-ba8b6767551f)](https://youtu.be/5Pq27mQelzI?si=JwAPtHjDV4HLEJpX)
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
